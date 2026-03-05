@@ -66,22 +66,29 @@ export default function AuthPage() {
             <p className="text-xs font-medium text-primary mb-2">🎯 Comptes démo disponibles :</p>
             <div className="space-y-1 text-xs text-muted-foreground">
               <p><span className="font-medium">sophie.martin@demo.com</span> — Startup (mot de passe: password123)</p>
-              <p><span className="font-medium">marc.dubois@demo.com</span> — Mentor</p>
+              <p><span className="font-medium">marc.dubois@demo.com</span> — Mentor / Coach</p>
               <p><span className="font-medium">claire.bernard@demo.com</span> — Investisseur</p>
+              <p><span className="font-medium">thomas.petit@demo.com</span> — Expert Growth</p>
+              <p><span className="font-medium">laura.chen@demo.com</span> — Startup HealthTech</p>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="mt-2 text-xs text-primary hover:text-primary h-7 px-2"
-              onClick={() => {
-                setEmail("sophie.martin@demo.com");
-                setPassword("password123");
-                setIsLogin(true);
-              }}
-            >
-              Remplir avec Sophie Martin <ArrowRight className="w-3 h-3 ml-1" />
-            </Button>
+            <div className="flex flex-wrap gap-1 mt-2">
+              {[
+                { label: "Sophie (Startup)", email: "sophie.martin@demo.com" },
+                { label: "Marc (Mentor)", email: "marc.dubois@demo.com" },
+                { label: "Claire (Investor)", email: "claire.bernard@demo.com" },
+              ].map((demo) => (
+                <Button
+                  key={demo.email}
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="text-[11px] text-primary hover:text-primary h-7 px-2"
+                  onClick={() => { setEmail(demo.email); setPassword("password123"); setIsLogin(true); }}
+                >
+                  {demo.label} <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
