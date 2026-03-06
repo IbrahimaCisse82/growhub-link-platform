@@ -38,7 +38,8 @@ const navByRole: Record<string, { title: string; items: { id: string; icon: any;
       items: [
         { id: "marketing", icon: Megaphone, label: "Marketing" },
         { id: "analytics", icon: BarChart3, label: "Analytics" },
-        { id: "progression", icon: TrendingUp, label: "Progression" },
+        { id: "progression", icon: Target, label: "Objectifs" },
+        { id: "badges", icon: Award, label: "Badges" },
       ],
     },
   ],
@@ -63,7 +64,8 @@ const navByRole: Record<string, { title: string; items: { id: string; icon: any;
     {
       title: "Outils",
       items: [
-        { id: "progression", icon: TrendingUp, label: "Impact" },
+        { id: "progression", icon: Target, label: "Objectifs" },
+        { id: "badges", icon: Award, label: "Badges" },
         { id: "marketing", icon: Megaphone, label: "Visibilité" },
       ],
     },
@@ -90,7 +92,8 @@ const navByRole: Record<string, { title: string; items: { id: string; icon: any;
       title: "Outils",
       items: [
         { id: "coaching", icon: PenLine, label: "Coaching" },
-        { id: "progression", icon: TrendingUp, label: "Métriques" },
+        { id: "progression", icon: Target, label: "Objectifs" },
+        { id: "badges", icon: Award, label: "Badges" },
       ],
     },
   ],
@@ -116,7 +119,8 @@ const navByRole: Record<string, { title: string; items: { id: string; icon: any;
       title: "Outils",
       items: [
         { id: "marketing", icon: Megaphone, label: "Prospection" },
-        { id: "progression", icon: TrendingUp, label: "Progression" },
+        { id: "progression", icon: Target, label: "Objectifs" },
+        { id: "badges", icon: Award, label: "Badges" },
       ],
     },
   ],

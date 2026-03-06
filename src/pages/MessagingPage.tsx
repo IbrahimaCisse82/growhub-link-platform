@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { GHCard } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
+import { useConnections } from "@/hooks/useGrowHub";
 import { supabase } from "@/integrations/supabase/client";
-import { Send, Search } from "lucide-react";
+import { Send, Search, MessageSquarePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Conversation {
@@ -16,21 +17,48 @@ interface Conversation {
 
 export default function MessagingPage() {
   const { user } = useAuth();
+  const { data: connections } = useConnections();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [newMsg, setNewMsg] = useState("");
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showNewChat, setShowNewChat] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user) return;
     loadConversations();
+
+    // Realtime subscription
+    const channel = supabase
+      .channel("messages-realtime")
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+      }, (payload) => {
+        const msg = payload.new as any;
+        if (msg.sender_id === user.id || msg.receiver_id === user.id) {
+          if (selectedPartner && (msg.sender_id === selectedPartner || msg.receiver_id === selectedPartner)) {
+            setMessages(prev => [...prev, msg]);
+          }
+          loadConversations();
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [user]);
 
   useEffect(() => {
-    if (!selectedPartner || !user) return;
-    loadMessages(selectedPartner);
+    if (selectedPartner && user) loadMessages(selectedPartner);
   }, [selectedPartner]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const loadConversations = async () => {
     if (!user) return;
@@ -82,8 +110,8 @@ export default function MessagingPage() {
       .order("created_at", { ascending: true });
     setMessages(data ?? []);
 
-    // Mark as read
     await supabase.from("messages").update({ is_read: true }).eq("sender_id", partnerId).eq("receiver_id", user.id);
+    loadConversations();
   };
 
   const sendMessage = async () => {
@@ -94,9 +122,24 @@ export default function MessagingPage() {
       content: newMsg.trim(),
     });
     setNewMsg("");
+    // Message will appear via realtime, but also load immediately
     loadMessages(selectedPartner);
   };
 
+  const startNewChat = (partnerId: string, partnerName: string) => {
+    setSelectedPartner(partnerId);
+    setShowNewChat(false);
+    // Check if conversation already exists
+    const existing = conversations.find(c => c.partnerId === partnerId);
+    if (!existing) {
+      setMessages([]);
+    }
+  };
+
+  const acceptedConnections = connections?.filter(c => c.status === "accepted") ?? [];
+  const filteredConversations = conversations.filter(c =>
+    c.partnerName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const selectedConv = conversations.find((c) => c.partnerId === selectedPartner);
 
   return (
@@ -117,17 +160,52 @@ export default function MessagingPage() {
       <div className="grid grid-cols-3 gap-4 min-h-[500px]">
         {/* Conversations list */}
         <GHCard className="col-span-1 p-0 overflow-hidden">
-          <div className="p-3 border-b border-border">
-            <div className="flex items-center bg-secondary/50 rounded-lg px-2.5 gap-2 h-8">
+          <div className="p-3 border-b border-border flex items-center gap-2">
+            <div className="flex-1 flex items-center bg-secondary/50 rounded-lg px-2.5 gap-2 h-8">
               <Search className="w-3.5 h-3.5 text-muted-foreground" />
-              <input placeholder="Rechercher..." className="bg-transparent border-none outline-none text-xs w-full" />
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Rechercher..."
+                className="bg-transparent border-none outline-none text-xs w-full"
+              />
             </div>
+            <button
+              onClick={() => setShowNewChat(!showNewChat)}
+              className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors"
+            >
+              <MessageSquarePlus className="w-3.5 h-3.5 text-primary" />
+            </button>
           </div>
+
+          {showNewChat && (
+            <div className="p-3 border-b border-border bg-primary/5">
+              <p className="text-[10px] font-bold text-primary uppercase mb-2">Nouvelle conversation</p>
+              {acceptedConnections.length === 0 ? (
+                <p className="text-xs text-muted-foreground">Aucune connexion disponible</p>
+              ) : (
+                acceptedConnections.map(conn => {
+                  const profile = (conn as any).partner_profile;
+                  if (!profile) return null;
+                  return (
+                    <button
+                      key={conn.id}
+                      onClick={() => startNewChat(profile.user_id, profile.display_name)}
+                      className="w-full text-left px-3 py-2 rounded-lg hover:bg-secondary/50 text-xs font-medium transition-colors"
+                    >
+                      {profile.display_name}
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          )}
+
           <div className="overflow-y-auto max-h-[440px]">
-            {conversations.length === 0 ? (
+            {filteredConversations.length === 0 ? (
               <p className="text-xs text-muted-foreground text-center py-8">Aucune conversation</p>
             ) : (
-              conversations.map((conv) => (
+              filteredConversations.map((conv) => (
                 <button
                   key={conv.partnerId}
                   onClick={() => setSelectedPartner(conv.partnerId)}
@@ -143,6 +221,9 @@ export default function MessagingPage() {
                     )}
                   </div>
                   <p className="text-[11px] text-muted-foreground truncate mt-0.5">{conv.lastMessage}</p>
+                  <p className="text-[10px] text-muted-foreground/50 mt-0.5">
+                    {new Date(conv.lastAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                  </p>
                 </button>
               ))
             )}
@@ -152,13 +233,14 @@ export default function MessagingPage() {
         {/* Chat area */}
         <GHCard className="col-span-2 p-0 flex flex-col overflow-hidden">
           {!selectedPartner ? (
-            <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
-              Sélectionnez une conversation
+            <div className="flex-1 flex flex-col items-center justify-center text-sm text-muted-foreground gap-2">
+              <MessageSquarePlus className="w-10 h-10 text-muted-foreground/20" />
+              Sélectionnez une conversation ou démarrez-en une nouvelle
             </div>
           ) : (
             <>
               <div className="px-4 py-3 border-b border-border font-heading text-sm font-bold">
-                {selectedConv?.partnerName}
+                {selectedConv?.partnerName ?? "Conversation"}
               </div>
               <div className="flex-1 overflow-y-auto p-4 space-y-2 max-h-[380px]">
                 {messages.map((m) => (
@@ -174,6 +256,7 @@ export default function MessagingPage() {
                     </div>
                   </div>
                 ))}
+                <div ref={bottomRef} />
               </div>
               <div className="p-3 border-t border-border flex gap-2">
                 <input

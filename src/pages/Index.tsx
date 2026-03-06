@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AppSidebar from "@/components/AppSidebar";
 import Topbar from "@/components/Topbar";
-import ProfileSwitcher from "@/components/ProfileSwitcher";
 import DashboardPage from "@/pages/DashboardPage";
 import NetworkingPage from "@/pages/NetworkingPage";
 import CoachingPage from "@/pages/CoachingPage";
@@ -12,6 +11,8 @@ import ProfilePage from "@/pages/ProfilePage";
 import NotificationsPage from "@/pages/NotificationsPage";
 import FundraisingPage from "@/pages/FundraisingPage";
 import PitchDeckPage from "@/pages/PitchDeckPage";
+import ObjectivesPage from "@/pages/ObjectivesPage";
+import BadgesPage from "@/pages/BadgesPage";
 import GenericPage from "@/pages/GenericPage";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +21,6 @@ import { useQuery } from "@tanstack/react-query";
 const pageConfigs: Record<string, { title: string; subtitle: string; description: string }> = {
   marketing: { title: 'Acquérez des <span class="text-primary">clients & partenaires</span>', subtitle: "Outils Marketing & Prospection", description: "CRM intégré, génération de leads, automation marketing et analytics de performance." },
   analytics: { title: 'Mesurez votre <span class="text-primary">performance</span>', subtitle: "Analytics & Reporting", description: "Tableaux de bord, KPIs en temps réel et rapports automatisés pour piloter votre croissance." },
-  progression: { title: 'Ma <span class="text-primary">progression</span> 🌟', subtitle: "Parcours & Badges", description: "Suivez vos objectifs, débloquez des badges et mesurez vos avancées concrètes." },
   settings: { title: '<span class="text-primary">Paramètres</span>', subtitle: "Configuration du compte", description: "Gérez votre profil, préférences et paramètres de sécurité." },
 };
 
@@ -28,7 +28,6 @@ export default function Index() {
   const [activePage, setActivePage] = useState("dashboard");
   const { user } = useAuth();
 
-  // Get user role
   const { data: userRole } = useQuery({
     queryKey: ["user-role", user?.id],
     enabled: !!user,
@@ -39,7 +38,6 @@ export default function Index() {
   });
 
   const activeProfile = userRole ?? "startup";
-
   const navigate = (page: string) => setActivePage(page);
 
   const renderPage = () => {
@@ -54,6 +52,8 @@ export default function Index() {
       case "notifications": return <NotificationsPage />;
       case "fundraising": return <FundraisingPage />;
       case "pitchdeck": return <PitchDeckPage />;
+      case "progression": return <ObjectivesPage />;
+      case "badges": return <BadgesPage />;
       default: {
         const config = pageConfigs[activePage];
         if (config) return <GenericPage pageId={activePage} {...config} />;
