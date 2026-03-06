@@ -2,11 +2,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { GHCard, Tag, SectionHeader } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
-import { usePosts } from "@/hooks/useGrowHub";
+import { usePosts, useToggleReaction, useUserReactions, useComments, useAddComment, useDeletePost } from "@/hooks/useGrowHub";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Heart, MessageCircle, Share2, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, Send, Trash2, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
@@ -27,8 +28,16 @@ const gradients = [
 export default function FeedPage() {
   const { user } = useAuth();
   const { data: posts, isLoading, refetch } = usePosts();
+  const { data: userReactions } = useUserReactions();
+  const toggleReaction = useToggleReaction();
+  const deletePost = useDeletePost();
+  const addComment = useAddComment();
   const [newPost, setNewPost] = useState("");
+  const [postType, setPostType] = useState<string>("text");
   const [posting, setPosting] = useState(false);
+  const [commentingPostId, setCommentingPostId] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState("");
+  const { data: comments } = useComments(commentingPostId);
 
   const handlePost = async () => {
     if (!newPost.trim() || !user) return;
@@ -36,7 +45,7 @@ export default function FeedPage() {
     const { error } = await supabase.from("posts").insert({
       author_id: user.id,
       content: newPost.trim(),
-      post_type: "text",
+      post_type: postType as any,
     });
     setPosting(false);
     if (error) {
@@ -44,9 +53,30 @@ export default function FeedPage() {
     } else {
       toast.success("Publié !");
       setNewPost("");
+      setPostType("text");
       refetch();
     }
   };
+
+  const handleLike = (postId: string) => {
+    toggleReaction.mutate({ postId });
+  };
+
+  const handleDelete = (postId: string) => {
+    deletePost.mutate(postId, {
+      onSuccess: () => toast.success("Post supprimé"),
+      onError: () => toast.error("Erreur"),
+    });
+  };
+
+  const handleComment = (postId: string) => {
+    if (!commentText.trim()) return;
+    addComment.mutate({ postId, content: commentText.trim() }, {
+      onSuccess: () => { setCommentText(""); toast.success("Commentaire ajouté"); },
+    });
+  };
+
+  const isLiked = (postId: string) => userReactions?.some(r => r.post_id === postId);
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
@@ -79,7 +109,23 @@ export default function FeedPage() {
               placeholder="Partagez une actualité, une question, un milestone..."
               className="w-full bg-secondary/50 border border-border rounded-xl p-3 text-sm resize-none min-h-[80px] focus:outline-none focus:border-primary/40 transition-colors"
             />
-            <div className="flex justify-end mt-2">
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex gap-1.5">
+                {Object.entries(postTypeLabels).map(([key, val]) => (
+                  <button
+                    key={key}
+                    onClick={() => setPostType(key)}
+                    className={cn(
+                      "text-[10px] font-semibold px-2 py-1 rounded-lg border transition-colors",
+                      postType === key
+                        ? "bg-primary/10 border-primary/35 text-primary"
+                        : "bg-card border-border text-foreground/50 hover:text-foreground/80"
+                    )}
+                  >
+                    {val.label}
+                  </button>
+                ))}
+              </div>
               <button
                 onClick={handlePost}
                 disabled={!newPost.trim() || posting}
@@ -103,6 +149,7 @@ export default function FeedPage() {
       ) : (
         posts.map((post, idx) => {
           const typeInfo = postTypeLabels[post.post_type] || postTypeLabels.text;
+          const liked = isLiked(post.id);
           return (
             <GHCard key={post.id} className="mb-3">
               <div className="flex gap-3 items-start mb-3">
@@ -119,6 +166,11 @@ export default function FeedPage() {
                     {new Date(post.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                   </div>
                 </div>
+                {post.author_id === user?.id && (
+                  <button onClick={() => handleDelete(post.id)} className="text-muted-foreground hover:text-destructive transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
               <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">{post.content}</p>
               {post.tags && post.tags.length > 0 && (
@@ -129,16 +181,66 @@ export default function FeedPage() {
                 </div>
               )}
               <div className="flex items-center gap-4 pt-2 border-t border-border/50">
-                <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors">
-                  <Heart className="w-3.5 h-3.5" /> {post.likes_count ?? 0}
+                <button
+                  onClick={() => handleLike(post.id)}
+                  className={cn(
+                    "flex items-center gap-1.5 text-xs transition-colors",
+                    liked ? "text-primary font-bold" : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  <Heart className={cn("w-3.5 h-3.5", liked && "fill-primary")} /> {post.likes_count ?? 0}
                 </button>
-                <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors">
+                <button
+                  onClick={() => setCommentingPostId(commentingPostId === post.id ? null : post.id)}
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
                   <MessageCircle className="w-3.5 h-3.5" /> {post.comments_count ?? 0}
                 </button>
-                <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors">
+                <button
+                  onClick={() => { navigator.clipboard.writeText(post.content.substring(0, 100)); toast.success("Copié !"); }}
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
                   <Share2 className="w-3.5 h-3.5" /> Partager
                 </button>
               </div>
+
+              {/* Comments section */}
+              {commentingPostId === post.id && (
+                <div className="mt-3 pt-3 border-t border-border/30">
+                  {comments && comments.length > 0 && (
+                    <div className="space-y-2 mb-3">
+                      {comments.map((c: any) => (
+                        <div key={c.id} className="flex gap-2 items-start">
+                          <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-[9px] font-bold flex-shrink-0">
+                            {(c.author?.display_name ?? "?").substring(0, 2).toUpperCase()}
+                          </div>
+                          <div className="bg-secondary/50 rounded-lg px-3 py-2 text-xs flex-1">
+                            <span className="font-bold">{c.author?.display_name ?? "Membre"}</span>
+                            <span className="text-muted-foreground ml-2 text-[10px]">{new Date(c.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                            <p className="mt-1 text-foreground/80">{c.content}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleComment(post.id)}
+                      placeholder="Écrire un commentaire..."
+                      className="flex-1 bg-secondary/50 rounded-lg px-3 py-2 text-xs outline-none border border-border focus:border-primary/40"
+                    />
+                    <button
+                      onClick={() => handleComment(post.id)}
+                      disabled={!commentText.trim()}
+                      className="bg-primary text-primary-foreground rounded-lg px-3 py-2 disabled:opacity-50 hover:bg-primary-hover transition-colors"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </GHCard>
           );
         })
