@@ -27,7 +27,8 @@ const pageConfigs: Record<string, { title: string; subtitle: string; description
 
 export default function Index() {
   const [activePage, setActivePage] = useState("dashboard");
-  const { user } = useAuth();
+  const [onboardingDone, setOnboardingDone] = useState(false);
+  const { user, profile } = useAuth();
 
   const { data: userRole } = useQuery({
     queryKey: ["user-role", user?.id],
@@ -37,6 +38,9 @@ export default function Index() {
       return data?.role ?? "startup";
     },
   });
+
+  // Show onboarding if profile exists but key fields are empty
+  const needsOnboarding = profile && !onboardingDone && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
 
   const activeProfile = userRole ?? "startup";
   const navigate = (page: string) => setActivePage(page);
@@ -62,6 +66,10 @@ export default function Index() {
       }
     }
   };
+
+  if (needsOnboarding) {
+    return <OnboardingQuestionnaire onComplete={() => setOnboardingDone(true)} />;
+  }
 
   return (
     <div className="flex min-h-screen scrollbar-thin">
