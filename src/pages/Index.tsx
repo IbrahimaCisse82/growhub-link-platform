@@ -14,6 +14,7 @@ import PitchDeckPage from "@/pages/PitchDeckPage";
 import ObjectivesPage from "@/pages/ObjectivesPage";
 import BadgesPage from "@/pages/BadgesPage";
 import GenericPage from "@/pages/GenericPage";
+import OnboardingQuestionnaire from "@/components/OnboardingQuestionnaire";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
