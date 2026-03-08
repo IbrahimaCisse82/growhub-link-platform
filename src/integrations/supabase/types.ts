@@ -1089,6 +1089,7 @@ export type Database = {
           country: string | null
           created_at: string
           display_name: string
+          headline: string | null
           id: string
           interests: string[] | null
           is_public: boolean | null
@@ -1097,7 +1098,9 @@ export type Database = {
           linkedin_url: string | null
           login_streak: number | null
           longest_streak: number | null
+          looking_for: string[] | null
           network_score: number | null
+          offering: string[] | null
           profile_views: number | null
           sector: string | null
           skills: string[] | null
@@ -1115,6 +1118,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           display_name?: string
+          headline?: string | null
           id?: string
           interests?: string[] | null
           is_public?: boolean | null
@@ -1123,7 +1127,9 @@ export type Database = {
           linkedin_url?: string | null
           login_streak?: number | null
           longest_streak?: number | null
+          looking_for?: string[] | null
           network_score?: number | null
+          offering?: string[] | null
           profile_views?: number | null
           sector?: string | null
           skills?: string[] | null
@@ -1141,6 +1147,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           display_name?: string
+          headline?: string | null
           id?: string
           interests?: string[] | null
           is_public?: boolean | null
@@ -1149,7 +1156,9 @@ export type Database = {
           linkedin_url?: string | null
           login_streak?: number | null
           longest_streak?: number | null
+          looking_for?: string[] | null
           network_score?: number | null
+          offering?: string[] | null
           profile_views?: number | null
           sector?: string | null
           skills?: string[] | null
@@ -1251,6 +1260,80 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      speed_networking_participants: {
+        Row: {
+          feedback: string | null
+          id: string
+          joined_at: string
+          matched_with: string | null
+          rating: number | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          feedback?: string | null
+          id?: string
+          joined_at?: string
+          matched_with?: string | null
+          rating?: number | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          feedback?: string | null
+          id?: string
+          joined_at?: string
+          matched_with?: string | null
+          rating?: number | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "speed_networking_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "speed_networking_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      speed_networking_sessions: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          max_participants: number | null
+          scheduled_at: string
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          max_participants?: number | null
+          scheduled_at: string
+          status?: string
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          max_participants?: number | null
+          scheduled_at?: string
+          status?: string
+          title?: string
+        }
+        Relationships: []
       }
       user_badges: {
         Row: {
