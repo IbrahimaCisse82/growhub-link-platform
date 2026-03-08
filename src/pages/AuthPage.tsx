@@ -89,7 +89,6 @@ export default function AuthPage() {
                   onClick={() => { setEmail(demo.email); setPassword("Demo2024!"); setIsLogin(true); setIsForgot(false); }}>
                   {demo.label} <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
-                </Button>
               ))}
             </div>
           </CardContent>
