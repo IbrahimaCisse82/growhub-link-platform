@@ -36,42 +36,42 @@ export default function DashboardPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 left-32 w-56 h-56 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-3.5 flex-wrap">
-            <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider">
-              <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
+          <div className="flex items-center gap-1.5 md:gap-2 mb-2.5 md:mb-3.5 flex-wrap">
+            <div className="inline-flex items-center gap-1 md:gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2 md:px-2.5 py-[2px] md:py-[3px] text-[8px] md:text-[10px] font-bold text-primary uppercase tracking-wider">
+              <span className="w-1 h-1 md:w-[5px] md:h-[5px] bg-primary rounded-full animate-pulse-dot" />
               Growth Command Center
             </div>
             <StreakBadge />
           </div>
-          <h1 className="font-heading text-xl md:text-[32px] font-extrabold leading-tight mb-2">
+          <h1 className="font-heading text-lg md:text-[32px] font-extrabold leading-tight mb-1.5 md:mb-2">
             Bonjour {displayName},<br className="hidden md:block" /><span className="text-primary"> accélérez votre croissance</span> 🚀
           </h1>
-          <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px] mb-6">
+          <p className="text-foreground/60 text-xs md:text-sm leading-relaxed max-w-[460px] mb-4 md:mb-6">
             {nextSession
               ? `Session coaching prévue le ${new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}`
               : "Votre écosystème est actif. Explorez vos outils ci-dessous."}
           </p>
-          <div className="flex gap-2 md:gap-2.5 flex-wrap">
-            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-[6px] border-none rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
+          <div className="flex gap-1.5 md:gap-2.5 flex-wrap">
+            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-1 md:gap-[6px] border-none rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
               📊 Pitch Deck
             </button>
-            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-[6px] rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
               💰 Levée
             </button>
-            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-[6px] rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
               ✍️ Coaching
             </button>
           </div>
 
-          <div className="flex gap-3 md:gap-7 mt-5 md:mt-7 pt-4 md:pt-6 border-t border-border flex-wrap">
+          <div className="grid grid-cols-2 md:flex gap-3 md:gap-7 mt-4 md:mt-7 pt-3 md:pt-6 border-t border-border">
             {statsLoading ? (
-              Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-28" />)
+              Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-10 md:h-12 w-full md:w-28" />)
             ) : (
               <>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.connections ?? 0}</div><div className="text-[11px] text-muted-foreground font-medium">Connexions</div></div>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.completedSessions ?? 0}</div><div className="text-[11px] text-muted-foreground font-medium">Sessions coaching</div></div>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.objectivePct ?? 0}%</div><div className="text-[11px] text-muted-foreground font-medium">Objectifs atteints</div></div>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.avgRating ?? "—"}<span className="text-primary text-base">★</span></div><div className="text-[11px] text-muted-foreground font-medium">NPS coaching</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.connections ?? 0}</div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">Connexions</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.completedSessions ?? 0}</div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">Sessions</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.objectivePct ?? 0}%</div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">Objectifs</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.avgRating ?? "—"}<span className="text-primary text-sm md:text-base">★</span></div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">NPS</div></div>
               </>
             )}
           </div>
