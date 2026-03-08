@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import PredictiveAnalytics from "@/components/PredictiveAnalytics";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardStats } from "@/hooks/useDashboard";
