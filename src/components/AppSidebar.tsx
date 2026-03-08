@@ -277,7 +277,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
                 </button>
               );
             })}
-            {si < navSections.length - 1 && <div className="h-px bg-white/10 mx-3 my-2" />}
+            {si < navSections.length - 1 && <div className="h-px bg-sidebar-fg/20 mx-3 my-2" />}
           </div>
         ))}
       </div>
