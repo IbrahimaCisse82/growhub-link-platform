@@ -101,6 +101,7 @@ const App = () => (
                   <Route path="company" element={<CompanyPage />} />
                   <Route path="introductions" element={<WarmIntrosPage />} />
                   <Route path="speed-networking" element={<SpeedNetworkingPage />} />
+                  <Route path="spaces" element={<SpacesPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -309,6 +309,19 @@ export default function AnalyticsPage() {
           )}
         </GHCard>
       </div>
+
+      {/* Network Graph */}
+      <div className="mt-5">
+        <NetworkGraph />
+      </div>
+
+      {/* Network ROI Analytics */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-primary" /> ROI Networking
+        </h2>
+        <NetworkAnalytics />
+      </div>
     </motion.div>
   );
 }

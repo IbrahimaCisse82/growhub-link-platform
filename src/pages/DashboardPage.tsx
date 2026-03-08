@@ -79,8 +79,17 @@ export default function DashboardPage() {
       {/* Smart Notifications */}
       <SmartNotifications />
 
+      {/* Milestone Detection */}
+      <MilestoneDetector />
+
+      {/* Weekly Digest */}
+      <WeeklyDigest />
+
       {/* Activation Checklist */}
       <ActivationChecklist />
+
+      {/* Smart Match Cards */}
+      <SmartMatchCards />
 
       {/* Smart Matching */}
       <SmartMatching />
