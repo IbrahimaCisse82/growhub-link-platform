@@ -85,7 +85,7 @@ export default function PitchDeckPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3.5 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
         <MetricCard icon="📄" value={String(decks?.length ?? 0)} label="Pitch Decks" badge="Créés" badgeType="up" />
         <MetricCard icon="👁️" value={String(decks?.reduce((sum, d) => sum + (d.view_count ?? 0), 0) ?? 0)} label="Vues totales" badge="Total" badgeType="up" />
         <MetricCard icon="📊" value={String(decks?.filter((d) => d.is_public).length ?? 0)} label="Publics" badge="Partagés" badgeType="neutral" />
