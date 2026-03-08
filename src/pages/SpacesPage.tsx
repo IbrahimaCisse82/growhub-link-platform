@@ -429,11 +429,39 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
+          {/* Input with file sharing */}
           <div className="flex gap-2">
             <input value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder="Message..."
               onKeyDown={e => e.key === "Enter" && newMsg.trim() && sendMsg.mutate()}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
+            <button
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = ".pdf,.doc,.docx,.xlsx,.pptx,.png,.jpg,.jpeg,.gif";
+                input.onchange = async (e: any) => {
+                  const file = e.target.files?.[0];
+                  if (!file || !user) return;
+                  const ext = file.name.split(".").pop();
+                  const path = `spaces/${space.id}/${Date.now()}.${ext}`;
+                  const { error } = await supabase.storage.from("post-media").upload(path, file);
+                  if (error) { toast.error("Erreur d'upload"); return; }
+                  const { data: urlData } = supabase.storage.from("post-media").getPublicUrl(path);
+                  await supabase.from("space_messages").insert({
+                    space_id: space.id,
+                    user_id: user.id,
+                    content: `📎 [${file.name}](${urlData.publicUrl})`
+                  });
+                  queryClient.invalidateQueries({ queryKey: ["space-messages", space.id] });
+                  toast.success("Fichier partagé !");
+                };
+                input.click();
+              }}
+              className="bg-secondary border border-border rounded-xl px-3 py-2.5 hover:bg-secondary/80 transition-all"
+              title="Partager un fichier"
+            >
+              <Paperclip className="w-4 h-4 text-muted-foreground" />
+            </button>
             <button onClick={() => newMsg.trim() && sendMsg.mutate()}
               className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 hover:bg-primary-hover transition-all">
               <Send className="w-4 h-4" />
