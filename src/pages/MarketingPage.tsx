@@ -51,7 +51,7 @@ export default function MarketingPage() {
     queryKey: ["leads", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("leads")
         .select("*")
         .eq("user_id", user!.id)
