@@ -10,7 +10,7 @@ interface TopbarProps {
   onHelpToggle?: () => void;
 }
 
-export default function Topbar({ onMobileMenuToggle }: TopbarProps) {
+export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps) {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
