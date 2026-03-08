@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import SuggestedProfiles from "@/components/SuggestedProfiles";
+import { TrendingTags } from "@/components/SmartTags";
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
