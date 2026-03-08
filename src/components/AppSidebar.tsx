@@ -270,14 +270,14 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
                   {active && <div className="absolute left-0 w-[3px] h-[22px] bg-primary rounded-r-sm" />}
                   <item.icon className="w-[17px] h-[17px] flex-shrink-0" aria-hidden="true" />
                   {expanded && (
-                    <span className={cn("font-heading text-xs font-bold whitespace-nowrap", active ? "text-primary" : "text-foreground/70")}>
+                    <span className={cn("font-heading text-xs font-bold whitespace-nowrap", active ? "text-primary" : "text-sidebar-fg")}>
                       {item.label}
                     </span>
                   )}
                 </button>
               );
             })}
-            {si < navSections.length - 1 && <div className="h-px bg-white/10 mx-3 my-2" />}
+            {si < navSections.length - 1 && <div className="h-px bg-sidebar-fg/20 mx-3 my-2" />}
           </div>
         ))}
       </div>
@@ -299,7 +299,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
             )}
           >
             <btn.icon className="w-[17px] h-[17px] flex-shrink-0" />
-            {expanded && <span className="font-heading text-xs font-bold text-foreground/70">{btn.label}</span>}
+            {expanded && <span className="font-heading text-xs font-bold text-sidebar-fg">{btn.label}</span>}
             {btn.hasIndicator && <span className="absolute top-1.5 right-2.5 w-1.5 h-1.5 bg-destructive rounded-full" />}
           </button>
         ))}
