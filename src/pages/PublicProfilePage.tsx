@@ -96,7 +96,7 @@ export default function PublicProfilePage() {
             {!isOwnProfile && (
               <div className="flex gap-2 flex-wrap">
                 {isConnected ? (
-                  <button onClick={() => navigate("/messaging")} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
+                  <button onClick={() => navigate(`/messaging?partner=${userId}`)} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
                     <MessageSquare className="w-3.5 h-3.5" /> Envoyer un message
                   </button>
                 ) : isPending ? (
