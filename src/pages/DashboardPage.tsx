@@ -73,6 +73,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Smart Notifications */}
+      <SmartNotifications />
+
       {/* Activation Checklist */}
       <ActivationChecklist />
 
