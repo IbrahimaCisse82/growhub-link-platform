@@ -91,6 +91,7 @@ const App = () => (
                   <Route path="marketing" element={<MarketingPage />} />
                   <Route path="analytics" element={<AnalyticsPage />} />
                   <Route path="referral" element={<ReferralPage />} />
+                  <Route path="circles" element={<CirclesPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
