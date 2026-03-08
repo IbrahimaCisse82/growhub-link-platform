@@ -154,7 +154,7 @@ export default function GlobalSearch() {
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[300] backdrop-blur-sm" onClick={() => { setOpen(false); resetFilters(); }} />
-      <div className="fixed top-[8vh] left-1/2 -translate-x-1/2 w-full max-w-xl z-[301] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden">
+      <div className="fixed top-0 md:top-[8vh] left-0 md:left-1/2 md:-translate-x-1/2 w-full md:max-w-xl h-full md:h-auto z-[301] bg-card md:border md:border-border md:rounded-2xl shadow-2xl overflow-hidden flex flex-col md:block">
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
           <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
           <input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher membres, publications, événements..."
