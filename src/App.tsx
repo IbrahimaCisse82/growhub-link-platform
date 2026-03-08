@@ -29,6 +29,7 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import MarketingPage from "./pages/MarketingPage";
 import ReferralPage from "./pages/ReferralPage";
 import CirclesPage from "./pages/CirclesPage";
+import PricingPage from "./pages/PricingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,6 +72,7 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/welcome" element={<LandingRoute />} />
+                <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/auth" element={<AuthRoute />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
