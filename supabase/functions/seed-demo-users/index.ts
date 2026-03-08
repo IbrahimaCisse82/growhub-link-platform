@@ -46,8 +46,9 @@ const demoUsers = [
     role: "mentor",
   },
   {
-    email: "claire.bernard@demo.com",
-    password: "password123",
+    email: "laure.bernard@demo.com",
+    password: "Demo2024!",
+    full_name: "Laure Bernard",
     full_name: "Claire Bernard",
     profile: {
       display_name: "Claire Bernard",
