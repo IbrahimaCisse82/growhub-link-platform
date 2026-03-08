@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import ActivationChecklist from "@/components/ActivationChecklist";
 import SmartMatching from "@/components/SmartMatching";
+import { StreakBadge, LeaderboardWidget } from "@/components/StreakLeaderboard";
 
 export default function DashboardPage() {
   usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs startup en temps réel." });
