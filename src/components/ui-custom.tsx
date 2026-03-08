@@ -111,10 +111,10 @@ export function SectionHeader({ title, linkText, onLink }: {
   onLink?: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between mb-3.5">
-      <h3 className="font-heading text-base font-extrabold">{title}</h3>
+    <div className="flex items-center justify-between mb-2.5 md:mb-3.5">
+      <h3 className="font-heading text-sm md:text-base font-extrabold">{title}</h3>
       {linkText && (
-        <button onClick={onLink} className="text-xs text-primary cursor-pointer font-semibold hover:opacity-70 transition-opacity">
+        <button onClick={onLink} className="text-[11px] md:text-xs text-primary cursor-pointer font-semibold hover:opacity-70 transition-opacity">
           {linkText}
         </button>
       )}
