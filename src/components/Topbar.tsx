@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { Bell, MessageSquare, Menu, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
+import { useUnreadNotificationsCount, useUnreadMessagesCount } from "@/hooks/useUnreadCounts";
 import GlobalSearch from "@/components/GlobalSearch";
 
 interface TopbarProps {
@@ -13,6 +13,8 @@ export default function Topbar({ onMobileMenuToggle }: TopbarProps) {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
+  const { data: unreadNotifs = 0 } = useUnreadNotificationsCount();
+  const { data: unreadMsgs = 0 } = useUnreadMessagesCount();
 
   const displayName = profile?.display_name ?? "Utilisateur";
   const initials = displayName.substring(0, 2).toUpperCase();
@@ -44,13 +46,22 @@ export default function Topbar({ onMobileMenuToggle }: TopbarProps) {
           className="w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all relative"
         >
           <Bell className="w-[15px] h-[15px]" />
-          <div className="absolute top-[7px] right-[7px] w-1.5 h-1.5 bg-primary rounded-full border-[1.5px] border-card" />
+          {unreadNotifs > 0 && (
+            <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-[10px] font-bold px-1">
+              {unreadNotifs > 99 ? "99+" : unreadNotifs}
+            </div>
+          )}
         </button>
         <button
           onClick={() => navigate("/messaging")}
-          className="w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all"
+          className="w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all relative"
         >
           <MessageSquare className="w-[15px] h-[15px]" />
+          {unreadMsgs > 0 && (
+            <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-[10px] font-bold px-1">
+              {unreadMsgs > 99 ? "99+" : unreadMsgs}
+            </div>
+          )}
         </button>
 
         <div
