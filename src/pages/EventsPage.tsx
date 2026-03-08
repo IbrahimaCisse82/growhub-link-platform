@@ -105,7 +105,7 @@ export default function EventsPage() {
         <MetricCard icon="👥" value={String(events?.reduce((s, e) => s + (e.registrations?.length ?? 0), 0) ?? 0)} label="Participants" badge="Total" badgeType="up" />
       </div>
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div className="flex gap-1.5 flex-wrap">
           {["all", "webinar", "workshop", "meetup", "conference", "demo_day"].map(t => (
             <button
@@ -119,12 +119,21 @@ export default function EventsPage() {
             </button>
           ))}
         </div>
-        <button
-          onClick={() => setShowCreate(!showCreate)}
-          className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" /> Créer
-        </button>
+        <div className="flex gap-2">
+          <ExportAllEventsButton events={(filteredEvents ?? []).map(e => ({
+            title: e.title,
+            description: e.description ?? undefined,
+            location: e.is_online ? "En ligne" : e.location ?? undefined,
+            start: new Date(e.starts_at),
+            end: e.ends_at ? new Date(e.ends_at) : undefined,
+          }))} />
+          <button
+            onClick={() => setShowCreate(!showCreate)}
+            className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" /> Créer
+          </button>
+        </div>
       </div>
 
       {showCreate && (
