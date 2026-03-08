@@ -243,13 +243,17 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
   const [newMsg, setNewMsg] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Realtime messages
+  // Realtime messages & tasks
   useEffect(() => {
     const channel = supabase
       .channel(`space-${space.id}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "space_messages", filter: `space_id=eq.${space.id}` },
         () => queryClient.invalidateQueries({ queryKey: ["space-messages", space.id] })
-      ).subscribe();
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "space_tasks", filter: `space_id=eq.${space.id}` },
+        () => queryClient.invalidateQueries({ queryKey: ["space-tasks", space.id] })
+      )
+      .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [space.id]);
 
