@@ -116,6 +116,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
+    { title: "Outils", items: [
+      { path: "/analytics", icon: BarChart3, label: "Analytics" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
     ]},
