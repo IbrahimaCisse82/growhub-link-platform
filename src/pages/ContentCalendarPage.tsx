@@ -36,7 +36,7 @@ export default function ContentCalendarPage() {
     queryKey: ["content-calendar", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("content_calendar").select("*").eq("user_id", user!.id).order("scheduled_at", { ascending: true });
+      const { data } = await (supabase as any).from("content_calendar").select("*").eq("user_id", user!.id).order("scheduled_at", { ascending: true });
       return data ?? [];
     },
   });
