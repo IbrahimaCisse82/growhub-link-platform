@@ -5,6 +5,8 @@ import { useDashboardStats, useObjectives, useCoachingSessions, usePosts } from 
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import ActivationChecklist from "@/components/ActivationChecklist";
+import SmartMatching from "@/components/SmartMatching";
 
 export default function DashboardPage() {
   usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs startup en temps réel." });
@@ -65,6 +67,12 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Activation Checklist */}
+      <ActivationChecklist />
+
+      {/* Smart Matching */}
+      <SmartMatching />
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-[18px]">

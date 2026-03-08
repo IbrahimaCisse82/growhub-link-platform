@@ -28,6 +28,7 @@ import SettingsPage from "./pages/SettingsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import MarketingPage from "./pages/MarketingPage";
 import ReferralPage from "./pages/ReferralPage";
+import CirclesPage from "./pages/CirclesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -90,6 +91,7 @@ const App = () => (
                   <Route path="marketing" element={<MarketingPage />} />
                   <Route path="analytics" element={<AnalyticsPage />} />
                   <Route path="referral" element={<ReferralPage />} />
+                  <Route path="circles" element={<CirclesPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

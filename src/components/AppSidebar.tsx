@@ -1,7 +1,7 @@
 import { 
   Zap, PenLine, DollarSign, Home, Users, Calendar,
   BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
-  BookOpen, Rss, Award, Target, User, Gift
+  BookOpen, Rss, Award, Target, User, Gift, CircleDot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,6 +24,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -43,6 +44,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -61,6 +63,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -79,6 +82,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -97,6 +101,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -114,6 +119,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/coaching", icon: PenLine, label: "Programmes" },
     ]},
     { title: "Communauté", items: [
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -133,6 +139,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -150,6 +157,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Inspiration" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -167,6 +175,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -184,6 +193,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/fundraising", icon: DollarSign, label: "Investissements" },
     ]},
     { title: "Communauté", items: [
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
