@@ -43,7 +43,7 @@ export default function BadgesPage() {
         <MetricCard icon="⭐" value={userBadges && userBadges.length > 0 ? "Actif" : "Débutant"} label="Niveau" badge="Statut" badgeType="neutral" />
       </div>
 
-      <div className="grid grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
         {allBadges?.map(badge => {
           const earned = earnedBadgeIds.has(badge.id);
           const gradientClass = categoryColors[badge.category ?? "default"] ?? categoryColors.default;
