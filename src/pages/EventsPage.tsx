@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Plus, MapPin, Globe, Users, Calendar } from "lucide-react";
 import EventMatchmaking from "@/components/EventMatchmaking";
+import { ExportEventButton, ExportAllEventsButton } from "@/components/CalendarExport";
 
 const eventColors = [
   "from-[#0a1a0a] to-primary/80",
