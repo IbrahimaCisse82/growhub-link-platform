@@ -348,6 +348,98 @@ export type Database = {
           },
         ]
       }
+      company_members: {
+        Row: {
+          company_id: string
+          id: string
+          joined_at: string
+          role: string | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_pages: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          founded_year: number | null
+          id: string
+          is_public: boolean | null
+          location: string | null
+          logo_url: string | null
+          metrics: Json | null
+          name: string
+          owner_id: string
+          sector: string | null
+          stage: string | null
+          team_size: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          founded_year?: number | null
+          id?: string
+          is_public?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          metrics?: Json | null
+          name: string
+          owner_id: string
+          sector?: string | null
+          stage?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          founded_year?: number | null
+          id?: string
+          is_public?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          metrics?: Json | null
+          name?: string
+          owner_id?: string
+          sector?: string | null
+          stage?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       connections: {
         Row: {
           created_at: string
@@ -943,6 +1035,7 @@ export type Database = {
           likes_count: number | null
           media_urls: string[] | null
           post_type: Database["public"]["Enums"]["post_type"]
+          shares_count: number | null
           tags: string[] | null
           updated_at: string
         }
@@ -957,6 +1050,7 @@ export type Database = {
           likes_count?: number | null
           media_urls?: string[] | null
           post_type?: Database["public"]["Enums"]["post_type"]
+          shares_count?: number | null
           tags?: string[] | null
           updated_at?: string
         }
@@ -971,6 +1065,7 @@ export type Database = {
           likes_count?: number | null
           media_urls?: string[] | null
           post_type?: Database["public"]["Enums"]["post_type"]
+          shares_count?: number | null
           tags?: string[] | null
           updated_at?: string
         }
@@ -1065,6 +1160,36 @@ export type Database = {
         }
         Relationships: []
       }
+      recommendations: {
+        Row: {
+          created_at: string
+          id: string
+          is_public: boolean | null
+          message: string | null
+          recommended_id: string
+          recommender_id: string
+          skill: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          message?: string | null
+          recommended_id: string
+          recommender_id: string
+          skill: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          message?: string | null
+          recommended_id?: string
+          recommender_id?: string
+          skill?: string
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           converted_at: string | null
@@ -1094,6 +1219,38 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      reposts: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          original_post_id: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          original_post_id: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          original_post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reposts_original_post_id_fkey"
+            columns: ["original_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_badges: {
         Row: {
@@ -1139,6 +1296,42 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      warm_intros: {
+        Row: {
+          created_at: string
+          id: string
+          introducer_id: string
+          introducer_message: string | null
+          message: string | null
+          requester_id: string
+          status: string
+          target_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          introducer_id: string
+          introducer_message?: string | null
+          message?: string | null
+          requester_id: string
+          status?: string
+          target_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          introducer_id?: string
+          introducer_message?: string | null
+          message?: string | null
+          requester_id?: string
+          status?: string
+          target_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
