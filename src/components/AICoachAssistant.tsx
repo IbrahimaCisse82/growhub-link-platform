@@ -98,10 +98,10 @@ export default function AICoachAssistant() {
           <motion.button
             initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-24 right-5 lg:bottom-7 lg:right-7 z-[200] w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+            className="fixed bottom-[76px] right-4 lg:bottom-7 lg:right-7 z-[190] w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
           >
-            <Bot className="w-6 h-6" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+            <Bot className="w-5 h-5 lg:w-6 lg:h-6" />
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 lg:w-4 lg:h-4 bg-green-500 rounded-full border-2 border-background animate-pulse" />
           </motion.button>
         )}
       </AnimatePresence>
