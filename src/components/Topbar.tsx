@@ -19,7 +19,7 @@ interface TopbarProps {
 }
 
 export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps) {
-  const { profile } = useAuth();
+  const { profile, signOut } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
   const { data: unreadNotifs = 0 } = useUnreadNotificationsCount();
