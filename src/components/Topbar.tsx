@@ -1,5 +1,13 @@
-import { Bell, Menu, Sun, Moon, HelpCircle } from "lucide-react";
+import { Bell, Menu, Sun, Moon, HelpCircle, Bookmark, Gift, User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useUnreadNotificationsCount } from "@/hooks/useUnreadCounts";
