@@ -113,7 +113,8 @@ export default function AICoachAssistant() {
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
-            className="fixed bottom-24 right-3 lg:bottom-7 lg:right-7 z-[200] w-[360px] max-w-[calc(100vw-24px)] h-[520px] max-h-[70vh] bg-card border-2 border-primary/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed inset-x-0 bottom-0 lg:inset-auto lg:bottom-7 lg:right-7 z-[200] w-full lg:w-[360px] lg:max-w-[calc(100vw-24px)] h-[85dvh] lg:h-[520px] lg:max-h-[70vh] bg-card border-t-2 lg:border-2 border-primary/20 lg:rounded-2xl shadow-2xl flex flex-col overflow-hidden lg:rounded-b-2xl rounded-t-2xl"
+          >
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border">
