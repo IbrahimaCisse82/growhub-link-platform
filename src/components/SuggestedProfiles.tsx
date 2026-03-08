@@ -1,5 +1,5 @@
 import { useMatching } from "@/hooks/useMatching";
-import { useSendConnection } from "@/hooks/useConnections";
+import { useSendConnection } from "@/hooks/useGrowHub";
 import { useNavigate } from "react-router-dom";
 import { GHCard, Tag } from "@/components/ui-custom";
 import { Skeleton } from "@/components/ui/skeleton";

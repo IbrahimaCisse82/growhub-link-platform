@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useConnections } from "@/hooks/useConnections";
+import { useConnections } from "@/hooks/useGrowHub";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchProfilesByUserIds } from "@/hooks/useProfiles";
