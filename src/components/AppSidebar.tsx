@@ -151,7 +151,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
                   )}
                 >
                   {active && <div className="absolute left-0 w-[3px] h-[22px] bg-primary rounded-r-sm" />}
-                  <item.icon className="w-[17px] h-[17px] flex-shrink-0" />
+                  <item.icon className="w-[17px] h-[17px] flex-shrink-0" aria-hidden="true" />
                   {expanded && (
                     <span className={cn("font-heading text-xs font-bold whitespace-nowrap", active ? "text-primary" : "text-foreground/70")}>
                       {item.label}
