@@ -158,6 +158,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
+    { title: "Outils", items: [
+      { path: "/pitchdeck", icon: BookOpen, label: "Mon Projet" },
       { path: "/badges", icon: Award, label: "Badges" },
     ]},
   ],
