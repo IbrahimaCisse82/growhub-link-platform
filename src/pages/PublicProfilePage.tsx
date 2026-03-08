@@ -11,6 +11,9 @@ import { toast } from "sonner";
 import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2, ThumbsUp, Share2 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { cn } from "@/lib/utils";
+import VerifiedBadge from "@/components/VerifiedBadge";
+import { CoachReviewsList } from "@/components/CoachReviews";
+import { useCollaborations } from "@/hooks/useReviews";
 
 export default function PublicProfilePage() {
   usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
