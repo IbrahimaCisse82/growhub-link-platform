@@ -68,7 +68,7 @@ export default function BadgesPage() {
         })}
 
         {(!allBadges || allBadges.length === 0) && (
-          <GHCard className="col-span-4 text-center py-12">
+          <GHCard className="col-span-full text-center py-12">
             <Award className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
             <p className="text-sm text-muted-foreground">Les badges seront bientôt disponibles !</p>
           </GHCard>

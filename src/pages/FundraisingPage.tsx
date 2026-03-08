@@ -81,7 +81,7 @@ export default function FundraisingPage() {
         </GHCard>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-3.5 mb-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
             <MetricCard icon="💰" value={`${(raised / 1000000).toFixed(1)}M€`} label="Levé" badge={`${pct}%`} badgeType="up" />
             <MetricCard icon="🎯" value={`${(target / 1000000).toFixed(1)}M€`} label="Objectif" badge={activeRound.stage ?? "—"} badgeType="neutral" />
             <MetricCard icon="👥" value={String(contacts?.length ?? 0)} label="Investisseurs" badge="Pipeline" badgeType="up" />

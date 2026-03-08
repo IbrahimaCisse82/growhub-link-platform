@@ -94,7 +94,7 @@ export default function PitchDeckPage() {
 
       {/* Templates */}
       <h3 className="font-heading text-sm font-bold mb-3">Créer un nouveau Pitch Deck</h3>
-      <div className="grid grid-cols-4 gap-3 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {templates.map((t) => (
           <GHCard key={t.id} className="cursor-pointer hover:border-primary/40 transition-all" onClick={() => createDeck(t.id)}>
             <div className="text-center">

@@ -154,7 +154,7 @@ export default function EventsPage() {
           <p className="text-xs text-muted-foreground">Aucun événement à venir.</p>
         </GHCard>
       ) : (
-        <div className="grid grid-cols-4 gap-3.5 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 mb-5">
           {filteredEvents.map((e, idx) => {
             const startDate = new Date(e.starts_at);
             const isRegistered = user && e.registrations?.some((r: any) => r.user_id === user.id);

@@ -84,7 +84,7 @@ export default function ObjectivesPage() {
 
       {showForm && (
         <GHCard className="mb-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Titre de l'objectif *" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
             <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Catégorie (ex: Growth, Product...)" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
             <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
