@@ -48,6 +48,11 @@ export default function NetworkingPage() {
         <MetricCard icon="🔍" value={String(suggestions.length)} label="Suggestions" badge="Disponibles" badgeType="neutral" />
         <MetricCard icon="🌐" value={String((profiles ?? []).length)} label="Membres" badge="Réseau" badgeType="neutral" />
       </div>
+      {/* Network Graph Visualization */}
+      <div className="mb-5">
+        <NetworkGraph />
+      </div>
+
       <div className="flex gap-2 mb-5 flex-wrap">
         {([{ key: "suggestions" as const, label: "Suggestions", icon: UserPlus },{ key: "connections" as const, label: `Connexions (${acceptedConnections.length})`, icon: Users },{ key: "pending" as const, label: `En attente (${pendingCount})`, icon: MessageSquare }]).map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={cn("flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors", activeTab === tab.key ? "bg-primary text-primary-foreground" : "bg-card border border-border text-foreground/70 hover:border-primary/35")}>

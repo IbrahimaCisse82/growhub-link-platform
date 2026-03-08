@@ -126,7 +126,76 @@ function HashtagText({ text, onTagClick }: { text: string; onTagClick: (tag: str
 
 type SortMode = "recent" | "trending" | "relevant";
 
-// ─── Main Feed Page ─────────────────────────────────────
+// ─── Rich Media Gallery with video + carousel ──────────
+function MediaGallery({ urls }: { urls: string[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const isVideo = (url: string) => /\.(mp4|webm|ogg|mov)(\?|$)/i.test(url) || url.includes("youtube") || url.includes("vimeo");
+  const isYoutube = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
+
+  const getYoutubeId = (url: string) => {
+    const match = url.match(/(?:youtu\.be\/|v=)([^&\s]+)/);
+    return match ? match[1] : null;
+  };
+
+  // Single media
+  if (urls.length === 1) {
+    const url = urls[0];
+    if (isYoutube(url)) {
+      const ytId = getYoutubeId(url);
+      return ytId ? (
+        <div className="mb-3 rounded-xl overflow-hidden aspect-video">
+          <iframe src={`https://www.youtube.com/embed/${ytId}`} className="w-full h-full" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
+        </div>
+      ) : null;
+    }
+    if (isVideo(url)) {
+      return (
+        <div className="mb-3 rounded-xl overflow-hidden">
+          <video src={url} controls className="w-full max-h-[400px] rounded-lg" preload="metadata" />
+        </div>
+      );
+    }
+    return (
+      <div className="mb-3 rounded-xl overflow-hidden">
+        <img src={url} alt="" className="w-full max-h-[400px] object-cover rounded-lg border border-border" loading="lazy" />
+      </div>
+    );
+  }
+
+  // Carousel for multiple media
+  return (
+    <div className="relative mb-3 rounded-xl overflow-hidden">
+      <div className="relative">
+        {isVideo(urls[currentIndex]) ? (
+          <video src={urls[currentIndex]} controls className="w-full h-64 object-cover rounded-lg" preload="metadata" />
+        ) : (
+          <img src={urls[currentIndex]} alt="" className="w-full h-64 object-cover rounded-lg border border-border" loading="lazy" />
+        )}
+        {/* Carousel controls */}
+        {urls.length > 1 && (
+          <>
+            {currentIndex > 0 && (
+              <button onClick={() => setCurrentIndex(i => i - 1)} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+            )}
+            {currentIndex < urls.length - 1 && (
+              <button onClick={() => setCurrentIndex(i => i + 1)} className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors">
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              {urls.map((_, i) => (
+                <button key={i} onClick={() => setCurrentIndex(i)} className={cn("w-2 h-2 rounded-full transition-colors", i === currentIndex ? "bg-white" : "bg-white/40")} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function FeedPage() {
   usePageMeta({ title: "Fil d'actualité", description: "Suivez les actualités de la communauté startup GrowHub." });
   const { user } = useAuth();

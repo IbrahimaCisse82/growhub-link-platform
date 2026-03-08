@@ -209,6 +209,12 @@ export default function EventsPage() {
                     </button>
                   )}
                 </div>
+                {/* Event Matchmaking */}
+                {isRegistered && regCount > 1 && (
+                  <div className="px-3.5 pb-2.5">
+                    <EventMatchmaking eventId={e.id} registrations={e.registrations ?? []} />
+                  </div>
+                )}
               </div>
             );
           })}
