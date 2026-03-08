@@ -8,7 +8,7 @@ const corsHeaders = {
 const demoUsers = [
   {
     email: "sophie.martin@demo.com",
-    password: "password123",
+    password: "Demo2024!",
     full_name: "Sophie Martin",
     profile: {
       display_name: "Sophie Martin",
@@ -26,13 +26,14 @@ const demoUsers = [
     role: "startup",
   },
   {
-    email: "marc.dubois@demo.com",
-    password: "password123",
+    email: "marc.lefevre@demo.com",
+    password: "Demo2024!",
+    full_name: "Marc Lefevre",
     full_name: "Marc Dubois",
     profile: {
-      display_name: "Marc Dubois",
+      display_name: "Marc Lefevre",
       bio: "Serial entrepreneur, 3 exits. Mentor certifié avec 15 ans d'expérience en scaling de startups B2B SaaS.",
-      company_name: "Dubois Consulting",
+      company_name: "Lefevre Consulting",
       company_stage: "Établi",
       sector: "Consulting",
       city: "Lyon",
@@ -45,11 +46,12 @@ const demoUsers = [
     role: "mentor",
   },
   {
-    email: "claire.bernard@demo.com",
-    password: "password123",
+    email: "laure.bernard@demo.com",
+    password: "Demo2024!",
+    full_name: "Laure Bernard",
     full_name: "Claire Bernard",
     profile: {
-      display_name: "Claire Bernard",
+      display_name: "Laure Bernard",
       bio: "Partner chez InnoVentures Capital. Focus early-stage DeepTech et HealthTech. €50M sous gestion.",
       company_name: "InnoVentures Capital",
       company_stage: "VC Fund",
@@ -64,11 +66,11 @@ const demoUsers = [
     role: "investor",
   },
   {
-    email: "thomas.petit@demo.com",
-    password: "password123",
+    email: "thomas.moreau@demo.com",
+    password: "Demo2024!",
     full_name: "Thomas Petit",
     profile: {
-      display_name: "Thomas Petit",
+      display_name: "Thomas Moreau",
       bio: "Expert Growth & Marketing Digital. Coach certifié spécialisé en go-to-market et acquisition clients.",
       company_name: "Growth Lab",
       company_stage: "Freelance",
@@ -83,11 +85,12 @@ const demoUsers = [
     role: "expert",
   },
   {
-    email: "laura.chen@demo.com",
-    password: "password123",
+    email: "julia.chen@demo.com",
+    password: "Demo2024!",
+    full_name: "Julia Chen",
     full_name: "Laura Chen",
     profile: {
-      display_name: "Laura Chen",
+      display_name: "Julia Chen",
       bio: "CTO & Co-fondatrice d'AIHealth. Développe des solutions IA pour le diagnostic médical.",
       company_name: "AIHealth",
       company_stage: "Seed",
@@ -169,7 +172,7 @@ Deno.serve(async (req) => {
       }
 
       // Make Marc and Thomas coaches
-      if (demo.email === "marc.dubois@demo.com" || demo.email === "thomas.petit@demo.com") {
+      if (demo.email === "marc.lefevre@demo.com" || demo.email === "thomas.moreau@demo.com") {
         const { data: existingCoach } = await supabaseAdmin
           .from("coaches")
           .select("id")
@@ -179,13 +182,13 @@ Deno.serve(async (req) => {
         if (!existingCoach) {
           await supabaseAdmin.from("coaches").insert({
             user_id: userId,
-            specialties: demo.email === "marc.dubois@demo.com"
+            specialties: demo.email === "marc.lefevre@demo.com"
               ? ["Scaling", "Fundraising", "B2B Strategy"]
               : ["Growth Marketing", "Go-to-Market", "SEO/SEA"],
-            hourly_rate: demo.email === "marc.dubois@demo.com" ? 120 : 80,
-            rating: demo.email === "marc.dubois@demo.com" ? 4.8 : 4.6,
-            total_sessions: demo.email === "marc.dubois@demo.com" ? 47 : 32,
-            total_reviews: demo.email === "marc.dubois@demo.com" ? 38 : 25,
+            hourly_rate: demo.email === "marc.lefevre@demo.com" ? 120 : 80,
+            rating: demo.email === "marc.lefevre@demo.com" ? 4.8 : 4.6,
+            total_sessions: demo.email === "marc.lefevre@demo.com" ? 47 : 32,
+            total_reviews: demo.email === "marc.lefevre@demo.com" ? 38 : 25,
             is_active: true,
           });
         }
