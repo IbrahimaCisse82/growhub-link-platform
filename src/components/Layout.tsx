@@ -26,6 +26,7 @@ const routeToHelpKey: Record<string, string> = {
 export default function Layout() {
   const [onboardingDone, setOnboardingDone] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const { user, profile, refetchProfile } = useAuth();
   const location = useLocation();
   const { showTour, completeTour } = useOnboardingTour();
@@ -77,7 +78,7 @@ export default function Layout() {
       )}
       <AppSidebar activeRole={activeRole} mobileOpen={mobileMenuOpen} onMobileClose={() => setMobileMenuOpen(false)} />
       <div className="lg:ml-[68px] flex-1 flex flex-col min-h-screen">
-        <Topbar onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
+        <Topbar onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} onHelpToggle={helpConfig ? () => setHelpOpen(!helpOpen) : undefined} />
         <main id="main-content" className="p-4 md:p-7 flex-1 pb-20 lg:pb-7" role="main">
           <Outlet />
         </main>
@@ -87,7 +88,7 @@ export default function Layout() {
       <MobileBottomNav onMorePress={() => setMobileMenuOpen(true)} />
 
       {/* Contextual help */}
-      {helpConfig && <ContextualHelp title={helpConfig.title} items={helpConfig.items} />}
+      {helpConfig && <ContextualHelp title={helpConfig.title} items={helpConfig.items} open={helpOpen} onOpenChange={setHelpOpen} />}
 
       {/* AI Coach Assistant */}
       <AICoachAssistant />
