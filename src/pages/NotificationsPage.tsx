@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { GHCard, Tag } from "@/components/ui-custom";
-import { useNotifications } from "@/hooks/useGrowHub";
+import { useNotifications } from "@/hooks/useNotifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,7 +34,7 @@ export default function NotificationsPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-9 mb-5 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex items-start justify-between">
           <div>
@@ -42,7 +42,7 @@ export default function NotificationsPage() {
               <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
               Notifications
             </div>
-            <h1 className="font-heading text-[32px] font-extrabold leading-tight mb-2.5">
+            <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
               Vos <span className="text-primary">notifications</span>
             </h1>
             <p className="text-foreground/60 text-sm">{unreadCount} non lue{unreadCount > 1 ? "s" : ""}</p>
