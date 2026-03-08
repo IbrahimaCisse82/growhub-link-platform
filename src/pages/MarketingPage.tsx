@@ -88,7 +88,7 @@ export default function MarketingPage() {
   // Update lead status
   const updateLeadStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("leads").update({ status }).eq("id", id);
+      const { error } = await (supabase as any).from("leads").update({ status }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
