@@ -148,6 +148,14 @@ export default function SettingsPage() {
           </div>
         </GHCard>
 
+        {/* Push Notifications */}
+        <GHCard title="Notifications push">
+          <p className="text-xs text-muted-foreground mb-3">
+            Recevez des alertes en temps réel même quand l'app est en arrière-plan.
+          </p>
+          <PushNotificationToggle />
+        </GHCard>
+
         {/* Account info */}
         <GHCard title="Compte">
           <div className="space-y-3">
