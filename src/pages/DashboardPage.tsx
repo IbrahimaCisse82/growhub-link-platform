@@ -30,9 +30,12 @@ export default function DashboardPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 left-32 w-56 h-56 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
-            Startup Dashboard — Growth Command Center
+          <div className="flex items-center gap-2 mb-3.5 flex-wrap">
+            <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider">
+              <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
+              Growth Command Center
+            </div>
+            <StreakBadge />
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
             Bonjour {displayName},<br /><span className="text-primary">accélérez votre croissance</span> 🚀
