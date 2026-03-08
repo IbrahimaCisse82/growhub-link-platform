@@ -24,6 +24,7 @@ export default function PublicProfilePage() {
   const { data: connections } = useConnections();
   const { data: endorsements } = useEndorsements(userId);
   const toggleEndorsement = useToggleEndorsement();
+  const { data: collaborations } = useCollaborations(userId ?? null);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["public-profile", userId],
