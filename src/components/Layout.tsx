@@ -89,6 +89,9 @@ export default function Layout() {
 
       {/* AI Coach Assistant */}
       <AICoachAssistant />
+
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
     </div>
   );
 }
