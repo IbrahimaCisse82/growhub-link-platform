@@ -26,6 +26,7 @@ import BadgesPage from "./pages/BadgesPage";
 import SettingsPage from "./pages/SettingsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import GenericPage from "./pages/GenericPage";
+import MarketingPage from "./pages/MarketingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
