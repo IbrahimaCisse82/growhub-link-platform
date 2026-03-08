@@ -191,20 +191,30 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Roles */}
+      {/* Roles - Enhanced with features */}
       <section id="roles" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="font-heading text-3xl md:text-4xl font-extrabold mb-4">Une plateforme, <span className="text-primary">10 profils</span></h2>
-            <p className="text-muted-foreground text-lg">Chaque rôle bénéficie d'une expérience adaptée à ses besoins.</p>
+            <p className="text-muted-foreground text-lg">Chaque rôle bénéficie d'une expérience et d'outils adaptés.</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {roles.map((r, i) => (
               <motion.div key={r.title} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="bg-card border border-border rounded-xl p-5 text-center hover:border-primary/30 hover:shadow-md transition-all">
-                <div className="text-2xl mb-2">{r.emoji}</div>
-                <div className="font-heading text-base font-bold mb-1">{r.title}</div>
-                <div className="text-xs text-muted-foreground">{r.desc}</div>
+                className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 hover:shadow-lg transition-all group">
+                <div className="text-3xl mb-3">{r.emoji}</div>
+                <div className="font-heading text-lg font-bold mb-1">{r.title}</div>
+                <div className="text-sm text-muted-foreground mb-4">{r.desc}</div>
+                <ul className="space-y-1.5 mb-4">
+                  {r.features.map(f => (
+                    <li key={f} className="flex items-center gap-2 text-xs text-foreground/70">
+                      <CheckCircle2 className="w-3 h-3 text-primary flex-shrink-0" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => navigate("/auth")} className="w-full bg-primary/10 text-primary rounded-xl py-2.5 text-xs font-bold hover:bg-primary/20 transition-colors">
+                  {r.cta} →
+                </button>
               </motion.div>
             ))}
           </div>
