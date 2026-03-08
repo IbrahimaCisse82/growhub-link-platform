@@ -105,7 +105,7 @@ export default function DashboardPage() {
       </GHCard>
 
       {/* Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-[18px]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3.5 mb-4 md:mb-[18px]">
         <MetricCard icon="👥" value={String(stats?.connections ?? 0)} label="Connexions réseau" badge={`${stats?.pendingConnections ?? 0} en attente`} badgeType="up" />
         <MetricCard icon="📅" value={String(stats?.completedSessions ?? 0)} label="Sessions coaching" badge={`★ ${stats?.avgRating ?? "—"}`} badgeType="up" />
         <MetricCard icon="🎯" value={`${stats?.objectivePct ?? 0}%`} label="Objectifs atteints" badge={`${stats?.completedObjectives ?? 0}/${stats?.totalObjectives ?? 0}`} badgeType="up" />
