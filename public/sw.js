@@ -65,8 +65,8 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // Skip API calls - network only
-  if (url.pathname.includes('/rest/') || url.pathname.includes('/auth/') || url.pathname.includes('/functions/') || url.hostname.includes('supabase')) {
+  // Skip API calls and OAuth - network only
+  if (url.pathname.includes('/rest/') || url.pathname.includes('/auth/') || url.pathname.includes('/functions/') || url.hostname.includes('supabase') || url.pathname.startsWith('/~oauth')) {
     return;
   }
 
