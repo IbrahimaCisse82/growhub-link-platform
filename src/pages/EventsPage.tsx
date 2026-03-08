@@ -125,7 +125,7 @@ export default function EventsPage() {
 
       {showCreate && (
         <GHCard className="mb-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Titre *" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
             <select value={form.event_type} onChange={(e) => setForm({ ...form, event_type: e.target.value })} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm">
               {Object.entries(typeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
