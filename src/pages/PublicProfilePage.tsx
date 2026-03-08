@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import VerifiedBadge from "@/components/VerifiedBadge";
 import { CoachReviewsList } from "@/components/CoachReviews";
 import { useCollaborations } from "@/hooks/useReviews";
+import { RecommendationWall, WriteRecommendation } from "@/components/RecommendationWall";
 
 export default function PublicProfilePage() {
   usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
