@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useDashboardStats, useObjectives, useCoachingSessions, usePosts } from "@/hooks/useGrowHub";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
