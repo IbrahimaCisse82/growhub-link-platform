@@ -94,7 +94,7 @@ export default function EventsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3.5 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
         <MetricCard icon="📅" value={String(events?.length ?? 0)} label="Événements à venir" badge="Total" badgeType="neutral" />
         <MetricCard icon="✅" value={String(myRegistrations.length)} label="Mes inscriptions" badge="Confirmées" badgeType="up" />
         <MetricCard icon="🌐" value={String(events?.filter(e => e.is_online).length ?? 0)} label="En ligne" badge="Accessibles" badgeType="neutral" />
