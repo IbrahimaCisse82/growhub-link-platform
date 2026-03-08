@@ -85,6 +85,9 @@ export default function Layout() {
 
       {/* Contextual help */}
       {helpConfig && <ContextualHelp title={helpConfig.title} items={helpConfig.items} />}
+
+      {/* AI Coach Assistant */}
+      <AICoachAssistant />
     </div>
   );
 }
