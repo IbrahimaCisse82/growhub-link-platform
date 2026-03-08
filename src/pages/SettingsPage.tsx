@@ -5,6 +5,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Sun, Moon, Monitor, Save, Trash2, Loader2, KeyRound, Shield, Bell } from "lucide-react";
+import PushNotificationToggle from "@/components/PushNotificationToggle";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { usePageMeta } from "@/hooks/usePageMeta";
@@ -145,6 +146,14 @@ export default function SettingsPage() {
               </button>
             ))}
           </div>
+        </GHCard>
+
+        {/* Push Notifications */}
+        <GHCard title="Notifications push">
+          <p className="text-xs text-muted-foreground mb-3">
+            Recevez des alertes en temps réel même quand l'app est en arrière-plan.
+          </p>
+          <PushNotificationToggle />
         </GHCard>
 
         {/* Account info */}

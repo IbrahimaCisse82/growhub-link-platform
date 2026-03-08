@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeNotifications, useRealtimeMessages } from "@/hooks/useRealtimeNotifications";
 import AICoachAssistant from "@/components/AICoachAssistant";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import { useNotificationPush } from "@/components/PushNotificationToggle";
 
 const routeToHelpKey: Record<string, string> = {
   "/": "dashboard",
@@ -32,6 +33,7 @@ export default function Layout() {
   // Activate realtime listeners
   useRealtimeNotifications();
   useRealtimeMessages();
+  useNotificationPush();
 
   const { data: userRole } = useQuery({
     queryKey: ["user-role", user?.id],

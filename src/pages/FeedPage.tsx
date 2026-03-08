@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import SuggestedProfiles from "@/components/SuggestedProfiles";
+import { TrendingTags } from "@/components/SmartTags";
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
@@ -370,6 +371,11 @@ export default function FeedPage() {
             Partagez, réagissez, commentez — chaque action est visible par tout votre réseau.
           </p>
         </div>
+      </div>
+
+      {/* Trending Tags */}
+      <div className="mb-4">
+        <TrendingTags onTagClick={handleTagClick} />
       </div>
 
       {/* Suggested Profiles */}

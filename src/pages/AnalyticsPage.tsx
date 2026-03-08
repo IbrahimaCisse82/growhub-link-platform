@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import PredictiveAnalytics from "@/components/PredictiveAnalytics";
 import DataExportButton from "@/components/DataExportButton";
+import RoleAnalyticsDashboard from "@/components/RoleAnalyticsDashboard";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardStats } from "@/hooks/useDashboard";
@@ -24,7 +25,7 @@ import {
 import {
   TrendingUp, Users, Target, Calendar, MessageSquare, Award,
   Shield, Eye, Zap, CheckCircle2, XCircle, ArrowUpRight, ArrowDownRight,
-  UserCheck, BookOpen, Star
+  UserCheck, BookOpen, Star, BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import NetworkGraph from "@/components/NetworkGraph";
@@ -338,6 +339,14 @@ export default function AnalyticsPage() {
       {/* Shareable Achievement Cards */}
       <div className="mt-5">
         <ShareableAchievementCards />
+      </div>
+
+      {/* Role-based Analytics */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-primary" /> Analytics par rôle
+        </h2>
+        <RoleAnalyticsDashboard />
       </div>
 
       {/* Predictive Analytics */}

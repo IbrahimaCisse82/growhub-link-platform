@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import {
   FolderKanban, Plus, Users, MessageSquare, CheckCircle2, Circle, Clock,
-  Send, ChevronLeft, Trash2, UserPlus, ListTodo, ArrowRight
+  Send, ChevronLeft, Trash2, UserPlus, ListTodo, ArrowRight, Paperclip, FileText, Download
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -243,13 +243,17 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
   const [newMsg, setNewMsg] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Realtime messages
+  // Realtime messages & tasks
   useEffect(() => {
     const channel = supabase
       .channel(`space-${space.id}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "space_messages", filter: `space_id=eq.${space.id}` },
         () => queryClient.invalidateQueries({ queryKey: ["space-messages", space.id] })
-      ).subscribe();
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "space_tasks", filter: `space_id=eq.${space.id}` },
+        () => queryClient.invalidateQueries({ queryKey: ["space-tasks", space.id] })
+      )
+      .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [space.id]);
 
@@ -341,6 +345,19 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
             <input value={newTask} onChange={e => setNewTask(e.target.value)} placeholder="Nouvelle tâche..."
               onKeyDown={e => e.key === "Enter" && newTask.trim() && addTask.mutate()}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
+            <select
+              onChange={e => {
+                if (!newTask.trim()) return;
+                // Quick assign via select
+              }}
+              className="bg-secondary/50 border border-border rounded-xl px-2 text-[10px] hidden sm:block"
+              title="Assigner à"
+            >
+              <option value="">Assigner</option>
+              {members?.map(m => (
+                <option key={m.user_id} value={m.user_id}>{m.profile?.display_name ?? "Membre"}</option>
+              ))}
+            </select>
             <button onClick={() => newTask.trim() && addTask.mutate()}
               className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold hover:bg-primary-hover transition-all">
               <Plus className="w-4 h-4" />
@@ -412,11 +429,39 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
+          {/* Input with file sharing */}
           <div className="flex gap-2">
             <input value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder="Message..."
               onKeyDown={e => e.key === "Enter" && newMsg.trim() && sendMsg.mutate()}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
+            <button
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = ".pdf,.doc,.docx,.xlsx,.pptx,.png,.jpg,.jpeg,.gif";
+                input.onchange = async (e: any) => {
+                  const file = e.target.files?.[0];
+                  if (!file || !user) return;
+                  const ext = file.name.split(".").pop();
+                  const path = `spaces/${space.id}/${Date.now()}.${ext}`;
+                  const { error } = await supabase.storage.from("post-media").upload(path, file);
+                  if (error) { toast.error("Erreur d'upload"); return; }
+                  const { data: urlData } = supabase.storage.from("post-media").getPublicUrl(path);
+                  await supabase.from("space_messages").insert({
+                    space_id: space.id,
+                    user_id: user.id,
+                    content: `📎 [${file.name}](${urlData.publicUrl})`
+                  });
+                  queryClient.invalidateQueries({ queryKey: ["space-messages", space.id] });
+                  toast.success("Fichier partagé !");
+                };
+                input.click();
+              }}
+              className="bg-secondary border border-border rounded-xl px-3 py-2.5 hover:bg-secondary/80 transition-all"
+              title="Partager un fichier"
+            >
+              <Paperclip className="w-4 h-4 text-muted-foreground" />
+            </button>
             <button onClick={() => newMsg.trim() && sendMsg.mutate()}
               className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 hover:bg-primary-hover transition-all">
               <Send className="w-4 h-4" />
