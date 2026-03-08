@@ -90,7 +90,7 @@ const demoUsers = [
     full_name: "Julia Chen",
     full_name: "Laura Chen",
     profile: {
-      display_name: "Laura Chen",
+      display_name: "Julia Chen",
       bio: "CTO & Co-fondatrice d'AIHealth. Développe des solutions IA pour le diagnostic médical.",
       company_name: "AIHealth",
       company_stage: "Seed",
