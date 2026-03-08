@@ -1,4 +1,4 @@
-import { Bell, MessageSquare, Menu, Sun, Moon } from "lucide-react";
+import { Bell, MessageSquare, Menu, Sun, Moon, HelpCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
