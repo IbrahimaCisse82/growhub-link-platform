@@ -866,7 +866,17 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "startup" | "mentor" | "investor" | "expert" | "admin"
+      app_role:
+        | "startup"
+        | "mentor"
+        | "investor"
+        | "expert"
+        | "admin"
+        | "freelance"
+        | "incubateur"
+        | "etudiant"
+        | "aspirationnel"
+        | "professionnel"
       coaching_status: "scheduled" | "in_progress" | "completed" | "cancelled"
       connection_status: "pending" | "accepted" | "rejected" | "blocked"
       event_type: "webinar" | "workshop" | "meetup" | "conference" | "demo_day"
@@ -1008,7 +1018,18 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["startup", "mentor", "investor", "expert", "admin"],
+      app_role: [
+        "startup",
+        "mentor",
+        "investor",
+        "expert",
+        "admin",
+        "freelance",
+        "incubateur",
+        "etudiant",
+        "aspirationnel",
+        "professionnel",
+      ],
       coaching_status: ["scheduled", "in_progress", "completed", "cancelled"],
       connection_status: ["pending", "accepted", "rejected", "blocked"],
       event_type: ["webinar", "workshop", "meetup", "conference", "demo_day"],
