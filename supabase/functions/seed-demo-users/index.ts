@@ -182,13 +182,13 @@ Deno.serve(async (req) => {
         if (!existingCoach) {
           await supabaseAdmin.from("coaches").insert({
             user_id: userId,
-            specialties: demo.email === "marc.dubois@demo.com"
+            specialties: demo.email === "marc.lefevre@demo.com"
               ? ["Scaling", "Fundraising", "B2B Strategy"]
               : ["Growth Marketing", "Go-to-Market", "SEO/SEA"],
-            hourly_rate: demo.email === "marc.dubois@demo.com" ? 120 : 80,
-            rating: demo.email === "marc.dubois@demo.com" ? 4.8 : 4.6,
-            total_sessions: demo.email === "marc.dubois@demo.com" ? 47 : 32,
-            total_reviews: demo.email === "marc.dubois@demo.com" ? 38 : 25,
+            hourly_rate: demo.email === "marc.lefevre@demo.com" ? 120 : 80,
+            rating: demo.email === "marc.lefevre@demo.com" ? 4.8 : 4.6,
+            total_sessions: demo.email === "marc.lefevre@demo.com" ? 47 : 32,
+            total_reviews: demo.email === "marc.lefevre@demo.com" ? 38 : 25,
             is_active: true,
           });
         }
