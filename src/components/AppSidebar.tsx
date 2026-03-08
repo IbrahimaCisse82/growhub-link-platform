@@ -43,8 +43,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/roi", icon: TrendingUp, label: "ROI" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
-      { path: "/moderation", icon: Shield, label: "Modération" },
-      { path: "/admin", icon: Shield, label: "Admin" },
     ]},
   ],
   mentor: [
