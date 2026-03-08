@@ -10,7 +10,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 export default function CompanyPage() {
   usePageMeta({ title: "Page Entreprise", description: "Gérez la vitrine de votre startup." });
   const { user } = useAuth();
-  const { data: company, isLoading } = useCompanyPage(user?.id);
+  const { data: companyRaw, isLoading } = useCompanyPage(user?.id);
+  const company = companyRaw as any;
   const { data: members } = useCompanyMembers(company?.id);
   const createPage = useCreateCompanyPage();
   const updatePage = useUpdateCompanyPage();
