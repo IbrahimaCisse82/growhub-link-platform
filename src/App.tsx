@@ -117,6 +117,7 @@ const App = () => (
                   <Route path="moderation" element={<ModerationPage />} />
                   <Route path="marketplace" element={<MarketplacePage />} />
                   <Route path="templates" element={<TemplatesPage />} />
+                  <Route path="admin" element={<AdminDashboardPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
