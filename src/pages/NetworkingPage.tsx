@@ -15,7 +15,6 @@ const gradients = ["from-[#200a30] to-[#A064FF]","from-[#103050] to-[#4096FF]","
 export default function NetworkingPage() {
   usePageMeta({ title: "Networking", description: "Développez votre réseau professionnel et trouvez des partenaires." });
   const navigate = useNavigate();
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { data: profiles, isLoading: profilesLoading } = useProfiles();
   const { data: connections } = useConnections();
