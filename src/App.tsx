@@ -42,6 +42,7 @@ import ModerationPage from "./pages/ModerationPage";
 import MarketplacePage from "./pages/MarketplacePage";
 import TemplatesPage from "./pages/TemplatesPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import BookmarksPage from "./pages/BookmarksPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -118,6 +119,7 @@ const App = () => (
                   <Route path="marketplace" element={<MarketplacePage />} />
                   <Route path="templates" element={<TemplatesPage />} />
                   <Route path="admin" element={<AdminDashboardPage />} />
+                  <Route path="bookmarks" element={<BookmarksPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

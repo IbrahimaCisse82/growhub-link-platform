@@ -2,7 +2,7 @@ import {
   Zap, PenLine, DollarSign, Home, Users, Calendar,
   BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
   BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt, FolderKanban,
-  Trophy, FileText, Shield, TrendingUp, ShoppingBag, MailPlus
+  Trophy, FileText, Shield, TrendingUp, ShoppingBag, MailPlus, Bookmark
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -324,6 +324,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
       {/* Bottom */}
       <div className="flex flex-col items-center gap-2 mt-auto pt-2">
         {[
+          { path: "/bookmarks", icon: Bookmark, label: "Favoris" },
           { path: "/referral", icon: Gift, label: "Parrainage" },
           { path: "/notifications", icon: Bell, label: "Notifications", hasIndicator: true },
           { path: "/profile", icon: User, label: "Mon Profil" },
