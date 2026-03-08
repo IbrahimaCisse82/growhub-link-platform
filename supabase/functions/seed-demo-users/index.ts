@@ -26,8 +26,9 @@ const demoUsers = [
     role: "startup",
   },
   {
-    email: "marc.dubois@demo.com",
-    password: "password123",
+    email: "marc.lefevre@demo.com",
+    password: "Demo2024!",
+    full_name: "Marc Lefevre",
     full_name: "Marc Dubois",
     profile: {
       display_name: "Marc Dubois",
