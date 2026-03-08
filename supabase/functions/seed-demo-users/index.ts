@@ -33,7 +33,7 @@ const demoUsers = [
     profile: {
       display_name: "Marc Lefevre",
       bio: "Serial entrepreneur, 3 exits. Mentor certifié avec 15 ans d'expérience en scaling de startups B2B SaaS.",
-      company_name: "Dubois Consulting",
+      company_name: "Lefevre Consulting",
       company_stage: "Établi",
       sector: "Consulting",
       city: "Lyon",
