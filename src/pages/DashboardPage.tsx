@@ -87,7 +87,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Objectives + Coaching */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] mb-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px] mb-[18px]">
+        <div className="md:col-span-2 grid grid-cols-1 gap-[18px]">
         <GHCard title="Objectifs en cours" headerRight={<Tag variant="green">En cours</Tag>}>
           {!objectives || objectives.length === 0 ? (
             <p className="text-xs text-muted-foreground py-4 text-center">Aucun objectif défini. Créez-en depuis la page Progression.</p>
