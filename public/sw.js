@@ -1,8 +1,11 @@
-const CACHE_NAME = 'growhub-v2';
+const CACHE_NAME = 'growhub-v3';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/favicon.ico',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
 ];
 
 const OFFLINE_PAGE = `
@@ -62,8 +65,8 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // Skip API calls - network only
-  if (url.pathname.includes('/rest/') || url.pathname.includes('/auth/') || url.pathname.includes('/functions/') || url.hostname.includes('supabase')) {
+  // Skip API calls and OAuth - network only
+  if (url.pathname.includes('/rest/') || url.pathname.includes('/auth/') || url.pathname.includes('/functions/') || url.hostname.includes('supabase') || url.pathname.startsWith('/~oauth')) {
     return;
   }
 
