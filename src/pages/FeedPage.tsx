@@ -300,6 +300,9 @@ export default function FeedPage() {
         </div>
       </div>
 
+      {/* Suggested Profiles */}
+      <SuggestedProfiles />
+
       {/* New post with image upload */}
       <GHCard className="mb-5">
         <div className="flex gap-3">
