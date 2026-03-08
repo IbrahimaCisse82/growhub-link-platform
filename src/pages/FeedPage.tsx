@@ -172,7 +172,34 @@ export default function FeedPage() {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const allPosts = data?.pages.flatMap(p => p.posts) ?? [];
+  const allPostsRaw = data?.pages.flatMap(p => p.posts) ?? [];
+
+  // Sort posts
+  const allPosts = [...allPostsRaw].sort((a, b) => {
+    if (sortMode === "trending") {
+      const scoreA = (a.likes_count ?? 0) * 3 + (a.comments_count ?? 0) * 5 + (a.shares_count ?? 0) * 8;
+      const scoreB = (b.likes_count ?? 0) * 3 + (b.comments_count ?? 0) * 5 + (b.shares_count ?? 0) * 8;
+      return scoreB - scoreA;
+    }
+    // "recent" is default sort from API
+    return 0;
+  }).filter(p => {
+    if (!hashtagFilter) return true;
+    return p.tags?.includes(hashtagFilter) || p.content.toLowerCase().includes(`#${hashtagFilter.toLowerCase()}`);
+  });
+
+  const handleTagClick = (tag: string) => {
+    setHashtagFilter(hashtagFilter === tag ? null : tag);
+  };
+
+  const handleRepost = (postId: string) => {
+    if (userRepostIds?.includes(postId)) {
+      undoRepost.mutate(postId, { onSuccess: () => toast.success("Repost annulé") });
+    } else {
+      repost.mutate({ postId }, { onSuccess: () => toast.success("Reposté !") });
+    }
+  };
+  const isReposted = (postId: string) => userRepostIds?.includes(postId) ?? false;
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
