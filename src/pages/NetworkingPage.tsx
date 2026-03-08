@@ -50,6 +50,9 @@ export default function NetworkingPage() {
         <MetricCard icon="🔍" value={String(suggestions.length)} label="Suggestions" badge="Disponibles" badgeType="neutral" />
         <MetricCard icon="🌐" value={String((profiles ?? []).length)} label="Membres" badge="Réseau" badgeType="neutral" />
       </div>
+      {/* Daily Match Feed */}
+      <DailyMatchFeed />
+
       {/* Intent Matching */}
       <IntentEditor />
       <IntentMatchResults />

@@ -324,6 +324,19 @@ export default function AnalyticsPage() {
         </h2>
         <NetworkAnalytics />
       </div>
+
+      {/* Networking ROI Tracker */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
+          <Target className="w-5 h-5 text-ghblue" /> Networking ROI Tracker
+        </h2>
+        <NetworkingROI />
+      </div>
+
+      {/* Shareable Achievement Cards */}
+      <div className="mt-5">
+        <ShareableAchievementCards />
+      </div>
     </motion.div>
   );
 }
