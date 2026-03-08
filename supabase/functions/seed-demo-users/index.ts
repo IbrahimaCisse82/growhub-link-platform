@@ -85,8 +85,9 @@ const demoUsers = [
     role: "expert",
   },
   {
-    email: "laura.chen@demo.com",
-    password: "password123",
+    email: "julia.chen@demo.com",
+    password: "Demo2024!",
+    full_name: "Julia Chen",
     full_name: "Laura Chen",
     profile: {
       display_name: "Laura Chen",
