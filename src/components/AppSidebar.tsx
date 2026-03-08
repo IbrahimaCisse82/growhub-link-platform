@@ -1,7 +1,7 @@
 import { 
   Zap, PenLine, DollarSign, Home, Users, Calendar,
   BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
-  BookOpen, Rss, Award, Target, User, Gift, CircleDot
+  BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
