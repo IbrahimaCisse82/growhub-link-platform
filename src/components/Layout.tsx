@@ -33,6 +33,7 @@ export default function Layout() {
   // Activate realtime listeners
   useRealtimeNotifications();
   useRealtimeMessages();
+  useNotificationPush();
 
   const { data: userRole } = useQuery({
     queryKey: ["user-role", user?.id],
