@@ -44,7 +44,7 @@ export default function ChallengesPage() {
   const { data: leaderboard = [] } = useQuery({
     queryKey: ["challenge-leaderboard"],
     queryFn: async () => {
-      const { data } = await supabase.from("challenge_participants").select("*, profiles:user_id(display_name, avatar_url)").eq("completed", true).order("completed_at", { ascending: true }).limit(20);
+      const { data } = await (supabase as any).from("challenge_participants").select("*, profiles:user_id(display_name, avatar_url)").eq("completed", true).order("completed_at", { ascending: true }).limit(20);
       return data ?? [];
     },
   });
