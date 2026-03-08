@@ -106,9 +106,9 @@ function CommentThread({ comments, postId, user }: { comments: any[]; postId: st
   );
 }
 
-// ─── Hashtag renderer ───────────────────────────────────
+// ─── Hashtag + Mention renderer ─────────────────────────
 function HashtagText({ text, onTagClick }: { text: string; onTagClick: (tag: string) => void }) {
-  const parts = text.split(/(#\w+)/g);
+  const parts = text.split(/(#\w+|@\w[\w\s]*?(?=\s@|\s#|$|[.!?,;]))/g);
   return (
     <span>
       {parts.map((part, i) =>
@@ -116,6 +116,8 @@ function HashtagText({ text, onTagClick }: { text: string; onTagClick: (tag: str
           <button key={i} onClick={() => onTagClick(part.slice(1))} className="text-primary font-medium hover:underline">
             {part}
           </button>
+        ) : part.startsWith("@") ? (
+          <span key={i} className="text-primary font-semibold">{part}</span>
         ) : (
           <span key={i}>{part}</span>
         )
