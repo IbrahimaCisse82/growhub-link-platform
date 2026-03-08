@@ -7,8 +7,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Calendar, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function CoachingPage() {
+  usePageMeta({ title: "Coaching", description: "Trouvez un coach et réservez des sessions pour accélérer votre startup." });
   const { data: coaches, isLoading: coachesLoading } = useCoaches();
   const { data: sessions } = useCoachingSessions();
   const bookSession = useBookSession();

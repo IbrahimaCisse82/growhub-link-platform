@@ -8,6 +8,7 @@ import { GHCard, Tag, MetricCard } from "@/components/ui-custom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2 } from "lucide-react";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function PublicProfilePage() {
   const { userId } = useParams<{ userId: string }>();

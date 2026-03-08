@@ -5,8 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Save, User, Briefcase, MapPin, Globe, Linkedin, Camera, Loader2 } from "lucide-react";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function ProfilePage() {
+  usePageMeta({ title: "Mon Profil", description: "Gérez votre profil startup et vos informations publiques." });
   const { user, profile, refetchProfile } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);

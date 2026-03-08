@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bell, Check, Users, Calendar, MessageSquare, Award, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const typeConfig: Record<string, { icon: any; color: string; label: string }> = {
   connection_request: { icon: Users, color: "blue", label: "Connexion" },

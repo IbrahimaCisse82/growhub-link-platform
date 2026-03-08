@@ -3,6 +3,7 @@ import { GHCard, MetricCard, Tag } from "@/components/ui-custom";
 import { useUserBadges, useAllBadges } from "@/hooks/useGrowHub";
 import { Award } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const categoryColors: Record<string, string> = {
   networking: "from-[#103050] to-[#4096FF]",

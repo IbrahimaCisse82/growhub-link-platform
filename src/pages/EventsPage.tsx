@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEvents, useRegisterEvent, useUnregisterEvent } from "@/hooks/useGrowHub";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Plus, MapPin, Globe, Users, Calendar } from "lucide-react";

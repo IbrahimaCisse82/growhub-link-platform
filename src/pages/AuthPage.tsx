@@ -6,8 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Rocket, ArrowRight, Loader2 } from "lucide-react";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function AuthPage() {
+  usePageMeta({ title: "Connexion", description: "Connectez-vous ou créez votre compte GrowHub." });
   const [isLogin, setIsLogin] = useState(true);
   const [isForgot, setIsForgot] = useState(false);
   const [loading, setLoading] = useState(false);

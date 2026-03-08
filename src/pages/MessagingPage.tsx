@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Send, Search, MessageSquarePlus, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 interface Conversation {
   partnerId: string;
