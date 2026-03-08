@@ -43,8 +43,8 @@ export default function DashboardPage() {
             </div>
             <StreakBadge />
           </div>
-          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Bonjour {displayName},<br /><span className="text-primary">accélérez votre croissance</span> 🚀
+          <h1 className="font-heading text-xl md:text-[32px] font-extrabold leading-tight mb-2">
+            Bonjour {displayName},<br className="hidden md:block" /><span className="text-primary"> accélérez votre croissance</span> 🚀
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px] mb-6">
             {nextSession
