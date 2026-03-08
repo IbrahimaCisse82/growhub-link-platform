@@ -170,6 +170,9 @@ export default function ProfilePage() {
         </GHCard>
       </div>
 
+      {/* LinkedIn Import */}
+      <LinkedInImport />
+
       <div className="flex justify-end mt-5">
         <button onClick={handleSave} disabled={saving}
           className="bg-primary text-primary-foreground rounded-xl px-6 py-3 font-heading text-sm font-bold flex items-center gap-2 disabled:opacity-50 hover:bg-primary-hover hover:shadow-glow transition-all">
