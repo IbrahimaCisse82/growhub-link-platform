@@ -20,7 +20,7 @@ export default function DealRoomPage() {
     queryKey: ["deal-rooms", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("deal_rooms").select("*").eq("owner_id", user!.id).order("created_at", { ascending: false });
+      const { data } = await (supabase as any).from("deal_rooms").select("*").eq("owner_id", user!.id).order("created_at", { ascending: false });
       return data ?? [];
     },
   });
