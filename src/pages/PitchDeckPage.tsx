@@ -244,12 +244,12 @@ export default function PitchDeckPage() {
 
   const createDeck = async (template: string) => {
     if (!user) return;
-    const { data, error } = await supabase.from("pitch_decks").insert({
+    const { data, error } = await supabase.from("pitch_decks").insert([{
       user_id: user.id,
       title: `Pitch Deck - ${new Date().toLocaleDateString("fr-FR")}`,
       template,
-      slides: defaultSlides,
-    }).select().single();
+      slides: defaultSlides as any,
+    }]).select().single();
     if (error) toast.error("Erreur lors de la création");
     else {
       toast.success("Pitch Deck créé !");
