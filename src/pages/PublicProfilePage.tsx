@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSendConnection, useConnections } from "@/hooks/useGrowHub";
+import { useEndorsements, useToggleEndorsement } from "@/hooks/useEndorsements";
 import { motion } from "framer-motion";
 import { GHCard, Tag, MetricCard } from "@/components/ui-custom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2 } from "lucide-react";
+import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2, ThumbsUp, Share2 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { cn } from "@/lib/utils";
 
 export default function PublicProfilePage() {
   usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
@@ -17,6 +19,8 @@ export default function PublicProfilePage() {
   const navigate = useNavigate();
   const sendConnection = useSendConnection();
   const { data: connections } = useConnections();
+  const { data: endorsements } = useEndorsements(userId);
+  const toggleEndorsement = useToggleEndorsement();
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["public-profile", userId],
@@ -24,7 +28,6 @@ export default function PublicProfilePage() {
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userId!).maybeSingle();
       if (error) throw error;
-      // Increment view count atomically via RPC
       if (data && userId !== user?.id) {
         await supabase.rpc("increment_profile_views", { profile_user_id: userId! });
       }
@@ -53,10 +56,36 @@ export default function PublicProfilePage() {
     });
   };
 
+  const handleEndorse = (skill: string) => {
+    if (!userId || isOwnProfile) return;
+    toggleEndorsement.mutate({ endorsedId: userId, skill }, {
+      onSuccess: () => toast.success("Recommandation mise à jour"),
+    });
+  };
+
+  const handleShareProfile = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: profile?.display_name ?? "Profil", url });
+    } else {
+      navigator.clipboard.writeText(url);
+      toast.success("Lien du profil copié !");
+    }
+  };
+
+  const hasEndorsed = (skill: string) => {
+    if (!user || !endorsements) return false;
+    return endorsements[skill]?.endorserIds.includes(user.id) ?? false;
+  };
+
   if (isLoading) return <div className="space-y-4"><Skeleton className="h-48 rounded-2xl" /><Skeleton className="h-32 rounded-2xl" /></div>;
   if (!profile) return <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Profil introuvable</p></GHCard>;
 
-  const roleLabels: Record<string, string> = { startup: "Startup", mentor: "Mentor", investor: "Investisseur", expert: "Expert" };
+  const roleLabels: Record<string, string> = {
+    startup: "Startup", mentor: "Mentor", investor: "Investisseur", expert: "Expert",
+    freelance: "Freelance", incubateur: "Incubateur", etudiant: "Étudiant",
+    aspirationnel: "Aspirationnel", professionnel: "Professionnel", corporate: "Corporate",
+  };
   const initials = (profile.display_name ?? "?").substring(0, 2).toUpperCase();
 
   return (
@@ -93,23 +122,28 @@ export default function PublicProfilePage() {
                 <MapPin className="w-3.5 h-3.5" /> {[profile.city, profile.country].filter(Boolean).join(", ")}
               </div>
             )}
-            {!isOwnProfile && (
-              <div className="flex gap-2 flex-wrap">
-                {isConnected ? (
-                  <button onClick={() => navigate(`/messaging?partner=${userId}`)} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
-                    <MessageSquare className="w-3.5 h-3.5" /> Envoyer un message
-                  </button>
-                ) : isPending ? (
-                  <button disabled className="bg-secondary text-muted-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">
-                    Demande en attente
-                  </button>
-                ) : (
-                  <button onClick={handleConnect} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
-                    <UserPlus className="w-3.5 h-3.5" /> Se connecter
-                  </button>
-                )}
-              </div>
-            )}
+            <div className="flex gap-2 flex-wrap">
+              {!isOwnProfile && (
+                <>
+                  {isConnected ? (
+                    <button onClick={() => navigate(`/messaging?partner=${userId}`)} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
+                      <MessageSquare className="w-3.5 h-3.5" /> Envoyer un message
+                    </button>
+                  ) : isPending ? (
+                    <button disabled className="bg-secondary text-muted-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">
+                      Demande en attente
+                    </button>
+                  ) : (
+                    <button onClick={handleConnect} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
+                      <UserPlus className="w-3.5 h-3.5" /> Se connecter
+                    </button>
+                  )}
+                </>
+              )}
+              <button onClick={handleShareProfile} className="bg-secondary text-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 transition-colors">
+                <Share2 className="w-3.5 h-3.5" /> Partager
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -123,23 +157,48 @@ export default function PublicProfilePage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Bio */}
         {profile.bio && (
           <GHCard title="À propos" className="md:col-span-2">
             <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{profile.bio}</p>
           </GHCard>
         )}
 
-        {/* Skills */}
+        {/* Skills with endorsements */}
         {profile.skills && profile.skills.length > 0 && (
-          <GHCard title="Compétences">
-            <div className="flex flex-wrap gap-1.5">
-              {profile.skills.map((s: string) => <Tag key={s} variant="green">{s}</Tag>)}
+          <GHCard title="Compétences & Recommandations">
+            <div className="space-y-2">
+              {profile.skills.map((s: string) => {
+                const count = endorsements?.[s]?.count ?? 0;
+                const endorsed = hasEndorsed(s);
+                return (
+                  <div key={s} className="flex items-center justify-between gap-2 bg-secondary/30 rounded-lg px-3 py-2">
+                    <span className="text-sm font-medium">{s}</span>
+                    <div className="flex items-center gap-2">
+                      {count > 0 && (
+                        <span className="text-[10px] text-muted-foreground">{count} recommandation{count > 1 ? "s" : ""}</span>
+                      )}
+                      {!isOwnProfile && user && (
+                        <button
+                          onClick={() => handleEndorse(s)}
+                          className={cn(
+                            "flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-lg transition-all",
+                            endorsed
+                              ? "bg-primary/10 text-primary border border-primary/30"
+                              : "bg-muted text-muted-foreground hover:text-primary hover:bg-primary/5"
+                          )}
+                        >
+                          <ThumbsUp className={cn("w-3 h-3", endorsed && "fill-primary")} />
+                          {endorsed ? "Recommandé" : "+1"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </GHCard>
         )}
 
-        {/* Interests */}
         {profile.interests && profile.interests.length > 0 && (
           <GHCard title="Intérêts">
             <div className="flex flex-wrap gap-1.5">
@@ -148,7 +207,6 @@ export default function PublicProfilePage() {
           </GHCard>
         )}
 
-        {/* Links */}
         {(profile.linkedin_url || profile.website_url) && (
           <GHCard title="Liens">
             <div className="space-y-2">

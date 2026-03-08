@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
+import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import NetworkingPage from "./pages/NetworkingPage";
 import CoachingPage from "./pages/CoachingPage";
@@ -25,8 +26,8 @@ import ObjectivesPage from "./pages/ObjectivesPage";
 import BadgesPage from "./pages/BadgesPage";
 import SettingsPage from "./pages/SettingsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
-import GenericPage from "./pages/GenericPage";
 import MarketingPage from "./pages/MarketingPage";
+import ReferralPage from "./pages/ReferralPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +41,7 @@ const queryClient = new QueryClient({
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Chargement...</div>;
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user) return <Navigate to="/welcome" replace />;
   return <>{children}</>;
 }
 
@@ -51,10 +52,12 @@ function AuthRoute() {
   return <AuthPage />;
 }
 
-const pageConfigs: Record<string, { title: string; subtitle: string; description: string }> = {
-  marketing: { title: 'Acquérez des <span class="text-primary">clients & partenaires</span>', subtitle: "Outils Marketing & Prospection", description: "CRM intégré, génération de leads, automation marketing et analytics de performance." },
-  analytics: { title: 'Mesurez votre <span class="text-primary">performance</span>', subtitle: "Analytics & Reporting", description: "Tableaux de bord, KPIs en temps réel et rapports automatisés pour piloter votre croissance." },
-};
+function LandingRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Chargement...</div>;
+  if (user) return <Navigate to="/" replace />;
+  return <LandingPage />;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -66,6 +69,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <Routes>
+                <Route path="/welcome" element={<LandingRoute />} />
                 <Route path="/auth" element={<AuthRoute />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -85,6 +89,7 @@ const App = () => (
                   <Route path="settings" element={<SettingsPage />} />
                   <Route path="marketing" element={<MarketingPage />} />
                   <Route path="analytics" element={<AnalyticsPage />} />
+                  <Route path="referral" element={<ReferralPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

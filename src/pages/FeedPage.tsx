@@ -404,12 +404,26 @@ export default function FeedPage() {
                   >
                     <MessageCircle className="w-3.5 h-3.5" /> {post.comments_count ?? 0}
                   </button>
-                  <button
-                    onClick={() => { navigator.clipboard.writeText(post.content.substring(0, 100)); toast.success("Copié !"); }}
-                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Share2 className="w-3.5 h-3.5" /> Partager
-                  </button>
+                  <div className="relative group">
+                    <button
+                      onClick={() => { navigator.clipboard.writeText(window.location.origin + "/feed"); toast.success("Lien copié !"); }}
+                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Share2 className="w-3.5 h-3.5" /> Partager
+                    </button>
+                    <div className="absolute bottom-full left-0 mb-1 hidden group-hover:flex gap-1 bg-card border border-border rounded-lg p-1.5 shadow-lg z-10">
+                      <a
+                        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin + "/feed")}&summary=${encodeURIComponent(post.content.substring(0, 200))}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="text-[10px] text-muted-foreground hover:text-primary px-2 py-1 rounded hover:bg-muted transition-colors"
+                      >LinkedIn</a>
+                      <a
+                        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.content.substring(0, 200))}&url=${encodeURIComponent(window.location.origin)}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="text-[10px] text-muted-foreground hover:text-primary px-2 py-1 rounded hover:bg-muted transition-colors"
+                      >X/Twitter</a>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Nested Comments */}
