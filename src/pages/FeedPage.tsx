@@ -3,13 +3,15 @@ import { motion } from "framer-motion";
 import { GHCard, Tag } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
 import { useInfinitePosts, useToggleReaction, useUserReactions, useComments, useAddComment, useDeletePost } from "@/hooks/useFeed";
+import { useUserReposts, useRepost, useUndoRepost } from "@/hooks/useReposts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Heart, MessageCircle, Share2, Send, Trash2, Image, X, Reply, Loader2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Send, Trash2, Image, X, Reply, Loader2, Repeat2, TrendingUp, Clock, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useNavigate } from "react-router-dom";
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
