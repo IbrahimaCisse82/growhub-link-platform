@@ -107,12 +107,11 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
-    { title: "Outils", items: [
-      { path: "/analytics", icon: BarChart3, label: "Analytics" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
     ]},
