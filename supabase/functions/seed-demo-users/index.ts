@@ -70,7 +70,7 @@ const demoUsers = [
     password: "Demo2024!",
     full_name: "Thomas Petit",
     profile: {
-      display_name: "Thomas Petit",
+      display_name: "Thomas Moreau",
       bio: "Expert Growth & Marketing Digital. Coach certifié spécialisé en go-to-market et acquisition clients.",
       company_name: "Growth Lab",
       company_stage: "Freelance",
