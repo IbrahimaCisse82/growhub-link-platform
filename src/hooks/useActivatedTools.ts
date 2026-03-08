@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import {
   FileText, Shield, MailPlus, Trophy, Megaphone,
-  BarChart3, TrendingUp, Target, Award
+  BarChart3, TrendingUp, Target, Award, BookOpen, DollarSign, PenLine
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
