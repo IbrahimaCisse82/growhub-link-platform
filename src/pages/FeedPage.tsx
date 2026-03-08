@@ -7,11 +7,12 @@ import { useUserReposts, useRepost, useUndoRepost } from "@/hooks/useReposts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Heart, MessageCircle, Share2, Send, Trash2, Image, X, Reply, Loader2, Repeat2, TrendingUp, Clock, Sparkles } from "lucide-react";
+import { Heart, MessageCircle, Share2, Send, Trash2, Image, X, Reply, Loader2, Repeat2, TrendingUp, Clock, Sparkles, Video, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
+import SuggestedProfiles from "@/components/SuggestedProfiles";
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
