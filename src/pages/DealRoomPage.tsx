@@ -29,7 +29,7 @@ export default function DealRoomPage() {
     queryKey: ["deal-room-memberships", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("deal_room_members").select("*, deal_rooms(*)").eq("user_id", user!.id);
+      const { data } = await (supabase as any).from("deal_room_members").select("*, deal_rooms(*)").eq("user_id", user!.id);
       return data ?? [];
     },
   });
