@@ -124,6 +124,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/coaching", icon: PenLine, label: "Programmes" },
     ]},
     { title: "Communauté", items: [
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
