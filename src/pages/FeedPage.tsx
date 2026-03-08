@@ -461,7 +461,7 @@ export default function FeedPage() {
                 {post.tags && post.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {post.tags.map((tag) => (
-                      <span key={tag} className="text-[10px] text-primary font-medium bg-primary/10 rounded-full px-2 py-0.5">#{tag}</span>
+                      <button key={tag} onClick={() => handleTagClick(tag)} className="text-[10px] text-primary font-medium bg-primary/10 rounded-full px-2 py-0.5 hover:bg-primary/20 transition-colors">#{tag}</button>
                     ))}
                   </div>
                 )}
