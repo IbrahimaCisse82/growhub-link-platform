@@ -6,6 +6,7 @@ import OnboardingQuestionnaire from "@/components/OnboardingQuestionnaire";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeNotifications, useRealtimeMessages } from "@/hooks/useRealtimeNotifications";
 
 export default function Layout() {
   const [onboardingDone, setOnboardingDone] = useState(false);
