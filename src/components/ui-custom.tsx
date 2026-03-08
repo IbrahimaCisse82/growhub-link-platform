@@ -10,18 +10,18 @@ export function MetricCard({ icon, value, label, badge, badgeType = "up" }: {
   badgeType?: "up" | "down" | "neutral";
 }) {
   return (
-    <div className="bg-card border border-border rounded-[14px] p-[18px] transition-all relative overflow-hidden hover:border-primary/15 group">
+    <div className="bg-card border border-border rounded-xl md:rounded-[14px] p-3 md:p-[18px] transition-all relative overflow-hidden hover:border-primary/15 group">
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <div className={cn(
-        "w-[38px] h-[38px] rounded-[9px] flex items-center justify-center mb-3.5 text-base",
+        "w-8 h-8 md:w-[38px] md:h-[38px] rounded-lg md:rounded-[9px] flex items-center justify-center mb-2 md:mb-3.5 text-sm md:text-base",
         "bg-primary/10"
       )}>
         {icon}
       </div>
-      <div className="font-heading text-[26px] font-extrabold leading-none mb-[3px]">{value}</div>
-      <div className="text-[11px] text-muted-foreground font-medium mb-2.5">{label}</div>
+      <div className="font-heading text-lg md:text-[26px] font-extrabold leading-none mb-[2px] md:mb-[3px]">{value}</div>
+      <div className="text-[10px] md:text-[11px] text-muted-foreground font-medium mb-1.5 md:mb-2.5 leading-tight">{label}</div>
       <span className={cn(
-        "inline-flex items-center gap-[3px] text-[11px] font-bold px-[7px] py-[3px] rounded-full",
+        "inline-flex items-center gap-[3px] text-[9px] md:text-[11px] font-bold px-1.5 md:px-[7px] py-[2px] md:py-[3px] rounded-full",
         badgeType === "up" && "bg-primary/10 text-primary",
         badgeType === "down" && "bg-ghred/10 text-ghred",
         badgeType === "neutral" && "bg-secondary text-foreground/70"
