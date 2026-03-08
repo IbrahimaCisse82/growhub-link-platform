@@ -338,6 +338,12 @@ export default function AnalyticsPage() {
       <div className="mt-5">
         <ShareableAchievementCards />
       </div>
+
+      {/* Predictive Analytics */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">🧠 Analytics Prédictif</h2>
+        <PredictiveAnalytics />
+      </div>
     </motion.div>
   );
 }
