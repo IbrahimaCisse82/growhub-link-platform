@@ -30,6 +30,8 @@ import MarketingPage from "./pages/MarketingPage";
 import ReferralPage from "./pages/ReferralPage";
 import CirclesPage from "./pages/CirclesPage";
 import PricingPage from "./pages/PricingPage";
+import CompanyPage from "./pages/CompanyPage";
+import WarmIntrosPage from "./pages/WarmIntrosPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
