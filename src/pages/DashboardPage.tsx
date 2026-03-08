@@ -68,6 +68,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Activation Checklist */}
+      <ActivationChecklist />
+
+      {/* Smart Matching */}
+      <SmartMatching />
+
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-[18px]">
         <MetricCard icon="👥" value={String(stats?.connections ?? 0)} label="Connexions réseau" badge={`${stats?.pendingConnections ?? 0} en attente`} badgeType="up" />
