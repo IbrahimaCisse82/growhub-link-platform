@@ -24,7 +24,7 @@ export default function ContextualHelp({ title, items, open: controlledOpen, onO
     <>
       {/* Help panel */}
       <AnimatePresence>
-        {open && (
+        {isOpen && (
           <>
             <div className="fixed inset-0 z-[400] bg-black/30 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none" onClick={() => setOpen(false)} />
             <motion.div
