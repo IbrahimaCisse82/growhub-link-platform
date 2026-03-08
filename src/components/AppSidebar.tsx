@@ -2,7 +2,7 @@ import {
   Zap, PenLine, DollarSign, Home, Users, Calendar,
   BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
   BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt, FolderKanban,
-  Trophy, FileText, Shield, TrendingUp
+  Trophy, FileText, Shield, TrendingUp, ShoppingBag, MailPlus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -35,6 +35,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     { title: "Outils", items: [
       { path: "/content-calendar", icon: FileText, label: "Contenu" },
       { path: "/deal-room", icon: Shield, label: "Deal Room" },
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+      { path: "/templates", icon: MailPlus, label: "Templates" },
       { path: "/challenges", icon: Trophy, label: "Challenges" },
       { path: "/marketing", icon: Megaphone, label: "Marketing" },
       { path: "/analytics", icon: BarChart3, label: "Analytics" },
@@ -61,6 +63,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Outils", items: [
       { path: "/content-calendar", icon: FileText, label: "Contenu" },
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+      { path: "/templates", icon: MailPlus, label: "Templates" },
       { path: "/challenges", icon: Trophy, label: "Challenges" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
@@ -106,6 +110,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
     { title: "Outils", items: [
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+      { path: "/templates", icon: MailPlus, label: "Templates" },
       { path: "/marketing", icon: Megaphone, label: "Prospection" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
@@ -127,6 +133,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
     { title: "Outils", items: [
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+      { path: "/templates", icon: MailPlus, label: "Templates" },
       { path: "/analytics", icon: BarChart3, label: "Analytics" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },

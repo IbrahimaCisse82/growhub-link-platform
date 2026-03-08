@@ -39,6 +39,8 @@ import DealRoomPage from "./pages/DealRoomPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import ROIDashboardPage from "./pages/ROIDashboardPage";
 import ModerationPage from "./pages/ModerationPage";
+import MarketplacePage from "./pages/MarketplacePage";
+import TemplatesPage from "./pages/TemplatesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -112,6 +114,8 @@ const App = () => (
                   <Route path="challenges" element={<ChallengesPage />} />
                   <Route path="roi" element={<ROIDashboardPage />} />
                   <Route path="moderation" element={<ModerationPage />} />
+                  <Route path="marketplace" element={<MarketplacePage />} />
+                  <Route path="templates" element={<TemplatesPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
