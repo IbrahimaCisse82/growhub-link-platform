@@ -252,6 +252,8 @@ export default function PublicProfilePage() {
             </div>
           </GHCard>
         )}
+        {/* Recommendations Wall */}
+        <RecommendationWall userId={userId!} />
       </div>
     </motion.div>
   );
