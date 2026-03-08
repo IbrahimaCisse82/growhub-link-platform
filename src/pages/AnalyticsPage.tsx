@@ -27,6 +27,8 @@ import {
 import { cn } from "@/lib/utils";
 import NetworkGraph from "@/components/NetworkGraph";
 import NetworkAnalytics from "@/components/NetworkAnalytics";
+import NetworkingROI from "@/components/NetworkingROI";
+import ShareableAchievementCards from "@/components/ShareableAchievementCards";
 
 const PIE_COLORS = [
   "hsl(93, 100%, 37%)", "hsl(213, 82%, 51%)", "hsl(23, 88%, 49%)",
@@ -321,6 +323,19 @@ export default function AnalyticsPage() {
           <TrendingUp className="w-5 h-5 text-primary" /> ROI Networking
         </h2>
         <NetworkAnalytics />
+      </div>
+
+      {/* Networking ROI Tracker */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
+          <Target className="w-5 h-5 text-ghblue" /> Networking ROI Tracker
+        </h2>
+        <NetworkingROI />
+      </div>
+
+      {/* Shareable Achievement Cards */}
+      <div className="mt-5">
+        <ShareableAchievementCards />
       </div>
     </motion.div>
   );
