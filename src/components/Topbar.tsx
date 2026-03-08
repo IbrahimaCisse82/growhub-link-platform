@@ -36,6 +36,15 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
       <div className="flex-1" />
 
       <div className="flex items-center gap-1.5 md:gap-2">
+        {onHelpToggle && (
+          <button
+            onClick={onHelpToggle}
+            className="w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all"
+            aria-label="Aide"
+          >
+            <HelpCircle className="w-[15px] h-[15px]" />
+          </button>
+        )}
         <button
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           className="w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all"

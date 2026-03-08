@@ -13,21 +13,15 @@ interface ContextualHelpProps {
   items: HelpItem[];
 }
 
-export default function ContextualHelp({ title, items }: ContextualHelpProps) {
-  const [open, setOpen] = useState(false);
+export default function ContextualHelp({ title, items, open: controlledOpen, onOpenChange }: ContextualHelpProps & { open?: boolean; onOpenChange?: (open: boolean) => void }) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+  const isOpen = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   return (
     <>
-      {/* Floating help button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-[100] w-11 h-11 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary-hover transition-all hover:shadow-[var(--shadow-glow)]"
-        aria-label="Aide"
-      >
-        <HelpCircle className="w-5 h-5" />
-      </button>
-
       {/* Help panel */}
       <AnimatePresence>
         {open && (
