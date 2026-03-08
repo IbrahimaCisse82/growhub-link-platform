@@ -24,6 +24,7 @@ import PitchDeckPage from "./pages/PitchDeckPage";
 import ObjectivesPage from "./pages/ObjectivesPage";
 import BadgesPage from "./pages/BadgesPage";
 import SettingsPage from "./pages/SettingsPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import GenericPage from "./pages/GenericPage";
 
 const queryClient = new QueryClient({
@@ -82,7 +83,7 @@ const App = () => (
                   <Route path="badges" element={<BadgesPage />} />
                   <Route path="settings" element={<SettingsPage />} />
                   <Route path="marketing" element={<GenericPage pageId="marketing" {...pageConfigs.marketing} />} />
-                  <Route path="analytics" element={<GenericPage pageId="analytics" {...pageConfigs.analytics} />} />
+                  <Route path="analytics" element={<AnalyticsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

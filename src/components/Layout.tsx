@@ -45,9 +45,9 @@ export default function Layout() {
       <AppSidebar activeRole={activeRole} mobileOpen={mobileMenuOpen} onMobileClose={() => setMobileMenuOpen(false)} />
       <div className="lg:ml-[68px] flex-1 flex flex-col min-h-screen">
         <Topbar onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
-        <div className="p-4 md:p-7 flex-1">
+        <main id="main-content" className="p-4 md:p-7 flex-1" role="main">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );
