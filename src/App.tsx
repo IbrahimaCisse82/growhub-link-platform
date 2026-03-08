@@ -112,6 +112,8 @@ const App = () => (
                   <Route path="challenges" element={<ChallengesPage />} />
                   <Route path="roi" element={<ROIDashboardPage />} />
                   <Route path="moderation" element={<ModerationPage />} />
+                  <Route path="marketplace" element={<MarketplacePage />} />
+                  <Route path="templates" element={<TemplatesPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
