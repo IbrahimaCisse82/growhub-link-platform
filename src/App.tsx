@@ -39,6 +39,8 @@ import DealRoomPage from "./pages/DealRoomPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import ROIDashboardPage from "./pages/ROIDashboardPage";
 import ModerationPage from "./pages/ModerationPage";
+import MarketplacePage from "./pages/MarketplacePage";
+import TemplatesPage from "./pages/TemplatesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
