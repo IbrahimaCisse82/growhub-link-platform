@@ -27,6 +27,8 @@ import {
 import { cn } from "@/lib/utils";
 import NetworkGraph from "@/components/NetworkGraph";
 import NetworkAnalytics from "@/components/NetworkAnalytics";
+import NetworkingROI from "@/components/NetworkingROI";
+import ShareableAchievementCards from "@/components/ShareableAchievementCards";
 
 const PIE_COLORS = [
   "hsl(93, 100%, 37%)", "hsl(213, 82%, 51%)", "hsl(23, 88%, 49%)",
