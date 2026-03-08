@@ -1,7 +1,7 @@
 import { 
   Zap, PenLine, DollarSign, Home, Users, Calendar,
   BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
-  BookOpen, Rss, Award, Target, User, Gift, CircleDot
+  BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,6 +24,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -44,6 +45,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -63,6 +65,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -82,6 +85,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -101,6 +105,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -119,6 +124,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/coaching", icon: PenLine, label: "Programmes" },
     ]},
     { title: "Communauté", items: [
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -139,6 +145,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -157,6 +164,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Inspiration" },
@@ -175,6 +183,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
@@ -193,6 +202,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/fundraising", icon: DollarSign, label: "Investissements" },
     ]},
     { title: "Communauté", items: [
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },

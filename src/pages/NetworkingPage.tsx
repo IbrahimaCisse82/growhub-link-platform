@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import NetworkGraph from "@/components/NetworkGraph";
+import { IntentEditor, IntentMatchResults } from "@/components/IntentMatching";
 
 const gradients = ["from-[#200a30] to-[#A064FF]","from-[#103050] to-[#4096FF]","from-[#1a3a10] to-[#5CBF00]","from-[#301a08] to-[#D06020]","from-[#0a3040] to-[#00B8A0]"];
 
@@ -48,6 +49,10 @@ export default function NetworkingPage() {
         <MetricCard icon="🔍" value={String(suggestions.length)} label="Suggestions" badge="Disponibles" badgeType="neutral" />
         <MetricCard icon="🌐" value={String((profiles ?? []).length)} label="Membres" badge="Réseau" badgeType="neutral" />
       </div>
+      {/* Intent Matching */}
+      <IntentEditor />
+      <IntentMatchResults />
+
       {/* Network Graph Visualization */}
       <div className="mb-5">
         <NetworkGraph />

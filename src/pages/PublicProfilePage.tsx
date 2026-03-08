@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import VerifiedBadge from "@/components/VerifiedBadge";
 import { CoachReviewsList } from "@/components/CoachReviews";
 import { useCollaborations } from "@/hooks/useReviews";
+import { RecommendationWall, WriteRecommendation } from "@/components/RecommendationWall";
 
 export default function PublicProfilePage() {
   usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
@@ -143,6 +144,7 @@ export default function PublicProfilePage() {
                       <UserPlus className="w-3.5 h-3.5" /> Se connecter
                     </button>
                   )}
+                  <WriteRecommendation userId={userId!} userName={profile?.display_name ?? "ce membre"} />
                 </>
               )}
               <button onClick={handleShareProfile} className="bg-secondary text-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 transition-colors">
@@ -250,6 +252,8 @@ export default function PublicProfilePage() {
             </div>
           </GHCard>
         )}
+        {/* Recommendations Wall */}
+        <RecommendationWall userId={userId!} />
       </div>
     </motion.div>
   );

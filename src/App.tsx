@@ -32,6 +32,7 @@ import CirclesPage from "./pages/CirclesPage";
 import PricingPage from "./pages/PricingPage";
 import CompanyPage from "./pages/CompanyPage";
 import WarmIntrosPage from "./pages/WarmIntrosPage";
+import SpeedNetworkingPage from "./pages/SpeedNetworkingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -98,6 +99,7 @@ const App = () => (
                   <Route path="circles" element={<CirclesPage />} />
                   <Route path="company" element={<CompanyPage />} />
                   <Route path="introductions" element={<WarmIntrosPage />} />
+                  <Route path="speed-networking" element={<SpeedNetworkingPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
