@@ -534,11 +534,7 @@ export function useAddComment() {
         content,
       });
       if (error) throw error;
-      // Increment comments_count
-      const { data: post } = await supabase.from("posts").select("comments_count").eq("id", postId).single();
-      if (post) {
-        await supabase.from("posts").update({ comments_count: (post.comments_count ?? 0) + 1 }).eq("id", postId);
-      }
+      await supabase.rpc("increment_post_comments", { post_id: postId });
     },
     onSuccess: (_, { postId }) => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
