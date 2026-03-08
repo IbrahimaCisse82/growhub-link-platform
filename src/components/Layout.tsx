@@ -13,6 +13,10 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, profile, refetchProfile } = useAuth();
 
+  // Activate realtime listeners
+  useRealtimeNotifications();
+  useRealtimeMessages();
+
   const { data: userRole } = useQuery({
     queryKey: ["user-role", user?.id],
     enabled: !!user,
