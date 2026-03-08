@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Plus, MapPin, Globe, Users, Calendar } from "lucide-react";
 import EventMatchmaking from "@/components/EventMatchmaking";
+import { ExportEventButton, ExportAllEventsButton } from "@/components/CalendarExport";
 
 const eventColors = [
   "from-[#0a1a0a] to-primary/80",
@@ -104,7 +105,7 @@ export default function EventsPage() {
         <MetricCard icon="👥" value={String(events?.reduce((s, e) => s + (e.registrations?.length ?? 0), 0) ?? 0)} label="Participants" badge="Total" badgeType="up" />
       </div>
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div className="flex gap-1.5 flex-wrap">
           {["all", "webinar", "workshop", "meetup", "conference", "demo_day"].map(t => (
             <button
@@ -118,12 +119,21 @@ export default function EventsPage() {
             </button>
           ))}
         </div>
-        <button
-          onClick={() => setShowCreate(!showCreate)}
-          className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" /> Créer
-        </button>
+        <div className="flex gap-2">
+          <ExportAllEventsButton events={(filteredEvents ?? []).map(e => ({
+            title: e.title,
+            description: e.description ?? undefined,
+            location: e.is_online ? "En ligne" : e.location ?? undefined,
+            start: new Date(e.starts_at),
+            end: e.ends_at ? new Date(e.ends_at) : undefined,
+          }))} />
+          <button
+            onClick={() => setShowCreate(!showCreate)}
+            className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" /> Créer
+          </button>
+        </div>
       </div>
 
       {showCreate && (
@@ -188,26 +198,35 @@ export default function EventsPage() {
                     {startDate.toLocaleDateString("fr-FR", { weekday: "short", hour: "2-digit", minute: "2-digit" })}
                   </div>
                 </div>
-                <div className="px-3.5 py-2.5 border-t border-border flex items-center justify-between">
+                <div className="px-3.5 py-2.5 border-t border-border flex items-center justify-between gap-1 flex-wrap">
                   <span className="text-[11px] font-bold text-primary font-heading flex items-center gap-1">
                     <Users className="w-3 h-3" /> {regCount}
                   </span>
-                  {isRegistered ? (
-                    <button
-                      onClick={() => handleUnregister(e.id)}
-                      className="px-2.5 py-1 rounded-lg bg-secondary border border-border font-heading text-[10px] font-bold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all"
-                    >
-                      Se désinscrire
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleRegister(e.id)}
-                      disabled={registerEvent.isPending}
-                      className="px-2.5 py-1 rounded-lg bg-primary text-primary-foreground font-heading text-[10px] font-bold hover:bg-primary-hover transition-all disabled:opacity-50"
-                    >
-                      S'inscrire
-                    </button>
-                  )}
+                  <div className="flex items-center gap-1.5">
+                    <ExportEventButton event={{
+                      title: e.title,
+                      description: e.description ?? undefined,
+                      location: e.is_online ? "En ligne" : e.location ?? undefined,
+                      start: startDate,
+                      end: e.ends_at ? new Date(e.ends_at) : undefined,
+                    }} />
+                    {isRegistered ? (
+                      <button
+                        onClick={() => handleUnregister(e.id)}
+                        className="px-2.5 py-1 rounded-lg bg-secondary border border-border font-heading text-[10px] font-bold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all"
+                      >
+                        Se désinscrire
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleRegister(e.id)}
+                        disabled={registerEvent.isPending}
+                        className="px-2.5 py-1 rounded-lg bg-primary text-primary-foreground font-heading text-[10px] font-bold hover:bg-primary-hover transition-all disabled:opacity-50"
+                      >
+                        S'inscrire
+                      </button>
+                    )}
+                  </div>
                 </div>
                 {/* Event Matchmaking */}
                 {isRegistered && regCount > 1 && (
