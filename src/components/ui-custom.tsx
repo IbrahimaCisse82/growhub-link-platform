@@ -66,15 +66,15 @@ export function GHCard({ children, className, title, headerRight, onClick }: {
   return (
     <div
       className={cn(
-        "bg-card border border-border rounded-2xl p-[22px] transition-all relative overflow-hidden hover:border-primary/15 hover:shadow-md",
+        "bg-card border border-border rounded-xl md:rounded-2xl p-3.5 md:p-[22px] transition-all relative overflow-hidden hover:border-primary/15 hover:shadow-md",
         onClick && "cursor-pointer",
         className
       )}
       onClick={onClick}
     >
       {title && (
-        <div className="flex items-center justify-between mb-[18px]">
-          <div className="font-heading text-[13px] font-bold text-foreground/70 uppercase tracking-wider">{title}</div>
+        <div className="flex items-center justify-between mb-3 md:mb-[18px]">
+          <div className="font-heading text-xs md:text-[13px] font-bold text-foreground/70 uppercase tracking-wider">{title}</div>
           {headerRight}
         </div>
       )}
