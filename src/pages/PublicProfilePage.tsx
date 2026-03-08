@@ -228,6 +228,28 @@ export default function PublicProfilePage() {
             </div>
           </GHCard>
         )}
+        {/* Collaboration History */}
+        {collaborations && collaborations.length > 0 && (
+          <GHCard title="Historique de collaboration">
+            <div className="space-y-2">
+              {collaborations.slice(0, 5).map(collab => {
+                const partner = collab.user_id === userId ? collab.partner_profile : collab.user_profile;
+                return (
+                  <div key={collab.id} className="flex items-center gap-2.5 py-2 border-b border-border/40 last:border-b-0">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-[9px] font-extrabold text-primary-foreground">
+                      {(partner?.display_name ?? "?").substring(0, 2).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-xs font-bold">{partner?.display_name ?? "Membre"}</div>
+                      <div className="text-[10px] text-muted-foreground">{collab.description ?? collab.collaboration_type}</div>
+                    </div>
+                    <Tag variant="teal">{collab.collaboration_type}</Tag>
+                  </div>
+                );
+              })}
+            </div>
+          </GHCard>
+        )}
       </div>
     </motion.div>
   );
