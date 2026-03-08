@@ -86,6 +86,9 @@ export default function DashboardPage() {
       {/* Weekly Digest */}
       <WeeklyDigest />
 
+      {/* Profile Completion */}
+      <ProfileCompletionCard />
+
       {/* Activation Checklist */}
       <ActivationChecklist />
 
