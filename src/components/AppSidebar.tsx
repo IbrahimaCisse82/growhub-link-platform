@@ -1,8 +1,6 @@
 import { 
-  Zap, PenLine, DollarSign, Home, Users, Calendar,
-  BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
-  BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt, FolderKanban,
-  Trophy, FileText, Shield, TrendingUp, ShoppingBag, MailPlus, Bookmark
+  Zap, Home, Users, Calendar,
+  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -247,47 +245,8 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
         ))}
       </div>
 
-      {/* Bottom */}
-      <div className="flex flex-col items-center gap-2 mt-auto pt-2">
-        {[
-          { path: "/bookmarks", icon: Bookmark, label: "Favoris" },
-          { path: "/referral", icon: Gift, label: "Parrainage" },
-          { path: "/notifications", icon: Bell, label: "Notifications", hasIndicator: true },
-          { path: "/profile", icon: User, label: "Mon Profil" },
-          { path: "/settings", icon: Settings, label: "Paramètres" },
-        ].map((btn) => (
-          <button
-            key={btn.path}
-            onClick={() => handleNav(btn.path)}
-            className={cn(
-              "relative flex items-center gap-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sidebar-fg hover:bg-card hover:text-foreground",
-              expanded ? "w-[188px] justify-start px-4 h-11" : "w-11 h-11 justify-center"
-            )}
-          >
-            <btn.icon className="w-[17px] h-[17px] flex-shrink-0" />
-            {expanded && <span className="font-heading text-xs font-bold text-sidebar-fg">{btn.label}</span>}
-            {btn.hasIndicator && <span className="absolute top-1.5 right-2.5 w-1.5 h-1.5 bg-destructive rounded-full" />}
-          </button>
-        ))}
-        <button
-          onClick={signOut}
-          className={cn(
-            "flex items-center gap-2.5 rounded-xl cursor-pointer transition-all duration-200 text-sidebar-fg hover:bg-destructive/20 hover:text-destructive",
-            expanded ? "w-[188px] justify-start px-4 h-11" : "w-11 h-11 justify-center"
-          )}
-        >
-          <LogOut className="w-[17px] h-[17px] flex-shrink-0" />
-          {expanded && <span className="font-heading text-xs font-bold text-destructive">Déconnexion</span>}
-        </button>
-        <div
-          onClick={() => handleNav("/profile")}
-          className="w-9 h-9 rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-xs font-extrabold text-primary-foreground border-2 border-secondary flex-shrink-0 cursor-pointer overflow-hidden"
-        >
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} className="w-full h-full object-cover" alt="" />
-          ) : initials}
-        </div>
-      </div>
+      {/* Bottom padding for scroll */}
+      <div className="h-4 flex-shrink-0" />
     </nav>
   );
 }

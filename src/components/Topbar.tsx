@@ -1,5 +1,13 @@
-import { Bell, Menu, Sun, Moon, HelpCircle } from "lucide-react";
+import { Bell, Menu, Sun, Moon, HelpCircle, Bookmark, Gift, User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useUnreadNotificationsCount } from "@/hooks/useUnreadCounts";
@@ -11,7 +19,7 @@ interface TopbarProps {
 }
 
 export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps) {
-  const { profile } = useAuth();
+  const { profile, signOut } = useAuth();
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
   const { data: unreadNotifs = 0 } = useUnreadNotificationsCount();
@@ -70,33 +78,69 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
           )}
         </button>
 
-        {/* Desktop profile chip */}
-        <div
-          onClick={() => navigate("/profile")}
-          className="hidden md:flex items-center gap-2 bg-card border border-border rounded-[10px] py-[5px] px-3 pl-1.5 cursor-pointer hover:border-primary/35 transition-all"
-        >
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} className="w-[26px] h-[26px] rounded-full object-cover" alt="" />
-          ) : (
-            <div className="w-[26px] h-[26px] rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-[10px] font-extrabold text-primary-foreground">
-              {initials}
+        <DropdownMenu>
+          <DropdownMenuTrigger className="outline-none">
+            {/* Desktop profile chip */}
+            <div className="hidden md:flex items-center gap-2 bg-card border border-border rounded-[10px] py-[5px] px-3 pl-1.5 cursor-pointer hover:border-primary/35 transition-all">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} className="w-[26px] h-[26px] rounded-full object-cover" alt="" />
+              ) : (
+                <div className="w-[26px] h-[26px] rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-[10px] font-extrabold text-primary-foreground">
+                  {initials}
+                </div>
+              )}
+              <span className="text-[13px] font-medium">{shortName}</span>
+              <span className="text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded px-[7px] py-[2px] uppercase tracking-wider">
+                {profile?.company_stage ?? "Startup"}
+              </span>
             </div>
-          )}
-          <span className="text-[13px] font-medium">{shortName}</span>
-          <span className="text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 rounded px-[7px] py-[2px] uppercase tracking-wider">
-            {profile?.company_stage ?? "Startup"}
-          </span>
-        </div>
 
-        {/* Mobile avatar */}
-        <div
-          onClick={() => navigate("/profile")}
-          className="md:hidden w-8 h-8 rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-[10px] font-extrabold text-primary-foreground cursor-pointer flex-shrink-0 overflow-hidden"
-        >
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} className="w-full h-full object-cover" alt="" />
-          ) : initials}
-        </div>
+            {/* Mobile avatar */}
+            <div className="md:hidden w-8 h-8 rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-[10px] font-extrabold text-primary-foreground cursor-pointer flex-shrink-0 overflow-hidden">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} className="w-full h-full object-cover" alt="" />
+              ) : (
+                initials
+              )}
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2">
+              <User className="w-4 h-4" />
+              <span>Mon Profil</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/bookmarks")} className="cursor-pointer gap-2">
+              <Bookmark className="w-4 h-4" />
+              <span>Favoris</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/referral")} className="cursor-pointer gap-2">
+              <Gift className="w-4 h-4" />
+              <span>Parrainage</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/notifications")} className="cursor-pointer gap-2">
+              <Bell className="w-4 h-4" />
+              <div className="flex flex-1 items-center justify-between">
+                <span>Notifications</span>
+                {unreadNotifs > 0 && (
+                  <span className="bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-[10px] font-bold px-1.5 min-w-[18px] h-[18px]">
+                    {unreadNotifs > 99 ? "99+" : unreadNotifs}
+                  </span>
+                )}
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer gap-2">
+              <Settings className="w-4 h-4" />
+              <span>Paramètres</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut} className="cursor-pointer gap-2 text-destructive focus:text-destructive focus:bg-destructive/10">
+              <LogOut className="w-4 h-4" />
+              <span>Déconnexion</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
