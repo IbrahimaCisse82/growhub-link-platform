@@ -145,13 +145,13 @@ export function ActivityItem({ icon, iconBg, children, time, action }: {
   action?: ReactNode;
 }) {
   return (
-    <div className="flex gap-2.5 items-start py-3 border-b border-border/40 last:border-b-0">
-      <div className={cn("w-[34px] h-[34px] rounded-[9px] flex items-center justify-center flex-shrink-0 text-sm", iconBg)}>
+    <div className="flex gap-2 md:gap-2.5 items-start py-2.5 md:py-3 border-b border-border/40 last:border-b-0">
+      <div className={cn("w-7 h-7 md:w-[34px] md:h-[34px] rounded-lg md:rounded-[9px] flex items-center justify-center flex-shrink-0 text-xs md:text-sm", iconBg)}>
         {icon}
       </div>
-      <div className="flex-1">
-        <div className="text-xs text-foreground/70 leading-relaxed">{children}</div>
-        <div className="text-[10px] text-muted-foreground/60 mt-0.5">{time}</div>
+      <div className="flex-1 min-w-0">
+        <div className="text-[11px] md:text-xs text-foreground/70 leading-relaxed">{children}</div>
+        <div className="text-[9px] md:text-[10px] text-muted-foreground/60 mt-0.5">{time}</div>
       </div>
       {action}
     </div>
