@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeNotifications, useRealtimeMessages } from "@/hooks/useRealtimeNotifications";
 import AICoachAssistant from "@/components/AICoachAssistant";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 const routeToHelpKey: Record<string, string> = {
   "/": "dashboard",
