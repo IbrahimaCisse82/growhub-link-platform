@@ -13,6 +13,7 @@ import SmartMatchCards from "@/components/SmartMatchCards";
 import MilestoneDetector from "@/components/MilestoneDetector";
 import WeeklyDigest from "@/components/WeeklyDigest";
 import ProfileCompletionCard from "@/components/ProfileCompletionCard";
+import ActivityFeed from "@/components/ActivityFeed";
 
 export default function DashboardPage() {
   usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs startup en temps réel." });
