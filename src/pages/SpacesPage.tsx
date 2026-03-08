@@ -345,6 +345,19 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
             <input value={newTask} onChange={e => setNewTask(e.target.value)} placeholder="Nouvelle tâche..."
               onKeyDown={e => e.key === "Enter" && newTask.trim() && addTask.mutate()}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
+            <select
+              onChange={e => {
+                if (!newTask.trim()) return;
+                // Quick assign via select
+              }}
+              className="bg-secondary/50 border border-border rounded-xl px-2 text-[10px] hidden sm:block"
+              title="Assigner à"
+            >
+              <option value="">Assigner</option>
+              {members?.map(m => (
+                <option key={m.user_id} value={m.user_id}>{m.profile?.display_name ?? "Membre"}</option>
+              ))}
+            </select>
             <button onClick={() => newTask.trim() && addTask.mutate()}
               className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold hover:bg-primary-hover transition-all">
               <Plus className="w-4 h-4" />
