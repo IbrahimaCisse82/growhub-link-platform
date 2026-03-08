@@ -81,7 +81,9 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
     { title: "Outils", items: [
+      { path: "/deal-room", icon: Shield, label: "Deal Room" },
       { path: "/coaching", icon: PenLine, label: "Coaching" },
+      { path: "/challenges", icon: Trophy, label: "Challenges" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
     ]},
