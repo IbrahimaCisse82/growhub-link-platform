@@ -11,6 +11,9 @@ import { toast } from "sonner";
 import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2, ThumbsUp, Share2 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { cn } from "@/lib/utils";
+import VerifiedBadge from "@/components/VerifiedBadge";
+import { CoachReviewsList } from "@/components/CoachReviews";
+import { useCollaborations } from "@/hooks/useReviews";
 
 export default function PublicProfilePage() {
   usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
@@ -21,6 +24,7 @@ export default function PublicProfilePage() {
   const { data: connections } = useConnections();
   const { data: endorsements } = useEndorsements(userId);
   const toggleEndorsement = useToggleEndorsement();
+  const { data: collaborations } = useCollaborations(userId ?? null);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["public-profile", userId],
@@ -108,6 +112,7 @@ export default function PublicProfilePage() {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="font-heading text-2xl md:text-[28px] font-extrabold">{profile.display_name}</h1>
+              <VerifiedBadge isVerified={profile.is_verified} size="lg" />
               <Tag variant="green">{roleLabels[userRole ?? "startup"] ?? "Membre"}</Tag>
               {profile.company_stage && <Tag>{profile.company_stage}</Tag>}
             </div>
@@ -220,6 +225,28 @@ export default function PublicProfilePage() {
                   <Globe className="w-4 h-4" /> Site web
                 </a>
               )}
+            </div>
+          </GHCard>
+        )}
+        {/* Collaboration History */}
+        {collaborations && collaborations.length > 0 && (
+          <GHCard title="Historique de collaboration">
+            <div className="space-y-2">
+              {collaborations.slice(0, 5).map(collab => {
+                const partner = collab.user_id === userId ? collab.partner_profile : collab.user_profile;
+                return (
+                  <div key={collab.id} className="flex items-center gap-2.5 py-2 border-b border-border/40 last:border-b-0">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-[9px] font-extrabold text-primary-foreground">
+                      {(partner?.display_name ?? "?").substring(0, 2).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-xs font-bold">{partner?.display_name ?? "Membre"}</div>
+                      <div className="text-[10px] text-muted-foreground">{collab.description ?? collab.collaboration_type}</div>
+                    </div>
+                    <Tag variant="teal">{collab.collaboration_type}</Tag>
+                  </div>
+                );
+              })}
             </div>
           </GHCard>
         )}

@@ -118,6 +118,54 @@ export type Database = {
         }
         Relationships: []
       }
+      coach_reviews: {
+        Row: {
+          coach_id: string
+          created_at: string
+          id: string
+          is_public: boolean | null
+          rating: number
+          review_text: string | null
+          reviewer_id: string
+          session_id: string | null
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          rating: number
+          review_text?: string | null
+          reviewer_id: string
+          session_id?: string | null
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          rating?: number
+          review_text?: string | null
+          reviewer_id?: string
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_reviews_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_reviews_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "coaching_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coaches: {
         Row: {
           availability: Json | null
@@ -218,6 +266,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      collaborations: {
+        Row: {
+          collaboration_type: string
+          created_at: string
+          description: string | null
+          ended_at: string | null
+          id: string
+          partner_id: string
+          started_at: string | null
+          user_id: string
+        }
+        Insert: {
+          collaboration_type?: string
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          partner_id: string
+          started_at?: string | null
+          user_id: string
+        }
+        Update: {
+          collaboration_type?: string
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          partner_id?: string
+          started_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       comments: {
         Row: {
@@ -916,13 +997,18 @@ export type Database = {
           id: string
           interests: string[] | null
           is_public: boolean | null
+          is_verified: boolean | null
+          last_login_date: string | null
           linkedin_url: string | null
+          login_streak: number | null
+          longest_streak: number | null
           network_score: number | null
           profile_views: number | null
           sector: string | null
           skills: string[] | null
           updated_at: string
           user_id: string
+          verified_at: string | null
           website_url: string | null
         }
         Insert: {
@@ -937,13 +1023,18 @@ export type Database = {
           id?: string
           interests?: string[] | null
           is_public?: boolean | null
+          is_verified?: boolean | null
+          last_login_date?: string | null
           linkedin_url?: string | null
+          login_streak?: number | null
+          longest_streak?: number | null
           network_score?: number | null
           profile_views?: number | null
           sector?: string | null
           skills?: string[] | null
           updated_at?: string
           user_id: string
+          verified_at?: string | null
           website_url?: string | null
         }
         Update: {
@@ -958,13 +1049,18 @@ export type Database = {
           id?: string
           interests?: string[] | null
           is_public?: boolean | null
+          is_verified?: boolean | null
+          last_login_date?: string | null
           linkedin_url?: string | null
+          login_streak?: number | null
+          longest_streak?: number | null
           network_score?: number | null
           profile_views?: number | null
           sector?: string | null
           skills?: string[] | null
           updated_at?: string
           user_id?: string
+          verified_at?: string | null
           website_url?: string | null
         }
         Relationships: []
@@ -1067,6 +1163,7 @@ export type Database = {
         Args: { profile_user_id: string }
         Returns: undefined
       }
+      update_login_streak: { Args: { _user_id: string }; Returns: undefined }
     }
     Enums: {
       app_role:
