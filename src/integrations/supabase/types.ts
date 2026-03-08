@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_coach_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          messages: Json
+          topic: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          topic?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          topic?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           category: string | null
@@ -44,6 +71,83 @@ export type Database = {
           icon?: string | null
           id?: string
           name?: string
+        }
+        Relationships: []
+      }
+      challenge_participants: {
+        Row: {
+          challenge_id: string
+          completed: boolean | null
+          completed_at: string | null
+          current_value: number | null
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed?: boolean | null
+          completed_at?: string | null
+          current_value?: number | null
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed?: boolean | null
+          completed_at?: string | null
+          current_value?: number | null
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string
+          description: string | null
+          ends_at: string
+          id: string
+          is_active: boolean | null
+          reward_points: number | null
+          starts_at: string
+          target_value: number
+          title: string
+        }
+        Insert: {
+          challenge_type?: string
+          created_at?: string
+          description?: string | null
+          ends_at?: string
+          id?: string
+          is_active?: boolean | null
+          reward_points?: number | null
+          starts_at?: string
+          target_value?: number
+          title: string
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string
+          description?: string | null
+          ends_at?: string
+          id?: string
+          is_active?: boolean | null
+          reward_points?: number | null
+          starts_at?: string
+          target_value?: number
+          title?: string
         }
         Relationships: []
       }
@@ -469,6 +573,127 @@ export type Database = {
           receiver_id?: string
           requester_id?: string
           status?: Database["public"]["Enums"]["connection_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      deal_room_documents: {
+        Row: {
+          created_at: string
+          deal_room_id: string
+          file_name: string
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          deal_room_id: string
+          file_name: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          deal_room_id?: string
+          file_name?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_room_documents_deal_room_id_fkey"
+            columns: ["deal_room_id"]
+            isOneToOne: false
+            referencedRelation: "deal_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_room_members: {
+        Row: {
+          deal_room_id: string
+          id: string
+          invited_at: string
+          nda_accepted: boolean | null
+          nda_accepted_at: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          deal_room_id: string
+          id?: string
+          invited_at?: string
+          nda_accepted?: boolean | null
+          nda_accepted_at?: string | null
+          role?: string
+          user_id: string
+        }
+        Update: {
+          deal_room_id?: string
+          id?: string
+          invited_at?: string
+          nda_accepted?: boolean | null
+          nda_accepted_at?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_room_members_deal_room_id_fkey"
+            columns: ["deal_room_id"]
+            isOneToOne: false
+            referencedRelation: "deal_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_rooms: {
+        Row: {
+          access_code: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          nda_signed: boolean | null
+          nda_signed_at: string | null
+          owner_id: string
+          startup_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          access_code?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          nda_signed?: boolean | null
+          nda_signed_at?: string | null
+          owner_id: string
+          startup_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          access_code?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          nda_signed?: boolean | null
+          nda_signed_at?: string | null
+          owner_id?: string
+          startup_id?: string | null
+          status?: string
           updated_at?: string
         }
         Relationships: []

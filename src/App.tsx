@@ -34,6 +34,9 @@ import CompanyPage from "./pages/CompanyPage";
 import WarmIntrosPage from "./pages/WarmIntrosPage";
 import SpeedNetworkingPage from "./pages/SpeedNetworkingPage";
 import SpacesPage from "./pages/SpacesPage";
+import ContentCalendarPage from "./pages/ContentCalendarPage";
+import DealRoomPage from "./pages/DealRoomPage";
+import ChallengesPage from "./pages/ChallengesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -102,6 +105,9 @@ const App = () => (
                   <Route path="introductions" element={<WarmIntrosPage />} />
                   <Route path="speed-networking" element={<SpeedNetworkingPage />} />
                   <Route path="spaces" element={<SpacesPage />} />
+                  <Route path="content-calendar" element={<ContentCalendarPage />} />
+                  <Route path="deal-room" element={<DealRoomPage />} />
+                  <Route path="challenges" element={<ChallengesPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

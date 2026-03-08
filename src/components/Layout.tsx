@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeNotifications, useRealtimeMessages } from "@/hooks/useRealtimeNotifications";
+import AICoachAssistant from "@/components/AICoachAssistant";
 
 const routeToHelpKey: Record<string, string> = {
   "/": "dashboard",
@@ -84,6 +85,9 @@ export default function Layout() {
 
       {/* Contextual help */}
       {helpConfig && <ContextualHelp title={helpConfig.title} items={helpConfig.items} />}
+
+      {/* AI Coach Assistant */}
+      <AICoachAssistant />
     </div>
   );
 }

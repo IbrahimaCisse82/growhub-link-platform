@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import PredictiveAnalytics from "@/components/PredictiveAnalytics";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardStats } from "@/hooks/useDashboard";
@@ -336,6 +337,12 @@ export default function AnalyticsPage() {
       {/* Shareable Achievement Cards */}
       <div className="mt-5">
         <ShareableAchievementCards />
+      </div>
+
+      {/* Predictive Analytics */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">🧠 Analytics Prédictif</h2>
+        <PredictiveAnalytics />
       </div>
     </motion.div>
   );
