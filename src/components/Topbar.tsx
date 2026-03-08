@@ -119,17 +119,6 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
               <Gift className="w-4 h-4" />
               <span>Parrainage</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/notifications")} className="cursor-pointer gap-2">
-              <Bell className="w-4 h-4" />
-              <div className="flex flex-1 items-center justify-between">
-                <span>Notifications</span>
-                {unreadNotifs > 0 && (
-                  <span className="bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-[10px] font-bold px-1.5 min-w-[18px] h-[18px]">
-                    {unreadNotifs > 99 ? "99+" : unreadNotifs}
-                  </span>
-                )}
-              </div>
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer gap-2">
               <Settings className="w-4 h-4" />
               <span>Paramètres</span>
