@@ -32,6 +32,7 @@ import CirclesPage from "./pages/CirclesPage";
 import PricingPage from "./pages/PricingPage";
 import CompanyPage from "./pages/CompanyPage";
 import WarmIntrosPage from "./pages/WarmIntrosPage";
+import SpeedNetworkingPage from "./pages/SpeedNetworkingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
