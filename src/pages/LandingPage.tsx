@@ -33,12 +33,31 @@ const stats = [
 ];
 
 const roles = [
-  { title: "Startup", desc: "Lancez, structurez et scalez", emoji: "🚀" },
-  { title: "Mentor", desc: "Accompagnez et monétisez", emoji: "🎯" },
-  { title: "Investisseur", desc: "Sourcez et suivez", emoji: "💰" },
-  { title: "Freelance", desc: "Missions et réseau", emoji: "💻" },
-  { title: "Étudiant", desc: "Apprenez et préparez", emoji: "🎓" },
-  { title: "Corporate", desc: "Open innovation", emoji: "🏢" },
+  { title: "Startup", desc: "Lancez, structurez et scalez votre business", emoji: "🚀", features: ["Pitch Deck Builder", "Fundraising Tracker", "Matching investisseurs"], cta: "Pour les startups" },
+  { title: "Mentor", desc: "Accompagnez et monétisez votre expertise", emoji: "🎯", features: ["Profil coach", "Réservation sessions", "Avis vérifiés"], cta: "Pour les mentors" },
+  { title: "Investisseur", desc: "Sourcez et suivez votre deal flow", emoji: "💰", features: ["Pipeline startups", "Due diligence", "Warm intros"], cta: "Pour les investisseurs" },
+  { title: "Freelance", desc: "Trouvez des missions et développez votre réseau", emoji: "💻", features: ["Visibilité profil", "Recommandations", "Events networking"], cta: "Pour les freelances" },
+  { title: "Étudiant", desc: "Apprenez, connectez et préparez votre lancement", emoji: "🎓", features: ["Coaching gratuit", "Cercles thématiques", "Challenges"], cta: "Pour les étudiants" },
+  { title: "Corporate", desc: "Open innovation et partenariats stratégiques", emoji: "🏢", features: ["Sourcing startups", "Pages entreprise", "Events privés"], cta: "Pour les corporates" },
+];
+
+const successStories = [
+  {
+    title: "De 0 à 500K€ levés en 3 mois",
+    company: "TechFlow",
+    sector: "SaaS",
+    description: "Sophie a utilisé le Pitch Deck Builder et le réseau d'investisseurs de GrowHubLink pour structurer sa levée de fonds seed.",
+    metrics: [{ label: "Levée", value: "500K€" }, { label: "Investisseurs contactés", value: "12" }, { label: "Temps", value: "3 mois" }],
+    quote: "Le matching m'a connectée directement aux bons investisseurs, sans intermédiaire.",
+  },
+  {
+    title: "100 startups accompagnées en 1 an",
+    company: "MentorPro",
+    sector: "Consulting",
+    description: "Marc a multiplié par 5 son impact en utilisant le Coaching Hub pour organiser ses sessions et recevoir des avis vérifiés.",
+    metrics: [{ label: "Startups", value: "100+" }, { label: "Satisfaction", value: "4.9/5" }, { label: "Revenu", value: "x3" }],
+    quote: "GrowHubLink a professionnalisé mon activité de mentorat comme aucun autre outil.",
+  },
 ];
 
 const steps = [
