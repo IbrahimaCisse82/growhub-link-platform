@@ -5,6 +5,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Sun, Moon, Monitor, Save, Trash2, Loader2, KeyRound, Shield, Bell } from "lucide-react";
+import PushNotificationToggle from "@/components/PushNotificationToggle";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { usePageMeta } from "@/hooks/usePageMeta";

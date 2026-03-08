@@ -25,7 +25,7 @@ import {
 import {
   TrendingUp, Users, Target, Calendar, MessageSquare, Award,
   Shield, Eye, Zap, CheckCircle2, XCircle, ArrowUpRight, ArrowDownRight,
-  UserCheck, BookOpen, Star
+  UserCheck, BookOpen, Star, BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import NetworkGraph from "@/components/NetworkGraph";
