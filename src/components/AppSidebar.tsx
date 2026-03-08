@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useActivatedTools } from "@/hooks/useActivatedTools";
 
 interface SidebarProps {
   activeRole?: string;
@@ -15,6 +16,7 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
+// Only Principal + Communauté sections per role — no more static "Outils"
 const navByRole: Record<string, { title: string; items: { path: string; icon: any; label: string }[] }[]> = {
   startup: [
     { title: "Principal", items: [
@@ -32,24 +34,11 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
-    { title: "Outils", items: [
-      { path: "/content-calendar", icon: FileText, label: "Contenu" },
-      { path: "/deal-room", icon: Shield, label: "Deal Room" },
-      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-      { path: "/templates", icon: MailPlus, label: "Templates" },
-      { path: "/challenges", icon: Trophy, label: "Challenges" },
-      { path: "/marketing", icon: Megaphone, label: "Marketing" },
-      { path: "/analytics", icon: BarChart3, label: "Analytics" },
-      { path: "/roi", icon: TrendingUp, label: "ROI" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
-    ]},
   ],
   mentor: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/coaching", icon: PenLine, label: "Coaching Hub" },
-      { path: "/analytics", icon: BarChart3, label: "Performance" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -59,22 +48,12 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
-    { title: "Outils", items: [
-      { path: "/content-calendar", icon: FileText, label: "Contenu" },
-      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-      { path: "/templates", icon: MailPlus, label: "Templates" },
-      { path: "/challenges", icon: Trophy, label: "Challenges" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
-      { path: "/marketing", icon: Megaphone, label: "Visibilité" },
     ]},
   ],
   investor: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/fundraising", icon: DollarSign, label: "Deal Flow" },
-      { path: "/analytics", icon: BarChart3, label: "Portfolio" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -84,20 +63,12 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
-    { title: "Outils", items: [
-      { path: "/deal-room", icon: Shield, label: "Deal Room" },
-      { path: "/coaching", icon: PenLine, label: "Coaching" },
-      { path: "/challenges", icon: Trophy, label: "Challenges" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
     ]},
   ],
   expert: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/coaching", icon: PenLine, label: "Mes Services" },
-      { path: "/analytics", icon: BarChart3, label: "Performance" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -107,20 +78,12 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
-    { title: "Outils", items: [
-      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-      { path: "/templates", icon: MailPlus, label: "Templates" },
-      { path: "/marketing", icon: Megaphone, label: "Prospection" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
     ]},
   ],
   freelance: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/coaching", icon: PenLine, label: "Mes Missions" },
-      { path: "/marketing", icon: Megaphone, label: "Prospection" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -130,13 +93,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
-    { title: "Outils", items: [
-      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-      { path: "/templates", icon: MailPlus, label: "Templates" },
-      { path: "/analytics", icon: BarChart3, label: "Analytics" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
     ]},
   ],
   incubateur: [
@@ -153,18 +109,11 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
-    { title: "Outils", items: [
-      { path: "/analytics", icon: BarChart3, label: "Analytics" },
-      { path: "/marketing", icon: Megaphone, label: "Communication" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
-    ]},
   ],
   etudiant: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/coaching", icon: PenLine, label: "Mentorat" },
-      { path: "/progression", icon: Target, label: "Parcours" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -175,16 +124,11 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
-    { title: "Outils", items: [
-      { path: "/pitchdeck", icon: BookOpen, label: "Mon Projet" },
-      { path: "/badges", icon: Award, label: "Badges" },
-    ]},
   ],
   aspirationnel: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/coaching", icon: PenLine, label: "Coaching" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -195,16 +139,11 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/feed", icon: Rss, label: "Inspiration" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
-    { title: "Outils", items: [
-      { path: "/pitchdeck", icon: BookOpen, label: "Vision" },
-      { path: "/badges", icon: Award, label: "Badges" },
-    ]},
   ],
   professionnel: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/coaching", icon: PenLine, label: "Formation" },
-      { path: "/analytics", icon: BarChart3, label: "Performance" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -214,11 +153,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
-    { title: "Outils", items: [
-      { path: "/marketing", icon: Megaphone, label: "Visibilité" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
     ]},
   ],
   corporate: [
@@ -235,13 +169,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
-    { title: "Outils", items: [
-      { path: "/coaching", icon: PenLine, label: "Innovation" },
-      { path: "/analytics", icon: BarChart3, label: "Analytics" },
-      { path: "/marketing", icon: Megaphone, label: "Partenariats" },
-      { path: "/progression", icon: Target, label: "Objectifs" },
-      { path: "/badges", icon: Award, label: "Badges" },
-    ]},
   ],
 };
 
@@ -250,8 +177,21 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
   const { signOut, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { activatedTools } = useActivatedTools();
 
-  const navSections = navByRole[activeRole] || navByRole.startup;
+  const baseSections = navByRole[activeRole] || navByRole.startup;
+
+  // Build dynamic "Mes outils" section from activated tools + always show Marketplace
+  const toolsItems: { path: string; icon: any; label: string }[] = [
+    { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+    ...activatedTools.map(t => ({ path: t.path, icon: t.lucideIcon, label: t.label })),
+  ];
+
+  const navSections = [
+    ...baseSections,
+    { title: "Mes outils", items: toolsItems },
+  ];
+
   const initials = (profile?.display_name ?? "?").substring(0, 2).toUpperCase();
 
   const handleNav = (path: string) => {

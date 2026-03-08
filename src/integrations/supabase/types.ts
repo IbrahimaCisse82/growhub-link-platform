@@ -1946,6 +1946,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activated_tools: {
+        Row: {
+          activated_at: string
+          id: string
+          tool_key: string
+          user_id: string
+        }
+        Insert: {
+          activated_at?: string
+          id?: string
+          tool_key: string
+          user_id: string
+        }
+        Update: {
+          activated_at?: string
+          id?: string
+          tool_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_id: string
