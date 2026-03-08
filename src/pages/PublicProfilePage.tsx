@@ -112,6 +112,7 @@ export default function PublicProfilePage() {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="font-heading text-2xl md:text-[28px] font-extrabold">{profile.display_name}</h1>
+              <VerifiedBadge isVerified={profile.is_verified} size="lg" />
               <Tag variant="green">{roleLabels[userRole ?? "startup"] ?? "Membre"}</Tag>
               {profile.company_stage && <Tag>{profile.company_stage}</Tag>}
             </div>
