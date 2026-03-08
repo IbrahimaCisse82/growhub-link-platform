@@ -634,6 +634,42 @@ export type Database = {
         }
         Relationships: []
       }
+      intent_profiles: {
+        Row: {
+          category: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          intent_text: string
+          intent_type: string
+          is_active: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          intent_text: string
+          intent_type?: string
+          is_active?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          intent_text?: string
+          intent_type?: string
+          is_active?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_contacts: {
         Row: {
           amount_committed: number | null
