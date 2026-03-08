@@ -136,12 +136,12 @@ export default function WeeklyDigest() {
       {/* CTA */}
       <div className="flex gap-2">
         <button onClick={() => navigate("/analytics")}
-          className="flex-1 bg-secondary text-foreground rounded-xl py-2.5 font-heading text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-secondary/80 transition-all">
-          <TrendingUp className="w-3.5 h-3.5" /> Voir analytics
+          className="flex-1 bg-secondary text-foreground rounded-xl py-2 md:py-2.5 font-heading text-[10px] md:text-xs font-bold flex items-center justify-center gap-1 md:gap-1.5 hover:bg-secondary/80 transition-all">
+          <TrendingUp className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0" /> Analytics
         </button>
         <button onClick={() => navigate("/networking")}
-          className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 font-heading text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-primary-hover transition-all">
-          <Users className="w-3.5 h-3.5" /> Développer mon réseau
+          className="flex-1 bg-primary text-primary-foreground rounded-xl py-2 md:py-2.5 font-heading text-[10px] md:text-xs font-bold flex items-center justify-center gap-1 md:gap-1.5 hover:bg-primary-hover transition-all">
+          <Users className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0" /> <span className="hidden md:inline">Développer mon</span> Réseau
         </button>
       </div>
     </div>
