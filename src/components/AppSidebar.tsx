@@ -299,7 +299,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
             )}
           >
             <btn.icon className="w-[17px] h-[17px] flex-shrink-0" />
-            {expanded && <span className="font-heading text-xs font-bold text-foreground/70">{btn.label}</span>}
+            {expanded && <span className="font-heading text-xs font-bold text-sidebar-fg">{btn.label}</span>}
             {btn.hasIndicator && <span className="absolute top-1.5 right-2.5 w-1.5 h-1.5 bg-destructive rounded-full" />}
           </button>
         ))}
