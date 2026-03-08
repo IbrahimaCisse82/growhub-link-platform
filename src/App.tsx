@@ -72,6 +72,7 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/welcome" element={<LandingRoute />} />
+                <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/auth" element={<AuthRoute />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>

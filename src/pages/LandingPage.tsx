@@ -57,6 +57,7 @@ export default function LandingPage() {
             <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
             <a href="#roles" className="hover:text-foreground transition-colors">Profils</a>
             <a href="#testimonials" className="hover:text-foreground transition-colors">Témoignages</a>
+            <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
           </div>
           <div className="flex gap-3">
             <button onClick={() => navigate("/auth")} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
