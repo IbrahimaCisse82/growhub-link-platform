@@ -110,6 +110,8 @@ const App = () => (
                   <Route path="content-calendar" element={<ContentCalendarPage />} />
                   <Route path="deal-room" element={<DealRoomPage />} />
                   <Route path="challenges" element={<ChallengesPage />} />
+                  <Route path="roi" element={<ROIDashboardPage />} />
+                  <Route path="moderation" element={<ModerationPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
