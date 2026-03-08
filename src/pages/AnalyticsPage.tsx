@@ -25,6 +25,8 @@ import {
   UserCheck, BookOpen, Star
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import NetworkGraph from "@/components/NetworkGraph";
+import NetworkAnalytics from "@/components/NetworkAnalytics";
 
 const PIE_COLORS = [
   "hsl(93, 100%, 37%)", "hsl(213, 82%, 51%)", "hsl(23, 88%, 49%)",
