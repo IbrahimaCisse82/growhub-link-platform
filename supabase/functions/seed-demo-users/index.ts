@@ -172,7 +172,7 @@ Deno.serve(async (req) => {
       }
 
       // Make Marc and Thomas coaches
-      if (demo.email === "marc.dubois@demo.com" || demo.email === "thomas.petit@demo.com") {
+      if (demo.email === "marc.lefevre@demo.com" || demo.email === "thomas.moreau@demo.com") {
         const { data: existingCoach } = await supabaseAdmin
           .from("coaches")
           .select("id")
