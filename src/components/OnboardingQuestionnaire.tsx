@@ -9,7 +9,25 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Rocket, Building2, MapPin, Briefcase, Target, Sparkles, ArrowRight, ArrowLeft, Check, Loader2, Globe, Linkedin } from "lucide-react";
+import {
+  Rocket, Building2, MapPin, Briefcase, Target, Sparkles,
+  ArrowRight, ArrowLeft, Check, Loader2, Globe, Linkedin,
+  UserCircle, Lightbulb, GraduationCap, Landmark, BriefcaseBusiness,
+  Code2, Building, Star, ShieldCheck
+} from "lucide-react";
+
+const ROLES = [
+  { value: "startup", label: "Startup", desc: "Je lance ou développe ma startup", icon: Rocket, color: "from-emerald-500 to-teal-600" },
+  { value: "professionnel", label: "Professionnel", desc: "Je suis salarié ou indépendant en poste", icon: BriefcaseBusiness, color: "from-blue-500 to-indigo-600" },
+  { value: "freelance", label: "Freelance", desc: "Je propose mes services en indépendant", icon: Code2, color: "from-violet-500 to-purple-600" },
+  { value: "mentor", label: "Mentor", desc: "J'accompagne des entrepreneurs", icon: Lightbulb, color: "from-amber-500 to-orange-600" },
+  { value: "investor", label: "Investisseur", desc: "Je finance des projets innovants", icon: Landmark, color: "from-yellow-500 to-amber-600" },
+  { value: "expert", label: "Expert", desc: "Je partage mon expertise sectorielle", icon: ShieldCheck, color: "from-cyan-500 to-blue-600" },
+  { value: "etudiant", label: "Étudiant", desc: "J'apprends et je prépare mon projet", icon: GraduationCap, color: "from-pink-500 to-rose-600" },
+  { value: "aspirationnel", label: "Aspirationnel", desc: "J'explore l'entrepreneuriat", icon: Star, color: "from-fuchsia-500 to-pink-600" },
+  { value: "incubateur", label: "Incubateur", desc: "J'accompagne des cohortes de startups", icon: Building2, color: "from-teal-500 to-emerald-600" },
+  { value: "corporate", label: "Corporate", desc: "Je représente une entreprise / grand groupe", icon: Building, color: "from-slate-500 to-gray-600" },
+];
 
 const SECTORS = ["SaaS / Tech", "FinTech", "HealthTech", "EdTech", "E-commerce", "GreenTech", "FoodTech", "PropTech", "LegalTech", "DeepTech / IA", "Média / Contenu", "Autre"];
 const STAGES = [
@@ -21,8 +39,10 @@ const STAGES = [
 ];
 const SKILLS_LIST = ["Product Management", "Growth Hacking", "Marketing Digital", "Développement Web", "Data Science / IA", "Design UX/UI", "Finance / Comptabilité", "Sales / BizDev", "RH / Recrutement", "Juridique", "Ops / Logistique", "Stratégie"];
 const INTERESTS_LIST = ["Levée de fonds", "Trouver un co-fondateur", "Mentorat", "Networking", "Recrutement", "Partenariats", "Internationalisation", "Formation", "Incubation / Accélération", "Visibilité média"];
+
 const STEPS = [
-  { icon: Building2, title: "Votre startup", subtitle: "Parlez-nous de votre projet" },
+  { icon: UserCircle, title: "Votre profil", subtitle: "Quel type d'utilisateur êtes-vous ?" },
+  { icon: Building2, title: "Votre activité", subtitle: "Parlez-nous de votre projet" },
   { icon: MapPin, title: "Localisation", subtitle: "Où êtes-vous basé ?" },
   { icon: Briefcase, title: "Compétences", subtitle: "Quels sont vos talents ?" },
   { icon: Target, title: "Objectifs", subtitle: "Que cherchez-vous ?" },
@@ -35,7 +55,11 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
   const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ company_name: "", company_stage: "", sector: "", city: "", country: "France", skills: [] as string[], interests: [] as string[], bio: "", linkedin_url: "", website_url: "" });
+  const [selectedRole, setSelectedRole] = useState("startup");
+  const [form, setForm] = useState({
+    company_name: "", company_stage: "", sector: "", city: "", country: "France",
+    skills: [] as string[], interests: [] as string[], bio: "", linkedin_url: "", website_url: "",
+  });
 
   const toggleItem = (key: "skills" | "interests", item: string) => {
     setForm(f => ({ ...f, [key]: f[key].includes(item) ? f[key].filter(i => i !== item) : [...f[key], item] }));
@@ -45,12 +69,20 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
     if (!user) return;
     setSaving(true);
     try {
+      // Update profile
       const { error } = await supabase.from("profiles").update({
         company_name: form.company_name || null, company_stage: form.company_stage || null, sector: form.sector || null,
         city: form.city || null, country: form.country || null, skills: form.skills, interests: form.interests,
         bio: form.bio || null, linkedin_url: form.linkedin_url || null, website_url: form.website_url || null,
       }).eq("user_id", user.id);
       if (error) throw error;
+
+      // Update role (the trigger creates a default "startup" role, so we update it)
+      const { error: roleError } = await supabase.from("user_roles").update({
+        role: selectedRole as any,
+      }).eq("user_id", user.id);
+      if (roleError) throw roleError;
+
       toast.success("Profil complété avec succès ! 🎉");
       onComplete();
     } catch (e: any) { toast.error(e.message || "Erreur"); } finally { setSaving(false); }
@@ -58,10 +90,11 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
 
   const canNext = () => {
     switch (step) {
-      case 0: return form.company_name && form.company_stage && form.sector;
-      case 1: return form.city;
-      case 2: return form.skills.length >= 1;
-      case 3: return form.interests.length >= 1;
+      case 0: return !!selectedRole;
+      case 1: return form.company_name && form.sector;
+      case 2: return form.city;
+      case 3: return form.skills.length >= 1;
+      case 4: return form.interests.length >= 1;
       default: return true;
     }
   };
@@ -91,32 +124,75 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
             </div>
             <AnimatePresence mode="wait">
               <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }} className="space-y-4">
-                {step === 0 && (<>
-                  <div className="space-y-2"><Label>Nom de la startup</Label><Input placeholder="Ex: GrowHubLink" value={form.company_name} onChange={e => setForm({ ...form, company_name: e.target.value })} /></div>
-                  <div className="space-y-2"><Label>Stade de développement</Label>
-                    <div className="grid grid-cols-1 gap-2">
-                      {STAGES.map(s => (
-                        <button key={s.value} type="button" onClick={() => setForm({ ...form, company_stage: s.value })}
-                          className={`flex items-center gap-3 p-3 rounded-lg border text-left transition-all ${form.company_stage === s.value ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:border-primary/40"}`}>
-                          <span className="text-lg">{s.label.split(" ")[0]}</span>
-                          <div><div className="text-sm font-medium text-foreground">{s.label.substring(s.label.indexOf(" ") + 1)}</div><div className="text-xs text-muted-foreground">{s.desc}</div></div>
+                
+                {/* Step 0: Role selection */}
+                {step === 0 && (
+                  <div className="grid grid-cols-2 gap-2.5 max-h-[400px] overflow-y-auto pr-1">
+                    {ROLES.map(role => {
+                      const Icon = role.icon;
+                      const isSelected = selectedRole === role.value;
+                      return (
+                        <button
+                          key={role.value}
+                          type="button"
+                          onClick={() => setSelectedRole(role.value)}
+                          className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border text-center transition-all duration-200 ${
+                            isSelected
+                              ? "border-primary bg-primary/5 ring-2 ring-primary shadow-md"
+                              : "border-border hover:border-primary/40 hover:bg-muted/30"
+                          }`}
+                        >
+                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${role.color} flex items-center justify-center`}>
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-heading font-bold text-foreground">{role.label}</div>
+                            <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">{role.desc}</div>
+                          </div>
+                          {isSelected && (
+                            <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                              <Check className="w-3 h-3 text-primary-foreground" />
+                            </div>
+                          )}
                         </button>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
+                )}
+
+                {/* Step 1: Activity */}
+                {step === 1 && (<>
+                  <div className="space-y-2"><Label>Nom de l'entreprise / projet</Label><Input placeholder="Ex: GrowHubLink" value={form.company_name} onChange={e => setForm({ ...form, company_name: e.target.value })} /></div>
+                  {["startup", "freelance", "incubateur"].includes(selectedRole) && (
+                    <div className="space-y-2"><Label>Stade de développement</Label>
+                      <div className="grid grid-cols-1 gap-2">
+                        {STAGES.map(s => (
+                          <button key={s.value} type="button" onClick={() => setForm({ ...form, company_stage: s.value })}
+                            className={`flex items-center gap-3 p-3 rounded-lg border text-left transition-all ${form.company_stage === s.value ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:border-primary/40"}`}>
+                            <span className="text-lg">{s.label.split(" ")[0]}</span>
+                            <div><div className="text-sm font-medium text-foreground">{s.label.substring(s.label.indexOf(" ") + 1)}</div><div className="text-xs text-muted-foreground">{s.desc}</div></div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="space-y-2"><Label>Secteur d'activité</Label>
                     <div className="flex flex-wrap gap-2">{SECTORS.map(s => (
                       <Badge key={s} variant={form.sector === s ? "default" : "outline"} className={`cursor-pointer transition-all ${form.sector === s ? "" : "hover:border-primary/40"}`} onClick={() => setForm({ ...form, sector: s })}>{s}</Badge>
                     ))}</div>
                   </div>
                 </>)}
-                {step === 1 && (<>
+
+                {/* Step 2: Location */}
+                {step === 2 && (<>
                   <div className="space-y-2"><Label>Ville</Label><Input placeholder="Ex: Paris" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} /></div>
                   <div className="space-y-2"><Label>Pays</Label><Input placeholder="France" value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} /></div>
                   <div className="space-y-2"><Label className="flex items-center gap-1.5"><Linkedin className="w-4 h-4" /> LinkedIn (optionnel)</Label><Input placeholder="https://linkedin.com/in/..." value={form.linkedin_url} onChange={e => setForm({ ...form, linkedin_url: e.target.value })} /></div>
                   <div className="space-y-2"><Label className="flex items-center gap-1.5"><Globe className="w-4 h-4" /> Site web (optionnel)</Label><Input placeholder="https://..." value={form.website_url} onChange={e => setForm({ ...form, website_url: e.target.value })} /></div>
                 </>)}
-                {step === 2 && (
+
+                {/* Step 3: Skills */}
+                {step === 3 && (
                   <div className="space-y-2"><Label>Sélectionnez vos compétences (min. 1)</Label>
                     <div className="flex flex-wrap gap-2">{SKILLS_LIST.map(s => (
                       <Badge key={s} variant={form.skills.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.skills.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("skills", s)}>
@@ -125,7 +201,9 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
                     ))}</div>
                   </div>
                 )}
-                {step === 3 && (
+
+                {/* Step 4: Interests */}
+                {step === 4 && (
                   <div className="space-y-2"><Label>Que recherchez-vous sur GrowHubLink ? (min. 1)</Label>
                     <div className="flex flex-wrap gap-2">{INTERESTS_LIST.map(s => (
                       <Badge key={s} variant={form.interests.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.interests.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("interests", s)}>
@@ -134,9 +212,11 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
                     ))}</div>
                   </div>
                 )}
-                {step === 4 && (
+
+                {/* Step 5: Bio */}
+                {step === 5 && (
                   <div className="space-y-2"><Label>Bio / pitch en quelques lignes (optionnel)</Label>
-                    <Textarea placeholder="Décrivez votre projet..." rows={4} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} />
+                    <Textarea placeholder="Décrivez votre projet, votre parcours..." rows={4} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} />
                   </div>
                 )}
               </motion.div>
