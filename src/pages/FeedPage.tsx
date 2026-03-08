@@ -431,7 +431,9 @@ export default function FeedPage() {
                   )}
                 </div>
 
-                <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">{post.content}</p>
+                <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">
+                  <HashtagText text={post.content} onTagClick={handleTagClick} />
+                </p>
 
                 {/* Media gallery */}
                 {post.media_urls && post.media_urls.length > 0 && (
