@@ -1,8 +1,11 @@
-const CACHE_NAME = 'growhub-v2';
+const CACHE_NAME = 'growhub-v3';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/favicon.ico',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
 ];
 
 const OFFLINE_PAGE = `
