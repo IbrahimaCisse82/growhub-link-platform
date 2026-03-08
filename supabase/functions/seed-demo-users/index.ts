@@ -8,7 +8,7 @@ const corsHeaders = {
 const demoUsers = [
   {
     email: "sophie.martin@demo.com",
-    password: "password123",
+    password: "Demo2024!",
     full_name: "Sophie Martin",
     profile: {
       display_name: "Sophie Martin",
