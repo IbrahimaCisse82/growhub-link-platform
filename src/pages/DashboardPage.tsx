@@ -36,17 +36,17 @@ export default function DashboardPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 left-32 w-56 h-56 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-3.5 flex-wrap">
-            <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider">
-              <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
+          <div className="flex items-center gap-1.5 md:gap-2 mb-2.5 md:mb-3.5 flex-wrap">
+            <div className="inline-flex items-center gap-1 md:gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2 md:px-2.5 py-[2px] md:py-[3px] text-[8px] md:text-[10px] font-bold text-primary uppercase tracking-wider">
+              <span className="w-1 h-1 md:w-[5px] md:h-[5px] bg-primary rounded-full animate-pulse-dot" />
               Growth Command Center
             </div>
             <StreakBadge />
           </div>
-          <h1 className="font-heading text-xl md:text-[32px] font-extrabold leading-tight mb-2">
+          <h1 className="font-heading text-lg md:text-[32px] font-extrabold leading-tight mb-1.5 md:mb-2">
             Bonjour {displayName},<br className="hidden md:block" /><span className="text-primary"> accélérez votre croissance</span> 🚀
           </h1>
-          <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px] mb-6">
+          <p className="text-foreground/60 text-xs md:text-sm leading-relaxed max-w-[460px] mb-4 md:mb-6">
             {nextSession
               ? `Session coaching prévue le ${new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}`
               : "Votre écosystème est actif. Explorez vos outils ci-dessous."}
