@@ -36,7 +36,7 @@ export default function ChallengesPage() {
     queryKey: ["challenge-participations", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("challenge_participants").select("*").eq("user_id", user!.id);
+      const { data } = await (supabase as any).from("challenge_participants").select("*").eq("user_id", user!.id);
       return data ?? [];
     },
   });
