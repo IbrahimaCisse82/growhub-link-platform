@@ -32,7 +32,7 @@ export default function DashboardPage() {
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
       {/* Hero */}
-      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-6 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-2xl md:rounded-[20px] p-4 md:p-9 mb-4 md:mb-6 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 left-32 w-56 h-56 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
         <div className="relative z-10">
@@ -43,27 +43,27 @@ export default function DashboardPage() {
             </div>
             <StreakBadge />
           </div>
-          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Bonjour {displayName},<br /><span className="text-primary">accélérez votre croissance</span> 🚀
+          <h1 className="font-heading text-xl md:text-[32px] font-extrabold leading-tight mb-2">
+            Bonjour {displayName},<br className="hidden md:block" /><span className="text-primary"> accélérez votre croissance</span> 🚀
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px] mb-6">
             {nextSession
               ? `Session coaching prévue le ${new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}`
               : "Votre écosystème est actif. Explorez vos outils ci-dessous."}
           </p>
-          <div className="flex gap-2.5 flex-wrap">
-            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-[7px] border-none rounded-[10px] px-5 py-2.5 font-heading text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
-              📊 Pitch Deck Builder
+          <div className="flex gap-2 md:gap-2.5 flex-wrap">
+            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-[6px] border-none rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
+              📊 Pitch Deck
             </button>
-            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-[7px] rounded-[10px] px-5 py-2.5 font-heading text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              💰 Fundraising Tracker
+            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-[6px] rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+              💰 Levée
             </button>
-            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-[7px] rounded-[10px] px-5 py-2.5 font-heading text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              ✍️ Coaching Hub
+            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-[6px] rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+              ✍️ Coaching
             </button>
           </div>
 
-          <div className="flex gap-4 md:gap-7 mt-7 pt-6 border-t border-border flex-wrap">
+          <div className="flex gap-3 md:gap-7 mt-5 md:mt-7 pt-4 md:pt-6 border-t border-border flex-wrap">
             {statsLoading ? (
               Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-28" />)
             ) : (
@@ -105,7 +105,7 @@ export default function DashboardPage() {
       </GHCard>
 
       {/* Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-[18px]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3.5 mb-4 md:mb-[18px]">
         <MetricCard icon="👥" value={String(stats?.connections ?? 0)} label="Connexions réseau" badge={`${stats?.pendingConnections ?? 0} en attente`} badgeType="up" />
         <MetricCard icon="📅" value={String(stats?.completedSessions ?? 0)} label="Sessions coaching" badge={`★ ${stats?.avgRating ?? "—"}`} badgeType="up" />
         <MetricCard icon="🎯" value={`${stats?.objectivePct ?? 0}%`} label="Objectifs atteints" badge={`${stats?.completedObjectives ?? 0}/${stats?.totalObjectives ?? 0}`} badgeType="up" />
@@ -113,7 +113,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Objectives + Coaching + Leaderboard */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px] mb-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-[18px] mb-4 md:mb-[18px]">
         <div className="md:col-span-2 space-y-[18px]">
           <GHCard title="Objectifs en cours" headerRight={<Tag variant="green">En cours</Tag>}>
             {!objectives || objectives.length === 0 ? (

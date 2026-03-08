@@ -143,9 +143,9 @@ export default function GlobalSearch() {
   if (!open) {
     return (
       <button onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
-        className="flex items-center bg-secondary border border-border rounded-[10px] px-3 gap-2 h-9 transition-all hover:border-primary/35 cursor-pointer max-w-[300px] flex-1">
+        className="flex items-center bg-secondary border border-border rounded-[10px] px-2.5 md:px-3 gap-1.5 md:gap-2 h-8 md:h-9 transition-all hover:border-primary/35 cursor-pointer min-w-0 flex-1 max-w-[200px] md:max-w-[300px]">
         <Search className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-        <span className="text-[13px] text-muted-foreground/60 flex-1 text-left">Rechercher...</span>
+        <span className="text-[12px] md:text-[13px] text-muted-foreground/60 flex-1 text-left truncate">Rechercher...</span>
         <kbd className="hidden md:inline text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-mono">⌘K</kbd>
       </button>
     );
@@ -154,7 +154,7 @@ export default function GlobalSearch() {
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[300] backdrop-blur-sm" onClick={() => { setOpen(false); resetFilters(); }} />
-      <div className="fixed top-[8vh] left-1/2 -translate-x-1/2 w-full max-w-xl z-[301] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden">
+      <div className="fixed top-0 md:top-[8vh] left-0 md:left-1/2 md:-translate-x-1/2 w-full md:max-w-xl h-full md:h-auto z-[301] bg-card md:border md:border-border md:rounded-2xl shadow-2xl overflow-hidden flex flex-col md:block">
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
           <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
           <input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher membres, publications, événements..."
@@ -253,7 +253,7 @@ export default function GlobalSearch() {
         )}
 
         {/* Results */}
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[50vh] md:max-h-[400px] overflow-y-auto flex-1 md:flex-none">
           {loading ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">Recherche en cours...</div>
           ) : query.length < 2 && !hasAdvancedFilters ? (

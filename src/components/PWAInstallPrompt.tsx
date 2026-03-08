@@ -55,7 +55,7 @@ export default function PWAInstallPrompt() {
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 60 }}
-        className="fixed bottom-24 left-4 right-4 lg:left-auto lg:right-7 lg:bottom-7 lg:w-[340px] z-[150] bg-card border-2 border-primary/20 rounded-2xl shadow-2xl p-4"
+        className="fixed bottom-[76px] left-3 right-3 lg:left-auto lg:right-7 lg:bottom-7 lg:w-[340px] z-[150] bg-card border-2 border-primary/20 rounded-2xl shadow-2xl p-4"
       >
         <button onClick={handleDismiss} className="absolute top-2 right-2 text-muted-foreground hover:text-foreground">
           <X className="w-4 h-4" />

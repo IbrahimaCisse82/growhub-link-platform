@@ -26,13 +26,13 @@ export default function ContextualHelp({ title, items, open: controlledOpen, onO
       <AnimatePresence>
         {isOpen && (
           <>
-            <div className="fixed inset-0 z-[400] bg-black/30 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none" onClick={() => setOpen(false)} />
+            <div className="fixed inset-0 z-[400] bg-black/30 backdrop-blur-sm" onClick={() => setOpen(false)} />
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="fixed bottom-20 right-4 lg:bottom-20 lg:right-6 z-[401] w-[340px] max-h-[70vh] bg-card border-2 border-border rounded-2xl shadow-2xl overflow-hidden"
+              className="fixed inset-x-3 bottom-[76px] lg:inset-auto lg:bottom-20 lg:right-6 z-[401] w-auto lg:w-[340px] max-h-[70vh] bg-card border-2 border-border rounded-2xl shadow-2xl overflow-hidden"
             >
               <div className="flex items-center justify-between px-5 py-4 border-b border-border">
                 <div className="flex items-center gap-2">

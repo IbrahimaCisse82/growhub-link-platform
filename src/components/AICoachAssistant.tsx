@@ -98,10 +98,10 @@ export default function AICoachAssistant() {
           <motion.button
             initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-24 right-5 lg:bottom-7 lg:right-7 z-[200] w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+            className="fixed bottom-[76px] right-4 lg:bottom-7 lg:right-7 z-[190] w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
           >
-            <Bot className="w-6 h-6" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+            <Bot className="w-5 h-5 lg:w-6 lg:h-6" />
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 lg:w-4 lg:h-4 bg-green-500 rounded-full border-2 border-background animate-pulse" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -113,7 +113,7 @@ export default function AICoachAssistant() {
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
-            className="fixed bottom-24 right-3 lg:bottom-7 lg:right-7 z-[200] w-[360px] max-w-[calc(100vw-24px)] h-[520px] max-h-[70vh] bg-card border-2 border-primary/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed inset-x-0 bottom-0 lg:inset-auto lg:bottom-7 lg:right-7 z-[200] w-full lg:w-[360px] lg:max-w-[calc(100vw-24px)] h-[85dvh] lg:h-[520px] lg:max-h-[70vh] bg-card border-t-2 lg:border-2 border-primary/20 lg:rounded-2xl shadow-2xl flex flex-col overflow-hidden rounded-t-2xl"
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border">
