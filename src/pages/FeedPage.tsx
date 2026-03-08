@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Heart, MessageCircle, Share2, Send, Trash2, Image, X, Reply, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
@@ -104,6 +105,7 @@ function CommentThread({ comments, postId, user }: { comments: any[]; postId: st
 
 // ─── Main Feed Page ─────────────────────────────────────
 export default function FeedPage() {
+  usePageMeta({ title: "Fil d'actualité", description: "Suivez les actualités de la communauté startup GrowHub." });
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfinitePosts();

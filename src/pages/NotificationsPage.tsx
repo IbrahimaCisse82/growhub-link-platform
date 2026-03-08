@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bell, Check, Users, Calendar, MessageSquare, Award, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const typeConfig: Record<string, { icon: any; color: string; label: string }> = {
   connection_request: { icon: Users, color: "blue", label: "Connexion" },
@@ -20,6 +21,7 @@ const typeConfig: Record<string, { icon: any; color: string; label: string }> = 
 };
 
 export default function NotificationsPage() {
+  usePageMeta({ title: "Notifications", description: "Restez informé de toute l'activité de votre réseau." });
   const { user } = useAuth();
   const { data: notifications, isLoading, refetch } = useNotifications();
 

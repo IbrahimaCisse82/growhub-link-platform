@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DollarSign, Users, TrendingUp, Target } from "lucide-react";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const statusLabels: Record<string, { label: string; variant: string }> = {
   identified: { label: "Identifié", variant: "default" },
@@ -17,6 +18,7 @@ const statusLabels: Record<string, { label: string; variant: string }> = {
 };
 
 export default function FundraisingPage() {
+  usePageMeta({ title: "Levée de fonds", description: "Gérez vos rounds de financement et suivez vos investisseurs." });
   const { user } = useAuth();
 
   const { data: rounds, isLoading } = useQuery({

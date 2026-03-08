@@ -8,10 +8,12 @@ import { toast } from "sonner";
 import { Users, UserPlus, Check, X, Search, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const gradients = ["from-[#200a30] to-[#A064FF]","from-[#103050] to-[#4096FF]","from-[#1a3a10] to-[#5CBF00]","from-[#301a08] to-[#D06020]","from-[#0a3040] to-[#00B8A0]"];
 
 export default function NetworkingPage() {
+  usePageMeta({ title: "Networking", description: "Développez votre réseau professionnel et trouvez des partenaires." });
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: profiles, isLoading: profilesLoading } = useProfiles();

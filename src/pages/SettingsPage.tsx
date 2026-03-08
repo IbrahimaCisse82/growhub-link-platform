@@ -4,8 +4,10 @@ import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function SettingsPage() {
+  usePageMeta({ title: "Paramètres", description: "Configurez votre compte et vos préférences GrowHub." });
   const { theme, setTheme } = useTheme();
   const { user, profile } = useAuth();
 

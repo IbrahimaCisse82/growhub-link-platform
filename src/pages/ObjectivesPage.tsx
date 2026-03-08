@@ -5,8 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useObjectives, useCreateObjective, useUpdateObjective, useDeleteObjective } from "@/hooks/useGrowHub";
 import { toast } from "sonner";
 import { Plus, Trash2, Check, Target } from "lucide-react";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function ObjectivesPage() {
+  usePageMeta({ title: "Objectifs", description: "Définissez et suivez vos objectifs de croissance startup." });
   const { user } = useAuth();
   const { data: objectives, isLoading } = useObjectives();
   const createObjective = useCreateObjective();

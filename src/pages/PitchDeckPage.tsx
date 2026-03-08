@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Plus, Eye, FileText, Trash2 } from "lucide-react";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const templates = [
   { id: "classic", name: "Classic VC", description: "Structure standard pour investisseurs" },
@@ -16,6 +17,7 @@ const templates = [
 ];
 
 export default function PitchDeckPage() {
+  usePageMeta({ title: "Pitch Deck", description: "Créez et partagez vos pitch decks pour convaincre les investisseurs." });
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [creating, setCreating] = useState(false);
