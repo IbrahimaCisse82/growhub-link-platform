@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import PredictiveAnalytics from "@/components/PredictiveAnalytics";
 import DataExportButton from "@/components/DataExportButton";
+import RoleAnalyticsDashboard from "@/components/RoleAnalyticsDashboard";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardStats } from "@/hooks/useDashboard";
