@@ -105,13 +105,37 @@ function CommentThread({ comments, postId, user }: { comments: any[]; postId: st
   );
 }
 
+// ─── Hashtag renderer ───────────────────────────────────
+function HashtagText({ text, onTagClick }: { text: string; onTagClick: (tag: string) => void }) {
+  const parts = text.split(/(#\w+)/g);
+  return (
+    <span>
+      {parts.map((part, i) =>
+        part.startsWith("#") ? (
+          <button key={i} onClick={() => onTagClick(part.slice(1))} className="text-primary font-medium hover:underline">
+            {part}
+          </button>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </span>
+  );
+}
+
+type SortMode = "recent" | "trending" | "relevant";
+
 // ─── Main Feed Page ─────────────────────────────────────
 export default function FeedPage() {
   usePageMeta({ title: "Fil d'actualité", description: "Suivez les actualités de la communauté startup GrowHub." });
   const { user } = useAuth();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfinitePosts();
   const { data: userReactions } = useUserReactions();
+  const { data: userRepostIds } = useUserReposts();
+  const repost = useRepost();
+  const undoRepost = useUndoRepost();
   const toggleReaction = useToggleReaction();
   const deletePost = useDeletePost();
   const addComment = useAddComment();
@@ -121,6 +145,8 @@ export default function FeedPage() {
   const [posting, setPosting] = useState(false);
   const [commentingPostId, setCommentingPostId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("recent");
+  const [hashtagFilter, setHashtagFilter] = useState<string | null>(null);
   const { data: comments } = useComments(commentingPostId);
 
   // Image upload state
