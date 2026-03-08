@@ -27,7 +27,7 @@ export default function ChallengesPage() {
   const { data: challenges = [] } = useQuery({
     queryKey: ["challenges"],
     queryFn: async () => {
-      const { data } = await supabase.from("challenges").select("*").eq("is_active", true).order("ends_at", { ascending: true });
+      const { data } = await (supabase as any).from("challenges").select("*").eq("is_active", true).order("ends_at", { ascending: true });
       return data ?? [];
     },
   });
