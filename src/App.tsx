@@ -26,6 +26,7 @@ import BadgesPage from "./pages/BadgesPage";
 import SettingsPage from "./pages/SettingsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import GenericPage from "./pages/GenericPage";
+import MarketingPage from "./pages/MarketingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,7 +83,7 @@ const App = () => (
                   <Route path="progression" element={<ObjectivesPage />} />
                   <Route path="badges" element={<BadgesPage />} />
                   <Route path="settings" element={<SettingsPage />} />
-                  <Route path="marketing" element={<GenericPage pageId="marketing" {...pageConfigs.marketing} />} />
+                  <Route path="marketing" element={<MarketingPage />} />
                   <Route path="analytics" element={<AnalyticsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />

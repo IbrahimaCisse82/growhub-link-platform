@@ -425,6 +425,48 @@ export type Database = {
           },
         ]
       }
+      leads: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          source: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -449,6 +491,54 @@ export type Database = {
           is_read?: boolean | null
           receiver_id?: string
           sender_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          badge_earned: boolean
+          coaching_booked: boolean
+          coaching_reminder: boolean
+          connection_accepted: boolean
+          connection_request: boolean
+          created_at: string
+          event_reminder: boolean
+          id: string
+          post_comment: boolean
+          post_reaction: boolean
+          system_notifications: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_earned?: boolean
+          coaching_booked?: boolean
+          coaching_reminder?: boolean
+          connection_accepted?: boolean
+          connection_request?: boolean
+          created_at?: string
+          event_reminder?: boolean
+          id?: string
+          post_comment?: boolean
+          post_reaction?: boolean
+          system_notifications?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_earned?: boolean
+          coaching_booked?: boolean
+          coaching_reminder?: boolean
+          connection_accepted?: boolean
+          connection_request?: boolean
+          created_at?: string
+          event_reminder?: boolean
+          id?: string
+          post_comment?: boolean
+          post_reaction?: boolean
+          system_notifications?: boolean
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
