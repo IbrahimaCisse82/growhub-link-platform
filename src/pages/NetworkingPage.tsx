@@ -49,6 +49,10 @@ export default function NetworkingPage() {
         <MetricCard icon="🔍" value={String(suggestions.length)} label="Suggestions" badge="Disponibles" badgeType="neutral" />
         <MetricCard icon="🌐" value={String((profiles ?? []).length)} label="Membres" badge="Réseau" badgeType="neutral" />
       </div>
+      {/* Intent Matching */}
+      <IntentEditor />
+      <IntentMatchResults />
+
       {/* Network Graph Visualization */}
       <div className="mb-5">
         <NetworkGraph />
