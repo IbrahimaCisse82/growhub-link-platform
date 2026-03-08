@@ -43,7 +43,7 @@ export default function ContentCalendarPage() {
 
   const createEntry = useMutation({
     mutationFn: async (entry: any) => {
-      const { error } = await supabase.from("content_calendar").insert({ ...entry, user_id: user!.id });
+      const { error } = await (supabase as any).from("content_calendar").insert({ ...entry, user_id: user!.id });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["content-calendar"] }); toast.success("Contenu planifié !"); setShowForm(false); setForm({ title: "", content: "", post_type: "text", scheduled_at: "", status: "draft" }); },
