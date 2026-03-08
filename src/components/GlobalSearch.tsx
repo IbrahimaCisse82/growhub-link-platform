@@ -253,7 +253,7 @@ export default function GlobalSearch() {
         )}
 
         {/* Results */}
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[50vh] md:max-h-[400px] overflow-y-auto flex-1 md:flex-none">
           {loading ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">Recherche en cours...</div>
           ) : query.length < 2 && !hasAdvancedFilters ? (
