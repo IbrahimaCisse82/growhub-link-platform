@@ -996,6 +996,96 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_services: {
+        Row: {
+          category: string
+          created_at: string
+          currency: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_active: boolean | null
+          price: number | null
+          price_type: string
+          rating: number | null
+          tags: string[] | null
+          title: string
+          total_bookings: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          price?: number | null
+          price_type?: string
+          rating?: number | null
+          tags?: string[] | null
+          title: string
+          total_bookings?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          price?: number | null
+          price_type?: string
+          rating?: number | null
+          tags?: string[] | null
+          title?: string
+          total_bookings?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      message_templates: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string
+          id: string
+          is_public: boolean | null
+          title: string
+          updated_at: string
+          usage_count: number | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          title: string
+          updated_at?: string
+          usage_count?: number | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          title?: string
+          updated_at?: string
+          usage_count?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -1551,6 +1641,59 @@ export type Database = {
             columns: ["original_post_id"]
             isOneToOne: false
             referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_bookings: {
+        Row: {
+          buyer_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          message: string | null
+          rating: number | null
+          review: string | null
+          scheduled_at: string | null
+          seller_id: string
+          service_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          rating?: number | null
+          review?: string | null
+          scheduled_at?: string | null
+          seller_id: string
+          service_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          rating?: number | null
+          review?: string | null
+          scheduled_at?: string | null
+          seller_id?: string
+          service_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_services"
             referencedColumns: ["id"]
           },
         ]
