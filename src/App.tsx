@@ -33,6 +33,7 @@ import PricingPage from "./pages/PricingPage";
 import CompanyPage from "./pages/CompanyPage";
 import WarmIntrosPage from "./pages/WarmIntrosPage";
 import SpeedNetworkingPage from "./pages/SpeedNetworkingPage";
+import SpacesPage from "./pages/SpacesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
