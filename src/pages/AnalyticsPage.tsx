@@ -345,6 +345,18 @@ export default function AnalyticsPage() {
         <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">🧠 Analytics Prédictif</h2>
         <PredictiveAnalytics />
       </div>
+
+      {/* Data Export */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">📥 Exporter vos données</h2>
+        <div className="flex flex-wrap gap-2">
+          <DataExportButton table="connections" label="Connexions" filename="connexions" filterByUser={false} columns="requester_id,receiver_id,status,match_score,created_at" />
+          <DataExportButton table="leads" label="Leads CRM" filename="leads" columns="name,email,phone,company,source,status,notes,created_at" />
+          <DataExportButton table="objectives" label="Objectifs" filename="objectifs" columns="title,description,category,current_value,target_value,is_completed,deadline" />
+          <DataExportButton table="coaching_sessions" label="Sessions Coaching" filename="sessions_coaching" filterByUser={false} columns="coach_id,learner_id,status,scheduled_at,topic,rating" />
+          <DataExportButton table="posts" label="Publications" filename="publications" filterByUser={false} columns="content,post_type,likes_count,comments_count,created_at" />
+        </div>
+      </div>
     </motion.div>
   );
 }
