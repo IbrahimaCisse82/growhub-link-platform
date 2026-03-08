@@ -143,6 +143,16 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
+  /* Focus visible for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Skip to content link */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Syne', sans-serif;
   }
