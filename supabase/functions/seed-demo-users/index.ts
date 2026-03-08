@@ -66,8 +66,8 @@ const demoUsers = [
     role: "investor",
   },
   {
-    email: "thomas.petit@demo.com",
-    password: "password123",
+    email: "thomas.moreau@demo.com",
+    password: "Demo2024!",
     full_name: "Thomas Petit",
     profile: {
       display_name: "Thomas Petit",
