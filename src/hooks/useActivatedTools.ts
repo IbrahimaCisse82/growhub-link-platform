@@ -19,6 +19,9 @@ export interface ToolDefinition {
 }
 
 export const ALL_TOOLS: ToolDefinition[] = [
+  { key: "pitchdeck", label: "Pitch Deck Builder", description: "Créez et présentez votre pitch deck professionnel.", icon: "📊", lucideIcon: BookOpen, path: "/pitchdeck", category: "growth" },
+  { key: "fundraising", label: "Levée de Fonds", description: "Gérez votre fundraising et suivez vos investisseurs.", icon: "💰", lucideIcon: DollarSign, path: "/fundraising", category: "growth" },
+  { key: "coaching", label: "Coaching & Mentorat", description: "Réservez des sessions avec des coachs experts.", icon: "🎓", lucideIcon: PenLine, path: "/coaching", category: "growth" },
   { key: "content-calendar", label: "Calendrier Contenu", description: "Planifiez et organisez vos publications sur les réseaux.", icon: "📅", lucideIcon: FileText, path: "/content-calendar", category: "productivity" },
   { key: "deal-room", label: "Deal Room", description: "Partagez des documents confidentiels avec des investisseurs.", icon: "🔒", lucideIcon: Shield, path: "/deal-room", category: "growth" },
   { key: "templates", label: "Templates Messages", description: "Modèles de messages prêts à l'emploi pour le networking.", icon: "✉️", lucideIcon: MailPlus, path: "/templates", category: "productivity" },

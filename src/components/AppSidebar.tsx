@@ -21,9 +21,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   startup: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/pitchdeck", icon: BookOpen, label: "Pitch Deck" },
-      { path: "/fundraising", icon: DollarSign, label: "Levée" },
-      { path: "/coaching", icon: PenLine, label: "Coaching" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -38,7 +35,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   mentor: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/coaching", icon: PenLine, label: "Coaching Hub" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -53,7 +49,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   investor: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/fundraising", icon: DollarSign, label: "Deal Flow" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -68,7 +63,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   expert: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/coaching", icon: PenLine, label: "Mes Services" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -83,7 +77,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   freelance: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/coaching", icon: PenLine, label: "Mes Missions" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -99,7 +92,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/networking", icon: Users, label: "Startups" },
-      { path: "/coaching", icon: PenLine, label: "Programmes" },
     ]},
     { title: "Communauté", items: [
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
@@ -113,7 +105,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   etudiant: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/coaching", icon: PenLine, label: "Mentorat" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -128,7 +119,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   aspirationnel: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/coaching", icon: PenLine, label: "Coaching" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -143,7 +133,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
   professionnel: [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/coaching", icon: PenLine, label: "Formation" },
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
@@ -159,7 +148,6 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
       { path: "/networking", icon: Users, label: "Startups" },
-      { path: "/fundraising", icon: DollarSign, label: "Investissements" },
     ]},
     { title: "Communauté", items: [
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
