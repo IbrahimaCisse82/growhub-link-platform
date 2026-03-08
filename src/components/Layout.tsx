@@ -26,6 +26,7 @@ const routeToHelpKey: Record<string, string> = {
 export default function Layout() {
   const [onboardingDone, setOnboardingDone] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const { user, profile, refetchProfile } = useAuth();
   const location = useLocation();
   const { showTour, completeTour } = useOnboardingTour();
