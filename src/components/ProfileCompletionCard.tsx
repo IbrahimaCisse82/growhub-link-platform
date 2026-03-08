@@ -21,7 +21,7 @@ export default function ProfileCompletionCard() {
   const checks: CheckItem[] = [
     { key: "avatar", label: "Photo de profil", ok: !!profile.avatar_url, action: "Ajouter", route: "/profile" },
     { key: "bio", label: "Biographie", ok: !!profile.bio && profile.bio.length > 20, action: "Rédiger", route: "/profile" },
-    { key: "headline", label: "Titre professionnel", ok: !!profile.headline, action: "Ajouter", route: "/profile" },
+    { key: "bio_long", label: "Bio détaillée (20+ car.)", ok: !!profile.bio && profile.bio.length > 20, action: "Étoffer", route: "/profile" },
     { key: "skills", label: "3+ compétences", ok: (profile.skills?.length ?? 0) >= 3, action: "Compléter", route: "/profile" },
     { key: "interests", label: "2+ centres d'intérêt", ok: (profile.interests?.length ?? 0) >= 2, action: "Ajouter", route: "/profile" },
     { key: "sector", label: "Secteur d'activité", ok: !!profile.sector, action: "Définir", route: "/profile" },
