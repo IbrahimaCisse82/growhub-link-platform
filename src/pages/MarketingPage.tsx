@@ -64,7 +64,7 @@ export default function MarketingPage() {
   // Create lead
   const createLead = useMutation({
     mutationFn: async (lead: Partial<Lead>) => {
-      const { error } = await supabase.from("leads").insert({
+      const { error } = await (supabase as any).from("leads").insert({
         user_id: user!.id,
         name: lead.name!,
         email: lead.email || null,
