@@ -341,6 +341,14 @@ export default function AnalyticsPage() {
         <ShareableAchievementCards />
       </div>
 
+      {/* Role-based Analytics */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-primary" /> Analytics par rôle
+        </h2>
+        <RoleAnalyticsDashboard />
+      </div>
+
       {/* Predictive Analytics */}
       <div className="mt-5">
         <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">🧠 Analytics Prédictif</h2>
