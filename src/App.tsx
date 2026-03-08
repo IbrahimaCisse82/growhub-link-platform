@@ -28,6 +28,7 @@ import SettingsPage from "./pages/SettingsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import MarketingPage from "./pages/MarketingPage";
 import ReferralPage from "./pages/ReferralPage";
+import CirclesPage from "./pages/CirclesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
