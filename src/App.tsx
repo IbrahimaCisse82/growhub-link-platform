@@ -24,6 +24,7 @@ import PitchDeckPage from "./pages/PitchDeckPage";
 import ObjectivesPage from "./pages/ObjectivesPage";
 import BadgesPage from "./pages/BadgesPage";
 import SettingsPage from "./pages/SettingsPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import GenericPage from "./pages/GenericPage";
 
 const queryClient = new QueryClient({
