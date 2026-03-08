@@ -42,6 +42,7 @@ import ModerationPage from "./pages/ModerationPage";
 import MarketplacePage from "./pages/MarketplacePage";
 import TemplatesPage from "./pages/TemplatesPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import BookmarksPage from "./pages/BookmarksPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
