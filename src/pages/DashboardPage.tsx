@@ -51,15 +51,15 @@ export default function DashboardPage() {
               ? `Session coaching prévue le ${new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}`
               : "Votre écosystème est actif. Explorez vos outils ci-dessous."}
           </p>
-          <div className="flex gap-2.5 flex-wrap">
-            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-[7px] border-none rounded-[10px] px-5 py-2.5 font-heading text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
-              📊 Pitch Deck Builder
+          <div className="flex gap-2 md:gap-2.5 flex-wrap">
+            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-[6px] border-none rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
+              📊 Pitch Deck
             </button>
-            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-[7px] rounded-[10px] px-5 py-2.5 font-heading text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              💰 Fundraising Tracker
+            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-[6px] rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+              💰 Levée
             </button>
-            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-[7px] rounded-[10px] px-5 py-2.5 font-heading text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              ✍️ Coaching Hub
+            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-[6px] rounded-[10px] px-3.5 md:px-5 py-2 md:py-2.5 font-heading text-[12px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+              ✍️ Coaching
             </button>
           </div>
 
