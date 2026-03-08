@@ -30,6 +30,8 @@ import MarketingPage from "./pages/MarketingPage";
 import ReferralPage from "./pages/ReferralPage";
 import CirclesPage from "./pages/CirclesPage";
 import PricingPage from "./pages/PricingPage";
+import CompanyPage from "./pages/CompanyPage";
+import WarmIntrosPage from "./pages/WarmIntrosPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -94,6 +96,8 @@ const App = () => (
                   <Route path="analytics" element={<AnalyticsPage />} />
                   <Route path="referral" element={<ReferralPage />} />
                   <Route path="circles" element={<CirclesPage />} />
+                  <Route path="company" element={<CompanyPage />} />
+                  <Route path="introductions" element={<WarmIntrosPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -3,13 +3,15 @@ import { motion } from "framer-motion";
 import { GHCard, Tag } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
 import { useInfinitePosts, useToggleReaction, useUserReactions, useComments, useAddComment, useDeletePost } from "@/hooks/useFeed";
+import { useUserReposts, useRepost, useUndoRepost } from "@/hooks/useReposts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Heart, MessageCircle, Share2, Send, Trash2, Image, X, Reply, Loader2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Send, Trash2, Image, X, Reply, Loader2, Repeat2, TrendingUp, Clock, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useNavigate } from "react-router-dom";
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
@@ -103,13 +105,37 @@ function CommentThread({ comments, postId, user }: { comments: any[]; postId: st
   );
 }
 
+// ─── Hashtag renderer ───────────────────────────────────
+function HashtagText({ text, onTagClick }: { text: string; onTagClick: (tag: string) => void }) {
+  const parts = text.split(/(#\w+)/g);
+  return (
+    <span>
+      {parts.map((part, i) =>
+        part.startsWith("#") ? (
+          <button key={i} onClick={() => onTagClick(part.slice(1))} className="text-primary font-medium hover:underline">
+            {part}
+          </button>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </span>
+  );
+}
+
+type SortMode = "recent" | "trending" | "relevant";
+
 // ─── Main Feed Page ─────────────────────────────────────
 export default function FeedPage() {
   usePageMeta({ title: "Fil d'actualité", description: "Suivez les actualités de la communauté startup GrowHub." });
   const { user } = useAuth();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfinitePosts();
   const { data: userReactions } = useUserReactions();
+  const { data: userRepostIds } = useUserReposts();
+  const repost = useRepost();
+  const undoRepost = useUndoRepost();
   const toggleReaction = useToggleReaction();
   const deletePost = useDeletePost();
   const addComment = useAddComment();
@@ -119,6 +145,8 @@ export default function FeedPage() {
   const [posting, setPosting] = useState(false);
   const [commentingPostId, setCommentingPostId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("recent");
+  const [hashtagFilter, setHashtagFilter] = useState<string | null>(null);
   const { data: comments } = useComments(commentingPostId);
 
   // Image upload state
@@ -144,7 +172,34 @@ export default function FeedPage() {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const allPosts = data?.pages.flatMap(p => p.posts) ?? [];
+  const allPostsRaw = data?.pages.flatMap(p => p.posts) ?? [];
+
+  // Sort posts
+  const allPosts = [...allPostsRaw].sort((a, b) => {
+    if (sortMode === "trending") {
+      const scoreA = (a.likes_count ?? 0) * 3 + (a.comments_count ?? 0) * 5 + (a.shares_count ?? 0) * 8;
+      const scoreB = (b.likes_count ?? 0) * 3 + (b.comments_count ?? 0) * 5 + (b.shares_count ?? 0) * 8;
+      return scoreB - scoreA;
+    }
+    // "recent" is default sort from API
+    return 0;
+  }).filter(p => {
+    if (!hashtagFilter) return true;
+    return p.tags?.includes(hashtagFilter) || p.content.toLowerCase().includes(`#${hashtagFilter.toLowerCase()}`);
+  });
+
+  const handleTagClick = (tag: string) => {
+    setHashtagFilter(hashtagFilter === tag ? null : tag);
+  };
+
+  const handleRepost = (postId: string) => {
+    if (userRepostIds?.includes(postId)) {
+      undoRepost.mutate(postId, { onSuccess: () => toast.success("Repost annulé") });
+    } else {
+      repost.mutate({ postId }, { onSuccess: () => toast.success("Reposté !") });
+    }
+  };
+  const isReposted = (postId: string) => userRepostIds?.includes(postId) ?? false;
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -320,6 +375,27 @@ export default function FeedPage() {
         </div>
       </GHCard>
 
+      {/* Sort tabs & hashtag filter */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <div className="flex gap-1 bg-secondary/50 rounded-xl p-1">
+          {([
+            { key: "recent" as SortMode, icon: Clock, label: "Récent" },
+            { key: "trending" as SortMode, icon: TrendingUp, label: "Tendances" },
+          ]).map(s => (
+            <button key={s.key} onClick={() => setSortMode(s.key)}
+              className={cn("flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors",
+                sortMode === s.key ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground")}>
+              <s.icon className="w-3 h-3" /> {s.label}
+            </button>
+          ))}
+        </div>
+        {hashtagFilter && (
+          <button onClick={() => setHashtagFilter(null)} className="flex items-center gap-1 bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-lg">
+            #{hashtagFilter} <X className="w-3 h-3" />
+          </button>
+        )}
+      </div>
+
       {/* Posts list with infinite scroll */}
       {isLoading ? (
         Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl mb-3" />)
@@ -355,7 +431,9 @@ export default function FeedPage() {
                   )}
                 </div>
 
-                <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">{post.content}</p>
+                <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">
+                  <HashtagText text={post.content} onTagClick={handleTagClick} />
+                </p>
 
                 {/* Media gallery */}
                 {post.media_urls && post.media_urls.length > 0 && (
@@ -383,7 +461,7 @@ export default function FeedPage() {
                 {post.tags && post.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {post.tags.map((tag) => (
-                      <span key={tag} className="text-[10px] text-primary font-medium bg-primary/10 rounded-full px-2 py-0.5">#{tag}</span>
+                      <button key={tag} onClick={() => handleTagClick(tag)} className="text-[10px] text-primary font-medium bg-primary/10 rounded-full px-2 py-0.5 hover:bg-primary/20 transition-colors">#{tag}</button>
                     ))}
                   </div>
                 )}
@@ -403,6 +481,15 @@ export default function FeedPage() {
                     className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
                   >
                     <MessageCircle className="w-3.5 h-3.5" /> {post.comments_count ?? 0}
+                  </button>
+                  <button
+                    onClick={() => handleRepost(post.id)}
+                    className={cn(
+                      "flex items-center gap-1.5 text-xs transition-colors",
+                      isReposted(post.id) ? "text-primary font-bold" : "text-muted-foreground hover:text-primary"
+                    )}
+                  >
+                    <Repeat2 className={cn("w-3.5 h-3.5", isReposted(post.id) && "text-primary")} /> {(post as any).shares_count ?? 0}
                   </button>
                   <div className="relative group">
                     <button
