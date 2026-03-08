@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function DashboardPage() {
+  usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs startup en temps réel." });
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { data: stats, isLoading: statsLoading } = useDashboardStats();
