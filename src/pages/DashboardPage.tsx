@@ -86,47 +86,53 @@ export default function DashboardPage() {
         <MetricCard icon="💬" value={String(stats?.totalPosts ?? 0)} label="Posts communauté" badge="Fil d'actu" badgeType="neutral" />
       </div>
 
-      {/* Objectives + Coaching */}
+      {/* Objectives + Coaching + Leaderboard */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px] mb-[18px]">
-        <div className="md:col-span-2 grid grid-cols-1 gap-[18px]">
-        <GHCard title="Objectifs en cours" headerRight={<Tag variant="green">En cours</Tag>}>
-          {!objectives || objectives.length === 0 ? (
-            <p className="text-xs text-muted-foreground py-4 text-center">Aucun objectif défini. Créez-en depuis la page Progression.</p>
-          ) : (
-            objectives.slice(0, 5).map((obj) => (
-              <ProgressBar
-                key={obj.id}
-                label={obj.title}
-                value={`${Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}%`}
-                percentage={Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}
-              />
-            ))
-          )}
-        </GHCard>
+        <div className="md:col-span-2 space-y-[18px]">
+          <GHCard title="Objectifs en cours" headerRight={<Tag variant="green">En cours</Tag>}>
+            {!objectives || objectives.length === 0 ? (
+              <p className="text-xs text-muted-foreground py-4 text-center">Aucun objectif défini. Créez-en depuis la page Progression.</p>
+            ) : (
+              objectives.slice(0, 5).map((obj) => (
+                <ProgressBar
+                  key={obj.id}
+                  label={obj.title}
+                  value={`${Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}%`}
+                  percentage={Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}
+                />
+              ))
+            )}
+          </GHCard>
 
-        <GHCard title="Coaching Progress" headerRight={
-          <button onClick={() => navigate("/coaching")} className="text-xs text-primary font-semibold hover:opacity-70">Voir →</button>
-        }>
-          {nextSession ? (
-            <div className="flex gap-3.5 items-center bg-card border border-border rounded-xl p-3.5 mb-2.5">
-              <div className="w-[42px] h-[42px] rounded-[11px] bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-sm font-extrabold text-primary-foreground flex-shrink-0">
-                {((nextSession as any).coach_profile?.display_name ?? "C").substring(0, 2).toUpperCase()}
-              </div>
-              <div className="flex-1">
-                <div className="font-heading text-[13px] font-bold mb-[2px]">{(nextSession as any).coach_profile?.display_name ?? "Coach"}</div>
-                <div className="text-[11px] text-muted-foreground mb-1.5">{nextSession.topic ?? "Session de coaching"}</div>
-                <div className="flex gap-[5px] flex-wrap">
-                  <Tag variant="green">{new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</Tag>
-                  <Tag>{nextSession.duration_minutes ?? 60} min</Tag>
+          <GHCard title="Coaching Progress" headerRight={
+            <button onClick={() => navigate("/coaching")} className="text-xs text-primary font-semibold hover:opacity-70">Voir →</button>
+          }>
+            {nextSession ? (
+              <div className="flex gap-3.5 items-center bg-card border border-border rounded-xl p-3.5 mb-2.5">
+                <div className="w-[42px] h-[42px] rounded-[11px] bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-sm font-extrabold text-primary-foreground flex-shrink-0">
+                  {((nextSession as any).coach_profile?.display_name ?? "C").substring(0, 2).toUpperCase()}
+                </div>
+                <div className="flex-1">
+                  <div className="font-heading text-[13px] font-bold mb-[2px]">{(nextSession as any).coach_profile?.display_name ?? "Coach"}</div>
+                  <div className="text-[11px] text-muted-foreground mb-1.5">{nextSession.topic ?? "Session de coaching"}</div>
+                  <div className="flex gap-[5px] flex-wrap">
+                    <Tag variant="green">{new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</Tag>
+                    <Tag>{nextSession.duration_minutes ?? 60} min</Tag>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <p className="text-xs text-muted-foreground py-4 text-center">Aucune session prévue.</p>
-          )}
-          <StatRow label="Sessions terminées" value={String(completedSessions.length)} />
-          <StatRow label="Satisfaction moyenne" value={`${stats?.avgRating ?? "—"} ★`} />
-        </GHCard>
+            ) : (
+              <p className="text-xs text-muted-foreground py-4 text-center">Aucune session prévue.</p>
+            )}
+            <StatRow label="Sessions terminées" value={String(completedSessions.length)} />
+            <StatRow label="Satisfaction moyenne" value={`${stats?.avgRating ?? "—"} ★`} />
+          </GHCard>
+        </div>
+
+        {/* Leaderboard */}
+        <div>
+          <LeaderboardWidget />
+        </div>
       </div>
 
       {/* News Feed Widget */}
