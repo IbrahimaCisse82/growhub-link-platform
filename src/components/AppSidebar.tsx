@@ -45,6 +45,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Communauté", items: [
       { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
