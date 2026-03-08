@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { GHCard, Tag } from "@/components/ui-custom";
-import { useNotifications } from "@/hooks/useGrowHub";
+import { useNotifications } from "@/hooks/useNotifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
