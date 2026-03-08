@@ -83,7 +83,7 @@ const App = () => (
                   <Route path="progression" element={<ObjectivesPage />} />
                   <Route path="badges" element={<BadgesPage />} />
                   <Route path="settings" element={<SettingsPage />} />
-                  <Route path="marketing" element={<GenericPage pageId="marketing" {...pageConfigs.marketing} />} />
+                  <Route path="marketing" element={<MarketingPage />} />
                   <Route path="analytics" element={<AnalyticsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />

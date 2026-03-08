@@ -1,23 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { GHCard } from "@/components/ui-custom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Sun, Moon, Monitor, Save, Trash2, Loader2, KeyRound, Shield } from "lucide-react";
+import { Sun, Moon, Monitor, Save, Trash2, Loader2, KeyRound, Shield, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const notifTypes = [
+  { key: "connection_request", label: "Demandes de connexion" },
+  { key: "connection_accepted", label: "Connexions acceptées" },
+  { key: "coaching_booked", label: "Sessions de coaching réservées" },
+  { key: "coaching_reminder", label: "Rappels de coaching" },
+  { key: "event_reminder", label: "Rappels d'événements" },
+  { key: "post_reaction", label: "Réactions sur mes posts" },
+  { key: "post_comment", label: "Commentaires sur mes posts" },
+  { key: "badge_earned", label: "Badges débloqués" },
+  { key: "system_notifications", label: "Notifications système" },
+];
 
 export default function SettingsPage() {
   usePageMeta({ title: "Paramètres", description: "Configurez votre compte et vos préférences GrowHub." });
   const { theme, setTheme } = useTheme();
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // Password change
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
@@ -25,6 +38,49 @@ export default function SettingsPage() {
   // Delete account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteText, setDeleteText] = useState("");
+
+  // Notification preferences
+  const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({});
+  const [savingNotifs, setSavingNotifs] = useState(false);
+
+  const { data: savedPrefs } = useQuery({
+    queryKey: ["notification-preferences", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("notification_preferences")
+        .select("*")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (savedPrefs) {
+      const prefs: Record<string, boolean> = {};
+      notifTypes.forEach(t => { prefs[t.key] = savedPrefs[t.key] ?? true; });
+      setNotifPrefs(prefs);
+    } else {
+      const prefs: Record<string, boolean> = {};
+      notifTypes.forEach(t => { prefs[t.key] = true; });
+      setNotifPrefs(prefs);
+    }
+  }, [savedPrefs]);
+
+  const handleSaveNotifPrefs = async () => {
+    if (!user) return;
+    setSavingNotifs(true);
+    const payload = { user_id: user.id, ...notifPrefs };
+    if (savedPrefs) {
+      await (supabase as any).from("notification_preferences").update(notifPrefs).eq("user_id", user.id);
+    } else {
+      await (supabase as any).from("notification_preferences").insert(payload);
+    }
+    setSavingNotifs(false);
+    queryClient.invalidateQueries({ queryKey: ["notification-preferences"] });
+    toast.success("Préférences sauvegardées !");
+  };
 
   const themes = [
     { value: "light" as const, label: "Clair", icon: Sun },
@@ -41,7 +97,6 @@ export default function SettingsPage() {
     if (error) toast.error(error.message);
     else {
       toast.success("Mot de passe mis à jour !");
-      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     }
@@ -49,7 +104,6 @@ export default function SettingsPage() {
 
   const handleDeleteAccount = async () => {
     if (deleteText !== "SUPPRIMER") { toast.error("Tapez SUPPRIMER pour confirmer"); return; }
-    // Delete profile and sign out — actual user deletion requires admin
     if (user) {
       await supabase.from("profiles").delete().eq("user_id", user.id);
       await supabase.from("user_roles").delete().eq("user_id", user.id);
@@ -104,6 +158,37 @@ export default function SettingsPage() {
               <label className="text-xs font-bold text-foreground/70 mb-1 block">Nom</label>
               <div className="bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm text-muted-foreground">{profile?.display_name ?? "—"}</div>
             </div>
+          </div>
+        </GHCard>
+
+        {/* Notification preferences */}
+        <GHCard title="Préférences de notifications" className="md:col-span-2">
+          <div className="flex items-center gap-2 mb-4">
+            <Bell className="w-4 h-4 text-primary" />
+            <span className="text-xs text-muted-foreground">Choisissez les notifications que vous souhaitez recevoir</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {notifTypes.map(t => (
+              <label key={t.key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-primary/30 transition-colors cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={notifPrefs[t.key] ?? true}
+                  onChange={(e) => setNotifPrefs(prev => ({ ...prev, [t.key]: e.target.checked }))}
+                  className="w-4 h-4 accent-primary rounded"
+                />
+                <span className="text-xs font-medium">{t.label}</span>
+              </label>
+            ))}
+          </div>
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={handleSaveNotifPrefs}
+              disabled={savingNotifs}
+              className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 disabled:opacity-50 hover:bg-primary-hover transition-colors"
+            >
+              {savingNotifs ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+              Sauvegarder
+            </button>
           </div>
         </GHCard>
 
