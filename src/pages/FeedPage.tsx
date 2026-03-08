@@ -482,6 +482,15 @@ export default function FeedPage() {
                   >
                     <MessageCircle className="w-3.5 h-3.5" /> {post.comments_count ?? 0}
                   </button>
+                  <button
+                    onClick={() => handleRepost(post.id)}
+                    className={cn(
+                      "flex items-center gap-1.5 text-xs transition-colors",
+                      isReposted(post.id) ? "text-primary font-bold" : "text-muted-foreground hover:text-primary"
+                    )}
+                  >
+                    <Repeat2 className={cn("w-3.5 h-3.5", isReposted(post.id) && "text-primary")} /> {(post as any).shares_count ?? 0}
+                  </button>
                   <div className="relative group">
                     <button
                       onClick={() => { navigator.clipboard.writeText(window.location.origin + "/feed"); toast.success("Lien copié !"); }}
