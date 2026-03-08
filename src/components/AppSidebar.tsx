@@ -2,7 +2,7 @@ import {
   Zap, PenLine, DollarSign, Home, Users, Calendar,
   BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
   BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt, FolderKanban,
-  Trophy, FileText, Shield
+  Trophy, FileText, Shield, TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,8 +38,10 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/challenges", icon: Trophy, label: "Challenges" },
       { path: "/marketing", icon: Megaphone, label: "Marketing" },
       { path: "/analytics", icon: BarChart3, label: "Analytics" },
+      { path: "/roi", icon: TrendingUp, label: "ROI" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
+      { path: "/moderation", icon: Shield, label: "Modération" },
     ]},
   ],
   mentor: [
