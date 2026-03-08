@@ -144,6 +144,7 @@ export default function PublicProfilePage() {
                       <UserPlus className="w-3.5 h-3.5" /> Se connecter
                     </button>
                   )}
+                  <WriteRecommendation userId={userId!} userName={profile?.display_name ?? "ce membre"} />
                 </>
               )}
               <button onClick={handleShareProfile} className="bg-secondary text-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 transition-colors">
