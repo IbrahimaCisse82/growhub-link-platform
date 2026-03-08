@@ -20,6 +20,9 @@ const testimonials = [
   { name: "Sophie Martin", role: "CEO, TechFlow", text: "GrowHubLink m'a permis de trouver mon co-fondateur et de lever 500K€ en 3 mois. L'outil de matching est incroyablement précis.", avatar: "SM", rating: 5 },
   { name: "Marc Dubois", role: "Mentor & Investisseur", text: "La plateforme parfaite pour accompagner des startups prometteuses. Le coaching hub est un game-changer.", avatar: "MD", rating: 5 },
   { name: "Claire Bernard", role: "Investisseuse, VCap", text: "Le deal flow est enfin centralisé. Je gagne un temps fou sur le sourcing et le suivi de mes participations.", avatar: "CB", rating: 5 },
+  { name: "Amadou Diallo", role: "Fondateur, PaySahel", text: "Grâce aux warm intros, j'ai rencontré 3 investisseurs qualifiés en une semaine. Impossible sur LinkedIn.", avatar: "AD", rating: 5 },
+  { name: "Léa Nguyen", role: "Freelance UX", text: "En tant que freelance, j'ai trouvé mes meilleurs clients via le networking intelligent. Mon CA a doublé en 6 mois.", avatar: "LN", rating: 5 },
+  { name: "Ousmane Konaté", role: "Directeur, TechHub Dakar", text: "L'écosystème parfait pour connecter startups africaines et investisseurs internationaux.", avatar: "OK", rating: 5 },
 ];
 
 const stats = [
@@ -30,12 +33,31 @@ const stats = [
 ];
 
 const roles = [
-  { title: "Startup", desc: "Lancez, structurez et scalez", emoji: "🚀" },
-  { title: "Mentor", desc: "Accompagnez et monétisez", emoji: "🎯" },
-  { title: "Investisseur", desc: "Sourcez et suivez", emoji: "💰" },
-  { title: "Freelance", desc: "Missions et réseau", emoji: "💻" },
-  { title: "Étudiant", desc: "Apprenez et préparez", emoji: "🎓" },
-  { title: "Corporate", desc: "Open innovation", emoji: "🏢" },
+  { title: "Startup", desc: "Lancez, structurez et scalez votre business", emoji: "🚀", features: ["Pitch Deck Builder", "Fundraising Tracker", "Matching investisseurs"], cta: "Pour les startups" },
+  { title: "Mentor", desc: "Accompagnez et monétisez votre expertise", emoji: "🎯", features: ["Profil coach", "Réservation sessions", "Avis vérifiés"], cta: "Pour les mentors" },
+  { title: "Investisseur", desc: "Sourcez et suivez votre deal flow", emoji: "💰", features: ["Pipeline startups", "Due diligence", "Warm intros"], cta: "Pour les investisseurs" },
+  { title: "Freelance", desc: "Trouvez des missions et développez votre réseau", emoji: "💻", features: ["Visibilité profil", "Recommandations", "Events networking"], cta: "Pour les freelances" },
+  { title: "Étudiant", desc: "Apprenez, connectez et préparez votre lancement", emoji: "🎓", features: ["Coaching gratuit", "Cercles thématiques", "Challenges"], cta: "Pour les étudiants" },
+  { title: "Corporate", desc: "Open innovation et partenariats stratégiques", emoji: "🏢", features: ["Sourcing startups", "Pages entreprise", "Events privés"], cta: "Pour les corporates" },
+];
+
+const successStories = [
+  {
+    title: "De 0 à 500K€ levés en 3 mois",
+    company: "TechFlow",
+    sector: "SaaS",
+    description: "Sophie a utilisé le Pitch Deck Builder et le réseau d'investisseurs de GrowHubLink pour structurer sa levée de fonds seed.",
+    metrics: [{ label: "Levée", value: "500K€" }, { label: "Investisseurs contactés", value: "12" }, { label: "Temps", value: "3 mois" }],
+    quote: "Le matching m'a connectée directement aux bons investisseurs, sans intermédiaire.",
+  },
+  {
+    title: "100 startups accompagnées en 1 an",
+    company: "MentorPro",
+    sector: "Consulting",
+    description: "Marc a multiplié par 5 son impact en utilisant le Coaching Hub pour organiser ses sessions et recevoir des avis vérifiés.",
+    metrics: [{ label: "Startups", value: "100+" }, { label: "Satisfaction", value: "4.9/5" }, { label: "Revenu", value: "x3" }],
+    quote: "GrowHubLink a professionnalisé mon activité de mentorat comme aucun autre outil.",
+  },
 ];
 
 const steps = [
@@ -169,20 +191,66 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Roles */}
+      {/* Roles - Enhanced with features */}
       <section id="roles" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="font-heading text-3xl md:text-4xl font-extrabold mb-4">Une plateforme, <span className="text-primary">10 profils</span></h2>
-            <p className="text-muted-foreground text-lg">Chaque rôle bénéficie d'une expérience adaptée à ses besoins.</p>
+            <p className="text-muted-foreground text-lg">Chaque rôle bénéficie d'une expérience et d'outils adaptés.</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {roles.map((r, i) => (
               <motion.div key={r.title} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="bg-card border border-border rounded-xl p-5 text-center hover:border-primary/30 hover:shadow-md transition-all">
-                <div className="text-2xl mb-2">{r.emoji}</div>
-                <div className="font-heading text-base font-bold mb-1">{r.title}</div>
-                <div className="text-xs text-muted-foreground">{r.desc}</div>
+                className="bg-card border border-border rounded-2xl p-6 hover:border-primary/30 hover:shadow-lg transition-all group">
+                <div className="text-3xl mb-3">{r.emoji}</div>
+                <div className="font-heading text-lg font-bold mb-1">{r.title}</div>
+                <div className="text-sm text-muted-foreground mb-4">{r.desc}</div>
+                <ul className="space-y-1.5 mb-4">
+                  {r.features.map(f => (
+                    <li key={f} className="flex items-center gap-2 text-xs text-foreground/70">
+                      <CheckCircle2 className="w-3 h-3 text-primary flex-shrink-0" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => navigate("/auth")} className="w-full bg-primary/10 text-primary rounded-xl py-2.5 text-xs font-bold hover:bg-primary/20 transition-colors">
+                  {r.cta} →
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories */}
+      <section id="success" className="py-24 px-6 bg-muted/30">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-[10px] font-bold text-primary uppercase tracking-wider mb-4">
+              Success Stories
+            </div>
+            <h2 className="font-heading text-3xl md:text-4xl font-extrabold mb-4">Des résultats <span className="text-primary">concrets</span></h2>
+            <p className="text-muted-foreground text-lg">Découvrez comment nos membres ont accéléré leur croissance.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {successStories.map((story, i) => (
+              <motion.div key={story.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="bg-card border-2 border-primary/15 rounded-2xl p-8 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/30" />
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">{story.sector}</span>
+                  <span className="text-xs text-muted-foreground">{story.company}</span>
+                </div>
+                <h3 className="font-heading text-xl font-bold mb-3">{story.title}</h3>
+                <p className="text-sm text-muted-foreground mb-6">{story.description}</p>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  {story.metrics.map(m => (
+                    <div key={m.label} className="text-center">
+                      <div className="font-heading text-xl font-extrabold text-primary">{m.value}</div>
+                      <div className="text-[10px] text-muted-foreground">{m.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <blockquote className="border-l-2 border-primary/30 pl-4 italic text-sm text-foreground/70">"{story.quote}"</blockquote>
               </motion.div>
             ))}
           </div>
@@ -190,13 +258,13 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-24 px-6 bg-muted/30">
-        <div className="max-w-5xl mx-auto">
+      <section id="testimonials" className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="font-heading text-3xl md:text-4xl font-extrabold mb-4">Ils nous font <span className="text-primary">confiance</span></h2>
             <p className="text-muted-foreground">+10 000 entrepreneurs utilisent GrowHubLink au quotidien</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <motion.div key={t.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="bg-card border border-border rounded-2xl p-7">

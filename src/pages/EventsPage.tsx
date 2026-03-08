@@ -9,6 +9,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Plus, MapPin, Globe, Users, Calendar } from "lucide-react";
+import EventMatchmaking from "@/components/EventMatchmaking";
 
 const eventColors = [
   "from-[#0a1a0a] to-primary/80",
@@ -208,6 +209,12 @@ export default function EventsPage() {
                     </button>
                   )}
                 </div>
+                {/* Event Matchmaking */}
+                {isRegistered && regCount > 1 && (
+                  <div className="px-3.5 pb-2.5">
+                    <EventMatchmaking eventId={e.id} registrations={e.registrations ?? []} />
+                  </div>
+                )}
               </div>
             );
           })}
