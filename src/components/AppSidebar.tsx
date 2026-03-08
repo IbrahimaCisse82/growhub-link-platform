@@ -204,6 +204,6 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
           ) : initials}
         </div>
       </div>
-    </aside>
+    </nav>
   );
 }
