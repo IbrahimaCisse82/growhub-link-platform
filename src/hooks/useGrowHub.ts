@@ -470,9 +470,10 @@ export function useToggleReaction() {
 
       if (existing) {
         await supabase.from("post_reactions").delete().eq("id", existing.id);
-        await supabase.from("posts").update({ likes_count: Math.max(0, 0) }).eq("id", postId); // will be decremented via RPC ideally
+        await supabase.rpc("decrement_post_likes", { post_id: postId });
       } else {
         await supabase.from("post_reactions").insert({ post_id: postId, user_id: user!.id, emoji: emoji || "👍" });
+        await supabase.rpc("increment_post_likes", { post_id: postId });
       }
     },
     onSuccess: () => {
