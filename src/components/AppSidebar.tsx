@@ -193,6 +193,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/fundraising", icon: DollarSign, label: "Investissements" },
     ]},
     { title: "Communauté", items: [
+      { path: "/circles", icon: CircleDot, label: "Cercles" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
