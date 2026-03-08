@@ -56,7 +56,7 @@ export default function ObjectivesPage() {
             <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
             Objectifs & Progression
           </div>
-          <h1 className="font-heading text-[32px] font-extrabold leading-tight mb-2.5">
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
             Vos <span className="text-primary">objectifs SMART</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
