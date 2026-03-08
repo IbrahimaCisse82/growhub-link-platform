@@ -63,15 +63,15 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          <div className="flex gap-3 md:gap-7 mt-5 md:mt-7 pt-4 md:pt-6 border-t border-border flex-wrap">
+          <div className="grid grid-cols-2 md:flex gap-3 md:gap-7 mt-4 md:mt-7 pt-3 md:pt-6 border-t border-border">
             {statsLoading ? (
-              Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-28" />)
+              Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-10 md:h-12 w-full md:w-28" />)
             ) : (
               <>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.connections ?? 0}</div><div className="text-[11px] text-muted-foreground font-medium">Connexions</div></div>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.completedSessions ?? 0}</div><div className="text-[11px] text-muted-foreground font-medium">Sessions coaching</div></div>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.objectivePct ?? 0}%</div><div className="text-[11px] text-muted-foreground font-medium">Objectifs atteints</div></div>
-                <div><div className="font-heading text-xl md:text-[26px] font-extrabold leading-none mb-[3px]">{stats?.avgRating ?? "—"}<span className="text-primary text-base">★</span></div><div className="text-[11px] text-muted-foreground font-medium">NPS coaching</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.connections ?? 0}</div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">Connexions</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.completedSessions ?? 0}</div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">Sessions</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.objectivePct ?? 0}%</div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">Objectifs</div></div>
+                <div><div className="font-heading text-base md:text-[26px] font-extrabold leading-none mb-[2px]">{stats?.avgRating ?? "—"}<span className="text-primary text-sm md:text-base">★</span></div><div className="text-[10px] md:text-[11px] text-muted-foreground font-medium">NPS</div></div>
               </>
             )}
           </div>
