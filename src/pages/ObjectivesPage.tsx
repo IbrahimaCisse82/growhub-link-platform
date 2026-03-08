@@ -65,7 +65,7 @@ export default function ObjectivesPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3.5 mb-[18px]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-[18px]">
         <MetricCard icon="🎯" value={String(objectives?.length ?? 0)} label="Total objectifs" badge="Définis" badgeType="neutral" />
         <MetricCard icon="✅" value={String(completed.length)} label="Atteints" badge={`${pct}%`} badgeType="up" />
         <MetricCard icon="⏳" value={String(inProgress.length)} label="En cours" badge="Actifs" badgeType="up" />
