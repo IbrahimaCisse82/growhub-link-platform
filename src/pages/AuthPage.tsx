@@ -74,15 +74,15 @@ export default function AuthPage() {
             <p className="text-xs font-medium text-primary mb-2">🎯 Comptes démo disponibles :</p>
             <div className="space-y-1 text-xs text-muted-foreground">
               <p><span className="font-medium">sophie.martin@demo.com</span> — Startup</p>
-              <p><span className="font-medium">marc.lefevre@demo.com</span> — Mentor</p>
-              <p><span className="font-medium">laure.bernard@demo.com</span> — Investisseur</p>
+              <p><span className="font-medium">marc.dubois@demo.com</span> — Mentor</p>
+              <p><span className="font-medium">claire.bernard@demo.com</span> — Investisseur</p>
             </div>
             <p className="text-[10px] text-muted-foreground mt-1.5">Mot de passe : <span className="font-mono font-medium">Demo2024!</span></p>
             <div className="flex flex-wrap gap-1 mt-2">
               {[
                 { label: "Sophie (Startup)", email: "sophie.martin@demo.com" },
-                { label: "Marc (Mentor)", email: "marc.lefevre@demo.com" },
-                { label: "Laure (Investor)", email: "laure.bernard@demo.com" },
+                { label: "Marc (Mentor)", email: "marc.dubois@demo.com" },
+                { label: "Claire (Investor)", email: "claire.bernard@demo.com" },
               ].map((demo) => (
                 <Button key={demo.email} type="button" variant="ghost" size="sm"
                   className="text-[11px] text-primary hover:text-primary h-7 px-2"
