@@ -375,6 +375,27 @@ export default function FeedPage() {
         </div>
       </GHCard>
 
+      {/* Sort tabs & hashtag filter */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <div className="flex gap-1 bg-secondary/50 rounded-xl p-1">
+          {([
+            { key: "recent" as SortMode, icon: Clock, label: "Récent" },
+            { key: "trending" as SortMode, icon: TrendingUp, label: "Tendances" },
+          ]).map(s => (
+            <button key={s.key} onClick={() => setSortMode(s.key)}
+              className={cn("flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors",
+                sortMode === s.key ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground")}>
+              <s.icon className="w-3 h-3" /> {s.label}
+            </button>
+          ))}
+        </div>
+        {hashtagFilter && (
+          <button onClick={() => setHashtagFilter(null)} className="flex items-center gap-1 bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-lg">
+            #{hashtagFilter} <X className="w-3 h-3" />
+          </button>
+        )}
+      </div>
+
       {/* Posts list with infinite scroll */}
       {isLoading ? (
         Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl mb-3" />)
