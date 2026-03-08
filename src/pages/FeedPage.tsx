@@ -373,6 +373,11 @@ export default function FeedPage() {
         </div>
       </div>
 
+      {/* Trending Tags */}
+      <div className="mb-4">
+        <TrendingTags onTagClick={handleTagClick} />
+      </div>
+
       {/* Suggested Profiles */}
       <SuggestedProfiles />
 
