@@ -78,14 +78,14 @@ export default function EventsPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-9 mb-5 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
             <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
             Événements & Rencontres
           </div>
-          <h1 className="font-heading text-[32px] font-extrabold leading-tight mb-2.5">
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
             Ne ratez <span className="text-primary">aucune opportunité</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
@@ -94,7 +94,7 @@ export default function EventsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3.5 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
         <MetricCard icon="📅" value={String(events?.length ?? 0)} label="Événements à venir" badge="Total" badgeType="neutral" />
         <MetricCard icon="✅" value={String(myRegistrations.length)} label="Mes inscriptions" badge="Confirmées" badgeType="up" />
         <MetricCard icon="🌐" value={String(events?.filter(e => e.is_online).length ?? 0)} label="En ligne" badge="Accessibles" badgeType="neutral" />
@@ -125,7 +125,7 @@ export default function EventsPage() {
 
       {showCreate && (
         <GHCard className="mb-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Titre *" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
             <select value={form.event_type} onChange={(e) => setForm({ ...form, event_type: e.target.value })} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm">
               {Object.entries(typeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
@@ -145,7 +145,7 @@ export default function EventsPage() {
       )}
 
       {isLoading ? (
-        <div className="grid grid-cols-4 gap-3.5 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 mb-5">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-56 rounded-2xl" />)}
         </div>
       ) : !filteredEvents || filteredEvents.length === 0 ? (
@@ -154,7 +154,7 @@ export default function EventsPage() {
           <p className="text-xs text-muted-foreground">Aucun événement à venir.</p>
         </GHCard>
       ) : (
-        <div className="grid grid-cols-4 gap-3.5 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 mb-5">
           {filteredEvents.map((e, idx) => {
             const startDate = new Date(e.starts_at);
             const isRegistered = user && e.registrations?.some((r: any) => r.user_id === user.id);

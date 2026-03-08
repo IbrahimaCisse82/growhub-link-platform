@@ -69,14 +69,14 @@ export default function PitchDeckPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-9 mb-5 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
             <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
             Pitch Deck Builder
           </div>
-          <h1 className="font-heading text-[32px] font-extrabold leading-tight mb-2.5">
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
             Créez un pitch <span className="text-primary">irrésistible</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
@@ -85,7 +85,7 @@ export default function PitchDeckPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3.5 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
         <MetricCard icon="📄" value={String(decks?.length ?? 0)} label="Pitch Decks" badge="Créés" badgeType="up" />
         <MetricCard icon="👁️" value={String(decks?.reduce((sum, d) => sum + (d.view_count ?? 0), 0) ?? 0)} label="Vues totales" badge="Total" badgeType="up" />
         <MetricCard icon="📊" value={String(decks?.filter((d) => d.is_public).length ?? 0)} label="Publics" badge="Partagés" badgeType="neutral" />
@@ -94,7 +94,7 @@ export default function PitchDeckPage() {
 
       {/* Templates */}
       <h3 className="font-heading text-sm font-bold mb-3">Créer un nouveau Pitch Deck</h3>
-      <div className="grid grid-cols-4 gap-3 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {templates.map((t) => (
           <GHCard key={t.id} className="cursor-pointer hover:border-primary/40 transition-all" onClick={() => createDeck(t.id)}>
             <div className="text-center">

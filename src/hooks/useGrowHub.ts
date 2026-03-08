@@ -470,9 +470,10 @@ export function useToggleReaction() {
 
       if (existing) {
         await supabase.from("post_reactions").delete().eq("id", existing.id);
-        await supabase.from("posts").update({ likes_count: Math.max(0, 0) }).eq("id", postId); // will be decremented via RPC ideally
+        await supabase.rpc("decrement_post_likes", { post_id: postId });
       } else {
         await supabase.from("post_reactions").insert({ post_id: postId, user_id: user!.id, emoji: emoji || "👍" });
+        await supabase.rpc("increment_post_likes", { post_id: postId });
       }
     },
     onSuccess: () => {
@@ -533,11 +534,7 @@ export function useAddComment() {
         content,
       });
       if (error) throw error;
-      // Increment comments_count
-      const { data: post } = await supabase.from("posts").select("comments_count").eq("id", postId).single();
-      if (post) {
-        await supabase.from("posts").update({ comments_count: (post.comments_count ?? 0) + 1 }).eq("id", postId);
-      }
+      await supabase.rpc("increment_post_comments", { post_id: postId });
     },
     onSuccess: (_, { postId }) => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });

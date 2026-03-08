@@ -22,9 +22,9 @@ export default function PublicProfilePage() {
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userId!).maybeSingle();
       if (error) throw error;
-      // Increment view count
+      // Increment view count atomically via RPC
       if (data && userId !== user?.id) {
-        await supabase.from("profiles").update({ profile_views: (data.profile_views ?? 0) + 1 }).eq("user_id", userId!);
+        await supabase.rpc("increment_profile_views", { profile_user_id: userId! });
       }
       return data;
     },
