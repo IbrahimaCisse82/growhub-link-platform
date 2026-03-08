@@ -8,6 +8,7 @@ import { Send, Search, MessageSquarePlus, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useSearchParams } from "react-router-dom";
 
 interface Conversation {
   partnerId: string;
@@ -22,8 +23,10 @@ export default function MessagingPage() {
   const { user } = useAuth();
   const { data: connections } = useConnections();
   const isMobile = useIsMobile();
+  const [searchParams] = useSearchParams();
+  const partnerFromUrl = searchParams.get("partner");
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
+  const [selectedPartner, setSelectedPartner] = useState<string | null>(partnerFromUrl);
   const [messages, setMessages] = useState<any[]>([]);
   const [newMsg, setNewMsg] = useState("");
   const [loading, setLoading] = useState(true);
