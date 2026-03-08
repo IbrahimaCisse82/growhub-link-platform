@@ -51,7 +51,7 @@ export default function ContentCalendarPage() {
 
   const deleteEntry = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("content_calendar").delete().eq("id", id);
+      const { error } = await (supabase as any).from("content_calendar").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["content-calendar"] }); toast.success("Supprimé"); },

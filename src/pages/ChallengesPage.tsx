@@ -51,7 +51,7 @@ export default function ChallengesPage() {
 
   const joinChallenge = useMutation({
     mutationFn: async (challengeId: string) => {
-      const { error } = await supabase.from("challenge_participants").insert({ challenge_id: challengeId, user_id: user!.id });
+      const { error } = await (supabase as any).from("challenge_participants").insert({ challenge_id: challengeId, user_id: user!.id });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["challenge-participations"] }); toast.success("Défi accepté ! 🔥"); },

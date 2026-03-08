@@ -37,7 +37,7 @@ export default function DealRoomPage() {
   const createRoom = useMutation({
     mutationFn: async (room: any) => {
       const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-      const { error } = await supabase.from("deal_rooms").insert({ ...room, owner_id: user!.id, access_code: code });
+      const { error } = await (supabase as any).from("deal_rooms").insert({ ...room, owner_id: user!.id, access_code: code });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["deal-rooms"] }); toast.success("Deal Room créée !"); setShowForm(false); setForm({ name: "", description: "" }); },
