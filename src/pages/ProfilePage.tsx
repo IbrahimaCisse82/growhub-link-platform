@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Save, User, Briefcase, MapPin, Globe, Linkedin, Camera, Loader2 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import LinkedInImport from "@/components/LinkedInImport";
 
 export default function ProfilePage() {
   usePageMeta({ title: "Mon Profil", description: "Gérez votre profil startup et vos informations publiques." });
