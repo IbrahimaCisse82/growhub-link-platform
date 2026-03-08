@@ -34,6 +34,9 @@ import CompanyPage from "./pages/CompanyPage";
 import WarmIntrosPage from "./pages/WarmIntrosPage";
 import SpeedNetworkingPage from "./pages/SpeedNetworkingPage";
 import SpacesPage from "./pages/SpacesPage";
+import ContentCalendarPage from "./pages/ContentCalendarPage";
+import DealRoomPage from "./pages/DealRoomPage";
+import ChallengesPage from "./pages/ChallengesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
