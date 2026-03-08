@@ -82,7 +82,7 @@ export function RecommendationWall({ userId }: { userId: string }) {
                 </div>
                 <div className="text-[10px] text-muted-foreground">{rec.recommender_profile?.company_name ?? ""}</div>
               </div>
-              <Tag variant="green" className="ml-auto">{rec.skill}</Tag>
+              <Tag variant="green">{rec.skill}</Tag>
             </div>
             {rec.message && (
               <p className="text-xs text-foreground/80 italic leading-relaxed">"{rec.message}"</p>

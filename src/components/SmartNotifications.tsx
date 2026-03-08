@@ -94,10 +94,11 @@ export default function SmartNotifications() {
       }
 
       // 5. Check streak
-      if (profile?.login_streak && profile.login_streak >= 7) {
+      const streak = (profile as any)?.login_streak;
+      if (streak && streak >= 7) {
         items.push({
           id: "streak", icon: <Award className="w-4 h-4 text-yellow-500" />,
-          title: `🔥 Série de ${profile.login_streak} jours !`,
+          title: `🔥 Série de ${streak} jours !`,
           message: "Continuez comme ça ! Vous êtes parmi les membres les plus actifs.",
           action: "Badges", link: "/badges", priority: 60, type: "milestone",
         });
