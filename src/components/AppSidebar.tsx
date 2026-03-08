@@ -35,6 +35,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     { title: "Outils", items: [
       { path: "/content-calendar", icon: FileText, label: "Contenu" },
       { path: "/deal-room", icon: Shield, label: "Deal Room" },
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+      { path: "/templates", icon: MailPlus, label: "Templates" },
       { path: "/challenges", icon: Trophy, label: "Challenges" },
       { path: "/marketing", icon: Megaphone, label: "Marketing" },
       { path: "/analytics", icon: BarChart3, label: "Analytics" },
