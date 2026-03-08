@@ -124,9 +124,9 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Logo */}
-      <div className="w-10 h-10 bg-primary rounded-[10px] flex items-center justify-center mb-4 cursor-pointer flex-shrink-0 relative overflow-hidden" onClick={() => handleNav("/")}>
+      <div className="w-10 h-10 bg-primary rounded-[10px] flex items-center justify-center mb-4 cursor-pointer flex-shrink-0 relative overflow-hidden" onClick={() => handleNav("/")} aria-label="Accueil GrowHub">
         <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent" />
-        <Zap className="w-5 h-5 text-primary-foreground relative z-10" />
+        <Zap className="w-5 h-5 text-primary-foreground relative z-10" aria-hidden="true" />
       </div>
 
       {/* Nav */}
