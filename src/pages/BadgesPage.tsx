@@ -36,7 +36,7 @@ export default function BadgesPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3.5 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
         <MetricCard icon="🏆" value={String(userBadges?.length ?? 0)} label="Badges débloqués" badge="Total" badgeType="up" />
         <MetricCard icon="🎯" value={String(allBadges?.length ?? 0)} label="Badges disponibles" badge="Catalogue" badgeType="neutral" />
         <MetricCard icon="📈" value={allBadges && allBadges.length > 0 ? `${Math.round(((userBadges?.length ?? 0) / allBadges.length) * 100)}%` : "0%"} label="Progression" badge="Global" badgeType="up" />
