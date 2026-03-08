@@ -9,6 +9,9 @@ import ActivationChecklist from "@/components/ActivationChecklist";
 import SmartMatching from "@/components/SmartMatching";
 import { StreakBadge, LeaderboardWidget } from "@/components/StreakLeaderboard";
 import SmartNotifications from "@/components/SmartNotifications";
+import SmartMatchCards from "@/components/SmartMatchCards";
+import MilestoneDetector from "@/components/MilestoneDetector";
+import WeeklyDigest from "@/components/WeeklyDigest";
 
 export default function DashboardPage() {
   usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs startup en temps réel." });
@@ -76,8 +79,17 @@ export default function DashboardPage() {
       {/* Smart Notifications */}
       <SmartNotifications />
 
+      {/* Milestone Detection */}
+      <MilestoneDetector />
+
+      {/* Weekly Digest */}
+      <WeeklyDigest />
+
       {/* Activation Checklist */}
       <ActivationChecklist />
+
+      {/* Smart Match Cards */}
+      <SmartMatchCards />
 
       {/* Smart Matching */}
       <SmartMatching />

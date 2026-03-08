@@ -25,6 +25,8 @@ import {
   UserCheck, BookOpen, Star
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import NetworkGraph from "@/components/NetworkGraph";
+import NetworkAnalytics from "@/components/NetworkAnalytics";
 
 const PIE_COLORS = [
   "hsl(93, 100%, 37%)", "hsl(213, 82%, 51%)", "hsl(23, 88%, 49%)",
@@ -306,6 +308,19 @@ export default function AnalyticsPage() {
             </ChartContainer>
           )}
         </GHCard>
+      </div>
+
+      {/* Network Graph */}
+      <div className="mt-5">
+        <NetworkGraph />
+      </div>
+
+      {/* Network ROI Analytics */}
+      <div className="mt-5">
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-primary" /> ROI Networking
+        </h2>
+        <NetworkAnalytics />
       </div>
     </motion.div>
   );

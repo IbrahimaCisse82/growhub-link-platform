@@ -762,6 +762,39 @@ export type Database = {
         }
         Relationships: []
       }
+      milestones: {
+        Row: {
+          description: string | null
+          detected_at: string
+          id: string
+          is_shared: boolean | null
+          milestone_type: string
+          milestone_value: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          description?: string | null
+          detected_at?: string
+          id?: string
+          is_shared?: boolean | null
+          milestone_type: string
+          milestone_value?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          description?: string | null
+          detected_at?: string
+          id?: string
+          is_shared?: boolean | null
+          milestone_type?: string
+          milestone_value?: number | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notification_preferences: {
         Row: {
           badge_earned: boolean
@@ -1260,6 +1293,153 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      space_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          space_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          space_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          space_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "space_members_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      space_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          space_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          space_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          space_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "space_messages_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      space_tasks: {
+        Row: {
+          assignee_id: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: string | null
+          space_id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string | null
+          space_id: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string | null
+          space_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "space_tasks_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spaces: {
+        Row: {
+          cover_color: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_archived: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          cover_color?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_archived?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          cover_color?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_archived?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       speed_networking_participants: {
         Row: {

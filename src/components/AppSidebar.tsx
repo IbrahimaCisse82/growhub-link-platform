@@ -1,7 +1,7 @@
 import { 
   Zap, PenLine, DollarSign, Home, Users, Calendar,
   BarChart3, MessageSquare, Settings, Bell, LogOut, Megaphone,
-  BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt
+  BookOpen, Rss, Award, Target, User, Gift, CircleDot, Bolt, FolderKanban
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +26,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -47,6 +48,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -67,6 +69,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -87,6 +90,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -107,6 +111,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -126,6 +131,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     { title: "Communauté", items: [
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -147,6 +153,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -166,6 +173,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Inspiration" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -185,6 +193,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/networking", icon: Users, label: "Networking" },
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
@@ -204,6 +213,7 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     { title: "Communauté", items: [
       { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
       { path: "/circles", icon: CircleDot, label: "Cercles" },
+      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
       { path: "/events", icon: Calendar, label: "Événements" },
       { path: "/feed", icon: Rss, label: "Fil d'actu" },
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
