@@ -177,7 +177,7 @@ function SwipeCard({ match, onConnect, onPass, onViewProfile }: {
                 <MapPin className="w-3 h-3" /> {match.city}
               </div>
             )}
-            {match.sector && <Tag variant="blue" className="mt-1">{match.sector}</Tag>}
+            {match.sector && <Tag variant="blue">{match.sector}</Tag>}
           </div>
         </div>
 
