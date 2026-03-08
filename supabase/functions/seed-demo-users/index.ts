@@ -51,7 +51,7 @@ const demoUsers = [
     full_name: "Laure Bernard",
     full_name: "Claire Bernard",
     profile: {
-      display_name: "Claire Bernard",
+      display_name: "Laure Bernard",
       bio: "Partner chez InnoVentures Capital. Focus early-stage DeepTech et HealthTech. €50M sous gestion.",
       company_name: "InnoVentures Capital",
       company_stage: "VC Fund",
