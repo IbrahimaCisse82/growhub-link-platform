@@ -7,6 +7,7 @@ import GlobalSearch from "@/components/GlobalSearch";
 
 interface TopbarProps {
   onMobileMenuToggle: () => void;
+  onHelpToggle?: () => void;
 }
 
 export default function Topbar({ onMobileMenuToggle }: TopbarProps) {
