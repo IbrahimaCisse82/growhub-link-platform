@@ -439,27 +439,9 @@ export default function FeedPage() {
                   <HashtagText text={post.content} onTagClick={handleTagClick} />
                 </p>
 
-                {/* Media gallery */}
+                {/* Rich Media gallery with video + carousel support */}
                 {post.media_urls && post.media_urls.length > 0 && (
-                  <div className={cn(
-                    "grid gap-2 mb-3 rounded-xl overflow-hidden",
-                    post.media_urls.length === 1 && "grid-cols-1",
-                    post.media_urls.length === 2 && "grid-cols-2",
-                    post.media_urls.length >= 3 && "grid-cols-2"
-                  )}>
-                    {post.media_urls.map((url, i) => (
-                      <img
-                        key={i}
-                        src={url}
-                        alt=""
-                        className={cn(
-                          "w-full object-cover rounded-lg border border-border",
-                          post.media_urls!.length === 1 ? "max-h-[400px]" : "h-48"
-                        )}
-                        loading="lazy"
-                      />
-                    ))}
-                  </div>
+                  <MediaGallery urls={post.media_urls} />
                 )}
 
                 {post.tags && post.tags.length > 0 && (
