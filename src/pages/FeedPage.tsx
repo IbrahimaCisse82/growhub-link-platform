@@ -105,6 +105,7 @@ function CommentThread({ comments, postId, user }: { comments: any[]; postId: st
 
 // ─── Main Feed Page ─────────────────────────────────────
 export default function FeedPage() {
+  usePageMeta({ title: "Fil d'actualité", description: "Suivez les actualités de la communauté startup GrowHub." });
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfinitePosts();

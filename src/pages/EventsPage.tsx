@@ -26,6 +26,7 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function EventsPage() {
+  usePageMeta({ title: "Événements", description: "Participez à des webinars, workshops et meetups de l'écosystème startup." });
   const { user } = useAuth();
   const { data: events, isLoading } = useEvents();
   const registerEvent = useRegisterEvent();

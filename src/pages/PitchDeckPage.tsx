@@ -17,6 +17,7 @@ const templates = [
 ];
 
 export default function PitchDeckPage() {
+  usePageMeta({ title: "Pitch Deck", description: "Créez et partagez vos pitch decks pour convaincre les investisseurs." });
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [creating, setCreating] = useState(false);

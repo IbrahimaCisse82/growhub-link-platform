@@ -11,6 +11,7 @@ import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2 
 import { usePageMeta } from "@/hooks/usePageMeta";
 
 export default function PublicProfilePage() {
+  usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
   const { userId } = useParams<{ userId: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();

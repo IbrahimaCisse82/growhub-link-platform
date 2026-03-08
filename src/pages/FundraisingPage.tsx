@@ -18,6 +18,7 @@ const statusLabels: Record<string, { label: string; variant: string }> = {
 };
 
 export default function FundraisingPage() {
+  usePageMeta({ title: "Levée de fonds", description: "Gérez vos rounds de financement et suivez vos investisseurs." });
   const { user } = useAuth();
 
   const { data: rounds, isLoading } = useQuery({

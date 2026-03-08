@@ -14,6 +14,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function BadgesPage() {
+  usePageMeta({ title: "Badges", description: "Débloquez des badges en contribuant à la communauté GrowHub." });
   const { data: userBadges } = useUserBadges();
   const { data: allBadges } = useAllBadges();
 
