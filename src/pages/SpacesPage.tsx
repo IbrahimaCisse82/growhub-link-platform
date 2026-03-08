@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import {
   FolderKanban, Plus, Users, MessageSquare, CheckCircle2, Circle, Clock,
-  Send, ChevronLeft, Trash2, UserPlus, ListTodo, ArrowRight
+  Send, ChevronLeft, Trash2, UserPlus, ListTodo, ArrowRight, Paperclip, FileText, Download
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
