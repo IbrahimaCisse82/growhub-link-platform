@@ -63,7 +63,7 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          <div className="flex gap-4 md:gap-7 mt-7 pt-6 border-t border-border flex-wrap">
+          <div className="flex gap-3 md:gap-7 mt-5 md:mt-7 pt-4 md:pt-6 border-t border-border flex-wrap">
             {statsLoading ? (
               Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-28" />)
             ) : (
