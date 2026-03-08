@@ -63,6 +63,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
     ]},
     { title: "Outils", items: [
       { path: "/content-calendar", icon: FileText, label: "Contenu" },
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+      { path: "/templates", icon: MailPlus, label: "Templates" },
       { path: "/challenges", icon: Trophy, label: "Challenges" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
