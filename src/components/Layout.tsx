@@ -88,7 +88,7 @@ export default function Layout() {
       <MobileBottomNav onMorePress={() => setMobileMenuOpen(true)} />
 
       {/* Contextual help */}
-      {helpConfig && <ContextualHelp title={helpConfig.title} items={helpConfig.items} />}
+      {helpConfig && <ContextualHelp title={helpConfig.title} items={helpConfig.items} open={helpOpen} onOpenChange={setHelpOpen} />}
 
       {/* AI Coach Assistant */}
       <AICoachAssistant />
