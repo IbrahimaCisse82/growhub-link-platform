@@ -89,6 +89,113 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/badges", icon: Award, label: "Badges" },
     ]},
   ],
+  freelance: [
+    { title: "Principal", items: [
+      { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/coaching", icon: PenLine, label: "Mes Missions" },
+      { path: "/marketing", icon: Megaphone, label: "Prospection" },
+    ]},
+    { title: "Communauté", items: [
+      { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/events", icon: Calendar, label: "Événements" },
+      { path: "/feed", icon: Rss, label: "Fil d'actu" },
+      { path: "/messaging", icon: MessageSquare, label: "Messages" },
+    ]},
+    { title: "Outils", items: [
+      { path: "/analytics", icon: BarChart3, label: "Analytics" },
+      { path: "/progression", icon: Target, label: "Objectifs" },
+      { path: "/badges", icon: Award, label: "Badges" },
+    ]},
+  ],
+  incubateur: [
+    { title: "Principal", items: [
+      { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/networking", icon: Users, label: "Startups" },
+      { path: "/coaching", icon: PenLine, label: "Programmes" },
+    ]},
+    { title: "Communauté", items: [
+      { path: "/events", icon: Calendar, label: "Événements" },
+      { path: "/feed", icon: Rss, label: "Fil d'actu" },
+      { path: "/messaging", icon: MessageSquare, label: "Messages" },
+    ]},
+    { title: "Outils", items: [
+      { path: "/analytics", icon: BarChart3, label: "Analytics" },
+      { path: "/marketing", icon: Megaphone, label: "Communication" },
+      { path: "/progression", icon: Target, label: "Objectifs" },
+      { path: "/badges", icon: Award, label: "Badges" },
+    ]},
+  ],
+  etudiant: [
+    { title: "Principal", items: [
+      { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/coaching", icon: PenLine, label: "Mentorat" },
+      { path: "/progression", icon: Target, label: "Parcours" },
+    ]},
+    { title: "Communauté", items: [
+      { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/events", icon: Calendar, label: "Événements" },
+      { path: "/feed", icon: Rss, label: "Fil d'actu" },
+      { path: "/messaging", icon: MessageSquare, label: "Messages" },
+    ]},
+    { title: "Outils", items: [
+      { path: "/pitchdeck", icon: BookOpen, label: "Mon Projet" },
+      { path: "/badges", icon: Award, label: "Badges" },
+    ]},
+  ],
+  aspirationnel: [
+    { title: "Principal", items: [
+      { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/coaching", icon: PenLine, label: "Coaching" },
+      { path: "/progression", icon: Target, label: "Objectifs" },
+    ]},
+    { title: "Communauté", items: [
+      { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/events", icon: Calendar, label: "Événements" },
+      { path: "/feed", icon: Rss, label: "Inspiration" },
+      { path: "/messaging", icon: MessageSquare, label: "Messages" },
+    ]},
+    { title: "Outils", items: [
+      { path: "/pitchdeck", icon: BookOpen, label: "Vision" },
+      { path: "/badges", icon: Award, label: "Badges" },
+    ]},
+  ],
+  professionnel: [
+    { title: "Principal", items: [
+      { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/coaching", icon: PenLine, label: "Formation" },
+      { path: "/analytics", icon: BarChart3, label: "Performance" },
+    ]},
+    { title: "Communauté", items: [
+      { path: "/networking", icon: Users, label: "Networking" },
+      { path: "/events", icon: Calendar, label: "Événements" },
+      { path: "/feed", icon: Rss, label: "Fil d'actu" },
+      { path: "/messaging", icon: MessageSquare, label: "Messages" },
+    ]},
+    { title: "Outils", items: [
+      { path: "/marketing", icon: Megaphone, label: "Visibilité" },
+      { path: "/progression", icon: Target, label: "Objectifs" },
+      { path: "/badges", icon: Award, label: "Badges" },
+    ]},
+  ],
+  corporate: [
+    { title: "Principal", items: [
+      { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/networking", icon: Users, label: "Startups" },
+      { path: "/fundraising", icon: DollarSign, label: "Investissements" },
+    ]},
+    { title: "Communauté", items: [
+      { path: "/events", icon: Calendar, label: "Événements" },
+      { path: "/feed", icon: Rss, label: "Fil d'actu" },
+      { path: "/messaging", icon: MessageSquare, label: "Messages" },
+    ]},
+    { title: "Outils", items: [
+      { path: "/coaching", icon: PenLine, label: "Innovation" },
+      { path: "/analytics", icon: BarChart3, label: "Analytics" },
+      { path: "/marketing", icon: Megaphone, label: "Partenariats" },
+      { path: "/progression", icon: Target, label: "Objectifs" },
+      { path: "/badges", icon: Award, label: "Badges" },
+    ]},
+  ],
 };
 
 export default function AppSidebar({ activeRole = "startup", mobileOpen = false, onMobileClose }: SidebarProps) {

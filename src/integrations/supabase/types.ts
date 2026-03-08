@@ -877,6 +877,7 @@ export type Database = {
         | "etudiant"
         | "aspirationnel"
         | "professionnel"
+        | "corporate"
       coaching_status: "scheduled" | "in_progress" | "completed" | "cancelled"
       connection_status: "pending" | "accepted" | "rejected" | "blocked"
       event_type: "webinar" | "workshop" | "meetup" | "conference" | "demo_day"
@@ -1029,6 +1030,7 @@ export const Constants = {
         "etudiant",
         "aspirationnel",
         "professionnel",
+        "corporate",
       ],
       coaching_status: ["scheduled", "in_progress", "completed", "cancelled"],
       connection_status: ["pending", "accepted", "rejected", "blocked"],
