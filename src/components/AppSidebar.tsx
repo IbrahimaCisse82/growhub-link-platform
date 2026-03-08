@@ -133,6 +133,8 @@ const navByRole: Record<string, { title: string; items: { path: string; icon: an
       { path: "/messaging", icon: MessageSquare, label: "Messages" },
     ]},
     { title: "Outils", items: [
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+      { path: "/templates", icon: MailPlus, label: "Templates" },
       { path: "/analytics", icon: BarChart3, label: "Analytics" },
       { path: "/progression", icon: Target, label: "Objectifs" },
       { path: "/badges", icon: Award, label: "Badges" },
