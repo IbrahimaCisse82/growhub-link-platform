@@ -47,6 +47,7 @@ const roleToolItems: Record<string, { path: string; icon: any; label: string }[]
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   expert: [
+    { path: "/pipeline", icon: Briefcase, label: "Mon pipeline" },
     { path: "/marketplace", icon: ShoppingBag, label: "Mes services" },
     { path: "/coaching", icon: PenLine, label: "Consultations" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
