@@ -43,6 +43,11 @@ import MarketplacePage from "./pages/MarketplacePage";
 import TemplatesPage from "./pages/TemplatesPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import BookmarksPage from "./pages/BookmarksPage";
+import MentorDashboardPage from "./pages/MentorDashboardPage";
+import InvestorDealFlowPage from "./pages/InvestorDealFlowPage";
+import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
+import FreelancePipelinePage from "./pages/FreelancePipelinePage";
+import RoleGuard from "./components/RoleGuard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -98,7 +103,7 @@ const App = () => (
                   <Route path="profile" element={<ProfilePage />} />
                   <Route path="profile/:userId" element={<PublicProfilePage />} />
                   <Route path="notifications" element={<NotificationsPage />} />
-                  <Route path="fundraising" element={<FundraisingPage />} />
+                  <Route path="fundraising" element={<RoleGuard allowedRoles={["startup", "incubateur"]}><FundraisingPage /></RoleGuard>} />
                   <Route path="pitchdeck" element={<PitchDeckPage />} />
                   <Route path="progression" element={<ObjectivesPage />} />
                   <Route path="badges" element={<BadgesPage />} />
@@ -112,8 +117,12 @@ const App = () => (
                   <Route path="speed-networking" element={<SpeedNetworkingPage />} />
                   <Route path="spaces" element={<SpacesPage />} />
                   <Route path="content-calendar" element={<ContentCalendarPage />} />
-                  <Route path="deal-room" element={<DealRoomPage />} />
+                  <Route path="deal-room" element={<RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomPage /></RoleGuard>} />
                   <Route path="challenges" element={<ChallengesPage />} />
+                  <Route path="mentor-dashboard" element={<MentorDashboardPage />} />
+                  <Route path="deal-flow" element={<InvestorDealFlowPage />} />
+                  <Route path="cohorts" element={<IncubatorCohortsPage />} />
+                  <Route path="pipeline" element={<FreelancePipelinePage />} />
                   <Route path="roi" element={<ROIDashboardPage />} />
                   <Route path="moderation" element={<ModerationPage />} />
                   <Route path="marketplace" element={<MarketplacePage />} />

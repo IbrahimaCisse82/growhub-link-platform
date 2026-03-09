@@ -2,7 +2,7 @@ import {
   Zap, Home, Users, Calendar,
   MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag,
   BookOpen, DollarSign, PenLine, Shield, Target, BarChart3,
-  Megaphone, Trophy, Award
+  Megaphone, Trophy, Award, Briefcase, Building2, TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,25 +36,30 @@ const roleToolItems: Record<string, { path: string; icon: any; label: string }[]
     { path: "/progression", icon: Target, label: "Objectifs" },
   ],
   mentor: [
+    { path: "/mentor-dashboard", icon: Users, label: "Mes mentorés" },
     { path: "/coaching", icon: PenLine, label: "Mes sessions" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   investor: [
+    { path: "/deal-flow", icon: TrendingUp, label: "Deal Flow" },
     { path: "/deal-room", icon: Shield, label: "Deal Room" },
     { path: "/pitchdeck", icon: BookOpen, label: "Pitch Decks" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   expert: [
+    { path: "/pipeline", icon: Briefcase, label: "Mon pipeline" },
     { path: "/marketplace", icon: ShoppingBag, label: "Mes services" },
     { path: "/coaching", icon: PenLine, label: "Consultations" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   freelance: [
+    { path: "/pipeline", icon: Briefcase, label: "Mon pipeline" },
     { path: "/marketplace", icon: ShoppingBag, label: "Mes offres" },
     { path: "/content-calendar", icon: Calendar, label: "Calendrier" },
     { path: "/marketing", icon: Megaphone, label: "Leads" },
   ],
   incubateur: [
+    { path: "/cohorts", icon: Building2, label: "Cohortes" },
     { path: "/coaching", icon: PenLine, label: "Mentorat" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],

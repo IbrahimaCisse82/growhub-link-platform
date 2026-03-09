@@ -197,14 +197,14 @@ export function RoleQuickActions({ role }: { role: string }) {
     ],
     mentor: [
       { emoji: "📅", label: "Mes sessions", path: "/coaching", variant: "primary" },
-      { emoji: "👥", label: "Mes mentorés", path: "/networking", variant: "secondary" },
+      { emoji: "👥", label: "Mes mentorés", path: "/mentor-dashboard", variant: "secondary" },
       { emoji: "💬", label: "Publier un conseil", path: "/feed", variant: "secondary" },
-      { emoji: "📊", label: "Mes avis", path: "/coaching", variant: "secondary" },
+      { emoji: "📊", label: "Mes avis", path: "/mentor-dashboard", variant: "secondary" },
     ],
     investor: [
-      { emoji: "🔒", label: "Deal Room", path: "/deal-room", variant: "primary" },
+      { emoji: "💎", label: "Deal Flow", path: "/deal-flow", variant: "primary" },
+      { emoji: "🔒", label: "Deal Room", path: "/deal-room", variant: "secondary" },
       { emoji: "👥", label: "Startups", path: "/networking", variant: "secondary" },
-      { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
       { emoji: "📊", label: "Pitch Decks", path: "/pitchdeck", variant: "secondary" },
     ],
     expert: [
@@ -214,13 +214,13 @@ export function RoleQuickActions({ role }: { role: string }) {
       { emoji: "📊", label: "Analytics", path: "/analytics", variant: "secondary" },
     ],
     freelance: [
-      { emoji: "🛒", label: "Mes offres", path: "/marketplace", variant: "primary" },
+      { emoji: "📊", label: "Mon pipeline", path: "/pipeline", variant: "primary" },
+      { emoji: "🛒", label: "Mes offres", path: "/marketplace", variant: "secondary" },
       { emoji: "👥", label: "Réseau", path: "/networking", variant: "secondary" },
-      { emoji: "📅", label: "Calendrier", path: "/content-calendar", variant: "secondary" },
       { emoji: "📣", label: "Leads", path: "/marketing", variant: "secondary" },
     ],
     incubateur: [
-      { emoji: "🏗️", label: "Mes startups", path: "/networking", variant: "primary" },
+      { emoji: "🏗️", label: "Mes cohortes", path: "/cohorts", variant: "primary" },
       { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
       { emoji: "📊", label: "Analytics", path: "/analytics", variant: "secondary" },
       { emoji: "✍️", label: "Coaching", path: "/coaching", variant: "secondary" },
