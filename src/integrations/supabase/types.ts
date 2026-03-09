@@ -2071,6 +2071,10 @@ export type Database = {
         Args: { profile_user_id: string }
         Returns: undefined
       }
+      set_user_role: {
+        Args: { _role: Database["public"]["Enums"]["app_role"] }
+        Returns: undefined
+      }
       update_login_streak: { Args: { _user_id: string }; Returns: undefined }
     }
     Enums: {
