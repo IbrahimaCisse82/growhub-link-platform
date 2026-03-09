@@ -214,9 +214,9 @@ export function RoleQuickActions({ role }: { role: string }) {
       { emoji: "📊", label: "Analytics", path: "/analytics", variant: "secondary" },
     ],
     freelance: [
-      { emoji: "🛒", label: "Mes offres", path: "/marketplace", variant: "primary" },
+      { emoji: "📊", label: "Mon pipeline", path: "/pipeline", variant: "primary" },
+      { emoji: "🛒", label: "Mes offres", path: "/marketplace", variant: "secondary" },
       { emoji: "👥", label: "Réseau", path: "/networking", variant: "secondary" },
-      { emoji: "📅", label: "Calendrier", path: "/content-calendar", variant: "secondary" },
       { emoji: "📣", label: "Leads", path: "/marketing", variant: "secondary" },
     ],
     incubateur: [
