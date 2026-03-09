@@ -38,6 +38,7 @@ export default function MarketplacePage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { activatedTools, isActivated, activateTool, deactivateTool, allTools } = useActivatedTools();
+  const { role } = useUserRole();
 
   const [mainTab, setMainTab] = useState<"tools" | "services">("tools");
   const [toolFilter, setToolFilter] = useState("all");
