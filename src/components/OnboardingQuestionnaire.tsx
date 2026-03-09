@@ -101,7 +101,8 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
       case 1: return form.company_name && form.sector;
       case 2: return form.city;
       case 3: return form.skills.length >= 1;
-      case 4: return form.interests.length >= 1;
+      case 4: return form.looking_for.length >= 1;
+      case 5: return form.offering.length >= 1;
       default: return true;
     }
   };
