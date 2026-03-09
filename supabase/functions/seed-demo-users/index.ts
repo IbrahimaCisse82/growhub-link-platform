@@ -29,7 +29,6 @@ const demoUsers = [
     email: "marc.lefevre@demo.com",
     password: "Demo2024!",
     full_name: "Marc Lefevre",
-    full_name: "Marc Dubois",
     profile: {
       display_name: "Marc Lefevre",
       bio: "Serial entrepreneur, 3 exits. Mentor certifié avec 15 ans d'expérience en scaling de startups B2B SaaS.",
@@ -49,7 +48,6 @@ const demoUsers = [
     email: "laure.bernard@demo.com",
     password: "Demo2024!",
     full_name: "Laure Bernard",
-    full_name: "Claire Bernard",
     profile: {
       display_name: "Laure Bernard",
       bio: "Partner chez InnoVentures Capital. Focus early-stage DeepTech et HealthTech. €50M sous gestion.",
@@ -88,7 +86,6 @@ const demoUsers = [
     email: "julia.chen@demo.com",
     password: "Demo2024!",
     full_name: "Julia Chen",
-    full_name: "Laura Chen",
     profile: {
       display_name: "Julia Chen",
       bio: "CTO & Co-fondatrice d'AIHealth. Développe des solutions IA pour le diagnostic médical.",
