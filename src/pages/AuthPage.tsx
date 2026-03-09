@@ -81,8 +81,8 @@ export default function AuthPage() {
             <div className="flex flex-wrap gap-1 mt-2">
               {[
                 { label: "Sophie (Startup)", email: "sophie.martin@demo.com" },
-                { label: "Marc (Mentor)", email: "marc.dubois@demo.com" },
-                { label: "Claire (Investor)", email: "claire.bernard@demo.com" },
+                { label: "Marc (Mentor)", email: "marc.lefevre@demo.com" },
+                { label: "Laure (Investor)", email: "laure.bernard@demo.com" },
               ].map((demo) => (
                 <Button key={demo.email} type="button" variant="ghost" size="sm"
                   className="text-[11px] text-primary hover:text-primary h-7 px-2"

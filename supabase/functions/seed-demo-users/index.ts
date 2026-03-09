@@ -86,7 +86,6 @@ const demoUsers = [
     email: "julia.chen@demo.com",
     password: "Demo2024!",
     full_name: "Julia Chen",
-    full_name: "Laura Chen",
     profile: {
       display_name: "Julia Chen",
       bio: "CTO & Co-fondatrice d'AIHealth. Développe des solutions IA pour le diagnostic médical.",
