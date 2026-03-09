@@ -48,7 +48,7 @@ export default function ProfilePage() {
     if (profile) {
       setForm({
         display_name: profile.display_name ?? "",
-        headline: (profile as any).headline ?? "",
+        headline: profile.headline ?? "",
         bio: profile.bio ?? "",
         company_name: profile.company_name ?? "",
         company_stage: profile.company_stage ?? "",
