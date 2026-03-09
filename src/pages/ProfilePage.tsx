@@ -2,27 +2,53 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { GHCard, Tag, MetricCard } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Save, User, Briefcase, MapPin, Globe, Linkedin, Camera, Loader2 } from "lucide-react";
+import { Save, User, Briefcase, MapPin, Globe, Linkedin, Camera, Loader2, Target, Gift, Sparkles } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import LinkedInImport from "@/components/LinkedInImport";
 
+// ─── Role-specific field configs ──────────────────────────────
+const roleFieldConfig: Record<string, {
+  companyLabel: string;
+  stageLabel: string;
+  showStage: boolean;
+  showHeadline: boolean;
+  metricsLabels: { views: string; score: string; skills: string; sector: string };
+}> = {
+  startup: { companyLabel: "Startup / Entreprise", stageLabel: "Stade de développement", showStage: true, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Score réseau", skills: "Compétences", sector: "Secteur" } },
+  mentor: { companyLabel: "Cabinet / Organisation", stageLabel: "Spécialité", showStage: false, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Score mentor", skills: "Spécialités", sector: "Domaine" } },
+  investor: { companyLabel: "Fonds / Société", stageLabel: "Focus investissement", showStage: false, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Réputation", skills: "Expertises", sector: "Focus" } },
+  expert: { companyLabel: "Cabinet / Structure", stageLabel: "Domaine d'expertise", showStage: false, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Score expert", skills: "Expertises", sector: "Secteur" } },
+  freelance: { companyLabel: "Nom commercial", stageLabel: "Type de missions", showStage: false, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Réputation", skills: "Compétences", sector: "Domaine" } },
+  incubateur: { companyLabel: "Incubateur / Accélérateur", stageLabel: "Programme", showStage: true, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Impact", skills: "Spécialités", sector: "Focus" } },
+  etudiant: { companyLabel: "École / Université", stageLabel: "Année d'études", showStage: true, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Engagement", skills: "Compétences", sector: "Filière" } },
+  aspirationnel: { companyLabel: "Projet / Idée", stageLabel: "Phase", showStage: true, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Engagement", skills: "Intérêts", sector: "Domaine" } },
+  professionnel: { companyLabel: "Entreprise", stageLabel: "Poste", showStage: false, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Score réseau", skills: "Compétences", sector: "Secteur" } },
+  corporate: { companyLabel: "Entreprise / Groupe", stageLabel: "Direction / BU", showStage: false, showHeadline: true, metricsLabels: { views: "Vues du profil", score: "Score innovation", skills: "Domaines", sector: "Industrie" } },
+};
+
 export default function ProfilePage() {
-  usePageMeta({ title: "Mon Profil", description: "Gérez votre profil startup et vos informations publiques." });
+  usePageMeta({ title: "Mon Profil", description: "Gérez votre profil et vos informations publiques." });
   const { user, profile, refetchProfile } = useAuth();
+  const { role } = useUserRole();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [form, setForm] = useState({
-    display_name: "", bio: "", company_name: "", company_stage: "", sector: "",
+    display_name: "", headline: "", bio: "", company_name: "", company_stage: "", sector: "",
     city: "", country: "", website_url: "", linkedin_url: "", skills: "", interests: "",
+    looking_for: "", offering: "",
   });
   const [saving, setSaving] = useState(false);
+
+  const config = roleFieldConfig[role] ?? roleFieldConfig.startup;
 
   useEffect(() => {
     if (profile) {
       setForm({
         display_name: profile.display_name ?? "",
+        headline: (profile as any).headline ?? "",
         bio: profile.bio ?? "",
         company_name: profile.company_name ?? "",
         company_stage: profile.company_stage ?? "",
@@ -33,6 +59,8 @@ export default function ProfilePage() {
         linkedin_url: profile.linkedin_url ?? "",
         skills: (profile.skills ?? []).join(", "),
         interests: (profile.interests ?? []).join(", "),
+        looking_for: ((profile as any).looking_for ?? []).join(", "),
+        offering: ((profile as any).offering ?? []).join(", "),
       });
     }
   }, [profile]);
@@ -59,6 +87,7 @@ export default function ProfilePage() {
     setSaving(true);
     const { error } = await supabase.from("profiles").update({
       display_name: form.display_name,
+      headline: form.headline || null,
       bio: form.bio,
       company_name: form.company_name,
       company_stage: form.company_stage,
@@ -69,6 +98,8 @@ export default function ProfilePage() {
       linkedin_url: form.linkedin_url || null,
       skills: form.skills.split(",").map(s => s.trim()).filter(Boolean),
       interests: form.interests.split(",").map(s => s.trim()).filter(Boolean),
+      looking_for: form.looking_for.split(",").map(s => s.trim()).filter(Boolean),
+      offering: form.offering.split(",").map(s => s.trim()).filter(Boolean),
     }).eq("user_id", user.id);
     setSaving(false);
     if (error) toast.error("Erreur lors de la sauvegarde");
@@ -77,16 +108,24 @@ export default function ProfilePage() {
 
   const initials = (profile?.display_name ?? "?").substring(0, 2).toUpperCase();
 
-  const Field = ({ label, icon: Icon, field, textarea }: { label: string; icon?: any; field: keyof typeof form; textarea?: boolean }) => (
+  const roleLabels: Record<string, string> = {
+    startup: "Startup", mentor: "Mentor", investor: "Investisseur", expert: "Expert",
+    freelance: "Freelance", incubateur: "Incubateur", etudiant: "Étudiant",
+    aspirationnel: "Aspirationnel", professionnel: "Professionnel", corporate: "Corporate",
+  };
+
+  const Field = ({ label, icon: Icon, field, textarea, placeholder }: { label: string; icon?: any; field: keyof typeof form; textarea?: boolean; placeholder?: string }) => (
     <div>
       <label className="text-xs font-bold text-foreground/70 mb-1 flex items-center gap-1.5">
         {Icon && <Icon className="w-3.5 h-3.5" />} {label}
       </label>
       {textarea ? (
         <textarea value={form[field]} onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+          placeholder={placeholder}
           className="w-full bg-secondary/50 border border-border rounded-xl p-3 text-sm resize-none min-h-[80px] focus:outline-none focus:border-primary/40 transition-colors" />
       ) : (
         <input value={form[field]} onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+          placeholder={placeholder}
           className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40 transition-colors" />
       )}
     </div>
@@ -116,8 +155,11 @@ export default function ProfilePage() {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
           </div>
           <div>
-            <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-              <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Mon Profil
+            <div className="flex items-center gap-2 mb-3.5">
+              <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider">
+                <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Mon Profil
+              </div>
+              <Tag variant="green">{roleLabels[role] ?? "Membre"}</Tag>
             </div>
             <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
               Votre <span className="text-primary">identité</span> professionnelle
@@ -127,17 +169,20 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="👁️" value={String(profile?.profile_views ?? 0)} label="Vues du profil" badge="Total" badgeType="up" />
-        <MetricCard icon="🤝" value={String(profile?.network_score ?? 0)} label="Score réseau" badge="/100" badgeType="up" />
-        <MetricCard icon="🎯" value={String((profile?.skills ?? []).length)} label="Compétences" badge="Actives" badgeType="neutral" />
-        <MetricCard icon="🌐" value={profile?.sector ?? "—"} label="Secteur" badge="Actif" badgeType="neutral" />
+        <MetricCard icon="👁️" value={String(profile?.profile_views ?? 0)} label={config.metricsLabels.views} badge="Total" badgeType="up" />
+        <MetricCard icon="🤝" value={String(profile?.network_score ?? 0)} label={config.metricsLabels.score} badge="/100" badgeType="up" />
+        <MetricCard icon="🎯" value={String((profile?.skills ?? []).length)} label={config.metricsLabels.skills} badge="Actives" badgeType="neutral" />
+        <MetricCard icon="🌐" value={profile?.sector ?? "—"} label={config.metricsLabels.sector} badge="Actif" badgeType="neutral" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <GHCard title="Informations personnelles">
           <div className="space-y-4">
             <Field label="Nom complet" icon={User} field="display_name" />
-            <Field label="Bio" field="bio" textarea />
+            {config.showHeadline && (
+              <Field label="Titre / Headline" icon={Sparkles} field="headline" placeholder="Ex: CTO @ TechVert | IA & HealthTech" />
+            )}
+            <Field label="Bio" field="bio" textarea placeholder="Décrivez votre parcours, votre projet..." />
             <div className="grid grid-cols-2 gap-3">
               <Field label="Ville" icon={MapPin} field="city" />
               <Field label="Pays" field="country" />
@@ -147,9 +192,9 @@ export default function ProfilePage() {
 
         <GHCard title="Informations professionnelles">
           <div className="space-y-4">
-            <Field label="Entreprise" icon={Briefcase} field="company_name" />
+            <Field label={config.companyLabel} icon={Briefcase} field="company_name" />
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Stage" field="company_stage" />
+              {config.showStage && <Field label={config.stageLabel} field="company_stage" />}
               <Field label="Secteur" field="sector" />
             </div>
             <Field label="Site web" icon={Globe} field="website_url" />
@@ -157,16 +202,39 @@ export default function ProfilePage() {
           </div>
         </GHCard>
 
-        <GHCard title="Compétences & Intérêts" className="md:col-span-2">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Compétences (séparées par des virgules)" field="skills" />
-            <Field label="Intérêts (séparés par des virgules)" field="interests" />
+        <GHCard title="Compétences & Intérêts">
+          <div className="space-y-4">
+            <Field label="Compétences (séparées par des virgules)" field="skills" placeholder="Ex: Growth, Python, UX Design" />
+            <Field label="Intérêts (séparés par des virgules)" field="interests" placeholder="Ex: IA, ClimateTech, SaaS" />
+            {profile?.skills && profile.skills.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {profile.skills.map((s) => <Tag key={s} variant="green">{s}</Tag>)}
+              </div>
+            )}
           </div>
-          {profile?.skills && profile.skills.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {profile.skills.map((s) => <Tag key={s} variant="green">{s}</Tag>)}
-            </div>
-          )}
+        </GHCard>
+
+        <GHCard title="Ce que je cherche & propose">
+          <div className="space-y-4">
+            <Field label="Je recherche (séparé par des virgules)" icon={Target} field="looking_for" placeholder="Ex: Co-fondateur tech, Investisseur Seed, Mentor marketing" />
+            <Field label="Je propose (séparé par des virgules)" icon={Gift} field="offering" placeholder="Ex: Conseil en growth, Intro investisseurs, Mentorat produit" />
+            {(profile as any)?.looking_for && (profile as any).looking_for.length > 0 && (
+              <div>
+                <p className="text-[10px] font-bold text-foreground/50 mb-1">Recherche :</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {(profile as any).looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
+                </div>
+              </div>
+            )}
+            {(profile as any)?.offering && (profile as any).offering.length > 0 && (
+              <div>
+                <p className="text-[10px] font-bold text-foreground/50 mb-1">Propose :</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {(profile as any).offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
+                </div>
+              </div>
+            )}
+          </div>
         </GHCard>
       </div>
 
