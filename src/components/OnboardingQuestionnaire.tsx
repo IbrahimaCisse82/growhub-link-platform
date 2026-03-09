@@ -77,10 +77,10 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
       }).eq("user_id", user.id);
       if (error) throw error;
 
-      // Update role (the trigger creates a default "startup" role, so we update it)
-      const { error: roleError } = await supabase.from("user_roles").update({
-        role: selectedRole as any,
-      }).eq("user_id", user.id);
+      // Update role via secure RPC (SECURITY DEFINER prevents self-assigning admin)
+      const { error: roleError } = await supabase.rpc("set_user_role", {
+        _role: selectedRole,
+      });
       if (roleError) throw roleError;
 
       toast.success("Profil complété avec succès ! 🎉");
