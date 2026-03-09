@@ -27,7 +27,7 @@ export default function MobileBottomNav({ onMorePress }: MobileBottomNavProps) {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[200] bg-card/95 backdrop-blur-lg border-t border-border lg:hidden safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-[200] bg-card/95 backdrop-blur-lg border-t border-border md:hidden safe-area-bottom">
       <div className="flex items-center justify-around h-[60px] px-1 max-w-md mx-auto">
         {tabs.map((tab) => {
           const active = isActive(tab.path);
