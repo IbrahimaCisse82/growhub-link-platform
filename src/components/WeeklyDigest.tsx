@@ -14,7 +14,6 @@ interface DigestData {
   topMatch: { display_name: string; user_id: string; match_score: number } | null;
   upcomingEvents: { title: string; starts_at: string }[];
   postEngagement: { totalLikes: number; totalComments: number };
-  ssiChange: number;
   weekHighlight: string;
 }
 
