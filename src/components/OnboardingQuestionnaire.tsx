@@ -40,12 +40,16 @@ const STAGES = [
 const SKILLS_LIST = ["Product Management", "Growth Hacking", "Marketing Digital", "Développement Web", "Data Science / IA", "Design UX/UI", "Finance / Comptabilité", "Sales / BizDev", "RH / Recrutement", "Juridique", "Ops / Logistique", "Stratégie"];
 const INTERESTS_LIST = ["Levée de fonds", "Trouver un co-fondateur", "Mentorat", "Networking", "Recrutement", "Partenariats", "Internationalisation", "Formation", "Incubation / Accélération", "Visibilité média"];
 
+const LOOKING_FOR = ["Co-fondateur", "Investisseur", "Mentor", "Clients", "Partenaires", "Talents / Recrutement", "Formation", "Visibilité", "Conseil juridique", "Accompagnement technique"];
+const OFFERING = ["Mentorat", "Investissement", "Expertise technique", "Design / UX", "Conseils stratégiques", "Intros investisseurs", "Intros clients", "Coaching", "Formation", "Services marketing"];
+
 const STEPS = [
   { icon: UserCircle, title: "Votre profil", subtitle: "Quel type d'utilisateur êtes-vous ?" },
   { icon: Building2, title: "Votre activité", subtitle: "Parlez-nous de votre projet" },
   { icon: MapPin, title: "Localisation", subtitle: "Où êtes-vous basé ?" },
   { icon: Briefcase, title: "Compétences", subtitle: "Quels sont vos talents ?" },
-  { icon: Target, title: "Objectifs", subtitle: "Que cherchez-vous ?" },
+  { icon: Target, title: "Ce que je cherche", subtitle: "Que recherchez-vous ?" },
+  { icon: Sparkles, title: "Ce que je propose", subtitle: "Que pouvez-vous apporter ?" },
   { icon: Sparkles, title: "Finitions", subtitle: "Un dernier mot sur vous" },
 ];
 
