@@ -31,7 +31,7 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
   return (
     <header className="h-[56px] md:h-[60px] bg-card border-b border-border flex items-center px-3 md:px-7 gap-2 md:gap-3.5 sticky top-0 z-[150] safe-area-top">
       {/* Mobile menu */}
-      <button onClick={onMobileMenuToggle} className="md:hidden w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center flex-shrink-0">
+      <button onClick={onMobileMenuToggle} className="hidden md:flex w-9 h-9 rounded-[9px] bg-card border border-border items-center justify-center flex-shrink-0 lg:hidden">
         <Menu className="w-[17px] h-[17px]" />
       </button>
 
