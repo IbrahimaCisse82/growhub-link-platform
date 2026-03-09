@@ -128,7 +128,7 @@ export default function RoleAnalyticsDashboard() {
   const { profile } = useAuth();
   const { data: stats, isLoading } = useDashboardStats();
   const { data: ssi } = useSSI();
-  const { roleData, coachingData, fundraisingData } = useRoleAnalytics();
+  const { roleData, coachingData, fundraisingData, dealRoomsData, servicesData, bookingsData } = useRoleAnalytics();
 
   const role = roleData.data ?? "startup";
 
