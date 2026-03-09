@@ -235,11 +235,16 @@ export default function MarketplacePage() {
                       {tool.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="font-heading text-sm font-bold truncate">{tool.label}</h3>
                         {active && (
                           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[9px] font-bold flex-shrink-0">
                             <CheckCircle className="w-2.5 h-2.5" /> Actif
+                          </span>
+                        )}
+                        {!active && recommendedKeys.includes(tool.key) && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[9px] font-bold flex-shrink-0">
+                            <Sparkles className="w-2.5 h-2.5" /> Recommandé
                           </span>
                         )}
                       </div>
