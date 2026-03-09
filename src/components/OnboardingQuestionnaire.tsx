@@ -66,7 +66,7 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
     offering: [] as string[], bio: "", headline: "", linkedin_url: "", website_url: "",
   });
 
-  const toggleItem = (key: "skills" | "interests", item: string) => {
+  const toggleItem = (key: "skills" | "interests" | "looking_for" | "offering", item: string) => {
     setForm(f => ({ ...f, [key]: f[key].includes(item) ? f[key].filter(i => i !== item) : [...f[key], item] }));
   };
 
