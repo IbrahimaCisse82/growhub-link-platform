@@ -36,6 +36,7 @@ const roleToolItems: Record<string, { path: string; icon: any; label: string }[]
     { path: "/progression", icon: Target, label: "Objectifs" },
   ],
   mentor: [
+    { path: "/mentor-dashboard", icon: Users, label: "Mes mentorés" },
     { path: "/coaching", icon: PenLine, label: "Mes sessions" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
