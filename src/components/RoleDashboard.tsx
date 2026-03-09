@@ -202,9 +202,9 @@ export function RoleQuickActions({ role }: { role: string }) {
       { emoji: "📊", label: "Mes avis", path: "/mentor-dashboard", variant: "secondary" },
     ],
     investor: [
-      { emoji: "🔒", label: "Deal Room", path: "/deal-room", variant: "primary" },
+      { emoji: "💎", label: "Deal Flow", path: "/deal-flow", variant: "primary" },
+      { emoji: "🔒", label: "Deal Room", path: "/deal-room", variant: "secondary" },
       { emoji: "👥", label: "Startups", path: "/networking", variant: "secondary" },
-      { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
       { emoji: "📊", label: "Pitch Decks", path: "/pitchdeck", variant: "secondary" },
     ],
     expert: [
