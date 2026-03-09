@@ -220,7 +220,7 @@ export function RoleQuickActions({ role }: { role: string }) {
       { emoji: "📣", label: "Leads", path: "/marketing", variant: "secondary" },
     ],
     incubateur: [
-      { emoji: "🏗️", label: "Mes startups", path: "/networking", variant: "primary" },
+      { emoji: "🏗️", label: "Mes cohortes", path: "/cohorts", variant: "primary" },
       { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
       { emoji: "📊", label: "Analytics", path: "/analytics", variant: "secondary" },
       { emoji: "✍️", label: "Coaching", path: "/coaching", variant: "secondary" },
