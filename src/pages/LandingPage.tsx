@@ -155,7 +155,7 @@ export default function LandingPage() {
               Fonctionnalités
             </div>
             <h2 className="font-heading text-3xl md:text-5xl font-extrabold mb-4">Tout ce dont vous avez <span className="text-primary">besoin</span></h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Des outils puissants conçus pour chaque étape de votre parcours entrepreneurial.</p>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Des outils puissants conçus pour chaque étape de votre parcours dans le secteur privé africain.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
