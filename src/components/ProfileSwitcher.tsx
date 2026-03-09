@@ -9,8 +9,12 @@ const profiles = [
   { id: "startup", label: "Startup", emoji: "⚡" },
   { id: "mentor", label: "Mentor/Expert", emoji: "✍️" },
   { id: "investor", label: "Investisseur", emoji: "💰" },
+  { id: "expert", label: "Expert", emoji: "🧠" },
   { id: "freelance", label: "Freelance", emoji: "💼" },
+  { id: "incubateur", label: "Incubateur", emoji: "🏢" },
   { id: "etudiant", label: "Étudiant", emoji: "🎓" },
+  { id: "professionnel", label: "Professionnel", emoji: "👔" },
+  { id: "corporate", label: "Corporate", emoji: "🏛️" },
   { id: "aspirationnel", label: "Aspirationnel", emoji: "⭐" },
 ];
 
