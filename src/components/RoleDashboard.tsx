@@ -197,9 +197,9 @@ export function RoleQuickActions({ role }: { role: string }) {
     ],
     mentor: [
       { emoji: "📅", label: "Mes sessions", path: "/coaching", variant: "primary" },
-      { emoji: "👥", label: "Mes mentorés", path: "/networking", variant: "secondary" },
+      { emoji: "👥", label: "Mes mentorés", path: "/mentor-dashboard", variant: "secondary" },
       { emoji: "💬", label: "Publier un conseil", path: "/feed", variant: "secondary" },
-      { emoji: "📊", label: "Mes avis", path: "/coaching", variant: "secondary" },
+      { emoji: "📊", label: "Mes avis", path: "/mentor-dashboard", variant: "secondary" },
     ],
     investor: [
       { emoji: "🔒", label: "Deal Room", path: "/deal-room", variant: "primary" },
