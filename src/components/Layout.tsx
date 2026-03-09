@@ -76,7 +76,17 @@ export default function Layout() {
       <div className="lg:ml-[68px] flex-1 flex flex-col min-h-screen min-h-[100dvh] w-full overflow-x-hidden">
         <Topbar onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} onHelpToggle={helpConfig ? () => setHelpOpen(!helpOpen) : undefined} />
         <main id="main-content" className="p-3 md:p-7 flex-1 pb-24 lg:pb-7" role="main">
-          <Outlet />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
 
