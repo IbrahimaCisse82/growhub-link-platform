@@ -48,6 +48,7 @@ import InvestorDealFlowPage from "./pages/InvestorDealFlowPage";
 import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
 import FreelancePipelinePage from "./pages/FreelancePipelinePage";
 import RoleGuard from "./components/RoleGuard";
+import ToolGuard from "./components/ToolGuard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -95,40 +96,43 @@ const App = () => (
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                   <Route index element={<DashboardPage />} />
+                  {/* Community — always accessible */}
                   <Route path="networking" element={<NetworkingPage />} />
-                  <Route path="coaching" element={<CoachingPage />} />
                   <Route path="events" element={<EventsPage />} />
                   <Route path="feed" element={<FeedPage />} />
                   <Route path="messaging" element={<MessagingPage />} />
+                  <Route path="circles" element={<CirclesPage />} />
+                  <Route path="speed-networking" element={<SpeedNetworkingPage />} />
+                  <Route path="spaces" element={<SpacesPage />} />
+                  {/* Profile & settings — always accessible */}
                   <Route path="profile" element={<ProfilePage />} />
                   <Route path="profile/:userId" element={<PublicProfilePage />} />
                   <Route path="notifications" element={<NotificationsPage />} />
-                  <Route path="fundraising" element={<RoleGuard allowedRoles={["startup", "incubateur"]}><FundraisingPage /></RoleGuard>} />
-                  <Route path="pitchdeck" element={<PitchDeckPage />} />
-                  <Route path="progression" element={<ObjectivesPage />} />
-                  <Route path="badges" element={<BadgesPage />} />
                   <Route path="settings" element={<SettingsPage />} />
-                  <Route path="marketing" element={<MarketingPage />} />
-                  <Route path="analytics" element={<AnalyticsPage />} />
                   <Route path="referral" element={<ReferralPage />} />
-                  <Route path="circles" element={<CirclesPage />} />
-                  <Route path="company" element={<CompanyPage />} />
-                  <Route path="introductions" element={<WarmIntrosPage />} />
-                  <Route path="speed-networking" element={<SpeedNetworkingPage />} />
-                  <Route path="spaces" element={<SpacesPage />} />
-                  <Route path="content-calendar" element={<ContentCalendarPage />} />
-                  <Route path="deal-room" element={<RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomPage /></RoleGuard>} />
-                  <Route path="challenges" element={<ChallengesPage />} />
-                  <Route path="mentor-dashboard" element={<MentorDashboardPage />} />
-                  <Route path="deal-flow" element={<InvestorDealFlowPage />} />
-                  <Route path="cohorts" element={<IncubatorCohortsPage />} />
-                  <Route path="pipeline" element={<FreelancePipelinePage />} />
-                  <Route path="roi" element={<ROIDashboardPage />} />
-                  <Route path="moderation" element={<ModerationPage />} />
-                  <Route path="marketplace" element={<MarketplacePage />} />
-                  <Route path="templates" element={<TemplatesPage />} />
-                  <Route path="admin" element={<AdminDashboardPage />} />
                   <Route path="bookmarks" element={<BookmarksPage />} />
+                  <Route path="marketplace" element={<MarketplacePage />} />
+                  <Route path="company" element={<CompanyPage />} />
+                  {/* Tools — require activation via marketplace */}
+                  <Route path="pitchdeck" element={<ToolGuard toolKey="pitchdeck"><PitchDeckPage /></ToolGuard>} />
+                  <Route path="fundraising" element={<ToolGuard toolKey="fundraising"><RoleGuard allowedRoles={["startup", "incubateur"]}><FundraisingPage /></RoleGuard></ToolGuard>} />
+                  <Route path="coaching" element={<ToolGuard toolKey="coaching"><CoachingPage /></ToolGuard>} />
+                  <Route path="content-calendar" element={<ToolGuard toolKey="content-calendar"><ContentCalendarPage /></ToolGuard>} />
+                  <Route path="deal-room" element={<ToolGuard toolKey="deal-room"><RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomPage /></RoleGuard></ToolGuard>} />
+                  <Route path="templates" element={<ToolGuard toolKey="templates"><TemplatesPage /></ToolGuard>} />
+                  <Route path="challenges" element={<ToolGuard toolKey="challenges"><ChallengesPage /></ToolGuard>} />
+                  <Route path="marketing" element={<ToolGuard toolKey="marketing"><MarketingPage /></ToolGuard>} />
+                  <Route path="analytics" element={<ToolGuard toolKey="analytics"><AnalyticsPage /></ToolGuard>} />
+                  <Route path="roi" element={<ToolGuard toolKey="roi"><ROIDashboardPage /></ToolGuard>} />
+                  <Route path="progression" element={<ToolGuard toolKey="progression"><ObjectivesPage /></ToolGuard>} />
+                  <Route path="badges" element={<ToolGuard toolKey="badges"><BadgesPage /></ToolGuard>} />
+                  {/* Role-specific pages — role + tool guard */}
+                  <Route path="mentor-dashboard" element={<RoleGuard allowedRoles={["mentor"]}><MentorDashboardPage /></RoleGuard>} />
+                  <Route path="deal-flow" element={<RoleGuard allowedRoles={["investor"]}><InvestorDealFlowPage /></RoleGuard>} />
+                  <Route path="cohorts" element={<RoleGuard allowedRoles={["incubateur"]}><IncubatorCohortsPage /></RoleGuard>} />
+                  <Route path="pipeline" element={<RoleGuard allowedRoles={["freelance", "expert"]}><FreelancePipelinePage /></RoleGuard>} />
+                  <Route path="moderation" element={<ModerationPage />} />
+                  <Route path="admin" element={<AdminDashboardPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>
