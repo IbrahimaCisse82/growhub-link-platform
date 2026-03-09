@@ -7,7 +7,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useActivatedTools, ALL_TOOLS, TOOL_CATEGORIES } from "@/hooks/useActivatedTools";
+import { useActivatedTools, ALL_TOOLS, TOOL_CATEGORIES, ROLE_RECOMMENDED_TOOLS } from "@/hooks/useActivatedTools";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
 import {
   Plus, ShoppingBag, Star, Clock, DollarSign, Search,
