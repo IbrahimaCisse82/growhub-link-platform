@@ -217,6 +217,30 @@ export default function PublicProfilePage() {
           </GHCard>
         )}
 
+        {/* Looking for & Offering */}
+        {((profile as any).looking_for?.length > 0 || (profile as any).offering?.length > 0) && (
+          <GHCard title="Recherche & Propose">
+            <div className="space-y-3">
+              {(profile as any).looking_for?.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🔍 Recherche</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(profile as any).looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
+                  </div>
+                </div>
+              )}
+              {(profile as any).offering?.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🎁 Propose</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(profile as any).offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
+                  </div>
+                </div>
+              )}
+            </div>
+          </GHCard>
+        )}
+
         {(profile.linkedin_url || profile.website_url) && (
           <GHCard title="Liens">
             <div className="space-y-2">
