@@ -216,9 +216,28 @@ export default function MarketplacePage() {
             ))}
           </div>
 
+          {/* Recommendation banner */}
+          {toolFilter === "all" && recommendedKeys.length > 0 && (
+            <div className="flex items-center gap-3 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3 mb-5">
+              <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0" />
+              <div>
+                <p className="text-xs font-bold font-heading">Outils recommandés pour votre profil <span className="capitalize text-primary">{role}</span></p>
+                <p className="text-[11px] text-muted-foreground">Filtrez par "⭐ Recommandés" pour voir les outils adaptés à votre activité.</p>
+              </div>
+            </div>
+          )}
+
           {/* Tools grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-            {filteredTools.map(tool => {
+            {[...filteredTools].sort((a, b) => {
+              // Sort: recommended first, then activated, then rest
+              const aRec = recommendedKeys.includes(a.key) ? 0 : 1;
+              const bRec = recommendedKeys.includes(b.key) ? 0 : 1;
+              if (aRec !== bRec) return aRec - bRec;
+              const aAct = isActivated(a.key) ? 0 : 1;
+              const bAct = isActivated(b.key) ? 0 : 1;
+              return aAct - bAct;
+            }).map(tool => {
               const active = isActivated(tool.key);
               const ToolIcon = tool.lucideIcon;
               return (
