@@ -59,8 +59,8 @@ export default function ProfilePage() {
         linkedin_url: profile.linkedin_url ?? "",
         skills: (profile.skills ?? []).join(", "),
         interests: (profile.interests ?? []).join(", "),
-        looking_for: ((profile as any).looking_for ?? []).join(", "),
-        offering: ((profile as any).offering ?? []).join(", "),
+        looking_for: (profile.looking_for ?? []).join(", "),
+        offering: (profile.offering ?? []).join(", "),
       });
     }
   }, [profile]);
