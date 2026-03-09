@@ -262,7 +262,7 @@ export default function MessagingPage() {
                   )}
                   {selectedConv?.partnerName ?? "Conversation"}
                 </div>
-                <div className="flex-1 overflow-y-auto p-4 space-y-2 max-h-[380px]">
+                <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2 max-h-[50vh] md:max-h-[380px]">
                   {messages.map((m) => (
                     <div key={m.id} className={cn("max-w-[80%] md:max-w-[70%]", m.sender_id === user?.id ? "ml-auto" : "mr-auto")}>
                       <div className={cn(

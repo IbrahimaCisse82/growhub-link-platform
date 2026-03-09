@@ -103,12 +103,14 @@ export default function NetworkingPage() {
         </GHCard>
       ))}</div>)}
       {activeTab === "pending" && (!pendingRequests || pendingRequests.length === 0 ? <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Aucune demande</p></GHCard> : <div className="space-y-3">{pendingRequests.map((r: any) => (
-        <GHCard key={r.id}><div className="flex gap-3 items-center">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">{(r.requester_profile?.display_name ?? "?").substring(0, 2).toUpperCase()}</div>
-          <div className="flex-1"><div className="font-heading text-sm font-bold">{r.requester_profile?.display_name ?? "Membre"}</div><div className="text-[11px] text-muted-foreground">{r.requester_profile?.company_name ?? ""}</div></div>
-          <div className="flex gap-2">
-            <button onClick={() => handleRespond(r.id, "accepted", r.requester_id)} className="bg-primary text-primary-foreground rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1"><Check className="w-3 h-3" /> Accepter</button>
-            <button onClick={() => handleRespond(r.id, "rejected")} className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs font-bold text-muted-foreground hover:text-destructive flex items-center gap-1"><X className="w-3 h-3" /> Refuser</button>
+        <GHCard key={r.id}><div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <div className="flex gap-3 items-center flex-1 min-w-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">{(r.requester_profile?.display_name ?? "?").substring(0, 2).toUpperCase()}</div>
+            <div className="flex-1 min-w-0"><div className="font-heading text-sm font-bold truncate">{r.requester_profile?.display_name ?? "Membre"}</div><div className="text-[11px] text-muted-foreground truncate">{r.requester_profile?.company_name ?? ""}</div></div>
+          </div>
+          <div className="flex gap-2 flex-shrink-0">
+            <button onClick={() => handleRespond(r.id, "accepted", r.requester_id)} className="bg-primary text-primary-foreground rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 flex-1 sm:flex-none justify-center"><Check className="w-3 h-3" /> Accepter</button>
+            <button onClick={() => handleRespond(r.id, "rejected")} className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs font-bold text-muted-foreground hover:text-destructive flex items-center gap-1 flex-1 sm:flex-none justify-center"><X className="w-3 h-3" /> Refuser</button>
           </div>
         </div></GHCard>
       ))}</div>)}

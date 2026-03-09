@@ -88,43 +88,44 @@ export default function PricingPage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 h-16">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 h-14 md:h-16">
           <button onClick={() => navigate("/welcome")} className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-primary-foreground" />
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-primary rounded-xl flex items-center justify-center">
+              <Zap className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
             </div>
-            <span className="font-heading text-xl font-bold">
+            <span className="font-heading text-lg md:text-xl font-bold">
               Grow<span className="text-primary">Hub</span>Link
             </span>
           </button>
-          <div className="flex gap-3">
+          <div className="flex gap-2 md:gap-3">
             <button
               onClick={() => navigate("/auth")}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2"
+              className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2"
             >
               Connexion
             </button>
             <button
               onClick={() => navigate("/auth")}
-              className="bg-primary text-primary-foreground rounded-xl px-5 py-2 text-sm font-bold hover:bg-primary-hover transition-colors"
+              className="bg-primary text-primary-foreground rounded-xl px-4 md:px-5 py-2 text-xs md:text-sm font-bold hover:bg-primary-hover transition-colors"
             >
-              S'inscrire
+              <span className="hidden md:inline">S'inscrire</span>
+              <span className="md:hidden">Inscription</span>
             </button>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-16 px-6">
+      <section className="pt-24 md:pt-32 pb-10 md:pb-16 px-4 md:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-wider mb-6">
-              <Crown className="w-3.5 h-3.5" /> Tarifs transparents
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-4 md:mb-6">
+              <Crown className="w-3 h-3 md:w-3.5 md:h-3.5" /> Tarifs transparents
             </div>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4">
+            <h1 className="font-heading text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-3 md:mb-4 px-2">
               Un plan pour chaque <span className="text-primary">ambition</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Commencez gratuitement, évoluez quand vous êtes prêt. Pas de surprise, pas d'engagement.
             </p>
           </motion.div>
@@ -132,15 +133,15 @@ export default function PricingPage() {
       </section>
 
       {/* Plans */}
-      <section className="pb-24 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+      <section className="pb-16 md:pb-24 px-4 md:px-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-start">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`relative rounded-2xl border-2 p-8 flex flex-col ${
+              className={`relative rounded-2xl border-2 p-5 md:p-8 flex flex-col ${
                 plan.highlighted
                   ? "border-primary bg-card shadow-[var(--shadow-glow)]"
                   : "border-border bg-card"
@@ -152,41 +153,41 @@ export default function PricingPage() {
                 </div>
               )}
 
-              <div className="mb-6">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <plan.icon className="w-6 h-6 text-primary" />
+              <div className="mb-4 md:mb-6">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 md:mb-4">
+                  <plan.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 </div>
-                <h3 className="font-heading text-xl font-extrabold mb-1">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground">{plan.description}</p>
+                <h3 className="font-heading text-lg md:text-xl font-extrabold mb-1">{plan.name}</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">{plan.description}</p>
               </div>
 
-              <div className="mb-6">
-                <span className="font-heading text-4xl font-extrabold">{plan.price}</span>
-                <span className="text-muted-foreground text-sm">{plan.period}</span>
+              <div className="mb-4 md:mb-6">
+                <span className="font-heading text-3xl md:text-4xl font-extrabold">{plan.price}</span>
+                <span className="text-muted-foreground text-xs md:text-sm">{plan.period}</span>
               </div>
 
               <button
                 onClick={() => navigate("/auth")}
-                className={`w-full rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2 transition-all mb-8 ${
+                className={`w-full rounded-xl py-2.5 md:py-3 text-xs md:text-sm font-bold flex items-center justify-center gap-2 transition-all mb-5 md:mb-8 ${
                   plan.highlighted
                     ? "bg-primary text-primary-foreground hover:bg-primary-hover hover:shadow-glow"
                     : "bg-secondary text-foreground hover:bg-secondary/80"
                 }`}
               >
-                {plan.cta} <ArrowRight className="w-4 h-4" />
+                {plan.cta} <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </button>
 
-              <div className="space-y-3 flex-1">
+              <div className="space-y-2.5 md:space-y-3 flex-1">
                 {plan.features.map((f) => (
-                  <div key={f} className="flex items-start gap-2.5">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{f}</span>
+                  <div key={f} className="flex items-start gap-2">
+                    <Check className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-xs md:text-sm">{f}</span>
                   </div>
                 ))}
                 {plan.excluded.map((f) => (
-                  <div key={f} className="flex items-start gap-2.5 opacity-40">
-                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm line-through">{f}</span>
+                  <div key={f} className="flex items-start gap-2 opacity-40">
+                    <Check className="w-3.5 h-3.5 md:w-4 md:h-4 mt-0.5 flex-shrink-0" />
+                    <span className="text-xs md:text-sm line-through">{f}</span>
                   </div>
                 ))}
               </div>
@@ -196,12 +197,12 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 px-6 bg-muted/30">
+      <section className="py-12 md:py-20 px-4 md:px-6 bg-muted/30">
         <div className="max-w-3xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-extrabold text-center mb-10">
+          <h2 className="font-heading text-xl md:text-3xl font-extrabold text-center mb-6 md:mb-10">
             Questions fréquentes
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {[
               { q: "Puis-je changer de plan à tout moment ?", a: "Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. Le changement prend effet immédiatement." },
               { q: "Y a-t-il un engagement ?", a: "Non, tous nos plans sont sans engagement. Vous pouvez annuler à tout moment." },
@@ -210,11 +211,11 @@ export default function PricingPage() {
               { q: "Puis-je obtenir un remboursement ?", a: "Oui, nous offrons un remboursement complet dans les 14 premiers jours après votre souscription." },
             ].map((faq) => (
               <details key={faq.q} className="bg-card border border-border rounded-xl group">
-                <summary className="px-6 py-4 font-heading text-sm font-bold cursor-pointer list-none flex items-center justify-between">
+                <summary className="px-4 md:px-6 py-3 md:py-4 font-heading text-xs md:text-sm font-bold cursor-pointer list-none flex items-center justify-between">
                   {faq.q}
-                  <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg">+</span>
+                  <span className="text-muted-foreground group-open:rotate-45 transition-transform text-lg ml-2 flex-shrink-0">+</span>
                 </summary>
-                <div className="px-6 pb-4 text-sm text-muted-foreground">{faq.a}</div>
+                <div className="px-4 md:px-6 pb-3 md:pb-4 text-xs md:text-sm text-muted-foreground">{faq.a}</div>
               </details>
             ))}
           </div>
@@ -222,8 +223,8 @@ export default function PricingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 py-10 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-border/50 py-8 md:py-10 px-4 md:px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
               <Zap className="w-4 h-4 text-primary-foreground" />

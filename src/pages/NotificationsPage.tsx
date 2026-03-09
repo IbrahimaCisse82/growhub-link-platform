@@ -70,18 +70,21 @@ export default function NotificationsPage() {
             const config = typeConfig[n.type] || typeConfig.system;
             const Icon = config.icon;
             return (
-              <GHCard key={n.id} className={`flex items-center gap-3 py-3 ${!n.is_read ? "border-l-4 border-l-primary" : ""}`}>
+              <GHCard key={n.id} className={`flex items-start sm:items-center gap-3 py-3 ${!n.is_read ? "border-l-4 border-l-primary" : ""}`}>
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Icon className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-heading text-xs font-bold">{n.title}</span>
                     <Tag variant={config.color as any}>{config.label}</Tag>
                   </div>
-                  {n.message && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{n.message}</p>}
+                  {n.message && <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2 sm:truncate">{n.message}</p>}
+                  <span className="text-[10px] text-muted-foreground sm:hidden block mt-1">
+                    {new Date(n.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                  </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground flex-shrink-0">
+                <span className="text-[10px] text-muted-foreground flex-shrink-0 hidden sm:block">
                   {new Date(n.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                 </span>
               </GHCard>
