@@ -23,7 +23,7 @@ const testimonials = [
   { name: "Claire Bernard", role: "Investisseuse, VCap", text: "Le deal flow est enfin centralisé. Je gagne un temps fou sur le sourcing et le suivi de mes participations.", avatar: "CB", rating: 5 },
   { name: "Amadou Diallo", role: "Fondateur, PaySahel", text: "Grâce aux warm intros, j'ai rencontré 3 investisseurs qualifiés en une semaine. Impossible sur LinkedIn.", avatar: "AD", rating: 5 },
   { name: "Léa Nguyen", role: "Freelance UX", text: "En tant que freelance, j'ai trouvé mes meilleurs clients via le networking intelligent. Mon CA a doublé en 6 mois.", avatar: "LN", rating: 5 },
-  { name: "Ousmane Konaté", role: "Directeur, TechHub Dakar", text: "L'écosystème parfait pour connecter startups africaines et investisseurs internationaux.", avatar: "OK", rating: 5 },
+  { name: "Ousmane Konaté", role: "Directeur, TechHub Dakar", text: "L'écosystème parfait pour connecter les acteurs du secteur privé africain entre eux.", avatar: "OK", rating: 5 },
 ];
 
 const stats = [
@@ -68,7 +68,7 @@ const steps = [
 ];
 
 export default function LandingPage() {
-  usePageMeta({ title: "GrowHubLink — L'écosystème entrepreneurial", description: "Plateforme tout-en-un pour entrepreneurs : networking, coaching, pitch deck, fundraising et plus." });
+  usePageMeta({ title: "GrowHubLink — L'écosystème du secteur privé en Afrique", description: "Plateforme tout-en-un pour les acteurs du secteur privé en Afrique : networking, coaching, pitch deck, fundraising et plus." });
   const navigate = useNavigate();
 
   return (
@@ -116,7 +116,7 @@ export default function LandingPage() {
               <span className="text-primary">entrepreneurial</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              Networking intelligent, coaching certifié, pitch deck, levée de fonds — une plateforme unique qui réunit tout l'écosystème startup.
+              Networking intelligent, coaching certifié, pitch deck, levée de fonds — une plateforme unique qui réunit tout l'écosystème du secteur privé africain.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-8 py-4 font-heading text-base font-bold flex items-center justify-center gap-2 hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all">
@@ -155,7 +155,7 @@ export default function LandingPage() {
               Fonctionnalités
             </div>
             <h2 className="font-heading text-3xl md:text-5xl font-extrabold mb-4">Tout ce dont vous avez <span className="text-primary">besoin</span></h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Des outils puissants conçus pour chaque étape de votre parcours entrepreneurial.</p>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Des outils puissants conçus pour chaque étape de votre parcours dans le secteur privé africain.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
