@@ -14,7 +14,6 @@ interface DigestData {
   topMatch: { display_name: string; user_id: string; match_score: number } | null;
   upcomingEvents: { title: string; starts_at: string }[];
   postEngagement: { totalLikes: number; totalComments: number };
-  ssiChange: number;
   weekHighlight: string;
 }
 
@@ -30,12 +29,12 @@ export default function WeeklyDigest() {
       weekAgo.setDate(weekAgo.getDate() - 7);
       const weekAgoISO = weekAgo.toISOString();
 
-      const [connRes, msgRes, postsRes, eventsRes, matchRes] = await Promise.all([
+      const [connRes, msgRes, postsRes, eventsRes, topMatchRes] = await Promise.all([
         supabase.from("connections").select("id").or(`requester_id.eq.${user!.id},receiver_id.eq.${user!.id}`).eq("status", "accepted").gte("created_at", weekAgoISO),
         supabase.from("messages").select("id").eq("receiver_id", user!.id).gte("created_at", weekAgoISO),
         supabase.from("posts").select("likes_count, comments_count").eq("author_id", user!.id).gte("created_at", weekAgoISO),
         supabase.from("event_registrations").select("event_id, events(title, starts_at)").eq("user_id", user!.id),
-        supabase.from("profiles").select("user_id, display_name").neq("user_id", user!.id).eq("is_public", true).limit(1),
+        supabase.from("connections").select("requester_id, receiver_id, match_score, profiles!connections_receiver_id_fkey(display_name)").or(`requester_id.eq.${user!.id},receiver_id.eq.${user!.id}`).eq("status", "accepted").order("match_score", { ascending: false, nullsFirst: false }).limit(1),
       ]);
 
       const newConnections = connRes.data?.length ?? 0;
@@ -49,11 +48,17 @@ export default function WeeklyDigest() {
         .map((r: any) => ({ title: r.events.title, starts_at: r.events.starts_at }))
         .slice(0, 3);
 
-      const topMatch = matchRes.data?.[0] ? { 
-        display_name: matchRes.data[0].display_name, 
-        user_id: matchRes.data[0].user_id, 
-        match_score: 75 
-      } : null;
+      // Get best match with real match_score
+      let topMatch: { display_name: string; user_id: string; match_score: number } | null = null;
+      if (topMatchRes.data?.[0]) {
+        const conn = topMatchRes.data[0] as any;
+        const otherId = conn.requester_id === user!.id ? conn.receiver_id : conn.requester_id;
+        topMatch = {
+          display_name: conn.profiles?.display_name ?? "Connexion",
+          user_id: otherId,
+          match_score: conn.match_score ?? 0,
+        };
+      }
 
       // Generate highlight
       let weekHighlight = "Semaine calme — c'est le moment de poster et d'élargir votre réseau !";
@@ -68,7 +73,6 @@ export default function WeeklyDigest() {
         topMatch,
         upcomingEvents: upcoming,
         postEngagement: { totalLikes, totalComments },
-        ssiChange: Math.round(Math.random() * 5 - 1),
         weekHighlight,
       };
     },

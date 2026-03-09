@@ -85,6 +85,27 @@ export function useSSI() {
 
       const totalScore = profileStrength + networkQuality + engagement + visibility;
 
+      // Calculate weekly change from last week's activity
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      const weekAgoISO = weekAgo.toISOString();
+
+      const [lastWeekConnRes, lastWeekPostsRes, lastWeekEndorsementsRes] = await Promise.all([
+        supabase.from("connections").select("id").or(`requester_id.eq.${user!.id},receiver_id.eq.${user!.id}`).eq("status", "accepted").lt("created_at", weekAgoISO),
+        supabase.from("posts").select("id").eq("author_id", user!.id).lt("created_at", weekAgoISO),
+        supabase.from("endorsements").select("id").eq("endorsed_id", user!.id).lt("created_at", weekAgoISO),
+      ]);
+
+      const lastWeekConnections = lastWeekConnRes.data?.length ?? 0;
+      const lastWeekPosts = lastWeekPostsRes.data?.length ?? 0;
+      const lastWeekEndorsements = lastWeekEndorsementsRes.data?.length ?? 0;
+
+      // Estimate last week's score components
+      const lastWeekNetworkQuality = Math.min(25, Math.round((Math.min(lastWeekConnections, 50) / 50) * 15 + (Math.min(lastWeekEndorsements, 20) / 20) * 10));
+      const lastWeekEngagement = Math.min(25, Math.round((Math.min(lastWeekPosts, 20) / 20) * 8));
+      const lastWeekScore = profileStrength + lastWeekNetworkQuality + lastWeekEngagement + visibility;
+      const weeklyChange = totalScore - lastWeekScore;
+
       return {
         totalScore,
         profileStrength,
@@ -96,7 +117,7 @@ export function useSSI() {
           connectionCount, postCount, commentCount, reactionCount,
           profileViews, endorsementsReceived, eventsAttended, coachingSessions,
         },
-        weeklyChange: Math.round(Math.random() * 6 - 2), // placeholder
+        weeklyChange,
       };
     },
     staleTime: 60_000,

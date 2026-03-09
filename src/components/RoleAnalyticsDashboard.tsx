@@ -50,7 +50,7 @@ function useRoleAnalytics() {
       return {
         total: sessions?.length ?? 0,
         completed: completed.length,
-        avgRating: ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—",
+        avgRating: ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "0",
       };
     },
   });
@@ -66,7 +66,39 @@ function useRoleAnalytics() {
     },
   });
 
-  return { roleData, coachingData, fundraisingData };
+  const dealRoomsData = useQuery({
+    queryKey: ["role-deal-rooms", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data: owned } = await supabase.from("deal_rooms").select("id, status").eq("owner_id", user!.id);
+      const { data: member } = await supabase.from("deal_room_members").select("deal_room_id").eq("user_id", user!.id);
+      const activeOwned = (owned ?? []).filter(r => r.status === "active").length;
+      return { ownedCount: owned?.length ?? 0, memberCount: member?.length ?? 0, activeCount: activeOwned + (member?.length ?? 0) };
+    },
+  });
+
+  const servicesData = useQuery({
+    queryKey: ["role-services", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase.from("marketplace_services").select("id, is_active, total_bookings").eq("user_id", user!.id);
+      const activeServices = (data ?? []).filter(s => s.is_active).length;
+      const totalBookings = (data ?? []).reduce((s, svc) => s + (svc.total_bookings ?? 0), 0);
+      return { total: data?.length ?? 0, active: activeServices, bookings: totalBookings };
+    },
+  });
+
+  const bookingsData = useQuery({
+    queryKey: ["role-bookings", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase.from("service_bookings").select("id, status").eq("seller_id", user!.id);
+      const inProgress = (data ?? []).filter(b => b.status === "in_progress" || b.status === "pending").length;
+      return { total: data?.length ?? 0, inProgress };
+    },
+  });
+
+  return { roleData, coachingData, fundraisingData, dealRoomsData, servicesData, bookingsData };
 }
 
 function BenchmarkBar({ benchmark }: { benchmark: RoleBenchmark }) {
@@ -96,7 +128,7 @@ export default function RoleAnalyticsDashboard() {
   const { profile } = useAuth();
   const { data: stats, isLoading } = useDashboardStats();
   const { data: ssi } = useSSI();
-  const { roleData, coachingData, fundraisingData } = useRoleAnalytics();
+  const { roleData, coachingData, fundraisingData, dealRoomsData, servicesData, bookingsData } = useRoleAnalytics();
 
   const role = roleData.data ?? "startup";
 
@@ -114,20 +146,20 @@ export default function RoleAnalyticsDashboard() {
       { icon: Award, label: "Badges", value: stats?.totalBadges ?? 0, description: "Obtenus", color: "text-ghorange" },
     ],
     investor: [
-      { icon: DollarSign, label: "Deal rooms", value: "—", description: "Rooms actives", color: "text-ghgold" },
+      { icon: DollarSign, label: "Deal rooms", value: dealRoomsData.data?.activeCount ?? 0, description: "Rooms actives", color: "text-ghgold" },
       { icon: Briefcase, label: "Portfolio", value: stats?.connections ?? 0, description: "Startups suivies", color: "text-primary" },
       { icon: Target, label: "Pipeline", value: fundraisingData.data?.activeRounds ?? 0, description: "Rounds actifs", color: "text-ghblue" },
       { icon: TrendingUp, label: "Événements", value: stats?.totalEvents ?? 0, description: "Participations", color: "text-ghpurple" },
     ],
     expert: [
-      { icon: Lightbulb, label: "Services", value: "—", description: "Sur la marketplace", color: "text-ghgold" },
+      { icon: Lightbulb, label: "Services", value: servicesData.data?.active ?? 0, description: "Sur la marketplace", color: "text-ghgold" },
       { icon: BookOpen, label: "Sessions", value: coachingData.data?.total ?? 0, description: "Consulting", color: "text-primary" },
       { icon: Star, label: "Réputation", value: ssi?.totalScore ?? 0, description: "Score SSI", color: "text-ghpurple" },
       { icon: Users, label: "Réseau", value: stats?.connections ?? 0, description: "Connexions", color: "text-ghblue" },
     ],
     freelance: [
-      { icon: Briefcase, label: "Missions", value: "—", description: "En cours", color: "text-primary" },
-      { icon: Star, label: "Note", value: coachingData.data?.avgRating ?? "—", description: "Clients", color: "text-ghgold" },
+      { icon: Briefcase, label: "Missions", value: bookingsData.data?.inProgress ?? 0, description: "En cours", color: "text-primary" },
+      { icon: Star, label: "Note", value: coachingData.data?.avgRating ?? "0", description: "Clients", color: "text-ghgold" },
       { icon: Users, label: "Réseau", value: stats?.connections ?? 0, description: "Connexions", color: "text-ghblue" },
       { icon: Rocket, label: "Visibilité", value: ssi?.details?.profileViews ?? 0, description: "Vues profil", color: "text-ghpurple" },
     ],
