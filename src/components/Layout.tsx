@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useRealtimeNotifications, useRealtimeMessages } from "@/hooks/useRealtimeNotifications";
+import { useRealtimeNotifications, useRealtimeMessages, useRealtimeConnections } from "@/hooks/useRealtimeNotifications";
 import AICoachAssistant from "@/components/AICoachAssistant";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { useNotificationPush } from "@/components/PushNotificationToggle";
