@@ -89,11 +89,12 @@ export default function LandingPage() {
             <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
           </div>
           <div className="flex gap-3">
-            <button onClick={() => navigate("/auth")} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
+            <button onClick={() => navigate("/auth")} className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
               Connexion
             </button>
-            <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-xl px-5 py-2 text-sm font-bold hover:bg-primary-hover transition-colors">
-              Commencer gratuitement
+            <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-xl px-5 py-2 text-sm font-bold hover:bg-primary-hover transition-colors whitespace-nowrap">
+              <span className="hidden md:inline">Commencer gratuitement</span>
+              <span className="md:hidden">Connexion</span>
             </button>
           </div>
         </div>
