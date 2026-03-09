@@ -117,6 +117,9 @@ export default function PublicProfilePage() {
               <Tag variant="green">{roleLabels[userRole ?? "startup"] ?? "Membre"}</Tag>
               {profile.company_stage && <Tag>{profile.company_stage}</Tag>}
             </div>
+            {(profile as any).headline && (
+              <p className="text-sm text-primary font-medium mb-1">{(profile as any).headline}</p>
+            )}
             {profile.company_name && (
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-1">
                 <Building2 className="w-3.5 h-3.5" /> {profile.company_name}
