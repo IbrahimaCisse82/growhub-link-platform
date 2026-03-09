@@ -107,7 +107,7 @@ export default function SettingsPage() {
     if (deleteText !== "SUPPRIMER") { toast.error("Tapez SUPPRIMER pour confirmer"); return; }
     if (user) {
       await supabase.from("profiles").delete().eq("user_id", user.id);
-      await supabase.from("user_roles").delete().eq("user_id", user.id);
+      // Note: user_roles cleanup is handled by cascade or backoffice
     }
     await signOut();
     toast.success("Compte désactivé. Vos données ont été supprimées.");
