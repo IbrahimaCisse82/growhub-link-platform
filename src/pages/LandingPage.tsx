@@ -6,6 +6,7 @@ import {
   CheckCircle2, Crown, Sparkles, TrendingUp, Play
 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 const features = [
   { icon: Users, title: "Networking Intelligent", desc: "Matching par compétences, secteur et objectifs. Trouvez les bons profils en quelques clics.", tag: "IA" },
