@@ -1,26 +1,46 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { GHCard, MetricCard, Tag } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCompanyPage, useCompanyMembers, useCreateCompanyPage, useUpdateCompanyPage } from "@/hooks/useCompanyPages";
-import { Building2, Users, Globe, MapPin, Calendar, Edit2, Plus, Save } from "lucide-react";
+import { Building2, Globe, MapPin, Edit2, Plus, Save, Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function CompanyPage() {
   usePageMeta({ title: "Page Entreprise", description: "Gérez la vitrine de votre startup." });
   const { user } = useAuth();
-  const { data: companyRaw, isLoading } = useCompanyPage(user?.id);
+  const { data: companyRaw, isLoading, refetch } = useCompanyPage(user?.id);
   const company = companyRaw as any;
   const { data: members } = useCompanyMembers(company?.id);
   const createPage = useCreateCompanyPage();
   const updatePage = useUpdateCompanyPage();
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   const [editing, setEditing] = useState(false);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({
     name: "", description: "", sector: "", stage: "", website: "", location: "", team_size: "", founded_year: new Date().getFullYear(),
   });
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !company) return;
+    if (file.size > 5 * 1024 * 1024) { toast.error("Le fichier est trop lourd (max 5MB)"); return; }
+    setUploadingLogo(true);
+    const ext = file.name.split(".").pop();
+    const path = `${company.id}/logo.${ext}`;
+    const { error: uploadError } = await supabase.storage.from("company-logos").upload(path, file, { upsert: true });
+    if (uploadError) { toast.error("Erreur lors de l'upload"); setUploadingLogo(false); return; }
+    const { data: { publicUrl } } = supabase.storage.from("company-logos").getPublicUrl(path);
+    const logoUrl = `${publicUrl}?t=${Date.now()}`;
+    await supabase.from("company_pages").update({ logo_url: logoUrl }).eq("id", company.id);
+    await refetch();
+    setUploadingLogo(false);
+    toast.success("Logo mis à jour !");
+  };
 
   const handleCreate = () => {
     if (!form.name.trim()) { toast.error("Nom requis"); return; }
@@ -106,20 +126,40 @@ export default function CompanyPage() {
       {/* Header */}
       <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-              <Building2 className="w-3 h-3" /> Page Entreprise
+        <div className="relative z-10 flex items-start justify-between gap-4">
+          <div className="flex items-start gap-5">
+            {/* Logo with upload */}
+            <div className="relative group flex-shrink-0">
+              {company.logo_url ? (
+                <img src={company.logo_url} className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover border-2 border-primary/20" alt="Logo" />
+              ) : (
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 border-2 border-primary/20 flex items-center justify-center">
+                  <Building2 className="w-7 h-7 text-primary/60" />
+                </div>
+              )}
+              <button
+                onClick={() => logoInputRef.current?.click()}
+                disabled={uploadingLogo}
+                className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              >
+                {uploadingLogo ? <Loader2 className="w-4 h-4 text-white animate-spin" /> : <Camera className="w-4 h-4 text-white" />}
+              </button>
+              <input ref={logoInputRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
             </div>
-            <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-1">{company.name}</h1>
-            <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mt-2">
-              {company.sector && <span className="flex items-center gap-1"><Tag variant="green">{company.sector}</Tag></span>}
-              {company.stage && <span className="flex items-center gap-1"><Tag variant="blue">{company.stage}</Tag></span>}
-              {company.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {company.location}</span>}
-              {company.website && <a href={company.website} target="_blank" rel="noopener" className="flex items-center gap-1 text-primary hover:underline"><Globe className="w-3 h-3" /> Site web</a>}
+            <div>
+              <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
+                <Building2 className="w-3 h-3" /> Page Entreprise
+              </div>
+              <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-1">{company.name}</h1>
+              <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mt-2">
+                {company.sector && <span className="flex items-center gap-1"><Tag variant="green">{company.sector}</Tag></span>}
+                {company.stage && <span className="flex items-center gap-1"><Tag variant="blue">{company.stage}</Tag></span>}
+                {company.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {company.location}</span>}
+                {company.website && <a href={company.website} target="_blank" rel="noopener" className="flex items-center gap-1 text-primary hover:underline"><Globe className="w-3 h-3" /> Site web</a>}
+              </div>
             </div>
           </div>
-          <button onClick={() => { setForm(company); setEditing(!editing); }} className="bg-card border border-border rounded-lg px-3 py-2 text-xs font-bold hover:border-primary/30 transition-colors flex items-center gap-1.5">
+          <button onClick={() => { setForm(company); setEditing(!editing); }} className="bg-card border border-border rounded-lg px-3 py-2 text-xs font-bold hover:border-primary/30 transition-colors flex items-center gap-1.5 flex-shrink-0">
             <Edit2 className="w-3 h-3" /> Modifier
           </button>
         </div>
