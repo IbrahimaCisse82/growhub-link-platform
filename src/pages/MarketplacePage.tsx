@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Plus, ShoppingBag, Star, Clock, DollarSign, Search,
   Briefcase, Code, Palette, TrendingUp, BookOpen, Users, Trash2,
-  ToggleLeft, ToggleRight, Puzzle, ArrowRight, CheckCircle, Zap
+  ToggleLeft, ToggleRight, Puzzle, ArrowRight, CheckCircle, Zap, Sparkles
 } from "lucide-react";
 
 const serviceCategories = [
