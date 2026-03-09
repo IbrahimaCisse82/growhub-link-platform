@@ -126,7 +126,12 @@ export default function MarketplacePage() {
         return matchSearch && matchCat;
       }) ?? [];
 
-  const filteredTools = toolFilter === "all" ? allTools : allTools.filter(t => t.category === toolFilter);
+  const recommendedKeys = ROLE_RECOMMENDED_TOOLS[role] ?? [];
+  const filteredTools = toolFilter === "all"
+    ? allTools
+    : toolFilter === "recommended"
+    ? allTools.filter(t => recommendedKeys.includes(t.key))
+    : allTools.filter(t => t.category === toolFilter);
 
   const formatPrice = (s: any) => {
     if (s.price_type === "free") return "Gratuit";
