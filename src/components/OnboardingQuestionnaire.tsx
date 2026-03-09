@@ -210,21 +210,39 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
                   </div>
                 )}
 
-                {/* Step 4: Interests */}
+                {/* Step 4: Looking for */}
                 {step === 4 && (
-                  <div className="space-y-2"><Label>Que recherchez-vous sur GrowHubLink ? (min. 1)</Label>
-                    <div className="flex flex-wrap gap-2">{INTERESTS_LIST.map(s => (
-                      <Badge key={s} variant={form.interests.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.interests.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("interests", s)}>
-                        {form.interests.includes(s) && <Check className="w-3 h-3 mr-1" />}{s}
+                  <div className="space-y-2"><Label>Que recherchez-vous ? (min. 1)</Label>
+                    <div className="flex flex-wrap gap-2">{LOOKING_FOR.map(s => (
+                      <Badge key={s} variant={form.looking_for.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.looking_for.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("looking_for", s)}>
+                        {form.looking_for.includes(s) && <Check className="w-3 h-3 mr-1" />}{s}
                       </Badge>
                     ))}</div>
                   </div>
                 )}
 
-                {/* Step 5: Bio */}
+                {/* Step 5: Offering */}
                 {step === 5 && (
-                  <div className="space-y-2"><Label>Bio / pitch en quelques lignes (optionnel)</Label>
-                    <Textarea placeholder="Décrivez votre projet, votre parcours..." rows={4} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} />
+                  <div className="space-y-2"><Label>Que pouvez-vous apporter à la communauté ? (min. 1)</Label>
+                    <div className="flex flex-wrap gap-2">{OFFERING.map(s => (
+                      <Badge key={s} variant={form.offering.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.offering.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("offering", s)}>
+                        {form.offering.includes(s) && <Check className="w-3 h-3 mr-1" />}{s}
+                      </Badge>
+                    ))}</div>
+                  </div>
+                )}
+
+                {/* Step 6: Bio & Headline */}
+                {step === 6 && (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Titre / Headline (optionnel)</Label>
+                      <Input placeholder="Ex: CTO @ TechVert | IA & HealthTech" value={form.headline} onChange={e => setForm({ ...form, headline: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Bio / pitch en quelques lignes (optionnel)</Label>
+                      <Textarea placeholder="Décrivez votre projet, votre parcours..." rows={4} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} />
+                    </div>
                   </div>
                 )}
               </motion.div>
