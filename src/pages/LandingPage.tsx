@@ -23,7 +23,7 @@ const testimonials = [
   { name: "Claire Bernard", role: "Investisseuse, VCap", text: "Le deal flow est enfin centralisé. Je gagne un temps fou sur le sourcing et le suivi de mes participations.", avatar: "CB", rating: 5 },
   { name: "Amadou Diallo", role: "Fondateur, PaySahel", text: "Grâce aux warm intros, j'ai rencontré 3 investisseurs qualifiés en une semaine. Impossible sur LinkedIn.", avatar: "AD", rating: 5 },
   { name: "Léa Nguyen", role: "Freelance UX", text: "En tant que freelance, j'ai trouvé mes meilleurs clients via le networking intelligent. Mon CA a doublé en 6 mois.", avatar: "LN", rating: 5 },
-  { name: "Ousmane Konaté", role: "Directeur, TechHub Dakar", text: "L'écosystème parfait pour connecter startups africaines et investisseurs internationaux.", avatar: "OK", rating: 5 },
+  { name: "Ousmane Konaté", role: "Directeur, TechHub Dakar", text: "L'écosystème parfait pour connecter les acteurs du secteur privé africain entre eux.", avatar: "OK", rating: 5 },
 ];
 
 const stats = [
