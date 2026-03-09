@@ -54,7 +54,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="min-h-screen w-full flex flex-col bg-background text-foreground overflow-x-hidden">
       {/* Nav */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 h-14 md:h-16">
@@ -95,9 +95,9 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-1.5 md:gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-6 md:mb-8">
               <Sparkles className="w-3 h-3 md:w-3.5 md:h-3.5" /> Plateforme pour entrepreneurs en Afrique
             </div>
-            <h1 className="font-heading text-[32px] sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.08] mb-5 md:mb-6 px-2">
+            <h1 className="font-heading text-[32px] sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.08] mb-5 md:mb-6 px-2 break-words hyphens-auto">
               Construisez votre empire<br />
-              <span className="text-primary">entrepreneurial</span>
+              <span className="text-primary break-words">entrepreneurial</span>
             </h1>
             <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-2">
               Networking intelligent, coaching certifié, pitch deck, levée de fonds — une plateforme unique pour le secteur privé africain.
