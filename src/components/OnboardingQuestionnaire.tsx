@@ -79,7 +79,7 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
 
       // Update role via secure RPC (SECURITY DEFINER prevents self-assigning admin)
       const { error: roleError } = await supabase.rpc("set_user_role", {
-        _role: selectedRole,
+        _role: selectedRole as "startup" | "mentor" | "investor" | "expert" | "freelance" | "incubateur" | "etudiant" | "aspirationnel" | "professionnel" | "corporate",
       });
       if (roleError) throw roleError;
 
