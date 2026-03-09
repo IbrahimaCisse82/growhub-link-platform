@@ -1,8 +1,6 @@
 import { 
   Zap, Home, Users, Calendar,
-  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag,
-  BookOpen, DollarSign, PenLine, Shield, Target, BarChart3,
-  Megaphone, Trophy, Award, Briefcase, Building2, TrendingUp
+  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,7 +14,6 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
-// Community items shared across all roles
 const communityItems = [
   { path: "/networking", icon: Users, label: "Networking" },
   { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
@@ -27,63 +24,6 @@ const communityItems = [
   { path: "/messaging", icon: MessageSquare, label: "Messages" },
 ];
 
-// Role-specific "Outils clés" shown between Principal and Communauté
-const roleToolItems: Record<string, { path: string; icon: any; label: string }[]> = {
-  startup: [
-    { path: "/pitchdeck", icon: BookOpen, label: "Pitch Deck" },
-    { path: "/fundraising", icon: DollarSign, label: "Levée de fonds" },
-    { path: "/coaching", icon: PenLine, label: "Coaching" },
-    { path: "/progression", icon: Target, label: "Objectifs" },
-  ],
-  mentor: [
-    { path: "/mentor-dashboard", icon: Users, label: "Mes mentorés" },
-    { path: "/coaching", icon: PenLine, label: "Mes sessions" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
-  ],
-  investor: [
-    { path: "/deal-flow", icon: TrendingUp, label: "Deal Flow" },
-    { path: "/deal-room", icon: Shield, label: "Deal Room" },
-    { path: "/pitchdeck", icon: BookOpen, label: "Pitch Decks" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
-  ],
-  expert: [
-    { path: "/pipeline", icon: Briefcase, label: "Mon pipeline" },
-    { path: "/marketplace", icon: ShoppingBag, label: "Mes services" },
-    { path: "/coaching", icon: PenLine, label: "Consultations" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
-  ],
-  freelance: [
-    { path: "/pipeline", icon: Briefcase, label: "Mon pipeline" },
-    { path: "/marketplace", icon: ShoppingBag, label: "Mes offres" },
-    { path: "/content-calendar", icon: Calendar, label: "Calendrier" },
-    { path: "/marketing", icon: Megaphone, label: "Leads" },
-  ],
-  incubateur: [
-    { path: "/cohorts", icon: Building2, label: "Cohortes" },
-    { path: "/coaching", icon: PenLine, label: "Mentorat" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
-  ],
-  etudiant: [
-    { path: "/coaching", icon: PenLine, label: "Coaching" },
-    { path: "/progression", icon: Target, label: "Objectifs" },
-    { path: "/challenges", icon: Trophy, label: "Challenges" },
-  ],
-  aspirationnel: [
-    { path: "/coaching", icon: PenLine, label: "Coaching" },
-    { path: "/challenges", icon: Trophy, label: "Challenges" },
-  ],
-  professionnel: [
-    { path: "/coaching", icon: PenLine, label: "Coaching" },
-    { path: "/progression", icon: Target, label: "Objectifs" },
-    { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-  ],
-  corporate: [
-    { path: "/deal-room", icon: Shield, label: "Deal Room" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
-    { path: "/company", icon: Home, label: "Page entreprise" },
-  ],
-};
-
 export default function AppSidebar({ activeRole = "startup", mobileOpen = false, onMobileClose }: SidebarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { signOut, profile } = useAuth();
@@ -91,9 +31,6 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
   const location = useLocation();
   const { activatedTools } = useActivatedTools();
 
-  const roleTools = roleToolItems[activeRole] ?? roleToolItems.startup;
-
-  // Community items — rename "Fil d'actu" for aspirationnel
   const communityItemsForRole = communityItems.map(item => {
     if (activeRole === "aspirationnel" && item.path === "/feed") {
       return { ...item, label: "Inspiration" };
@@ -104,17 +41,16 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
     return item;
   });
 
-  // Build extra activated tools not already in roleTools
-  const roleToolPaths = new Set(roleTools.map(t => t.path));
-  const extraTools = activatedTools
-    .filter(t => !roleToolPaths.has(t.path))
-    .map(t => ({ path: t.path, icon: t.lucideIcon, label: t.label }));
+  // Build activated tools nav items
+  const toolItems = activatedTools.map(t => ({ path: t.path, icon: t.lucideIcon, label: t.label }));
 
   const navSections = [
-    { title: "Principal", items: [{ path: "/", icon: Home, label: "Dashboard" }] },
-    { title: "Outils clés", items: roleTools },
+    { title: "Principal", items: [
+      { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+    ]},
+    ...(toolItems.length > 0 ? [{ title: "Mes outils", items: toolItems }] : []),
     { title: "Communauté", items: communityItemsForRole },
-    ...(extraTools.length > 0 ? [{ title: "Autres outils", items: extraTools }] : []),
   ];
 
   const handleNav = (path: string) => {
@@ -182,7 +118,6 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
         ))}
       </div>
 
-      {/* Bottom padding for scroll */}
       <div className="h-4 flex-shrink-0" />
     </nav>
   );
