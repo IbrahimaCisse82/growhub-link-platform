@@ -103,28 +103,28 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-28 pb-20 px-6 relative">
+      <section className="pt-20 md:pt-28 pb-14 md:pb-20 px-4 md:px-6 relative">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-primary/8 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-1/4 w-64 md:w-96 h-64 md:h-96 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-48 md:w-80 h-48 md:h-80 bg-primary/8 rounded-full blur-3xl" />
         </div>
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-wider mb-8">
-              <Sparkles className="w-3.5 h-3.5" /> Plateforme #1 pour entrepreneurs en Afrique
+            <div className="inline-flex items-center gap-1.5 md:gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-6 md:mb-8">
+              <Sparkles className="w-3 h-3 md:w-3.5 md:h-3.5" /> Plateforme #1 pour entrepreneurs en Afrique
             </div>
-            <h1 className="font-heading text-4xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.08] mb-6">
+            <h1 className="font-heading text-[32px] sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.08] mb-5 md:mb-6 px-2">
               Construisez votre empire<br />
               <span className="text-primary">entrepreneurial</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              Networking intelligent, coaching certifié, pitch deck, levée de fonds — une plateforme unique qui réunit tout l'écosystème du secteur privé africain.
+            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-2">
+              Networking intelligent, coaching certifié, pitch deck, levée de fonds — une plateforme unique pour le secteur privé africain.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-8 py-4 font-heading text-base font-bold flex items-center justify-center gap-2 hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all">
-                Créer mon compte gratuit <ArrowRight className="w-5 h-5" />
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0">
+              <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-6 md:px-8 py-3.5 md:py-4 font-heading text-sm md:text-base font-bold flex items-center justify-center gap-2 hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all">
+                Créer mon compte gratuit <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
               </button>
-              <button onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })} className="bg-card border border-border text-foreground rounded-2xl px-8 py-4 font-heading text-base font-bold hover:border-primary/30 transition-all flex items-center justify-center gap-2">
+              <button onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })} className="bg-card border border-border text-foreground rounded-2xl px-6 md:px-8 py-3.5 md:py-4 font-heading text-sm md:text-base font-bold hover:border-primary/30 transition-all flex items-center justify-center gap-2">
                 <Play className="w-4 h-4" /> Voir la démo
               </button>
             </div>
