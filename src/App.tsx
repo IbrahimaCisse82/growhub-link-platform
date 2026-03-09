@@ -43,6 +43,11 @@ import MarketplacePage from "./pages/MarketplacePage";
 import TemplatesPage from "./pages/TemplatesPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import BookmarksPage from "./pages/BookmarksPage";
+import MentorDashboardPage from "./pages/MentorDashboardPage";
+import InvestorDealFlowPage from "./pages/InvestorDealFlowPage";
+import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
+import FreelancePipelinePage from "./pages/FreelancePipelinePage";
+import RoleGuard from "./components/RoleGuard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
