@@ -14,6 +14,7 @@ import MilestoneDetector from "@/components/MilestoneDetector";
 import WeeklyDigest from "@/components/WeeklyDigest";
 import ProfileCompletionCard from "@/components/ProfileCompletionCard";
 import ActivityFeed from "@/components/ActivityFeed";
+import { useActivatedTools } from "@/hooks/useActivatedTools";
 
 export default function DashboardPage() {
   usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs startup en temps réel." });
@@ -23,6 +24,7 @@ export default function DashboardPage() {
   const { data: objectives } = useObjectives();
   const { data: sessions } = useCoachingSessions();
   const { data: posts } = usePosts();
+  const { isActivated } = useActivatedTools();
 
   const displayName = profile?.display_name || user?.email?.split("@")[0] || "Entrepreneur";
   const nextSession = sessions?.find(s => s.status === "scheduled" && new Date(s.scheduled_at) > new Date());
