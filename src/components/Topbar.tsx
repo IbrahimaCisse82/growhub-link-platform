@@ -29,9 +29,9 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
   const shortName = displayName.split(" ").map((n, i) => i === 0 ? n : n[0] + ".").join(" ");
 
   return (
-    <header className="h-[56px] md:h-[60px] bg-card border-b border-border flex items-center px-3 md:px-7 gap-2 md:gap-3.5 sticky top-0 z-[150] safe-area-top">
-      {/* Mobile/tablet menu toggle (visible below lg) */}
-      <button onClick={onMobileMenuToggle} className="flex w-9 h-9 rounded-[9px] bg-card border border-border items-center justify-center flex-shrink-0 lg:hidden">
+    <header className="h-[56px] md:h-[60px] bg-card border-b border-border flex items-center px-3 md:px-7 gap-2 md:gap-3.5 fixed top-0 left-0 right-0 z-[150] safe-area-top">
+      {/* Tablet menu toggle (hidden on mobile where bottom nav exists, visible on tablet below lg) */}
+      <button onClick={onMobileMenuToggle} className="hidden sm:flex lg:hidden w-9 h-9 rounded-[9px] bg-card border border-border items-center justify-center flex-shrink-0">
         <Menu className="w-[17px] h-[17px]" />
       </button>
 
