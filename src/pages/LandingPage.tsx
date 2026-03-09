@@ -1,70 +1,72 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Rocket, Users, Zap, BarChart3, BookOpen, DollarSign, Calendar,
-  MessageSquare, Award, Target, ArrowRight, Star, Shield, Globe,
-  CheckCircle2, Crown, Sparkles, TrendingUp, Play
+  Users, Zap, BarChart3, BookOpen, DollarSign,
+  MessageSquare, Award, ArrowRight, Star, Shield, Globe,
+  CheckCircle2, Crown, Sparkles, TrendingUp, Play, Target, Newspaper
 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 const features = [
-  { icon: Users, title: "Networking Intelligent", desc: "Matching par compétences, secteur et objectifs. Trouvez les bons profils en quelques clics.", tag: "IA" },
-  { icon: Zap, title: "Coaching Certifié", desc: "Sessions en visio avec des experts triés sur le volet. Réservez, évaluez, progressez.", tag: "Live" },
+  { icon: Users, title: "Networking Intelligent", desc: "Matching par compétences, secteur et objectifs. Connectez-vous aux bons profils du secteur privé africain.", tag: "IA" },
+  { icon: Zap, title: "Coaching Hub", desc: "Réservez des sessions avec des experts certifiés, notez et évaluez vos coachs.", tag: "Live" },
+  { icon: Target, title: "Objectifs SMART", desc: "Définissez et suivez vos objectifs depuis votre tableau de bord personnel.", tag: "Dashboard" },
   { icon: BookOpen, title: "Pitch Deck Builder", desc: "Créez des présentations investisseurs percutantes avec templates et mode plein écran.", tag: "Pro" },
   { icon: DollarSign, title: "Fundraising Tracker", desc: "Pipeline d'investisseurs, suivi des rounds et next-steps — tout en un seul endroit.", tag: "CRM" },
-  { icon: Calendar, title: "Événements & Webinars", desc: "Meetups, ateliers, démo days — participez ou organisez vos propres événements.", tag: "Live" },
-  { icon: BarChart3, title: "Analytics & KPIs", desc: "Tableaux de bord, progression et impact mesurés en temps réel.", tag: "Data" },
+  { icon: Newspaper, title: "Fil d'actualité", desc: "Partagez vos actualités, réagissez et engagez votre réseau en temps réel.", tag: "Feed" },
+  { icon: MessageSquare, title: "Messagerie Temps Réel", desc: "Échangez directement avec vos contacts, prospects et coachs en toute fluidité.", tag: "Chat" },
+  { icon: BarChart3, title: "Analytics & KPIs", desc: "Tableaux de bord personnalisés, progression et impact mesurés en temps réel.", tag: "Data" },
 ];
 
 const testimonials = [
-  { name: "Sophie Martin", role: "CEO, TechFlow", text: "GrowHubLink m'a permis de trouver mon co-fondateur et de lever 500K€ en 3 mois. L'outil de matching est incroyablement précis.", avatar: "SM", rating: 5 },
-  { name: "Marc Dubois", role: "Mentor & Investisseur", text: "La plateforme parfaite pour accompagner des startups prometteuses. Le coaching hub est un game-changer.", avatar: "MD", rating: 5 },
-  { name: "Claire Bernard", role: "Investisseuse, VCap", text: "Le deal flow est enfin centralisé. Je gagne un temps fou sur le sourcing et le suivi de mes participations.", avatar: "CB", rating: 5 },
-  { name: "Amadou Diallo", role: "Fondateur, PaySahel", text: "Grâce aux warm intros, j'ai rencontré 3 investisseurs qualifiés en une semaine. Impossible sur LinkedIn.", avatar: "AD", rating: 5 },
-  { name: "Léa Nguyen", role: "Freelance UX", text: "En tant que freelance, j'ai trouvé mes meilleurs clients via le networking intelligent. Mon CA a doublé en 6 mois.", avatar: "LN", rating: 5 },
+  { name: "Kofi Mensah", role: "CEO, AgriTech Ghana", text: "GrowHubLink m'a permis de trouver mon co-fondateur et de structurer ma levée de fonds. Le Pitch Deck Builder est redoutable.", avatar: "KM", rating: 5 },
+  { name: "Fatou Diarra", role: "Coach & Consultante, Dakar", text: "Le Coaching Hub a transformé mon activité. Je gère mes réservations, mes avis et mes sessions depuis une seule plateforme.", avatar: "FD", rating: 5 },
+  { name: "Ibrahima Sy", role: "Investisseur, Abidjan Capital", text: "Le Fundraising Tracker centralise tout mon deal flow. Je suis mes pipelines et mes prises de contact avec une clarté inégalée.", avatar: "IS", rating: 5 },
+  { name: "Aminata Touré", role: "Fondatrice, EduSahel", text: "Grâce au matching intelligent, j'ai rencontré 3 investisseurs qualifiés en une semaine. Impossible à faire seul.", avatar: "AT", rating: 5 },
+  { name: "Jean-Baptiste Koffi", role: "Freelance DevOps, Lomé", text: "La messagerie temps réel et le fil d'actualité m'ont aidé à décrocher mes meilleures missions via mon réseau.", avatar: "JK", rating: 5 },
   { name: "Ousmane Konaté", role: "Directeur, TechHub Dakar", text: "L'écosystème parfait pour connecter les acteurs du secteur privé africain entre eux.", avatar: "OK", rating: 5 },
 ];
 
 const stats = [
-  { value: "10K+", label: "Entrepreneurs actifs", icon: Users },
-  { value: "500+", label: "Mentors & Coachs", icon: Award },
+  { value: "10K+", label: "Membres actifs", icon: Users },
+  { value: "500+", label: "Coachs certifiés", icon: Award },
   { value: "2M€", label: "Levés via la plateforme", icon: TrendingUp },
   { value: "98%", label: "Taux de satisfaction", icon: Star },
 ];
 
 const roles = [
-  { title: "Startup", desc: "Lancez, structurez et scalez votre business", emoji: "🚀", features: ["Pitch Deck Builder", "Fundraising Tracker", "Matching investisseurs"], cta: "Pour les startups" },
-  { title: "Mentor", desc: "Accompagnez et monétisez votre expertise", emoji: "🎯", features: ["Profil coach", "Réservation sessions", "Avis vérifiés"], cta: "Pour les mentors" },
-  { title: "Investisseur", desc: "Sourcez et suivez votre deal flow", emoji: "💰", features: ["Pipeline startups", "Due diligence", "Warm intros"], cta: "Pour les investisseurs" },
-  { title: "Freelance", desc: "Trouvez des missions et développez votre réseau", emoji: "💻", features: ["Visibilité profil", "Recommandations", "Events networking"], cta: "Pour les freelances" },
-  { title: "Étudiant", desc: "Apprenez, connectez et préparez votre lancement", emoji: "🎓", features: ["Coaching gratuit", "Cercles thématiques", "Challenges"], cta: "Pour les étudiants" },
-  { title: "Corporate", desc: "Open innovation et partenariats stratégiques", emoji: "🏢", features: ["Sourcing startups", "Pages entreprise", "Events privés"], cta: "Pour les corporates" },
+  { title: "Startup", desc: "Lancez, structurez et scalez votre business", emoji: "🚀", features: ["Pitch Deck Builder", "Fundraising Tracker", "Objectifs SMART"], cta: "Pour les startups" },
+  { title: "Coach / Mentor", desc: "Accompagnez et monétisez votre expertise", emoji: "🎯", features: ["Profil public certifié", "Réservation de sessions", "Avis & notations"], cta: "Pour les coachs" },
+  { title: "Investisseur", desc: "Sourcez et suivez votre deal flow africain", emoji: "💰", features: ["Pipeline startups", "Fundraising Tracker", "Networking ciblé"], cta: "Pour les investisseurs" },
+  { title: "Freelance", desc: "Trouvez des missions et développez votre réseau", emoji: "💻", features: ["Profil public visible", "Messagerie directe", "Fil d'actualité"], cta: "Pour les freelances" },
+  { title: "Étudiant", desc: "Préparez votre carrière dans le privé", emoji: "🎓", features: ["Coaching accessible", "Networking sectoriel", "Tableau de bord objectifs"], cta: "Pour les étudiants" },
+  { title: "Corporate", desc: "Open innovation et partenariats stratégiques", emoji: "🏢", features: ["Sourcing de talents", "Pages entreprise", "Matching partenaires"], cta: "Pour les corporates" },
 ];
 
 const successStories = [
   {
     title: "De 0 à 500K€ levés en 3 mois",
-    company: "TechFlow",
-    sector: "SaaS",
-    description: "Sophie a utilisé le Pitch Deck Builder et le réseau d'investisseurs de GrowHubLink pour structurer sa levée de fonds seed.",
-    metrics: [{ label: "Levée", value: "500K€" }, { label: "Investisseurs contactés", value: "12" }, { label: "Temps", value: "3 mois" }],
-    quote: "Le matching m'a connectée directement aux bons investisseurs, sans intermédiaire.",
+    company: "AgriTech Ghana",
+    sector: "Agri",
+    description: "Kofi a utilisé le Pitch Deck Builder et le Fundraising Tracker de GrowHubLink pour structurer et piloter sa levée de fonds seed.",
+    metrics: [{ label: "Levée", value: "500K€" }, { label: "Investisseurs", value: "12" }, { label: "Délai", value: "3 mois" }],
+    quote: "Le matching m'a connecté directement aux bons investisseurs, sans intermédiaire.",
   },
   {
-    title: "100 startups accompagnées en 1 an",
-    company: "MentorPro",
+    title: "100 entrepreneurs accompagnés en 1 an",
+    company: "Coaching Dakar",
     sector: "Consulting",
-    description: "Marc a multiplié par 5 son impact en utilisant le Coaching Hub pour organiser ses sessions et recevoir des avis vérifiés.",
-    metrics: [{ label: "Startups", value: "100+" }, { label: "Satisfaction", value: "4.9/5" }, { label: "Revenu", value: "x3" }],
-    quote: "GrowHubLink a professionnalisé mon activité de mentorat comme aucun autre outil.",
+    description: "Fatou a multiplié par 5 son impact grâce au Coaching Hub : réservations en ligne, avis vérifiés et suivi de sessions intégré.",
+    metrics: [{ label: "Clients", value: "100+" }, { label: "Satisfaction", value: "4.9/5" }, { label: "Revenu", value: "x3" }],
+    quote: "GrowHubLink a professionnalisé mon activité de coaching comme aucun autre outil.",
   },
 ];
 
 const steps = [
   { num: "01", title: "Créez votre profil", desc: "Renseignez vos compétences, votre secteur et vos objectifs en 2 minutes." },
-  { num: "02", title: "Connectez-vous", desc: "Notre algorithme vous recommande les profils les plus pertinents." },
-  { num: "03", title: "Accélérez", desc: "Coaching, événements, outils — tout pour aller plus vite, plus loin." },
+  { num: "02", title: "Connectez-vous", desc: "Notre algorithme vous recommande les profils les plus pertinents du secteur privé africain." },
+  { num: "03", title: "Accélérez", desc: "Coaching, pitch deck, fundraising, messagerie — tout pour aller plus vite, plus loin." },
 ];
 
 export default function LandingPage() {
