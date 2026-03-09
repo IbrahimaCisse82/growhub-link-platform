@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import {
   Users, Zap, BarChart3, BookOpen, DollarSign,
   MessageSquare, Award, ArrowRight, Star, Shield, Globe,
-  CheckCircle2, Crown, Sparkles, TrendingUp, Play, Target, Newspaper
+  CheckCircle2, Crown, Sparkles, TrendingUp, Play, Target, Newspaper, Handshake
 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import { usePlatformStats, usePlatformTestimonials } from "@/hooks/usePlatformStats";
 
 const features = [
   { icon: Users, title: "Networking Intelligent", desc: "Matching par compétences, secteur et objectifs. Connectez-vous aux bons profils du secteur privé africain.", tag: "IA" },
@@ -19,22 +20,6 @@ const features = [
   { icon: BarChart3, title: "Analytics & KPIs", desc: "Tableaux de bord personnalisés, progression et impact mesurés en temps réel.", tag: "Data" },
 ];
 
-const testimonials = [
-  { name: "Kofi Mensah", role: "CEO, AgriTech Ghana", text: "GrowHubLink m'a permis de trouver mon co-fondateur et de structurer ma levée de fonds. Le Pitch Deck Builder est redoutable.", avatar: "KM", rating: 5 },
-  { name: "Fatou Diarra", role: "Coach & Consultante, Dakar", text: "Le Coaching Hub a transformé mon activité. Je gère mes réservations, mes avis et mes sessions depuis une seule plateforme.", avatar: "FD", rating: 5 },
-  { name: "Ibrahima Sy", role: "Investisseur, Abidjan Capital", text: "Le Fundraising Tracker centralise tout mon deal flow. Je suis mes pipelines et mes prises de contact avec une clarté inégalée.", avatar: "IS", rating: 5 },
-  { name: "Aminata Touré", role: "Fondatrice, EduSahel", text: "Grâce au matching intelligent, j'ai rencontré 3 investisseurs qualifiés en une semaine. Impossible à faire seul.", avatar: "AT", rating: 5 },
-  { name: "Jean-Baptiste Koffi", role: "Freelance DevOps, Lomé", text: "La messagerie temps réel et le fil d'actualité m'ont aidé à décrocher mes meilleures missions via mon réseau.", avatar: "JK", rating: 5 },
-  { name: "Ousmane Konaté", role: "Directeur, TechHub Dakar", text: "L'écosystème parfait pour connecter les acteurs du secteur privé africain entre eux.", avatar: "OK", rating: 5 },
-];
-
-const stats = [
-  { value: "10K+", label: "Membres actifs", icon: Users },
-  { value: "500+", label: "Coachs certifiés", icon: Award },
-  { value: "2M€", label: "Levés via la plateforme", icon: TrendingUp },
-  { value: "98%", label: "Taux de satisfaction", icon: Star },
-];
-
 const roles = [
   { title: "Startup", desc: "Lancez, structurez et scalez votre business", emoji: "🚀", features: ["Pitch Deck Builder", "Fundraising Tracker", "Objectifs SMART"], cta: "Pour les startups" },
   { title: "Coach / Mentor", desc: "Accompagnez et monétisez votre expertise", emoji: "🎯", features: ["Profil public certifié", "Réservation de sessions", "Avis & notations"], cta: "Pour les coachs" },
@@ -44,34 +29,29 @@ const roles = [
   { title: "Corporate", desc: "Open innovation et partenariats stratégiques", emoji: "🏢", features: ["Sourcing de talents", "Pages entreprise", "Matching partenaires"], cta: "Pour les corporates" },
 ];
 
-const successStories = [
-  {
-    title: "De 0 à 500K€ levés en 3 mois",
-    company: "AgriTech Ghana",
-    sector: "Agri",
-    description: "Kofi a utilisé le Pitch Deck Builder et le Fundraising Tracker de GrowHubLink pour structurer et piloter sa levée de fonds seed.",
-    metrics: [{ label: "Levée", value: "500K€" }, { label: "Investisseurs", value: "12" }, { label: "Délai", value: "3 mois" }],
-    quote: "Le matching m'a connecté directement aux bons investisseurs, sans intermédiaire.",
-  },
-  {
-    title: "100 entrepreneurs accompagnés en 1 an",
-    company: "Coaching Dakar",
-    sector: "Consulting",
-    description: "Fatou a multiplié par 5 son impact grâce au Coaching Hub : réservations en ligne, avis vérifiés et suivi de sessions intégré.",
-    metrics: [{ label: "Clients", value: "100+" }, { label: "Satisfaction", value: "4.9/5" }, { label: "Revenu", value: "x3" }],
-    quote: "GrowHubLink a professionnalisé mon activité de coaching comme aucun autre outil.",
-  },
-];
-
 const steps = [
   { num: "01", title: "Créez votre profil", desc: "Renseignez vos compétences, votre secteur et vos objectifs en 2 minutes." },
   { num: "02", title: "Connectez-vous", desc: "Notre algorithme vous recommande les profils les plus pertinents du secteur privé africain." },
   { num: "03", title: "Accélérez", desc: "Coaching, pitch deck, fundraising, messagerie — tout pour aller plus vite, plus loin." },
 ];
 
+function formatStatValue(value: number): string {
+  if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}K+`;
+  return `${value}`;
+}
+
 export default function LandingPage() {
   usePageMeta({ title: "GrowHubLink — L'écosystème du secteur privé en Afrique", description: "Plateforme tout-en-un pour les acteurs du secteur privé en Afrique : networking, coaching, pitch deck, fundraising et plus." });
   const navigate = useNavigate();
+  const { data: platformStats } = usePlatformStats();
+  const { data: testimonials } = usePlatformTestimonials();
+
+  const stats = [
+    { value: formatStatValue(platformStats?.totalMembers ?? 0), label: "Membres inscrits", icon: Users },
+    { value: formatStatValue(platformStats?.totalCoaches ?? 0), label: "Coachs actifs", icon: Award },
+    { value: formatStatValue(platformStats?.totalConnections ?? 0), label: "Connexions créées", icon: Handshake },
+    { value: formatStatValue(platformStats?.totalEvents ?? 0), label: "Événements organisés", icon: TrendingUp },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -87,7 +67,9 @@ export default function LandingPage() {
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
             <a href="#how" className="hover:text-foreground transition-colors">Comment ça marche</a>
-            <a href="#testimonials" className="hover:text-foreground transition-colors">Témoignages</a>
+            {testimonials && testimonials.length > 0 && (
+              <a href="#testimonials" className="hover:text-foreground transition-colors">Témoignages</a>
+            )}
             <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
           </div>
           <div className="flex gap-2 md:gap-3">
@@ -111,7 +93,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-1.5 md:gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-6 md:mb-8">
-              <Sparkles className="w-3 h-3 md:w-3.5 md:h-3.5" /> Plateforme #1 pour entrepreneurs en Afrique
+              <Sparkles className="w-3 h-3 md:w-3.5 md:h-3.5" /> Plateforme pour entrepreneurs en Afrique
             </div>
             <h1 className="font-heading text-[32px] sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.08] mb-5 md:mb-6 px-2">
               Construisez votre empire<br />
@@ -125,7 +107,7 @@ export default function LandingPage() {
                 Créer mon compte gratuit <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
               </button>
               <button onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })} className="bg-card border border-border text-foreground rounded-2xl px-6 md:px-8 py-3.5 md:py-4 font-heading text-sm md:text-base font-bold hover:border-primary/30 transition-all flex items-center justify-center gap-2">
-                <Play className="w-4 h-4" /> Voir la démo
+                <Play className="w-4 h-4" /> Découvrir
               </button>
             </div>
             <p className="text-xs text-muted-foreground mt-4">Gratuit pour toujours · Pas de carte bancaire requise</p>
@@ -133,21 +115,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-10 md:py-14 border-y border-border/50 bg-muted/30">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 px-4 md:px-6">
-          {stats.map((s, i) => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-              className="text-center">
-              <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2 md:mb-3">
-                <s.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-              </div>
-              <div className="font-heading text-2xl md:text-4xl font-extrabold text-foreground">{s.value}</div>
-              <div className="text-xs md:text-sm text-muted-foreground mt-1">{s.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* Stats - only show if we have real data */}
+      {platformStats && (platformStats.totalMembers > 0 || platformStats.totalCoaches > 0) && (
+        <section className="py-10 md:py-14 border-y border-border/50 bg-muted/30">
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 px-4 md:px-6">
+            {stats.map((s, i) => (
+              <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="text-center">
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2 md:mb-3">
+                  <s.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                </div>
+                <div className="font-heading text-2xl md:text-4xl font-extrabold text-foreground">{s.value}</div>
+                <div className="text-xs md:text-sm text-muted-foreground mt-1">{s.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Features */}
       <section id="features" className="py-16 md:py-24 px-4 md:px-6">
@@ -225,67 +209,33 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Success Stories */}
-      <section id="success" className="py-16 md:py-24 px-4 md:px-6 bg-muted/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 md:mb-14">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-[10px] font-bold text-primary uppercase tracking-wider mb-4">
-              Success Stories
+      {/* Testimonials - only show if real reviews exist */}
+      {testimonials && testimonials.length > 0 && (
+        <section id="testimonials" className="py-16 md:py-24 px-4 md:px-6 bg-muted/30">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-10 md:mb-14">
+              <h2 className="font-heading text-2xl md:text-4xl font-extrabold mb-4">Ils nous font <span className="text-primary">confiance</span></h2>
+              <p className="text-muted-foreground text-sm md:text-base">Avis vérifiés de nos membres</p>
             </div>
-            <h2 className="font-heading text-2xl md:text-4xl font-extrabold mb-4">Des résultats <span className="text-primary">concrets</span></h2>
-            <p className="text-muted-foreground text-sm md:text-lg">Découvrez comment nos membres ont accéléré leur croissance.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
-            {successStories.map((story, i) => (
-              <motion.div key={story.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="bg-card border-2 border-primary/15 rounded-2xl p-5 md:p-8 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/30" />
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">{story.sector}</span>
-                  <span className="text-xs text-muted-foreground">{story.company}</span>
-                </div>
-                <h3 className="font-heading text-lg md:text-xl font-bold mb-3">{story.title}</h3>
-                <p className="text-xs md:text-sm text-muted-foreground mb-5 md:mb-6">{story.description}</p>
-                <div className="grid grid-cols-3 gap-3 md:gap-4 mb-5 md:mb-6">
-                  {story.metrics.map(m => (
-                    <div key={m.label} className="text-center">
-                      <div className="font-heading text-lg md:text-xl font-extrabold text-primary">{m.value}</div>
-                      <div className="text-[10px] text-muted-foreground">{m.label}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {testimonials.map((t, i) => (
+                <motion.div key={`${t.name}-${i}`} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                  className="bg-card border border-border rounded-2xl p-5 md:p-7">
+                  <div className="flex gap-1 mb-3 md:mb-4">{Array(t.rating).fill(0).map((_, j) => <Star key={j} className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary fill-primary" />)}</div>
+                  <p className="text-xs md:text-sm text-foreground/80 leading-relaxed mb-4 md:mb-6">"{t.text}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-xs font-bold text-primary-foreground flex-shrink-0">{t.avatar}</div>
+                    <div>
+                      <div className="text-sm font-bold">{t.name}</div>
+                      {t.role && <div className="text-xs text-muted-foreground">{t.role}</div>}
                     </div>
-                  ))}
-                </div>
-                <blockquote className="border-l-2 border-primary/30 pl-4 italic text-xs md:text-sm text-foreground/70">"{story.quote}"</blockquote>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section id="testimonials" className="py-16 md:py-24 px-4 md:px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10 md:mb-14">
-            <h2 className="font-heading text-2xl md:text-4xl font-extrabold mb-4">Ils nous font <span className="text-primary">confiance</span></h2>
-            <p className="text-muted-foreground text-sm md:text-base">+10 000 entrepreneurs utilisent GrowHubLink au quotidien</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {testimonials.map((t, i) => (
-              <motion.div key={t.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="bg-card border border-border rounded-2xl p-5 md:p-7">
-                <div className="flex gap-1 mb-3 md:mb-4">{Array(t.rating).fill(0).map((_, j) => <Star key={j} className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary fill-primary" />)}</div>
-                <p className="text-xs md:text-sm text-foreground/80 leading-relaxed mb-4 md:mb-6">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-xs font-bold text-primary-foreground flex-shrink-0">{t.avatar}</div>
-                  <div>
-                    <div className="text-sm font-bold">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.role}</div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Pricing CTA */}
       <section className="py-12 md:py-16 px-4 md:px-6">
@@ -331,7 +281,7 @@ export default function LandingPage() {
           <h2 className="font-heading text-2xl md:text-5xl font-extrabold mb-5 md:mb-6">
             Prêt à accélérer <span className="text-primary">votre croissance</span> ?
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground mb-8 md:mb-10">Rejoignez des milliers d'entrepreneurs qui construisent l'avenir.</p>
+          <p className="text-base md:text-lg text-muted-foreground mb-8 md:mb-10">Rejoignez les entrepreneurs qui construisent l'avenir du continent.</p>
           <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-8 md:px-10 py-3.5 md:py-4 font-heading text-base md:text-lg font-bold hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all inline-flex items-center gap-3">
             Commencer maintenant <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
           </button>
@@ -352,7 +302,6 @@ export default function LandingPage() {
             <div className="flex gap-5 md:gap-6 text-sm text-muted-foreground">
               <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
               <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
-              <a href="#testimonials" className="hover:text-foreground transition-colors">Témoignages</a>
             </div>
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} GrowHubLink. Tous droits réservés.</p>
           </div>
