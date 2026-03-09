@@ -15,6 +15,7 @@ interface Profile {
   id: string;
   user_id: string;
   display_name: string;
+  headline: string | null;
   avatar_url: string | null;
   bio: string | null;
   company_name: string | null;
@@ -26,8 +27,15 @@ interface Profile {
   profile_views: number;
   skills: string[];
   interests: string[];
+  looking_for: string[];
+  offering: string[];
   linkedin_url: string | null;
   website_url: string | null;
+  is_verified: boolean | null;
+  is_public: boolean | null;
+  login_streak: number | null;
+  longest_streak: number | null;
+  last_login_date: string | null;
 }
 
 const AuthContext = createContext<AuthContextType>({

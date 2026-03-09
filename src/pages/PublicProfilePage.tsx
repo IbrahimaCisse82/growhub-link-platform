@@ -117,6 +117,9 @@ export default function PublicProfilePage() {
               <Tag variant="green">{roleLabels[userRole ?? "startup"] ?? "Membre"}</Tag>
               {profile.company_stage && <Tag>{profile.company_stage}</Tag>}
             </div>
+            {(profile as any).headline && (
+              <p className="text-sm text-primary font-medium mb-1">{(profile as any).headline}</p>
+            )}
             {profile.company_name && (
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-1">
                 <Building2 className="w-3.5 h-3.5" /> {profile.company_name}
@@ -210,6 +213,30 @@ export default function PublicProfilePage() {
           <GHCard title="Intérêts">
             <div className="flex flex-wrap gap-1.5">
               {profile.interests.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
+            </div>
+          </GHCard>
+        )}
+
+        {/* Looking for & Offering */}
+        {((profile as any).looking_for?.length > 0 || (profile as any).offering?.length > 0) && (
+          <GHCard title="Recherche & Propose">
+            <div className="space-y-3">
+              {(profile as any).looking_for?.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🔍 Recherche</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(profile as any).looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
+                  </div>
+                </div>
+              )}
+              {(profile as any).offering?.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🎁 Propose</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(profile as any).offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
+                  </div>
+                </div>
+              )}
             </div>
           </GHCard>
         )}

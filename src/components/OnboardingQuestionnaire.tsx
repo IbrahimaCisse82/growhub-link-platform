@@ -40,12 +40,16 @@ const STAGES = [
 const SKILLS_LIST = ["Product Management", "Growth Hacking", "Marketing Digital", "Développement Web", "Data Science / IA", "Design UX/UI", "Finance / Comptabilité", "Sales / BizDev", "RH / Recrutement", "Juridique", "Ops / Logistique", "Stratégie"];
 const INTERESTS_LIST = ["Levée de fonds", "Trouver un co-fondateur", "Mentorat", "Networking", "Recrutement", "Partenariats", "Internationalisation", "Formation", "Incubation / Accélération", "Visibilité média"];
 
+const LOOKING_FOR = ["Co-fondateur", "Investisseur", "Mentor", "Clients", "Partenaires", "Talents / Recrutement", "Formation", "Visibilité", "Conseil juridique", "Accompagnement technique"];
+const OFFERING = ["Mentorat", "Investissement", "Expertise technique", "Design / UX", "Conseils stratégiques", "Intros investisseurs", "Intros clients", "Coaching", "Formation", "Services marketing"];
+
 const STEPS = [
   { icon: UserCircle, title: "Votre profil", subtitle: "Quel type d'utilisateur êtes-vous ?" },
   { icon: Building2, title: "Votre activité", subtitle: "Parlez-nous de votre projet" },
   { icon: MapPin, title: "Localisation", subtitle: "Où êtes-vous basé ?" },
   { icon: Briefcase, title: "Compétences", subtitle: "Quels sont vos talents ?" },
-  { icon: Target, title: "Objectifs", subtitle: "Que cherchez-vous ?" },
+  { icon: Target, title: "Ce que je cherche", subtitle: "Que recherchez-vous ?" },
+  { icon: Sparkles, title: "Ce que je propose", subtitle: "Que pouvez-vous apporter ?" },
   { icon: Sparkles, title: "Finitions", subtitle: "Un dernier mot sur vous" },
 ];
 
@@ -58,10 +62,11 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
   const [selectedRole, setSelectedRole] = useState("startup");
   const [form, setForm] = useState({
     company_name: "", company_stage: "", sector: "", city: "", country: "France",
-    skills: [] as string[], interests: [] as string[], bio: "", linkedin_url: "", website_url: "",
+    skills: [] as string[], interests: [] as string[], looking_for: [] as string[],
+    offering: [] as string[], bio: "", headline: "", linkedin_url: "", website_url: "",
   });
 
-  const toggleItem = (key: "skills" | "interests", item: string) => {
+  const toggleItem = (key: "skills" | "interests" | "looking_for" | "offering", item: string) => {
     setForm(f => ({ ...f, [key]: f[key].includes(item) ? f[key].filter(i => i !== item) : [...f[key], item] }));
   };
 
@@ -73,14 +78,16 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
       const { error } = await supabase.from("profiles").update({
         company_name: form.company_name || null, company_stage: form.company_stage || null, sector: form.sector || null,
         city: form.city || null, country: form.country || null, skills: form.skills, interests: form.interests,
-        bio: form.bio || null, linkedin_url: form.linkedin_url || null, website_url: form.website_url || null,
+        looking_for: form.looking_for, offering: form.offering,
+        bio: form.bio || null, headline: form.headline || null,
+        linkedin_url: form.linkedin_url || null, website_url: form.website_url || null,
       }).eq("user_id", user.id);
       if (error) throw error;
 
-      // Update role (the trigger creates a default "startup" role, so we update it)
-      const { error: roleError } = await supabase.from("user_roles").update({
-        role: selectedRole as any,
-      }).eq("user_id", user.id);
+      // Update role via secure RPC (SECURITY DEFINER prevents self-assigning admin)
+      const { error: roleError } = await supabase.rpc("set_user_role", {
+        _role: selectedRole as "startup" | "mentor" | "investor" | "expert" | "freelance" | "incubateur" | "etudiant" | "aspirationnel" | "professionnel" | "corporate",
+      });
       if (roleError) throw roleError;
 
       toast.success("Profil complété avec succès ! 🎉");
@@ -94,7 +101,8 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
       case 1: return form.company_name && form.sector;
       case 2: return form.city;
       case 3: return form.skills.length >= 1;
-      case 4: return form.interests.length >= 1;
+      case 4: return form.looking_for.length >= 1;
+      case 5: return form.offering.length >= 1;
       default: return true;
     }
   };
@@ -202,21 +210,39 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
                   </div>
                 )}
 
-                {/* Step 4: Interests */}
+                {/* Step 4: Looking for */}
                 {step === 4 && (
-                  <div className="space-y-2"><Label>Que recherchez-vous sur GrowHubLink ? (min. 1)</Label>
-                    <div className="flex flex-wrap gap-2">{INTERESTS_LIST.map(s => (
-                      <Badge key={s} variant={form.interests.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.interests.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("interests", s)}>
-                        {form.interests.includes(s) && <Check className="w-3 h-3 mr-1" />}{s}
+                  <div className="space-y-2"><Label>Que recherchez-vous ? (min. 1)</Label>
+                    <div className="flex flex-wrap gap-2">{LOOKING_FOR.map(s => (
+                      <Badge key={s} variant={form.looking_for.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.looking_for.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("looking_for", s)}>
+                        {form.looking_for.includes(s) && <Check className="w-3 h-3 mr-1" />}{s}
                       </Badge>
                     ))}</div>
                   </div>
                 )}
 
-                {/* Step 5: Bio */}
+                {/* Step 5: Offering */}
                 {step === 5 && (
-                  <div className="space-y-2"><Label>Bio / pitch en quelques lignes (optionnel)</Label>
-                    <Textarea placeholder="Décrivez votre projet, votre parcours..." rows={4} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} />
+                  <div className="space-y-2"><Label>Que pouvez-vous apporter à la communauté ? (min. 1)</Label>
+                    <div className="flex flex-wrap gap-2">{OFFERING.map(s => (
+                      <Badge key={s} variant={form.offering.includes(s) ? "default" : "outline"} className={`cursor-pointer transition-all ${form.offering.includes(s) ? "" : "hover:border-primary/40"}`} onClick={() => toggleItem("offering", s)}>
+                        {form.offering.includes(s) && <Check className="w-3 h-3 mr-1" />}{s}
+                      </Badge>
+                    ))}</div>
+                  </div>
+                )}
+
+                {/* Step 6: Bio & Headline */}
+                {step === 6 && (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Titre / Headline (optionnel)</Label>
+                      <Input placeholder="Ex: CTO @ TechVert | IA & HealthTech" value={form.headline} onChange={e => setForm({ ...form, headline: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Bio / pitch en quelques lignes (optionnel)</Label>
+                      <Textarea placeholder="Décrivez votre projet, votre parcours..." rows={4} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} />
+                    </div>
                   </div>
                 )}
               </motion.div>
