@@ -218,22 +218,22 @@ export default function PublicProfilePage() {
         )}
 
         {/* Looking for & Offering */}
-        {((profile as any).looking_for?.length > 0 || (profile as any).offering?.length > 0) && (
+        {(profile.looking_for?.length > 0 || profile.offering?.length > 0) && (
           <GHCard title="Recherche & Propose">
             <div className="space-y-3">
-              {(profile as any).looking_for?.length > 0 && (
+              {profile.looking_for?.length > 0 && (
                 <div>
                   <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🔍 Recherche</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {(profile as any).looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
+                    {profile.looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
                   </div>
                 </div>
               )}
-              {(profile as any).offering?.length > 0 && (
+              {profile.offering?.length > 0 && (
                 <div>
                   <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🎁 Propose</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {(profile as any).offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
+                    {profile.offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
                   </div>
                 </div>
               )}
