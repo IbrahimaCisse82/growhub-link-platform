@@ -50,7 +50,7 @@ function useRoleAnalytics() {
       return {
         total: sessions?.length ?? 0,
         completed: completed.length,
-        avgRating: ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "—",
+        avgRating: ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : "0",
       };
     },
   });
@@ -66,7 +66,39 @@ function useRoleAnalytics() {
     },
   });
 
-  return { roleData, coachingData, fundraisingData };
+  const dealRoomsData = useQuery({
+    queryKey: ["role-deal-rooms", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data: owned } = await supabase.from("deal_rooms").select("id, status").eq("owner_id", user!.id);
+      const { data: member } = await supabase.from("deal_room_members").select("deal_room_id").eq("user_id", user!.id);
+      const activeOwned = (owned ?? []).filter(r => r.status === "active").length;
+      return { ownedCount: owned?.length ?? 0, memberCount: member?.length ?? 0, activeCount: activeOwned + (member?.length ?? 0) };
+    },
+  });
+
+  const servicesData = useQuery({
+    queryKey: ["role-services", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase.from("marketplace_services").select("id, is_active, total_bookings").eq("user_id", user!.id);
+      const activeServices = (data ?? []).filter(s => s.is_active).length;
+      const totalBookings = (data ?? []).reduce((s, svc) => s + (svc.total_bookings ?? 0), 0);
+      return { total: data?.length ?? 0, active: activeServices, bookings: totalBookings };
+    },
+  });
+
+  const bookingsData = useQuery({
+    queryKey: ["role-bookings", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase.from("service_bookings").select("id, status").eq("seller_id", user!.id);
+      const inProgress = (data ?? []).filter(b => b.status === "in_progress" || b.status === "pending").length;
+      return { total: data?.length ?? 0, inProgress };
+    },
+  });
+
+  return { roleData, coachingData, fundraisingData, dealRoomsData, servicesData, bookingsData };
 }
 
 function BenchmarkBar({ benchmark }: { benchmark: RoleBenchmark }) {
