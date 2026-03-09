@@ -218,19 +218,19 @@ export default function ProfilePage() {
           <div className="space-y-4">
             <Field label="Je recherche (séparé par des virgules)" icon={Target} field="looking_for" placeholder="Ex: Co-fondateur tech, Investisseur Seed, Mentor marketing" />
             <Field label="Je propose (séparé par des virgules)" icon={Gift} field="offering" placeholder="Ex: Conseil en growth, Intro investisseurs, Mentorat produit" />
-            {(profile as any)?.looking_for && (profile as any).looking_for.length > 0 && (
+            {profile?.looking_for && profile.looking_for.length > 0 && (
               <div>
                 <p className="text-[10px] font-bold text-foreground/50 mb-1">Recherche :</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {(profile as any).looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
+                  {profile.looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
                 </div>
               </div>
             )}
-            {(profile as any)?.offering && (profile as any).offering.length > 0 && (
+            {profile?.offering && profile.offering.length > 0 && (
               <div>
                 <p className="text-[10px] font-bold text-foreground/50 mb-1">Propose :</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {(profile as any).offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
+                  {profile.offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
                 </div>
               </div>
             )}

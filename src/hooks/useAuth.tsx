@@ -38,6 +38,8 @@ interface Profile {
   last_login_date: string | null;
 }
 
+export type { Profile };
+
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,

@@ -1,6 +1,8 @@
 import { 
   Zap, Home, Users, Calendar,
-  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag
+  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag,
+  BookOpen, DollarSign, PenLine, Shield, Target, BarChart3,
+  Megaphone, Trophy, Award
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,147 +16,66 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
-// Only Principal + Communauté sections per role — no more static "Outils"
-const navByRole: Record<string, { title: string; items: { path: string; icon: any; label: string }[] }[]> = {
+// Community items shared across all roles
+const communityItems = [
+  { path: "/networking", icon: Users, label: "Networking" },
+  { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
+  { path: "/circles", icon: CircleDot, label: "Cercles" },
+  { path: "/spaces", icon: FolderKanban, label: "Espaces" },
+  { path: "/events", icon: Calendar, label: "Événements" },
+  { path: "/feed", icon: Rss, label: "Fil d'actu" },
+  { path: "/messaging", icon: MessageSquare, label: "Messages" },
+];
+
+// Role-specific "Outils clés" shown between Principal and Communauté
+const roleToolItems: Record<string, { path: string; icon: any; label: string }[]> = {
   startup: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/pitchdeck", icon: BookOpen, label: "Pitch Deck" },
+    { path: "/fundraising", icon: DollarSign, label: "Levée de fonds" },
+    { path: "/coaching", icon: PenLine, label: "Coaching" },
+    { path: "/progression", icon: Target, label: "Objectifs" },
   ],
   mentor: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/coaching", icon: PenLine, label: "Mes sessions" },
+    { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   investor: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/deal-room", icon: Shield, label: "Deal Room" },
+    { path: "/pitchdeck", icon: BookOpen, label: "Pitch Decks" },
+    { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   expert: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/marketplace", icon: ShoppingBag, label: "Mes services" },
+    { path: "/coaching", icon: PenLine, label: "Consultations" },
+    { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   freelance: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/marketplace", icon: ShoppingBag, label: "Mes offres" },
+    { path: "/content-calendar", icon: Calendar, label: "Calendrier" },
+    { path: "/marketing", icon: Megaphone, label: "Leads" },
   ],
   incubateur: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/networking", icon: Users, label: "Startups" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/coaching", icon: PenLine, label: "Mentorat" },
+    { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   etudiant: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/coaching", icon: PenLine, label: "Coaching" },
+    { path: "/progression", icon: Target, label: "Objectifs" },
+    { path: "/challenges", icon: Trophy, label: "Challenges" },
   ],
   aspirationnel: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Inspiration" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/coaching", icon: PenLine, label: "Coaching" },
+    { path: "/challenges", icon: Trophy, label: "Challenges" },
   ],
   professionnel: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/networking", icon: Users, label: "Networking" },
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/coaching", icon: PenLine, label: "Coaching" },
+    { path: "/progression", icon: Target, label: "Objectifs" },
+    { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
   ],
   corporate: [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/networking", icon: Users, label: "Startups" },
-    ]},
-    { title: "Communauté", items: [
-      { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-      { path: "/circles", icon: CircleDot, label: "Cercles" },
-      { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-      { path: "/events", icon: Calendar, label: "Événements" },
-      { path: "/feed", icon: Rss, label: "Fil d'actu" },
-      { path: "/messaging", icon: MessageSquare, label: "Messages" },
-    ]},
+    { path: "/deal-room", icon: Shield, label: "Deal Room" },
+    { path: "/analytics", icon: BarChart3, label: "Analytics" },
+    { path: "/company", icon: Home, label: "Page entreprise" },
   ],
 };
 
@@ -165,20 +86,31 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
   const location = useLocation();
   const { activatedTools } = useActivatedTools();
 
-  const baseSections = navByRole[activeRole] || navByRole.startup;
+  const roleTools = roleToolItems[activeRole] ?? roleToolItems.startup;
 
-  // Build dynamic "Mes outils" section from activated tools + always show Marketplace
-  const toolsItems: { path: string; icon: any; label: string }[] = [
-    { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-    ...activatedTools.map(t => ({ path: t.path, icon: t.lucideIcon, label: t.label })),
-  ];
+  // Community items — rename "Fil d'actu" for aspirationnel
+  const communityItemsForRole = communityItems.map(item => {
+    if (activeRole === "aspirationnel" && item.path === "/feed") {
+      return { ...item, label: "Inspiration" };
+    }
+    if ((activeRole === "incubateur" || activeRole === "corporate") && item.path === "/networking") {
+      return { ...item, label: "Startups" };
+    }
+    return item;
+  });
+
+  // Build extra activated tools not already in roleTools
+  const roleToolPaths = new Set(roleTools.map(t => t.path));
+  const extraTools = activatedTools
+    .filter(t => !roleToolPaths.has(t.path))
+    .map(t => ({ path: t.path, icon: t.lucideIcon, label: t.label }));
 
   const navSections = [
-    ...baseSections,
-    { title: "Mes outils", items: toolsItems },
+    { title: "Principal", items: [{ path: "/", icon: Home, label: "Dashboard" }] },
+    { title: "Outils clés", items: roleTools },
+    { title: "Communauté", items: communityItemsForRole },
+    ...(extraTools.length > 0 ? [{ title: "Autres outils", items: extraTools }] : []),
   ];
-
-  const initials = (profile?.display_name ?? "?").substring(0, 2).toUpperCase();
 
   const handleNav = (path: string) => {
     navigate(path);
@@ -222,7 +154,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
               const active = isActive(item.path);
               return (
                 <button
-                  key={item.path}
+                  key={item.path + item.label}
                   onClick={() => handleNav(item.path)}
                   className={cn(
                     "relative flex items-center gap-2.5 rounded-xl cursor-pointer transition-all duration-200 flex-shrink-0 overflow-hidden",
