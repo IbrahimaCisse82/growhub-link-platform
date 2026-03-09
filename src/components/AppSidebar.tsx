@@ -41,6 +41,7 @@ const roleToolItems: Record<string, { path: string; icon: any; label: string }[]
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
   investor: [
+    { path: "/deal-flow", icon: TrendingUp, label: "Deal Flow" },
     { path: "/deal-room", icon: Shield, label: "Deal Room" },
     { path: "/pitchdeck", icon: BookOpen, label: "Pitch Decks" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
