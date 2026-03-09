@@ -37,14 +37,7 @@ export default function Layout() {
   useRealtimeMessages();
   useNotificationPush();
 
-  const { data: userRole } = useQuery({
-    queryKey: ["user-role", user?.id],
-    enabled: !!user,
-    queryFn: async () => {
-      const { data } = await supabase.from("user_roles").select("role").eq("user_id", user!.id).limit(1).maybeSingle();
-      return data?.role ?? "startup";
-    },
-  });
+  const { role: userRole } = useUserRole();
 
   const needsOnboarding = profile && !onboardingDone && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
 
