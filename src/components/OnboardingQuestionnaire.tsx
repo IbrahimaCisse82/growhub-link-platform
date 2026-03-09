@@ -62,7 +62,8 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
   const [selectedRole, setSelectedRole] = useState("startup");
   const [form, setForm] = useState({
     company_name: "", company_stage: "", sector: "", city: "", country: "France",
-    skills: [] as string[], interests: [] as string[], bio: "", linkedin_url: "", website_url: "",
+    skills: [] as string[], interests: [] as string[], looking_for: [] as string[],
+    offering: [] as string[], bio: "", headline: "", linkedin_url: "", website_url: "",
   });
 
   const toggleItem = (key: "skills" | "interests", item: string) => {
