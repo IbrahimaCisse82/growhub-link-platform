@@ -116,7 +116,7 @@ export default function LandingPage() {
               <span className="text-primary">entrepreneurial</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              Networking intelligent, coaching certifié, pitch deck, levée de fonds — une plateforme unique qui réunit tout l'écosystème startup.
+              Networking intelligent, coaching certifié, pitch deck, levée de fonds — une plateforme unique qui réunit tout l'écosystème du secteur privé africain.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-8 py-4 font-heading text-base font-bold flex items-center justify-center gap-2 hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all">
