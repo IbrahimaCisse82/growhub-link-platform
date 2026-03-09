@@ -1,12 +1,9 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-// @ts-ignore - screen export works at runtime
+import { describe, it, expect, vi } from "vitest";
+import { render } from "@testing-library/react";
 import ToolGuard from "@/components/ToolGuard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
-import { vi } from "vitest";
 
-// Mock useActivatedTools
 vi.mock("@/hooks/useActivatedTools", () => ({
   useActivatedTools: () => ({
     isActivated: (key: string) => key === "pitchdeck",
@@ -37,25 +34,25 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
 describe("ToolGuard", () => {
   it("renders children when tool is activated", () => {
-    render(
+    const { getByText } = render(
       <Wrapper>
         <ToolGuard toolKey="pitchdeck">
           <div>Tool Content</div>
         </ToolGuard>
       </Wrapper>
     );
-    expect(screen.getByText("Tool Content")).toBeInTheDocument();
+    expect(getByText("Tool Content")).toBeInTheDocument();
   });
 
   it("shows activation prompt when tool is not activated", () => {
-    render(
+    const { getByText, queryByText } = render(
       <Wrapper>
         <ToolGuard toolKey="coaching">
           <div>Tool Content</div>
         </ToolGuard>
       </Wrapper>
     );
-    expect(screen.getByText(/non activé/)).toBeInTheDocument();
-    expect(screen.queryByText("Tool Content")).not.toBeInTheDocument();
+    expect(getByText(/non activé/)).toBeInTheDocument();
+    expect(queryByText("Tool Content")).toBeNull();
   });
 });

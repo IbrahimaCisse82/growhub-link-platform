@@ -1,12 +1,9 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-// @ts-ignore - screen export works at runtime
+import { describe, it, expect, vi } from "vitest";
+import { render } from "@testing-library/react";
 import RoleGuard from "@/components/RoleGuard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
-import { vi } from "vitest";
 
-// Mock useUserRole
 vi.mock("@/hooks/useUserRole", () => ({
   useUserRole: () => ({ role: "startup", isLoading: false }),
 }));
@@ -23,25 +20,25 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 
 describe("RoleGuard", () => {
   it("renders children when role is allowed", () => {
-    render(
+    const { getByText } = render(
       <Wrapper>
         <RoleGuard allowedRoles={["startup", "investor"]}>
           <div>Protected Content</div>
         </RoleGuard>
       </Wrapper>
     );
-    expect(screen.getByText("Protected Content")).toBeInTheDocument();
+    expect(getByText("Protected Content")).toBeInTheDocument();
   });
 
   it("shows restricted message when role is not allowed", () => {
-    render(
+    const { getByText, queryByText } = render(
       <Wrapper>
         <RoleGuard allowedRoles={["investor"]}>
           <div>Protected Content</div>
         </RoleGuard>
       </Wrapper>
     );
-    expect(screen.getByText("Accès restreint")).toBeInTheDocument();
-    expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
+    expect(getByText("Accès restreint")).toBeInTheDocument();
+    expect(queryByText("Protected Content")).toBeNull();
   });
 });
