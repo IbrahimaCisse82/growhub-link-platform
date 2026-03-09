@@ -7,12 +7,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useActivatedTools, ALL_TOOLS, TOOL_CATEGORIES } from "@/hooks/useActivatedTools";
+import { useActivatedTools, ALL_TOOLS, TOOL_CATEGORIES, ROLE_RECOMMENDED_TOOLS } from "@/hooks/useActivatedTools";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
 import {
   Plus, ShoppingBag, Star, Clock, DollarSign, Search,
   Briefcase, Code, Palette, TrendingUp, BookOpen, Users, Trash2,
-  ToggleLeft, ToggleRight, Puzzle, ArrowRight, CheckCircle, Zap
+  ToggleLeft, ToggleRight, Puzzle, ArrowRight, CheckCircle, Zap, Sparkles
 } from "lucide-react";
 
 const serviceCategories = [
@@ -37,6 +38,7 @@ export default function MarketplacePage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { activatedTools, isActivated, activateTool, deactivateTool, allTools } = useActivatedTools();
+  const { role } = useUserRole();
 
   const [mainTab, setMainTab] = useState<"tools" | "services">("tools");
   const [toolFilter, setToolFilter] = useState("all");
@@ -124,7 +126,12 @@ export default function MarketplacePage() {
         return matchSearch && matchCat;
       }) ?? [];
 
-  const filteredTools = toolFilter === "all" ? allTools : allTools.filter(t => t.category === toolFilter);
+  const recommendedKeys = ROLE_RECOMMENDED_TOOLS[role] ?? [];
+  const filteredTools = toolFilter === "all"
+    ? allTools
+    : toolFilter === "recommended"
+    ? allTools.filter(t => recommendedKeys.includes(t.key))
+    : allTools.filter(t => t.category === toolFilter);
 
   const formatPrice = (s: any) => {
     if (s.price_type === "free") return "Gratuit";
@@ -209,9 +216,28 @@ export default function MarketplacePage() {
             ))}
           </div>
 
+          {/* Recommendation banner */}
+          {toolFilter === "all" && recommendedKeys.length > 0 && (
+            <div className="flex items-center gap-3 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3 mb-5">
+              <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0" />
+              <div>
+                <p className="text-xs font-bold font-heading">Outils recommandés pour votre profil <span className="capitalize text-primary">{role}</span></p>
+                <p className="text-[11px] text-muted-foreground">Filtrez par "⭐ Recommandés" pour voir les outils adaptés à votre activité.</p>
+              </div>
+            </div>
+          )}
+
           {/* Tools grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-            {filteredTools.map(tool => {
+            {[...filteredTools].sort((a, b) => {
+              // Sort: recommended first, then activated, then rest
+              const aRec = recommendedKeys.includes(a.key) ? 0 : 1;
+              const bRec = recommendedKeys.includes(b.key) ? 0 : 1;
+              if (aRec !== bRec) return aRec - bRec;
+              const aAct = isActivated(a.key) ? 0 : 1;
+              const bAct = isActivated(b.key) ? 0 : 1;
+              return aAct - bAct;
+            }).map(tool => {
               const active = isActivated(tool.key);
               const ToolIcon = tool.lucideIcon;
               return (
@@ -228,11 +254,16 @@ export default function MarketplacePage() {
                       {tool.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="font-heading text-sm font-bold truncate">{tool.label}</h3>
                         {active && (
                           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[9px] font-bold flex-shrink-0">
                             <CheckCircle className="w-2.5 h-2.5" /> Actif
+                          </span>
+                        )}
+                        {!active && recommendedKeys.includes(tool.key) && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[9px] font-bold flex-shrink-0">
+                            <Sparkles className="w-2.5 h-2.5" /> Recommandé
                           </span>
                         )}
                       </div>

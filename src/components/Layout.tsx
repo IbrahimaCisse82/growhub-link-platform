@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import AppSidebar from "@/components/AppSidebar";
 import Topbar from "@/components/Topbar";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -10,7 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useRealtimeNotifications, useRealtimeMessages } from "@/hooks/useRealtimeNotifications";
+import { useRealtimeNotifications, useRealtimeMessages, useRealtimeConnections } from "@/hooks/useRealtimeNotifications";
 import AICoachAssistant from "@/components/AICoachAssistant";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { useNotificationPush } from "@/components/PushNotificationToggle";
@@ -35,6 +36,7 @@ export default function Layout() {
   // Activate realtime listeners
   useRealtimeNotifications();
   useRealtimeMessages();
+  useRealtimeConnections();
   useNotificationPush();
 
   const { role: userRole } = useUserRole();
@@ -74,7 +76,17 @@ export default function Layout() {
       <div className="lg:ml-[68px] flex-1 flex flex-col min-h-screen min-h-[100dvh] w-full overflow-x-hidden">
         <Topbar onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} onHelpToggle={helpConfig ? () => setHelpOpen(!helpOpen) : undefined} />
         <main id="main-content" className="p-3 md:p-7 flex-1 pb-24 lg:pb-7" role="main">
-          <Outlet />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
 

@@ -35,11 +35,26 @@ export const ALL_TOOLS: ToolDefinition[] = [
 
 export const TOOL_CATEGORIES = [
   { key: "all", label: "Tous les outils" },
+  { key: "recommended", label: "⭐ Recommandés" },
   { key: "productivity", label: "Productivité" },
   { key: "growth", label: "Croissance" },
   { key: "analytics", label: "Analytics" },
   { key: "gamification", label: "Gamification" },
 ];
+
+// Tools recommended per role
+export const ROLE_RECOMMENDED_TOOLS: Record<string, string[]> = {
+  startup: ["pitchdeck", "fundraising", "coaching", "progression", "deal-room"],
+  mentor: ["coaching", "analytics", "badges", "challenges"],
+  investor: ["deal-room", "analytics", "pitchdeck", "roi"],
+  expert: ["coaching", "analytics", "templates", "marketing"],
+  freelance: ["marketing", "content-calendar", "templates", "roi"],
+  incubateur: ["coaching", "analytics", "challenges", "fundraising"],
+  etudiant: ["coaching", "progression", "challenges", "badges"],
+  aspirationnel: ["coaching", "challenges", "badges", "templates"],
+  professionnel: ["coaching", "progression", "analytics", "templates"],
+  corporate: ["deal-room", "analytics", "marketing", "roi"],
+};
 
 export function useActivatedTools() {
   const { user } = useAuth();
