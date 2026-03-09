@@ -29,7 +29,6 @@ const demoUsers = [
     email: "marc.lefevre@demo.com",
     password: "Demo2024!",
     full_name: "Marc Lefevre",
-    full_name: "Marc Dubois",
     profile: {
       display_name: "Marc Lefevre",
       bio: "Serial entrepreneur, 3 exits. Mentor certifié avec 15 ans d'expérience en scaling de startups B2B SaaS.",
