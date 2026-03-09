@@ -78,7 +78,9 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
       const { error } = await supabase.from("profiles").update({
         company_name: form.company_name || null, company_stage: form.company_stage || null, sector: form.sector || null,
         city: form.city || null, country: form.country || null, skills: form.skills, interests: form.interests,
-        bio: form.bio || null, linkedin_url: form.linkedin_url || null, website_url: form.website_url || null,
+        looking_for: form.looking_for, offering: form.offering,
+        bio: form.bio || null, headline: form.headline || null,
+        linkedin_url: form.linkedin_url || null, website_url: form.website_url || null,
       }).eq("user_id", user.id);
       if (error) throw error;
 
