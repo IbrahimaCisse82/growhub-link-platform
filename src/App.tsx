@@ -117,8 +117,12 @@ const App = () => (
                   <Route path="speed-networking" element={<SpeedNetworkingPage />} />
                   <Route path="spaces" element={<SpacesPage />} />
                   <Route path="content-calendar" element={<ContentCalendarPage />} />
-                  <Route path="deal-room" element={<DealRoomPage />} />
+                  <Route path="deal-room" element={<RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomPage /></RoleGuard>} />
                   <Route path="challenges" element={<ChallengesPage />} />
+                  <Route path="mentor-dashboard" element={<MentorDashboardPage />} />
+                  <Route path="deal-flow" element={<InvestorDealFlowPage />} />
+                  <Route path="cohorts" element={<IncubatorCohortsPage />} />
+                  <Route path="pipeline" element={<FreelancePipelinePage />} />
                   <Route path="roi" element={<ROIDashboardPage />} />
                   <Route path="moderation" element={<ModerationPage />} />
                   <Route path="marketplace" element={<MarketplacePage />} />
