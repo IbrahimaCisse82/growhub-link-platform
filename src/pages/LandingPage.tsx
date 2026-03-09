@@ -109,7 +109,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-wider mb-8">
-              <Sparkles className="w-3.5 h-3.5" /> Plateforme #1 pour entrepreneurs en Afrique & Europe
+              <Sparkles className="w-3.5 h-3.5" /> Plateforme #1 pour entrepreneurs en Afrique
             </div>
             <h1 className="font-heading text-4xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.08] mb-6">
               Construisez votre empire<br />
