@@ -68,7 +68,7 @@ const steps = [
 ];
 
 export default function LandingPage() {
-  usePageMeta({ title: "GrowHubLink — L'écosystème entrepreneurial", description: "Plateforme tout-en-un pour entrepreneurs : networking, coaching, pitch deck, fundraising et plus." });
+  usePageMeta({ title: "GrowHubLink — L'écosystème du secteur privé en Afrique", description: "Plateforme tout-en-un pour les acteurs du secteur privé en Afrique : networking, coaching, pitch deck, fundraising et plus." });
   const navigate = useNavigate();
 
   return (
