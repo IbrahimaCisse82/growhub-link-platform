@@ -77,12 +77,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Nav */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 h-16">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 h-14 md:h-16">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-primary-foreground" />
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-primary rounded-xl flex items-center justify-center">
+              <Zap className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
             </div>
-            <span className="font-heading text-xl font-bold">Grow<span className="text-primary">Hub</span>Link</span>
+            <span className="font-heading text-lg md:text-xl font-bold">Grow<span className="text-primary">Hub</span>Link</span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
@@ -90,13 +90,13 @@ export default function LandingPage() {
             <a href="#testimonials" className="hover:text-foreground transition-colors">Témoignages</a>
             <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 md:gap-3">
             <button onClick={() => navigate("/auth")} className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
               Connexion
             </button>
-            <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-xl px-5 py-2 text-sm font-bold hover:bg-primary-hover transition-colors whitespace-nowrap">
+            <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-xl px-4 md:px-5 py-2 text-xs md:text-sm font-bold hover:bg-primary-hover transition-colors whitespace-nowrap">
               <span className="hidden md:inline">Commencer gratuitement</span>
-              <span className="md:hidden">Connexion</span>
+              <span className="md:hidden">S'inscrire</span>
             </button>
           </div>
         </div>
