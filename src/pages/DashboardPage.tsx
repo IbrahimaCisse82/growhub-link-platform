@@ -53,17 +53,25 @@ export default function DashboardPage() {
               ? `Session coaching prévue le ${new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}`
               : "Votre écosystème est actif. Explorez vos outils ci-dessous."}
           </p>
-          <div className="flex gap-1.5 md:gap-2.5 flex-wrap">
-            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-1 md:gap-[6px] border-none rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
-              📊 Pitch Deck
-            </button>
-            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              💰 Levée
-            </button>
-            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              ✍️ Coaching
-            </button>
-          </div>
+          {(isActivated("pitchdeck") || isActivated("fundraising") || isActivated("coaching")) && (
+            <div className="flex gap-1.5 md:gap-2.5 flex-wrap">
+              {isActivated("pitchdeck") && (
+                <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-1 md:gap-[6px] border-none rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
+                  📊 Pitch Deck
+                </button>
+              )}
+              {isActivated("fundraising") && (
+                <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+                  💰 Levée
+                </button>
+              )}
+              {isActivated("coaching") && (
+                <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+                  ✍️ Coaching
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 md:flex gap-3 md:gap-7 mt-4 md:mt-7 pt-3 md:pt-6 border-t border-border">
             {statsLoading ? (
