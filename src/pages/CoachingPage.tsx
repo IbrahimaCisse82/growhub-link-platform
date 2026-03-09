@@ -77,10 +77,12 @@ export default function CoachingPage() {
       ))}</div>}
 
       {scheduledSessions.length > 0 && (<><h3 className="font-heading text-base font-extrabold mb-3">Sessions à venir</h3><div className="space-y-3 mb-5">{scheduledSessions.map((s: any) => (
-        <GHCard key={s.id}><div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary"><Calendar className="w-4 h-4" /></div>
-          <div className="flex-1"><div className="font-heading text-sm font-bold">{s.coach_profile?.display_name ?? "Coach"}</div><div className="text-[11px] text-muted-foreground">{s.topic ?? "Session"} · {new Date(s.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</div></div>
-          <button onClick={() => handleCancel(s.id)} className="text-muted-foreground hover:text-destructive"><X className="w-4 h-4" /></button>
+        <GHCard key={s.id}><div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0"><Calendar className="w-4 h-4" /></div>
+            <div className="flex-1 min-w-0"><div className="font-heading text-sm font-bold truncate">{s.coach_profile?.display_name ?? "Coach"}</div><div className="text-[11px] text-muted-foreground truncate">{s.topic ?? "Session"} · {new Date(s.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</div></div>
+          </div>
+          <button onClick={() => handleCancel(s.id)} className="text-muted-foreground hover:text-destructive self-end sm:self-auto"><X className="w-4 h-4" /></button>
         </div></GHCard>
       ))}</div></>)}
 

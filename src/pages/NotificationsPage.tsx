@@ -38,7 +38,7 @@ export default function NotificationsPage() {
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
       <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex items-start justify-between">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
           <div>
             <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
               <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
@@ -50,7 +50,7 @@ export default function NotificationsPage() {
             <p className="text-foreground/60 text-sm">{unreadCount} non lue{unreadCount > 1 ? "s" : ""}</p>
           </div>
           {unreadCount > 0 && (
-            <button onClick={markAllRead} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors">
+            <button onClick={markAllRead} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors self-start">
               <Check className="w-3.5 h-3.5" /> Tout marquer lu
             </button>
           )}
@@ -70,18 +70,21 @@ export default function NotificationsPage() {
             const config = typeConfig[n.type] || typeConfig.system;
             const Icon = config.icon;
             return (
-              <GHCard key={n.id} className={`flex items-center gap-3 py-3 ${!n.is_read ? "border-l-4 border-l-primary" : ""}`}>
+              <GHCard key={n.id} className={`flex items-start sm:items-center gap-3 py-3 ${!n.is_read ? "border-l-4 border-l-primary" : ""}`}>
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Icon className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-heading text-xs font-bold">{n.title}</span>
                     <Tag variant={config.color as any}>{config.label}</Tag>
                   </div>
-                  {n.message && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{n.message}</p>}
+                  {n.message && <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2 sm:truncate">{n.message}</p>}
+                  <span className="text-[10px] text-muted-foreground sm:hidden block mt-1">
+                    {new Date(n.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                  </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground flex-shrink-0">
+                <span className="text-[10px] text-muted-foreground flex-shrink-0 hidden sm:block">
                   {new Date(n.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                 </span>
               </GHCard>

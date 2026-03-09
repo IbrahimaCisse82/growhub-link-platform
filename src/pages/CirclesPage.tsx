@@ -67,12 +67,12 @@ export default function CirclesPage() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
           <h1 className="font-heading text-xl md:text-2xl font-extrabold">🔗 Cercles</h1>
           <p className="text-xs text-muted-foreground mt-1">Communautés thématiques pour échanger et collaborer</p>
         </div>
-        <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold hover:bg-primary/90 transition-all">
+        <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold hover:bg-primary/90 transition-all self-start sm:self-auto">
           <Plus className="w-4 h-4" /> Créer un cercle
         </button>
       </div>

@@ -401,7 +401,7 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
           )}
         </div>
       ) : (
-        <div className="flex flex-col h-[400px]">
+        <div className="flex flex-col h-[60vh] md:h-[400px]">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1">
             {(messages ?? []).map(m => {

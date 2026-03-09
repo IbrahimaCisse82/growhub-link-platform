@@ -125,7 +125,7 @@ export default function ObjectivesPage() {
         <MetricCard icon="📈" value={`${pct}%`} label="Taux de réussite" badge="Global" badgeType={pct >= 50 ? "up" : "neutral"} />
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
         <div className="flex items-center gap-2">
           <SectionHeader title="📋 Mes objectifs" />
           <div className="flex bg-card border border-border rounded-lg overflow-hidden">
@@ -140,7 +140,7 @@ export default function ObjectivesPage() {
           </div>
         </div>
         <button onClick={() => setShowForm(!showForm)}
-          className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors">
+          className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors self-start sm:self-auto">
           <Plus className="w-3.5 h-3.5" /> Nouvel objectif
         </button>
       </div>
@@ -165,7 +165,7 @@ export default function ObjectivesPage() {
 
       {/* Kanban View */}
       {viewMode === "kanban" ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-x-auto">
           {kanbanColumns.map(col => {
             const items = col.key === "todo" ? todo : col.key === "in_progress" ? inProgress : completed;
             return (
