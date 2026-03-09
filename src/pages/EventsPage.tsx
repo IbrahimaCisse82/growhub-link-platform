@@ -105,7 +105,7 @@ export default function EventsPage() {
         <MetricCard icon="👥" value={String(events?.reduce((s, e) => s + (e.registrations?.length ?? 0), 0) ?? 0)} label="Participants" badge="Total" badgeType="up" />
       </div>
 
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
         <div className="flex gap-1.5 flex-wrap">
           {["all", "webinar", "workshop", "meetup", "conference", "demo_day"].map(t => (
             <button
