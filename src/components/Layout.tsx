@@ -35,6 +35,7 @@ export default function Layout() {
   // Activate realtime listeners
   useRealtimeNotifications();
   useRealtimeMessages();
+  useRealtimeConnections();
   useNotificationPush();
 
   const { role: userRole } = useUserRole();

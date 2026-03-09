@@ -90,6 +90,37 @@ export function useRealtimeMessages() {
   }, [user, queryClient]);
 }
 
+export function useRealtimeConnections() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel(`connections-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "connections",
+        },
+        (payload) => {
+          const conn = payload.new as any;
+          if (conn?.receiver_id === user.id || conn?.requester_id === user.id) {
+            queryClient.invalidateQueries({ queryKey: ["connections"] });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
+}
+
 export function useUnreadNotificationsCount() {
   const { user } = useAuth();
   const { data } = useQueryClient().getQueryState(["notifications", user?.id]) ?? {};
