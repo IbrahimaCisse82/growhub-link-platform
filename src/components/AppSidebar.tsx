@@ -2,7 +2,7 @@ import {
   Zap, Home, Users, Calendar,
   MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag,
   BookOpen, DollarSign, PenLine, Shield, Target, BarChart3,
-  Megaphone, Trophy, Award
+  Megaphone, Trophy, Award, Briefcase, Building2, TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
