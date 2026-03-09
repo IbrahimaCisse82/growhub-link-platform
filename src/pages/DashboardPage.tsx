@@ -14,6 +14,7 @@ import MilestoneDetector from "@/components/MilestoneDetector";
 import WeeklyDigest from "@/components/WeeklyDigest";
 import ProfileCompletionCard from "@/components/ProfileCompletionCard";
 import ActivityFeed from "@/components/ActivityFeed";
+import { useActivatedTools } from "@/hooks/useActivatedTools";
 
 export default function DashboardPage() {
   usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs startup en temps réel." });
@@ -23,6 +24,7 @@ export default function DashboardPage() {
   const { data: objectives } = useObjectives();
   const { data: sessions } = useCoachingSessions();
   const { data: posts } = usePosts();
+  const { isActivated } = useActivatedTools();
 
   const displayName = profile?.display_name || user?.email?.split("@")[0] || "Entrepreneur";
   const nextSession = sessions?.find(s => s.status === "scheduled" && new Date(s.scheduled_at) > new Date());
@@ -51,17 +53,25 @@ export default function DashboardPage() {
               ? `Session coaching prévue le ${new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}`
               : "Votre écosystème est actif. Explorez vos outils ci-dessous."}
           </p>
-          <div className="flex gap-1.5 md:gap-2.5 flex-wrap">
-            <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-1 md:gap-[6px] border-none rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
-              📊 Pitch Deck
-            </button>
-            <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              💰 Levée
-            </button>
-            <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
-              ✍️ Coaching
-            </button>
-          </div>
+          {(isActivated("pitchdeck") || isActivated("fundraising") || isActivated("coaching")) && (
+            <div className="flex gap-1.5 md:gap-2.5 flex-wrap">
+              {isActivated("pitchdeck") && (
+                <button onClick={() => navigate("/pitchdeck")} className="inline-flex items-center gap-1 md:gap-[6px] border-none rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-primary text-primary-foreground hover:bg-primary-hover hover:translate-y-[-1px] hover:shadow-glow">
+                  📊 Pitch Deck
+                </button>
+              )}
+              {isActivated("fundraising") && (
+                <button onClick={() => navigate("/fundraising")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+                  💰 Levée
+                </button>
+              )}
+              {isActivated("coaching") && (
+                <button onClick={() => navigate("/coaching")} className="inline-flex items-center gap-1 md:gap-[6px] rounded-lg md:rounded-[10px] px-3 md:px-5 py-1.5 md:py-2.5 font-heading text-[11px] md:text-[13px] font-bold cursor-pointer transition-all bg-card text-foreground border border-border hover:border-primary/35 hover:bg-secondary">
+                  ✍️ Coaching
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 md:flex gap-3 md:gap-7 mt-4 md:mt-7 pt-3 md:pt-6 border-t border-border">
             {statsLoading ? (
@@ -115,44 +125,48 @@ export default function DashboardPage() {
       {/* Objectives + Coaching + Leaderboard */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-[18px] mb-4 md:mb-[18px]">
         <div className="md:col-span-2 space-y-[18px]">
-          <GHCard title="Objectifs en cours" headerRight={<Tag variant="green">En cours</Tag>}>
-            {!objectives || objectives.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-4 text-center">Aucun objectif défini. Créez-en depuis la page Progression.</p>
-            ) : (
-              objectives.slice(0, 5).map((obj) => (
-                <ProgressBar
-                  key={obj.id}
-                  label={obj.title}
-                  value={`${Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}%`}
-                  percentage={Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}
-                />
-              ))
-            )}
-          </GHCard>
+          {isActivated("progression") && (
+            <GHCard title="Objectifs en cours" headerRight={<Tag variant="green">En cours</Tag>}>
+              {!objectives || objectives.length === 0 ? (
+                <p className="text-xs text-muted-foreground py-4 text-center">Aucun objectif défini. Créez-en depuis la page Progression.</p>
+              ) : (
+                objectives.slice(0, 5).map((obj) => (
+                  <ProgressBar
+                    key={obj.id}
+                    label={obj.title}
+                    value={`${Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}%`}
+                    percentage={Math.round(((obj.current_value ?? 0) / (obj.target_value || 1)) * 100)}
+                  />
+                ))
+              )}
+            </GHCard>
+          )}
 
-          <GHCard title="Coaching Progress" headerRight={
-            <button onClick={() => navigate("/coaching")} className="text-xs text-primary font-semibold hover:opacity-70">Voir →</button>
-          }>
-            {nextSession ? (
-              <div className="flex gap-3.5 items-center bg-card border border-border rounded-xl p-3.5 mb-2.5">
-                <div className="w-[42px] h-[42px] rounded-[11px] bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-sm font-extrabold text-primary-foreground flex-shrink-0">
-                  {((nextSession as any).coach_profile?.display_name ?? "C").substring(0, 2).toUpperCase()}
-                </div>
-                <div className="flex-1">
-                  <div className="font-heading text-[13px] font-bold mb-[2px]">{(nextSession as any).coach_profile?.display_name ?? "Coach"}</div>
-                  <div className="text-[11px] text-muted-foreground mb-1.5">{nextSession.topic ?? "Session de coaching"}</div>
-                  <div className="flex gap-[5px] flex-wrap">
-                    <Tag variant="green">{new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</Tag>
-                    <Tag>{nextSession.duration_minutes ?? 60} min</Tag>
+          {isActivated("coaching") && (
+            <GHCard title="Coaching Progress" headerRight={
+              <button onClick={() => navigate("/coaching")} className="text-xs text-primary font-semibold hover:opacity-70">Voir →</button>
+            }>
+              {nextSession ? (
+                <div className="flex gap-3.5 items-center bg-card border border-border rounded-xl p-3.5 mb-2.5">
+                  <div className="w-[42px] h-[42px] rounded-[11px] bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-sm font-extrabold text-primary-foreground flex-shrink-0">
+                    {((nextSession as any).coach_profile?.display_name ?? "C").substring(0, 2).toUpperCase()}
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-heading text-[13px] font-bold mb-[2px]">{(nextSession as any).coach_profile?.display_name ?? "Coach"}</div>
+                    <div className="text-[11px] text-muted-foreground mb-1.5">{nextSession.topic ?? "Session de coaching"}</div>
+                    <div className="flex gap-[5px] flex-wrap">
+                      <Tag variant="green">{new Date(nextSession.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</Tag>
+                      <Tag>{nextSession.duration_minutes ?? 60} min</Tag>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground py-4 text-center">Aucune session prévue.</p>
-            )}
-            <StatRow label="Sessions terminées" value={String(completedSessions.length)} />
-            <StatRow label="Satisfaction moyenne" value={`${stats?.avgRating ?? "—"} ★`} />
-          </GHCard>
+              ) : (
+                <p className="text-xs text-muted-foreground py-4 text-center">Aucune session prévue.</p>
+              )}
+              <StatRow label="Sessions terminées" value={String(completedSessions.length)} />
+              <StatRow label="Satisfaction moyenne" value={`${stats?.avgRating ?? "—"} ★`} />
+            </GHCard>
+          )}
         </div>
 
         {/* Leaderboard */}
