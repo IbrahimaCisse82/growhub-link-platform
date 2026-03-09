@@ -58,6 +58,7 @@ const roleToolItems: Record<string, { path: string; icon: any; label: string }[]
     { path: "/marketing", icon: Megaphone, label: "Leads" },
   ],
   incubateur: [
+    { path: "/cohorts", icon: Building2, label: "Cohortes" },
     { path: "/coaching", icon: PenLine, label: "Mentorat" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ],
