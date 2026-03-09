@@ -48,7 +48,6 @@ const demoUsers = [
     email: "laure.bernard@demo.com",
     password: "Demo2024!",
     full_name: "Laure Bernard",
-    full_name: "Claire Bernard",
     profile: {
       display_name: "Laure Bernard",
       bio: "Partner chez InnoVentures Capital. Focus early-stage DeepTech et HealthTech. €50M sous gestion.",
