@@ -103,7 +103,7 @@ const App = () => (
                   <Route path="profile" element={<ProfilePage />} />
                   <Route path="profile/:userId" element={<PublicProfilePage />} />
                   <Route path="notifications" element={<NotificationsPage />} />
-                  <Route path="fundraising" element={<FundraisingPage />} />
+                  <Route path="fundraising" element={<RoleGuard allowedRoles={["startup", "incubateur"]}><FundraisingPage /></RoleGuard>} />
                   <Route path="pitchdeck" element={<PitchDeckPage />} />
                   <Route path="progression" element={<ObjectivesPage />} />
                   <Route path="badges" element={<BadgesPage />} />

@@ -164,7 +164,7 @@ function InvestorContent() {
                   </div>
                   <div className="flex gap-1.5 flex-wrap">
                     {author?.sector && <Tag variant="green">{author.sector}</Tag>}
-                    {author?.company_stage && <Tag className={stageColors[author.company_stage] ?? ""}>{author.company_stage}</Tag>}
+                    {author?.company_stage && <Tag variant="default">{author.company_stage}</Tag>}
                     <Tag>{deck.view_count ?? 0} vues</Tag>
                   </div>
                 </GHCard>

@@ -136,7 +136,7 @@ function IncubatorContent() {
                             <div className="text-xs font-bold truncate">{p?.display_name ?? "Startup"}</div>
                             <div className="text-[10px] text-muted-foreground truncate">{p?.company_name ?? ""} {p?.sector ? `· ${p.sector}` : ""}</div>
                           </div>
-                          {p?.company_stage && <Tag className="text-[9px]">{p.company_stage}</Tag>}
+                          {p?.company_stage && <Tag variant="default">{p.company_stage}</Tag>}
                         </div>
                       );
                     })}
