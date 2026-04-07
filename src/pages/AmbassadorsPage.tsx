@@ -148,8 +148,8 @@ export default function AmbassadorsPage() {
             <CardContent>
               {alreadyApplied ? (
                 <div className="text-center py-6 space-y-3">
-                  <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto">
-                    <Check className="w-8 h-8 text-green-600" />
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                    <Check className="w-8 h-8 text-primary" />
                   </div>
                   <p className="text-muted-foreground">Votre candidature est en cours d'examen. Nous vous contacterons bientôt !</p>
                   {existingApp?.referral_code && (

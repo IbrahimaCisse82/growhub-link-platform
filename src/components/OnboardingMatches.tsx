@@ -21,7 +21,7 @@ export default function OnboardingMatches({ onComplete }: Props) {
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
 
   const handleConnect = (userId: string) => {
-    sendConnection.mutate(userId, {
+    sendConnection.mutate({ receiverId: userId }, {
       onSuccess: () => {
         setSentIds(prev => new Set(prev).add(userId));
         toast.success("Demande envoyée !");
