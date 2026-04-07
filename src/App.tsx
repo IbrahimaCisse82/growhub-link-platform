@@ -116,6 +116,7 @@ const App = () => (
                   <Route path="bookmarks" element={<BookmarksPage />} />
                   <Route path="marketplace" element={<MarketplacePage />} />
                   <Route path="company" element={<CompanyPage />} />
+                  <Route path="courses" element={<CoursesPage />} />
                   {/* Tools — require activation via marketplace */}
                   <Route path="pitchdeck" element={<ToolGuard toolKey="pitchdeck"><PitchDeckPage /></ToolGuard>} />
                   <Route path="fundraising" element={<ToolGuard toolKey="fundraising"><RoleGuard allowedRoles={["startup", "incubateur"]}><FundraisingPage /></RoleGuard></ToolGuard>} />
