@@ -47,6 +47,8 @@ import MentorDashboardPage from "./pages/MentorDashboardPage";
 import InvestorDealFlowPage from "./pages/InvestorDealFlowPage";
 import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
 import FreelancePipelinePage from "./pages/FreelancePipelinePage";
+import AmbassadorsPage from "./pages/AmbassadorsPage";
+import CoursesPage from "./pages/CoursesPage";
 import RoleGuard from "./components/RoleGuard";
 import ToolGuard from "./components/ToolGuard";
 
