@@ -1,6 +1,6 @@
 import { 
   Zap, Home, Users, Calendar,
-  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag
+  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag, GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
