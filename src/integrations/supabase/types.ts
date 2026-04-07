@@ -41,6 +41,54 @@ export type Database = {
         }
         Relationships: []
       }
+      ambassadors: {
+        Row: {
+          city: string
+          country: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          linkedin_url: string | null
+          motivation: string | null
+          referral_code: string | null
+          referral_count: number | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          city: string
+          country: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          linkedin_url?: string | null
+          motivation?: string | null
+          referral_code?: string | null
+          referral_count?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          city?: string
+          country?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          linkedin_url?: string | null
+          motivation?: string | null
+          referral_code?: string | null
+          referral_count?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           category: string | null
@@ -600,6 +648,104 @@ export type Database = {
           receiver_id?: string
           requester_id?: string
           status?: Database["public"]["Enums"]["connection_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      course_enrollments: {
+        Row: {
+          completed_at: string | null
+          completed_lessons: Json | null
+          course_id: string
+          enrolled_at: string
+          id: string
+          is_completed: boolean | null
+          progress: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_lessons?: Json | null
+          course_id: string
+          enrolled_at?: string
+          id?: string
+          is_completed?: boolean | null
+          progress?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_lessons?: Json | null
+          course_id?: string
+          enrolled_at?: string
+          id?: string
+          is_completed?: boolean | null
+          progress?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          difficulty: string
+          duration_minutes: number | null
+          enrollment_count: number | null
+          id: string
+          is_published: boolean | null
+          lessons: Json
+          rating: number | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          difficulty?: string
+          duration_minutes?: number | null
+          enrollment_count?: number | null
+          id?: string
+          is_published?: boolean | null
+          lessons?: Json
+          rating?: number | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          difficulty?: string
+          duration_minutes?: number | null
+          enrollment_count?: number | null
+          id?: string
+          is_published?: boolean | null
+          lessons?: Json
+          rating?: number | null
+          tags?: string[] | null
+          title?: string
           updated_at?: string
         }
         Relationships: []
