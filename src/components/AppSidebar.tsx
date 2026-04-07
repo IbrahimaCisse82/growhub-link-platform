@@ -47,6 +47,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
   const navSections = [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/courses", icon: GraduationCap, label: "Formations" },
       { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
     ]},
     ...(toolItems.length > 0 ? [{ title: "Mes outils", items: toolItems }] : []),
