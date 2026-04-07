@@ -95,7 +95,7 @@ export default function AmbassadorsPage() {
       <section className="pt-28 pb-16 px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto text-center space-y-4">
           <Badge variant="secondary" className="text-sm px-4 py-1.5 gap-1.5">
-            <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> Programme Ambassadeurs
+            <Heart className="w-3.5 h-3.5 text-destructive fill-destructive" /> Programme Ambassadeurs
           </Badge>
           <h1 className="text-3xl md:text-5xl font-heading font-bold text-foreground leading-tight">
             Devenez <span className="text-primary">Ambassadeur</span> GrowHubLink
