@@ -301,6 +301,7 @@ export default function LandingPage() {
             </div>
             <div className="flex gap-5 md:gap-6 text-sm text-muted-foreground">
               <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
+              <button onClick={() => navigate("/ambassadors")} className="hover:text-foreground transition-colors">Ambassadeurs</button>
               <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
             </div>
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} GrowHubLink. Tous droits réservés.</p>

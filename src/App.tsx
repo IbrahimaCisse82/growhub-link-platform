@@ -47,6 +47,8 @@ import MentorDashboardPage from "./pages/MentorDashboardPage";
 import InvestorDealFlowPage from "./pages/InvestorDealFlowPage";
 import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
 import FreelancePipelinePage from "./pages/FreelancePipelinePage";
+import AmbassadorsPage from "./pages/AmbassadorsPage";
+import CoursesPage from "./pages/CoursesPage";
 import RoleGuard from "./components/RoleGuard";
 import ToolGuard from "./components/ToolGuard";
 
@@ -92,6 +94,7 @@ const App = () => (
               <Routes>
                 <Route path="/welcome" element={<LandingRoute />} />
                 <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/ambassadors" element={<AmbassadorsPage />} />
                 <Route path="/auth" element={<AuthRoute />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -113,6 +116,7 @@ const App = () => (
                   <Route path="bookmarks" element={<BookmarksPage />} />
                   <Route path="marketplace" element={<MarketplacePage />} />
                   <Route path="company" element={<CompanyPage />} />
+                  <Route path="courses" element={<CoursesPage />} />
                   {/* Tools — require activation via marketplace */}
                   <Route path="pitchdeck" element={<ToolGuard toolKey="pitchdeck"><PitchDeckPage /></ToolGuard>} />
                   <Route path="fundraising" element={<ToolGuard toolKey="fundraising"><RoleGuard allowedRoles={["startup", "incubateur"]}><FundraisingPage /></RoleGuard></ToolGuard>} />

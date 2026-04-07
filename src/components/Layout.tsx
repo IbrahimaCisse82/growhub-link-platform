@@ -7,6 +7,7 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 import OnboardingTour, { useOnboardingTour } from "@/components/OnboardingTour";
 import ContextualHelp, { helpConfigs } from "@/components/ContextualHelp";
 import OnboardingQuestionnaire from "@/components/OnboardingQuestionnaire";
+import OnboardingMatches from "@/components/OnboardingMatches";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +27,7 @@ const routeToHelpKey: Record<string, string> = {
 };
 
 export default function Layout() {
-  const [onboardingDone, setOnboardingDone] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState<"questionnaire" | "matches" | "done">("questionnaire");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const { user, profile, refetchProfile } = useAuth();
@@ -41,15 +42,23 @@ export default function Layout() {
 
   const { role: userRole } = useUserRole();
 
-  const needsOnboarding = profile && !onboardingDone && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
+  const needsOnboarding = profile && onboardingStep !== "done" && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
 
-  if (needsOnboarding) {
+  if (needsOnboarding && onboardingStep === "questionnaire") {
     return (
       <OnboardingQuestionnaire
         onComplete={() => {
-          setOnboardingDone(true);
           refetchProfile();
+          setOnboardingStep("matches");
         }}
+      />
+    );
+  }
+
+  if (needsOnboarding && onboardingStep === "matches") {
+    return (
+      <OnboardingMatches
+        onComplete={() => setOnboardingStep("done")}
       />
     );
   }

@@ -1,6 +1,6 @@
 import { 
   Zap, Home, Users, Calendar,
-  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag
+  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag, GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -47,6 +47,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
   const navSections = [
     { title: "Principal", items: [
       { path: "/", icon: Home, label: "Dashboard" },
+      { path: "/courses", icon: GraduationCap, label: "Formations" },
       { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
     ]},
     ...(toolItems.length > 0 ? [{ title: "Mes outils", items: toolItems }] : []),

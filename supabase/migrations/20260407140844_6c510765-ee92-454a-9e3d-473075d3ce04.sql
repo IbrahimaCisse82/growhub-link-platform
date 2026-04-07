@@ -1,0 +1,1 @@
+DROP POLICY "Public can submit ambassador application" ON public.ambassadors;
