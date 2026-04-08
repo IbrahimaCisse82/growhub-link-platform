@@ -5,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const DEMO_PASSWORD = "demo123456";
+const DEMO_PASSWORD = "GrowHub!Demo2026#Secure";
 
 const DEMO_ACCOUNTS: Record<string, string> = {
   startup: "sophie.martin@demo.com",
