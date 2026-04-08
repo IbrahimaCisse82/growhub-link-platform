@@ -5,14 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Rocket, ArrowRight, Loader2 } from "lucide-react";
+import { Rocket, ArrowRight, Loader2, Users, GraduationCap, TrendingUp, Briefcase, Code } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+
+const DEMO_PROFILES = [
+  { role: "startup", label: "Startup", icon: Rocket, color: "bg-green-600/10 text-green-500 border-green-600/20", desc: "Sophie Martin · GreenTech" },
+  { role: "mentor", label: "Mentor", icon: GraduationCap, color: "bg-blue-600/10 text-blue-500 border-blue-600/20", desc: "Marc Dubois · Serial Entrepreneur" },
+  { role: "investor", label: "Investisseur", icon: TrendingUp, color: "bg-purple-600/10 text-purple-500 border-purple-600/20", desc: "Claire Bernard · VC Partner" },
+  { role: "expert", label: "Expert", icon: Code, color: "bg-orange-600/10 text-orange-500 border-orange-600/20", desc: "Thomas Petit · Growth Coach" },
+  { role: "freelance", label: "Freelance", icon: Briefcase, color: "bg-pink-600/10 text-pink-500 border-pink-600/20", desc: "Aïda Saïdi · Growth Hacker" },
+];
 
 export default function AuthPage() {
   usePageMeta({ title: "Connexion", description: "Connectez-vous ou créez votre compte GrowHub." });
   const [isLogin, setIsLogin] = useState(true);
   const [isForgot, setIsForgot] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -53,6 +62,28 @@ export default function AuthPage() {
     setIsForgot(false);
   };
 
+  const handleDemoLogin = async (role: string) => {
+    setDemoLoading(role);
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("demo-login", {
+        body: { role },
+      });
+      if (fnError) throw fnError;
+      if (data?.error) throw new Error(data.error);
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+      if (error) throw error;
+      toast.success(`Connecté en tant que ${DEMO_PROFILES.find(p => p.role === role)?.label} !`);
+    } catch (error: any) {
+      toast.error(error.message || "Erreur de connexion démo");
+    } finally {
+      setDemoLoading(null);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
@@ -68,6 +99,43 @@ export default function AuthPage() {
           <p className="text-muted-foreground text-sm">La plateforme des startups qui grandissent ensemble</p>
         </div>
 
+        {/* Demo Profiles */}
+        <Card className="border-primary/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-primary" />
+              <CardTitle className="font-heading text-sm">Comptes Démo</CardTitle>
+            </div>
+            <CardDescription className="text-xs">
+              Testez la plateforme avec un profil pré-configuré
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {DEMO_PROFILES.map((demo) => (
+              <button
+                key={demo.role}
+                onClick={() => handleDemoLogin(demo.role)}
+                disabled={!!demoLoading}
+                className={`relative flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all hover:scale-[1.03] active:scale-[0.97] disabled:opacity-50 ${demo.color}`}
+              >
+                {demoLoading === demo.role ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <demo.icon className="w-5 h-5" />
+                )}
+                <span className="text-[11px] font-bold">{demo.label}</span>
+                <span className="text-[9px] opacity-70 leading-tight">{demo.desc}</span>
+              </button>
+            ))}
+          </CardContent>
+        </Card>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">ou</span>
+          </div>
+        </div>
 
         <Card>
           <CardHeader className="pb-4">
