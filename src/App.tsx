@@ -138,6 +138,7 @@ const App = () => (
                   <Route path="moderation" element={<ModerationPage />} />
                   <Route path="admin" element={<AdminDashboardPage />} />
                 </Route>
+                <Route path="/dashboard" element={<Navigate to="/" replace />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
