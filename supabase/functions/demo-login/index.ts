@@ -7,12 +7,12 @@ const corsHeaders = {
 
 const DEMO_PASSWORD = "GrowHub!Demo2026#Secure";
 
-const DEMO_ACCOUNTS: Record<string, string> = {
-  startup: "sophie.martin@demo.com",
-  mentor: "marc.dubois@demo.com",
-  investor: "claire.bernard@demo.com",
-  expert: "thomas.petit@demo.com",
-  freelance: "aida.saidi@demo.com",
+const DEMO_ACCOUNTS: Record<string, { email: string; name: string }> = {
+  startup: { email: "sophie.martin@demo.com", name: "Sophie Martin" },
+  mentor: { email: "marc.dubois@demo.com", name: "Marc Dubois" },
+  investor: { email: "claire.bernard@demo.com", name: "Claire Bernard" },
+  expert: { email: "thomas.petit@demo.com", name: "Thomas Petit" },
+  freelance: { email: "aida.saidi@demo.com", name: "Aïda Saïdi" },
 };
 
 Deno.serve(async (req) => {
@@ -22,8 +22,8 @@ Deno.serve(async (req) => {
 
   try {
     const { role } = await req.json();
-    const email = DEMO_ACCOUNTS[role];
-    if (!email) {
+    const account = DEMO_ACCOUNTS[role];
+    if (!account) {
       return new Response(JSON.stringify({ error: "Invalid role" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -35,27 +35,64 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Get user ID from profiles table
-    const { data: profile, error: profileErr } = await supabaseAdmin
+    const { email, name } = account;
+
+    // Try to find user by profile display_name first
+    const { data: profile } = await supabaseAdmin
       .from("profiles")
       .select("user_id")
-      .ilike("display_name", email.split("@")[0].replace(".", " ").replace(/\b\w/g, c => c.toUpperCase()))
+      .eq("display_name", name)
       .maybeSingle();
 
-    // Fallback: query auth.users via admin API with pagination
     let userId: string | null = profile?.user_id || null;
-    
+
+    // Verify the auth user actually exists for this user_id
+    if (userId) {
+      const { data: authUser, error: getUserErr } = await supabaseAdmin.auth.admin.getUserById(userId);
+      if (getUserErr || !authUser?.user) {
+        userId = null; // Auth user doesn't exist, need to create
+      }
+    }
+
+    // If no valid auth user found, create one
     if (!userId) {
-      // Try to find by listing users page by page
-      let page = 1;
-      const perPage = 50;
-      while (true) {
-        const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
-        if (error) throw error;
-        const found = users.find(u => u.email === email);
-        if (found) { userId = found.id; break; }
-        if (users.length < perPage) break;
-        page++;
+      const { data: newUser, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password: DEMO_PASSWORD,
+        email_confirm: true,
+        user_metadata: { full_name: name },
+      });
+      if (createErr) {
+        // User might already exist with this email
+        if (createErr.message?.includes("already been registered")) {
+          // Find existing user - try getUserByEmail approach via listing
+          const { data: { users }, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 });
+          if (listErr) throw listErr;
+          const found = users.find(u => u.email === email);
+          if (found) {
+            userId = found.id;
+          } else {
+            throw new Error("User registered but not found");
+          }
+        } else {
+          throw createErr;
+        }
+      } else {
+        userId = newUser.user.id;
+        
+        // Update profile to link to new auth user if old seeded profile exists
+        if (profile?.user_id && profile.user_id !== userId) {
+          // Update the profile's user_id to the real auth user
+          await supabaseAdmin
+            .from("profiles")
+            .update({ user_id: userId })
+            .eq("user_id", profile.user_id);
+          // Update user_roles too
+          await supabaseAdmin
+            .from("user_roles")
+            .update({ user_id: userId })
+            .eq("user_id", profile.user_id);
+        }
       }
     }
 
@@ -66,7 +103,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Reset password
+    // Reset password and confirm email
     const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       password: DEMO_PASSWORD,
       email_confirm: true,
