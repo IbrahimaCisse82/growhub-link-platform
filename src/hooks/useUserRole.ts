@@ -12,10 +12,11 @@ export function useUserRole() {
       const { data } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", user!.id)
-        .limit(1)
-        .maybeSingle();
-      return data?.role ?? "startup";
+        .eq("user_id", user!.id);
+      if (!data || data.length === 0) return "startup";
+      // If user has multiple roles, prefer the non-startup one (e.g. mentor, investor)
+      const nonDefault = data.find((r) => r.role !== "startup");
+      return nonDefault?.role ?? data[0].role ?? "startup";
     },
   });
 
