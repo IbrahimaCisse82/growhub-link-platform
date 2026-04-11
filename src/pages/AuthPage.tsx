@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Rocket, ArrowRight, Loader2, Users, GraduationCap, TrendingUp, Briefcase, Code } from "lucide-react";
+import { Rocket, ArrowRight, Loader2, Users, GraduationCap, TrendingUp, Briefcase, Code, Building2, BookOpen, Sparkles, UserCheck, Building } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 
 const DEMO_PROFILES = [
@@ -14,6 +14,11 @@ const DEMO_PROFILES = [
   { role: "investor", label: "Investisseur", icon: TrendingUp, color: "bg-purple-600/10 text-purple-500 border-purple-600/20", desc: "Claire Bernard · VC Partner" },
   { role: "expert", label: "Expert", icon: Code, color: "bg-orange-600/10 text-orange-500 border-orange-600/20", desc: "Thomas Petit · Growth Coach" },
   { role: "freelance", label: "Freelance", icon: Briefcase, color: "bg-pink-600/10 text-pink-500 border-pink-600/20", desc: "Aïda Saïdi · Growth Hacker" },
+  { role: "incubateur", label: "Incubateur", icon: Building2, color: "bg-teal-600/10 text-teal-500 border-teal-600/20", desc: "Fatou Diallo · Hub Dakar" },
+  { role: "etudiant", label: "Étudiant", icon: BookOpen, color: "bg-cyan-600/10 text-cyan-500 border-cyan-600/20", desc: "Youssef Ben Ali · HEC Casablanca" },
+  { role: "professionnel", label: "Pro", icon: UserCheck, color: "bg-slate-600/10 text-slate-500 border-slate-600/20", desc: "Amara Koné · DG Abidjan" },
+  { role: "corporate", label: "Corporate", icon: Building, color: "bg-indigo-600/10 text-indigo-500 border-indigo-600/20", desc: "Nadia Okafor · Innovation Lead" },
+  { role: "aspirationnel", label: "Aspirationnel", icon: Sparkles, color: "bg-amber-600/10 text-amber-500 border-amber-600/20", desc: "Kwame Asante · Futur entrepreneur" },
 ];
 
 export default function AuthPage() {
@@ -110,7 +115,7 @@ export default function AuthPage() {
               Testez la plateforme avec un profil pré-configuré
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-5">
             {DEMO_PROFILES.map((demo) => (
               <button
                 key={demo.role}

@@ -13,6 +13,11 @@ const DEMO_ACCOUNTS: Record<string, { email: string; name: string; role: string 
   investor: { email: "claire.bernard@demo.com", name: "Claire Bernard", role: "investor" },
   expert: { email: "thomas.petit@demo.com", name: "Thomas Petit", role: "expert" },
   freelance: { email: "aida.saidi@demo.com", name: "Aïda Saïdi", role: "freelance" },
+  incubateur: { email: "fatou.diallo@demo.com", name: "Fatou Diallo", role: "incubateur" },
+  etudiant: { email: "youssef.benali@demo.com", name: "Youssef Ben Ali", role: "etudiant" },
+  professionnel: { email: "amara.kone@demo.com", name: "Amara Koné", role: "professionnel" },
+  corporate: { email: "nadia.okafor@demo.com", name: "Nadia Okafor", role: "corporate" },
+  aspirationnel: { email: "kwame.asante@demo.com", name: "Kwame Asante", role: "aspirationnel" },
 };
 
 Deno.serve(async (req) => {
@@ -68,10 +73,7 @@ Deno.serve(async (req) => {
       });
 
       if (createErr) {
-        // If email already registered, the handle_new_user trigger already ran
-        // Try to find the profile that was auto-created
         if (createErr.message?.includes("already")) {
-          // We can't use listUsers, so query profiles by matching on display_name containing the email prefix
           return new Response(JSON.stringify({ error: "Demo account conflict. Please contact support." }), {
             status: 500,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -83,7 +85,7 @@ Deno.serve(async (req) => {
       userId = newUser.user.id;
 
       // The handle_new_user trigger auto-creates a profile and assigns 'startup' role.
-      // Update the profile with demo data and set the correct role if needed.
+      // Set the correct role if needed.
       if (role !== "startup") {
         await supabaseAdmin.from("user_roles").upsert(
           { user_id: userId, role: account.role },
@@ -92,7 +94,21 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Step 4: Reset password & confirm
+    // Step 4: Ensure correct role exists
+    const { data: existingRoles } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId);
+
+    const hasCorrectRole = existingRoles?.some((r) => r.role === account.role);
+    if (!hasCorrectRole) {
+      await supabaseAdmin.from("user_roles").upsert(
+        { user_id: userId, role: account.role },
+        { onConflict: "user_id,role" }
+      );
+    }
+
+    // Step 5: Reset password & confirm
     const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       password: DEMO_PASSWORD,
       email_confirm: true,
