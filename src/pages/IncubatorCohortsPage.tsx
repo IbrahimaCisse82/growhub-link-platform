@@ -241,6 +241,34 @@ function IncubatorContent() {
   );
 }
 
+function CohortDialog({ onSubmit }: { onSubmit: (p: any) => void }) {
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    program_focus: "",
+    start_date: "",
+    end_date: "",
+    capacity: 10,
+    status: "recruiting",
+  });
+  return (
+    <DialogContent>
+      <DialogHeader><DialogTitle>Nouvelle cohorte</DialogTitle></DialogHeader>
+      <div className="space-y-3">
+        <div><Label>Nom</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+        <div><Label>Description</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} /></div>
+        <div><Label>Focus du programme</Label><Input value={form.program_focus} onChange={e => setForm({ ...form, program_focus: e.target.value })} placeholder="Climate tech, FinTech..." /></div>
+        <div className="grid grid-cols-2 gap-3">
+          <div><Label>Date début</Label><Input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} /></div>
+          <div><Label>Date fin</Label><Input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} /></div>
+        </div>
+        <div><Label>Capacité</Label><Input type="number" value={form.capacity} onChange={e => setForm({ ...form, capacity: +e.target.value })} /></div>
+        <Button onClick={() => onSubmit({ ...form, start_date: form.start_date || null, end_date: form.end_date || null })}>Créer</Button>
+      </div>
+    </DialogContent>
+  );
+}
+
 export default function IncubatorCohortsPage() {
   usePageMeta({ title: "Cohortes", description: "Pilotez vos cohortes de startups incubées." });
 
