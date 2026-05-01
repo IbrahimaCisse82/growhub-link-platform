@@ -7,14 +7,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import RoleGuard from "@/components/RoleGuard";
-import { Building2, Users, Calendar, TrendingUp, MessageSquare } from "lucide-react";
+import { Building2, Users, Calendar, TrendingUp, MessageSquare, Plus } from "lucide-react";
+import { useIncubatorCohorts } from "@/hooks/useNewProfilesData";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 function IncubatorContent() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"startups" | "events" | "mentoring">("startups");
+  const [tab, setTab] = useState<"cohorts" | "startups" | "events" | "mentoring">("cohorts");
+  const [cohortOpen, setCohortOpen] = useState(false);
 
-  // Circles created (as cohorts)
+  const { data: officialCohorts = [], create: createCohort } = useIncubatorCohorts();
+
+  // Circles created (legacy as cohorts)
   const { data: circles = [] } = useQuery({
     queryKey: ["incubator-circles", user?.id],
     enabled: !!user,
@@ -80,15 +89,16 @@ function IncubatorContent() {
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="🏗️" value={String(circles.length)} label="Cohortes" badge="Cercles" badgeType="up" />
+        <MetricCard icon="🏗️" value={String(officialCohorts.length)} label="Cohortes officielles" badge="Programme" badgeType="up" />
         <MetricCard icon="🚀" value={String(memberIds.length)} label="Startups" badge="Incubées" badgeType="up" />
         <MetricCard icon="📅" value={String(upcomingEvents.length)} label="Events à venir" badge="Planifiés" badgeType="neutral" />
         <MetricCard icon="🎯" value={String(mentoringSessions.length)} label="Sessions mentorat" badge="Total" badgeType="neutral" />
       </div>
 
-      <div className="flex gap-1.5 mb-5">
+      <div className="flex gap-1.5 mb-5 flex-wrap">
         {([
-          { key: "startups" as const, label: "🚀 Startups", count: memberIds.length },
+          { key: "cohorts" as const, label: "🏗️ Cohortes", count: officialCohorts.length },
+          { key: "startups" as const, label: "🚀 Cercles", count: circles.length },
           { key: "events" as const, label: "📅 Événements", count: events.length },
           { key: "mentoring" as const, label: "🎯 Mentorat", count: mentoringSessions.length },
         ]).map(t => (
@@ -100,6 +110,40 @@ function IncubatorContent() {
           </button>
         ))}
       </div>
+
+      {tab === "cohorts" && (
+        <div className="space-y-3">
+          <div className="flex justify-end">
+            <Dialog open={cohortOpen} onOpenChange={setCohortOpen}>
+              <DialogTrigger asChild><Button size="sm"><Plus className="w-4 h-4 mr-1" />Créer une cohorte</Button></DialogTrigger>
+              <CohortDialog onSubmit={(p) => { createCohort.mutate(p); setCohortOpen(false); }} />
+            </Dialog>
+          </div>
+          {officialCohorts.length === 0 ? (
+            <GHCard className="text-center py-10">
+              <Building2 className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground mb-2">Aucune cohorte officielle</p>
+              <p className="text-xs text-muted-foreground">Créez votre première cohorte de programme.</p>
+            </GHCard>
+          ) : officialCohorts.map(c => (
+            <GHCard key={c.id}>
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <h3 className="font-heading text-sm font-bold">{c.name}</h3>
+                  <p className="text-[11px] text-muted-foreground">{c.description}</p>
+                </div>
+                <Tag variant={c.status === "active" ? "green" : "default"}>{c.status}</Tag>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {c.program_focus && <Tag>{c.program_focus}</Tag>}
+                {c.start_date && <Tag>Du {new Date(c.start_date).toLocaleDateString("fr-FR")}</Tag>}
+                {c.end_date && <Tag>Au {new Date(c.end_date).toLocaleDateString("fr-FR")}</Tag>}
+                <Tag>Capacité : {c.capacity}</Tag>
+              </div>
+            </GHCard>
+          ))}
+        </div>
+      )}
 
       {tab === "startups" && (
         <div className="space-y-4">
@@ -194,6 +238,34 @@ function IncubatorContent() {
         </div>
       )}
     </>
+  );
+}
+
+function CohortDialog({ onSubmit }: { onSubmit: (p: any) => void }) {
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    program_focus: "",
+    start_date: "",
+    end_date: "",
+    capacity: 10,
+    status: "recruiting",
+  });
+  return (
+    <DialogContent>
+      <DialogHeader><DialogTitle>Nouvelle cohorte</DialogTitle></DialogHeader>
+      <div className="space-y-3">
+        <div><Label>Nom</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+        <div><Label>Description</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} /></div>
+        <div><Label>Focus du programme</Label><Input value={form.program_focus} onChange={e => setForm({ ...form, program_focus: e.target.value })} placeholder="Climate tech, FinTech..." /></div>
+        <div className="grid grid-cols-2 gap-3">
+          <div><Label>Date début</Label><Input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} /></div>
+          <div><Label>Date fin</Label><Input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} /></div>
+        </div>
+        <div><Label>Capacité</Label><Input type="number" value={form.capacity} onChange={e => setForm({ ...form, capacity: +e.target.value })} /></div>
+        <Button onClick={() => onSubmit({ ...form, start_date: form.start_date || null, end_date: form.end_date || null })}>Créer</Button>
+      </div>
+    </DialogContent>
   );
 }
 

@@ -49,6 +49,10 @@ import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
 import FreelancePipelinePage from "./pages/FreelancePipelinePage";
 import AmbassadorsPage from "./pages/AmbassadorsPage";
 import CoursesPage from "./pages/CoursesPage";
+import StudentCareerPage from "./pages/StudentCareerPage";
+import CorporateInnovationPage from "./pages/CorporateInnovationPage";
+import ProDevelopmentPage from "./pages/ProDevelopmentPage";
+import AspirationalExplorerPage from "./pages/AspirationalExplorerPage";
 import RoleGuard from "./components/RoleGuard";
 import ToolGuard from "./components/ToolGuard";
 
@@ -135,6 +139,10 @@ const App = () => (
                   <Route path="deal-flow" element={<RoleGuard allowedRoles={["investor"]}><InvestorDealFlowPage /></RoleGuard>} />
                   <Route path="cohorts" element={<RoleGuard allowedRoles={["incubateur"]}><IncubatorCohortsPage /></RoleGuard>} />
                   <Route path="pipeline" element={<RoleGuard allowedRoles={["freelance", "expert"]}><FreelancePipelinePage /></RoleGuard>} />
+                  <Route path="career" element={<RoleGuard allowedRoles={["etudiant"]}><StudentCareerPage /></RoleGuard>} />
+                  <Route path="open-innovation" element={<RoleGuard allowedRoles={["corporate"]}><CorporateInnovationPage /></RoleGuard>} />
+                  <Route path="dev-goals" element={<RoleGuard allowedRoles={["professionnel"]}><ProDevelopmentPage /></RoleGuard>} />
+                  <Route path="explorer" element={<RoleGuard allowedRoles={["aspirationnel"]}><AspirationalExplorerPage /></RoleGuard>} />
                   <Route path="moderation" element={<ModerationPage />} />
                   <Route path="admin" element={<AdminDashboardPage />} />
                 </Route>

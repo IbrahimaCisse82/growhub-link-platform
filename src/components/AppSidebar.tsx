@@ -1,6 +1,7 @@
-import { 
+import {
   Zap, Home, Users, Calendar,
-  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag, GraduationCap
+  MessageSquare, Rss, CircleDot, Bolt, FolderKanban, ShoppingBag, GraduationCap,
+  Building2, Trophy, TrendingUp, Sparkles, Briefcase
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -44,12 +45,31 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
   // Build activated tools nav items
   const toolItems = activatedTools.map(t => ({ path: t.path, icon: t.lucideIcon, label: t.label }));
 
+  // Role-specific entry
+  const roleEntry = (() => {
+    switch (activeRole) {
+      case "etudiant": return { path: "/career", icon: Briefcase, label: "Carrière" };
+      case "corporate": return { path: "/open-innovation", icon: Trophy, label: "Open Innovation" };
+      case "professionnel": return { path: "/dev-goals", icon: TrendingUp, label: "Dév. pro" };
+      case "aspirationnel": return { path: "/explorer", icon: Sparkles, label: "Explorer" };
+      case "incubateur": return { path: "/cohorts", icon: Building2, label: "Cohortes" };
+      case "mentor": return { path: "/mentor-dashboard", icon: GraduationCap, label: "Mentorat" };
+      case "investor": return { path: "/deal-flow", icon: TrendingUp, label: "Deal Flow" };
+      case "freelance":
+      case "expert": return { path: "/pipeline", icon: Briefcase, label: "Pipeline" };
+      default: return null;
+    }
+  })();
+
+  const principalItems = [
+    { path: "/", icon: Home, label: "Dashboard" },
+    ...(roleEntry ? [roleEntry] : []),
+    { path: "/courses", icon: GraduationCap, label: "Formations" },
+    { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+  ];
+
   const navSections = [
-    { title: "Principal", items: [
-      { path: "/", icon: Home, label: "Dashboard" },
-      { path: "/courses", icon: GraduationCap, label: "Formations" },
-      { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
-    ]},
+    { title: "Principal", items: principalItems },
     ...(toolItems.length > 0 ? [{ title: "Mes outils", items: toolItems }] : []),
     { title: "Communauté", items: communityItemsForRole },
   ];

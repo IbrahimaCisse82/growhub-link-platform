@@ -89,6 +89,45 @@ export type Database = {
         }
         Relationships: []
       }
+      aspirational_journey: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          resource_url: string | null
+          step_key: string
+          step_title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          resource_url?: string | null
+          step_key: string
+          step_title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          resource_url?: string | null
+          step_key?: string
+          step_title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           category: string | null
@@ -183,6 +222,47 @@ export type Database = {
             columns: ["challenge_id"]
             isOneToOne: false
             referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenge_submissions: {
+        Row: {
+          attachment_url: string | null
+          challenge_id: string
+          created_at: string
+          id: string
+          pitch: string
+          startup_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          challenge_id: string
+          created_at?: string
+          id?: string
+          pitch: string
+          startup_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attachment_url?: string | null
+          challenge_id?: string
+          created_at?: string
+          id?: string
+          pitch?: string
+          startup_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_challenges"
             referencedColumns: ["id"]
           },
         ]
@@ -446,6 +526,47 @@ export type Database = {
           },
         ]
       }
+      cohort_members: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          id: string
+          joined_at: string
+          progress_notes: string | null
+          startup_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          progress_notes?: string | null
+          startup_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          progress_notes?: string | null
+          startup_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohort_members_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "incubator_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collaborations: {
         Row: {
           collaboration_type: string
@@ -648,6 +769,51 @@ export type Database = {
           receiver_id?: string
           requester_id?: string
           status?: Database["public"]["Enums"]["connection_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      corporate_challenges: {
+        Row: {
+          budget_range: string | null
+          corporate_id: string
+          created_at: string
+          deadline: string | null
+          description: string
+          id: string
+          industry: string | null
+          requirements: string | null
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          budget_range?: string | null
+          corporate_id: string
+          created_at?: string
+          deadline?: string | null
+          description: string
+          id?: string
+          industry?: string | null
+          requirements?: string | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          budget_range?: string | null
+          corporate_id?: string
+          created_at?: string
+          deadline?: string | null
+          description?: string
+          id?: string
+          industry?: string | null
+          requirements?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
           updated_at?: string
         }
         Relationships: []
@@ -1029,6 +1195,48 @@ export type Database = {
           target_amount?: number | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      incubator_cohorts: {
+        Row: {
+          capacity: number | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          incubator_id: string
+          name: string
+          program_focus: string | null
+          start_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          incubator_id: string
+          name: string
+          program_focus?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          incubator_id?: string
+          name?: string
+          program_focus?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1636,6 +1844,48 @@ export type Database = {
           },
         ]
       }
+      pro_development_goals: {
+        Row: {
+          created_at: string
+          current_level: string | null
+          deadline: string | null
+          id: string
+          notes: string | null
+          resources: string[] | null
+          skill_target: string
+          status: string
+          target_level: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_level?: string | null
+          deadline?: string | null
+          id?: string
+          notes?: string | null
+          resources?: string[] | null
+          skill_target: string
+          status?: string
+          target_level?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_level?: string | null
+          deadline?: string | null
+          id?: string
+          notes?: string | null
+          resources?: string[] | null
+          skill_target?: string
+          status?: string
+          target_level?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -2089,6 +2339,96 @@ export type Database = {
           scheduled_at?: string
           status?: string
           title?: string
+        }
+        Relationships: []
+      }
+      student_applications: {
+        Row: {
+          application_type: string | null
+          applied_at: string
+          company_name: string
+          created_at: string
+          id: string
+          notes: string | null
+          position: string
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          application_type?: string | null
+          applied_at?: string
+          company_name: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          position: string
+          status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          application_type?: string | null
+          applied_at?: string
+          company_name?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          position?: string
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      student_career_profiles: {
+        Row: {
+          availability: string | null
+          career_interests: string[] | null
+          created_at: string
+          cv_url: string | null
+          degree: string | null
+          field_of_study: string | null
+          graduation_year: number | null
+          id: string
+          linkedin_url: string | null
+          looking_for: string | null
+          portfolio_url: string | null
+          university: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          availability?: string | null
+          career_interests?: string[] | null
+          created_at?: string
+          cv_url?: string | null
+          degree?: string | null
+          field_of_study?: string | null
+          graduation_year?: number | null
+          id?: string
+          linkedin_url?: string | null
+          looking_for?: string | null
+          portfolio_url?: string | null
+          university?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          availability?: string | null
+          career_interests?: string[] | null
+          created_at?: string
+          cv_url?: string | null
+          degree?: string | null
+          field_of_study?: string | null
+          graduation_year?: number | null
+          id?: string
+          linkedin_url?: string | null
+          looking_for?: string | null
+          portfolio_url?: string | null
+          university?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
