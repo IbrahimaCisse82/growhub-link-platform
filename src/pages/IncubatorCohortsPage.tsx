@@ -7,7 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import RoleGuard from "@/components/RoleGuard";
-import { Building2, Users, Calendar, TrendingUp, MessageSquare } from "lucide-react";
+import { Building2, Users, Calendar, TrendingUp, MessageSquare, Plus } from "lucide-react";
+import { useIncubatorCohorts } from "@/hooks/useNewProfilesData";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 function IncubatorContent() {
   const { user } = useAuth();
