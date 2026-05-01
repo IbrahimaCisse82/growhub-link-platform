@@ -89,15 +89,16 @@ function IncubatorContent() {
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="🏗️" value={String(circles.length)} label="Cohortes" badge="Cercles" badgeType="up" />
+        <MetricCard icon="🏗️" value={String(officialCohorts.length)} label="Cohortes officielles" badge="Programme" badgeType="up" />
         <MetricCard icon="🚀" value={String(memberIds.length)} label="Startups" badge="Incubées" badgeType="up" />
         <MetricCard icon="📅" value={String(upcomingEvents.length)} label="Events à venir" badge="Planifiés" badgeType="neutral" />
         <MetricCard icon="🎯" value={String(mentoringSessions.length)} label="Sessions mentorat" badge="Total" badgeType="neutral" />
       </div>
 
-      <div className="flex gap-1.5 mb-5">
+      <div className="flex gap-1.5 mb-5 flex-wrap">
         {([
-          { key: "startups" as const, label: "🚀 Startups", count: memberIds.length },
+          { key: "cohorts" as const, label: "🏗️ Cohortes", count: officialCohorts.length },
+          { key: "startups" as const, label: "🚀 Cercles", count: circles.length },
           { key: "events" as const, label: "📅 Événements", count: events.length },
           { key: "mentoring" as const, label: "🎯 Mentorat", count: mentoringSessions.length },
         ]).map(t => (
@@ -109,6 +110,40 @@ function IncubatorContent() {
           </button>
         ))}
       </div>
+
+      {tab === "cohorts" && (
+        <div className="space-y-3">
+          <div className="flex justify-end">
+            <Dialog open={cohortOpen} onOpenChange={setCohortOpen}>
+              <DialogTrigger asChild><Button size="sm"><Plus className="w-4 h-4 mr-1" />Créer une cohorte</Button></DialogTrigger>
+              <CohortDialog onSubmit={(p) => { createCohort.mutate(p); setCohortOpen(false); }} />
+            </Dialog>
+          </div>
+          {officialCohorts.length === 0 ? (
+            <GHCard className="text-center py-10">
+              <Building2 className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground mb-2">Aucune cohorte officielle</p>
+              <p className="text-xs text-muted-foreground">Créez votre première cohorte de programme.</p>
+            </GHCard>
+          ) : officialCohorts.map(c => (
+            <GHCard key={c.id}>
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <h3 className="font-heading text-sm font-bold">{c.name}</h3>
+                  <p className="text-[11px] text-muted-foreground">{c.description}</p>
+                </div>
+                <Tag variant={c.status === "active" ? "green" : "default"}>{c.status}</Tag>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {c.program_focus && <Tag>{c.program_focus}</Tag>}
+                {c.start_date && <Tag>Du {new Date(c.start_date).toLocaleDateString("fr-FR")}</Tag>}
+                {c.end_date && <Tag>Au {new Date(c.end_date).toLocaleDateString("fr-FR")}</Tag>}
+                <Tag>Capacité : {c.capacity}</Tag>
+              </div>
+            </GHCard>
+          ))}
+        </div>
+      )}
 
       {tab === "startups" && (
         <div className="space-y-4">
