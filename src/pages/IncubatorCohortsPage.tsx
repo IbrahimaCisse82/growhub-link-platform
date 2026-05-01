@@ -18,9 +18,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 function IncubatorContent() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"startups" | "events" | "mentoring">("startups");
+  const [tab, setTab] = useState<"cohorts" | "startups" | "events" | "mentoring">("cohorts");
+  const [cohortOpen, setCohortOpen] = useState(false);
 
-  // Circles created (as cohorts)
+  const { data: officialCohorts = [], create: createCohort } = useIncubatorCohorts();
+
+  // Circles created (legacy as cohorts)
   const { data: circles = [] } = useQuery({
     queryKey: ["incubator-circles", user?.id],
     enabled: !!user,
