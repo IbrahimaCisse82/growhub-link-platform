@@ -83,7 +83,30 @@ function useAdminStats() {
     },
   });
 
-  return { userStats, roleDistribution, recentActivity, recentUsers };
+  const personaStats = useQuery({
+    queryKey: ["admin-persona-stats"],
+    enabled: !!user,
+    queryFn: async () => {
+      const [students, challenges, submissions, goals, journey, cohorts] = await Promise.all([
+        supabase.from("student_career_profiles").select("id", { count: "exact", head: true }),
+        supabase.from("corporate_challenges").select("id", { count: "exact", head: true }),
+        supabase.from("challenge_submissions").select("id", { count: "exact", head: true }),
+        supabase.from("pro_development_goals").select("id", { count: "exact", head: true }),
+        supabase.from("aspirational_journey").select("id", { count: "exact", head: true }).eq("completed", true),
+        supabase.from("incubator_cohorts").select("id", { count: "exact", head: true }),
+      ]);
+      return {
+        students: students.count ?? 0,
+        challenges: challenges.count ?? 0,
+        submissions: submissions.count ?? 0,
+        goals: goals.count ?? 0,
+        journeySteps: journey.count ?? 0,
+        cohorts: cohorts.count ?? 0,
+      };
+    },
+  });
+
+  return { userStats, roleDistribution, recentActivity, recentUsers, personaStats };
 }
 
 const roleLabels: Record<string, string> = {
@@ -97,8 +120,9 @@ const barConfig: ChartConfig = { count: { label: "Utilisateurs", color: "hsl(var
 
 export default function AdminDashboardPage() {
   usePageMeta({ title: "Admin Dashboard", description: "Tableau de bord d'administration de la plateforme." });
-  const { userStats, roleDistribution, recentActivity, recentUsers } = useAdminStats();
+  const { userStats, roleDistribution, recentActivity, recentUsers, personaStats } = useAdminStats();
   const stats = userStats.data;
+  const personas = personaStats.data;
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
@@ -130,6 +154,23 @@ export default function AdminDashboardPage() {
             <MetricCard icon="📅" value={String(stats?.totalEvents ?? 0)} label="Événements" badge="Créés" badgeType="up" />
             <MetricCard icon="🎓" value={String(stats?.totalSessions ?? 0)} label="Sessions" badge="Coaching" badgeType="neutral" />
             <MetricCard icon="🏅" value={String(stats?.totalBadges ?? 0)} label="Badges" badge="Distribués" badgeType="up" />
+          </>
+        )}
+      </div>
+
+      {/* Persona-specific KPIs */}
+      <SectionHeader title="Activité des nouveaux profils" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+        {personaStats.isLoading ? (
+          Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
+        ) : (
+          <>
+            <MetricCard icon="🎓" value={String(personas?.students ?? 0)} label="Profils étudiants" badge="Carrière" badgeType="neutral" />
+            <MetricCard icon="🏢" value={String(personas?.challenges ?? 0)} label="Challenges Corporate" badge="Open Innov" badgeType="up" />
+            <MetricCard icon="📥" value={String(personas?.submissions ?? 0)} label="Candidatures" badge="Startups" badgeType="neutral" />
+            <MetricCard icon="🎯" value={String(personas?.goals ?? 0)} label="Objectifs Pro" badge="Skills" badgeType="up" />
+            <MetricCard icon="🌱" value={String(personas?.journeySteps ?? 0)} label="Étapes franchies" badge="Aspirationnels" badgeType="up" />
+            <MetricCard icon="🚀" value={String(personas?.cohorts ?? 0)} label="Cohortes" badge="Incubateurs" badgeType="neutral" />
           </>
         )}
       </div>
