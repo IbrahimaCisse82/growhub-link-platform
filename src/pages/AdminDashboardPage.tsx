@@ -158,6 +158,23 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
+      {/* Persona-specific KPIs */}
+      <SectionHeader title="Activité des nouveaux profils" subtitle="Étudiants, Corporate, Pros, Aspirationnels & Incubateurs" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+        {personaStats.isLoading ? (
+          Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
+        ) : (
+          <>
+            <MetricCard icon="🎓" value={String(personas?.students ?? 0)} label="Profils étudiants" badge="Carrière" badgeType="neutral" />
+            <MetricCard icon="🏢" value={String(personas?.challenges ?? 0)} label="Challenges Corporate" badge="Open Innov" badgeType="up" />
+            <MetricCard icon="📥" value={String(personas?.submissions ?? 0)} label="Candidatures" badge="Startups" badgeType="neutral" />
+            <MetricCard icon="🎯" value={String(personas?.goals ?? 0)} label="Objectifs Pro" badge="Skills" badgeType="up" />
+            <MetricCard icon="🌱" value={String(personas?.journeySteps ?? 0)} label="Étapes franchies" badge="Aspirationnels" badgeType="up" />
+            <MetricCard icon="🚀" value={String(personas?.cohorts ?? 0)} label="Cohortes" badge="Incubateurs" badgeType="neutral" />
+          </>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
         {/* Role distribution */}
         <GHCard title="Répartition par rôle" headerRight={<Tag>Utilisateurs</Tag>}>
