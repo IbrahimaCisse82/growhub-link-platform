@@ -159,7 +159,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Persona-specific KPIs */}
-      <SectionHeader title="Activité des nouveaux profils" subtitle="Étudiants, Corporate, Pros, Aspirationnels & Incubateurs" />
+      <SectionHeader title="Activité des nouveaux profils" />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
         {personaStats.isLoading ? (
           Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
