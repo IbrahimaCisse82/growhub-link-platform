@@ -83,7 +83,30 @@ function useAdminStats() {
     },
   });
 
-  return { userStats, roleDistribution, recentActivity, recentUsers };
+  const personaStats = useQuery({
+    queryKey: ["admin-persona-stats"],
+    enabled: !!user,
+    queryFn: async () => {
+      const [students, challenges, submissions, goals, journey, cohorts] = await Promise.all([
+        supabase.from("student_career_profiles").select("id", { count: "exact", head: true }),
+        supabase.from("corporate_challenges").select("id", { count: "exact", head: true }),
+        supabase.from("challenge_submissions").select("id", { count: "exact", head: true }),
+        supabase.from("pro_development_goals").select("id", { count: "exact", head: true }),
+        supabase.from("aspirational_journey").select("id", { count: "exact", head: true }).eq("completed", true),
+        supabase.from("incubator_cohorts").select("id", { count: "exact", head: true }),
+      ]);
+      return {
+        students: students.count ?? 0,
+        challenges: challenges.count ?? 0,
+        submissions: submissions.count ?? 0,
+        goals: goals.count ?? 0,
+        journeySteps: journey.count ?? 0,
+        cohorts: cohorts.count ?? 0,
+      };
+    },
+  });
+
+  return { userStats, roleDistribution, recentActivity, recentUsers, personaStats };
 }
 
 const roleLabels: Record<string, string> = {
@@ -97,8 +120,9 @@ const barConfig: ChartConfig = { count: { label: "Utilisateurs", color: "hsl(var
 
 export default function AdminDashboardPage() {
   usePageMeta({ title: "Admin Dashboard", description: "Tableau de bord d'administration de la plateforme." });
-  const { userStats, roleDistribution, recentActivity, recentUsers } = useAdminStats();
+  const { userStats, roleDistribution, recentActivity, recentUsers, personaStats } = useAdminStats();
   const stats = userStats.data;
+  const personas = personaStats.data;
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
