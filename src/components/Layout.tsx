@@ -8,6 +8,7 @@ import OnboardingTour, { useOnboardingTour } from "@/components/OnboardingTour";
 import ContextualHelp, { helpConfigs } from "@/components/ContextualHelp";
 import OnboardingQuestionnaire from "@/components/OnboardingQuestionnaire";
 import OnboardingMatches from "@/components/OnboardingMatches";
+import KYCBanner from "@/components/KYCBanner";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,7 +43,7 @@ export default function Layout() {
 
   const { role: userRole } = useUserRole();
 
-  const needsOnboarding = profile && onboardingStep !== "done" && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
+  const needsOnboarding = profile && onboardingStep !== "done" && !(profile as any).onboarding_completed && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
 
   if (needsOnboarding && onboardingStep === "questionnaire") {
     return (
@@ -93,6 +94,7 @@ export default function Layout() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
+              <KYCBanner />
               <Outlet />
             </motion.div>
           </AnimatePresence>

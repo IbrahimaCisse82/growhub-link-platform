@@ -51,8 +51,8 @@ const ASPIRATIONAL_INTERESTS = ["Découvrir l'écosystème", "Comprendre la lev�
 interface Props { onComplete: () => void; }
 
 export default function OnboardingQuestionnaire({ onComplete }: Props) {
-  const { user } = useAuth();
-  const [step, setStep] = useState(0);
+  const { user, profile } = useAuth();
+  const [step, setStep] = useState((profile as any)?.onboarding_step ?? 0);
   const [saving, setSaving] = useState(false);
   const [selectedRole, setSelectedRole] = useState("startup");
   const [form, setForm] = useState({
@@ -73,6 +73,15 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
     // incubator
     cohort_name: "", program_focus: "", capacity: 10,
   });
+
+  // Persist current step so user can resume mid-onboarding
+  const persistStep = async (newStep: number) => {
+    if (!user) return;
+    await supabase.from("profiles").update({ onboarding_step: newStep } as any).eq("user_id", user.id);
+  };
+
+  const goNext = () => { const n = step + 1; setStep(n); persistStep(n); };
+  const goBack = () => { const n = Math.max(0, step - 1); setStep(n); persistStep(n); };
 
   const toggleItem = (key: "skills" | "looking_for" | "offering", item: string) => {
     setForm(f => ({ ...f, [key]: f[key].includes(item) ? f[key].filter(i => i !== item) : [...f[key], item] }));
@@ -153,6 +162,16 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
 
   const handleSave = async () => {
     if (!user) return;
+    // .edu / .ac. check for student role — block with informative toast
+    if (selectedRole === "etudiant" && user.email) {
+      const isEdu = /\.(edu|ac\.[a-z]{2,3})(\b|$)/i.test(user.email);
+      if (!isEdu) {
+        toast.warning(
+          "Email non académique détecté. Votre statut Étudiant sera mis en attente jusqu'à validation manuelle d'une preuve (carte étudiante).",
+          { duration: 6000 }
+        );
+      }
+    }
     setSaving(true);
     try {
       const { error } = await supabase.from("profiles").update({
@@ -161,7 +180,9 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
         looking_for: form.looking_for, offering: form.offering,
         bio: form.bio || null, headline: form.headline || null,
         linkedin_url: form.linkedin_url || null, website_url: form.website_url || null,
-      }).eq("user_id", user.id);
+        onboarding_completed: true,
+        onboarding_step: STEPS.length,
+      } as any).eq("user_id", user.id);
       if (error) throw error;
 
       const { error: roleError } = await supabase.rpc("set_user_role", {
@@ -403,12 +424,12 @@ export default function OnboardingQuestionnaire({ onComplete }: Props) {
             </AnimatePresence>
             <div className="flex items-center justify-between pt-2">
               {step > 0 ? (
-                <Button variant="ghost" size="sm" onClick={() => setStep(step - 1)}><ArrowLeft className="w-4 h-4 mr-1" /> Retour</Button>
+                <Button variant="ghost" size="sm" onClick={goBack}><ArrowLeft className="w-4 h-4 mr-1" /> Retour</Button>
               ) : (
                 <Button variant="ghost" size="sm" onClick={onComplete} className="text-muted-foreground">Passer</Button>
               )}
               {step < STEPS.length - 1 ? (
-                <Button size="sm" disabled={!canNext()} onClick={() => setStep(step + 1)}>Suivant <ArrowRight className="w-4 h-4 ml-1" /></Button>
+                <Button size="sm" disabled={!canNext()} onClick={goNext}>Suivant <ArrowRight className="w-4 h-4 ml-1" /></Button>
               ) : (
                 <Button size="sm" disabled={saving} onClick={handleSave}>{saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />}Terminer <Sparkles className="w-4 h-4 ml-1" /></Button>
               )}
