@@ -200,7 +200,6 @@ export default function PublicProfilePage() {
           <div className="hidden md:flex flex-col items-center justify-center">
             <SSIGauge score={profile.network_score ?? 0} />
           </div>
-          </div>
         </div>
       </div>
 
