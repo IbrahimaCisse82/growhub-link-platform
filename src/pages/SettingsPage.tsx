@@ -276,7 +276,53 @@ export default function SettingsPage() {
           </div>
         </GHCard>
 
-        {/* Danger zone */}
+        {/* Privacy */}
+        <GHCard title="Confidentialité" className="md:col-span-2">
+          <div className="flex items-center gap-2 mb-4">
+            <Eye className="w-4 h-4 text-primary" />
+            <span className="text-xs text-muted-foreground">Contrôlez la visibilité de vos données</span>
+          </div>
+          <div className="space-y-3">
+            <label className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border">
+              <div>
+                <p className="text-xs font-bold">Profil public</p>
+                <p className="text-[11px] text-muted-foreground">Permet aux autres membres de voir votre profil complet</p>
+              </div>
+              <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="w-4 h-4 accent-primary" />
+            </label>
+            <label className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border">
+              <div>
+                <p className="text-xs font-bold">Email visible</p>
+                <p className="text-[11px] text-muted-foreground">Affiche votre adresse email sur votre profil public</p>
+              </div>
+              <input type="checkbox" checked={emailVisible} onChange={(e) => setEmailVisible(e.target.checked)} className="w-4 h-4 accent-primary" />
+            </label>
+            <label className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border">
+              <div>
+                <p className="text-xs font-bold">Apparaître dans les suggestions de matching</p>
+                <p className="text-[11px] text-muted-foreground">Votre profil pourra être suggéré aux autres membres</p>
+              </div>
+              <input type="checkbox" checked={showInMatching} onChange={(e) => setShowInMatching(e.target.checked)} className="w-4 h-4 accent-primary" />
+            </label>
+          </div>
+          <div className="flex justify-end mt-4">
+            <button onClick={handleSavePrivacy} disabled={savingPrivacy} className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 disabled:opacity-50">
+              {savingPrivacy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} Sauvegarder
+            </button>
+          </div>
+        </GHCard>
+
+        {/* Data export (RGPD) */}
+        <GHCard title="Mes données (RGPD)" className="md:col-span-2">
+          <p className="text-xs text-muted-foreground mb-3">
+            Téléchargez l'ensemble de vos données personnelles (profil, posts, messages, sessions) au format JSON.
+          </p>
+          <button onClick={handleExport} disabled={exporting} className="bg-secondary text-foreground border border-border rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 disabled:opacity-50">
+            {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />} Exporter mes données
+          </button>
+        </GHCard>
+
+
         <GHCard className="md:col-span-2 border-destructive/20">
           <div className="flex items-center gap-2 mb-3">
             <Shield className="w-4 h-4 text-destructive" />
