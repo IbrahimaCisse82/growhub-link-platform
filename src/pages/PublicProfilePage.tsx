@@ -8,13 +8,14 @@ import { motion } from "framer-motion";
 import { GHCard, Tag, MetricCard } from "@/components/ui-custom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2, ThumbsUp, Share2 } from "lucide-react";
+import { ArrowLeft, MapPin, Globe, Linkedin, MessageSquare, UserPlus, Building2, ThumbsUp, Share2, Sparkles } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { cn } from "@/lib/utils";
 import VerifiedBadge from "@/components/VerifiedBadge";
 import { CoachReviewsList } from "@/components/CoachReviews";
 import { useCollaborations } from "@/hooks/useReviews";
 import { RecommendationWall, WriteRecommendation } from "@/components/RecommendationWall";
+import SSIGauge from "@/components/SSIGauge";
 
 export default function PublicProfilePage() {
   usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
@@ -46,6 +47,35 @@ export default function PublicProfilePage() {
     queryFn: async () => {
       const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId!).maybeSingle();
       return data?.role ?? "startup";
+    },
+  });
+
+  // Detect a common connection for Warm Intro
+  const { data: warmIntroBroker } = useQuery({
+    queryKey: ["warm-intro-broker", userId, user?.id],
+    enabled: !!userId && !!user && userId !== user.id,
+    queryFn: async () => {
+      // Connections of current user (accepted)
+      const { data: mine } = await supabase.from("connections")
+        .select("requester_id,receiver_id")
+        .or(`requester_id.eq.${user!.id},receiver_id.eq.${user!.id}`)
+        .eq("status", "accepted");
+      const myFriends = new Set<string>();
+      mine?.forEach((c: any) => myFriends.add(c.requester_id === user!.id ? c.receiver_id : c.requester_id));
+      if (myFriends.size === 0) return null;
+      // Connections of target user
+      const { data: theirs } = await supabase.from("connections")
+        .select("requester_id,receiver_id")
+        .or(`requester_id.eq.${userId},receiver_id.eq.${userId}`)
+        .eq("status", "accepted");
+      for (const c of theirs ?? []) {
+        const other = c.requester_id === userId ? c.receiver_id : c.requester_id;
+        if (myFriends.has(other)) {
+          const { data: p } = await supabase.from("profiles").select("user_id,display_name").eq("user_id", other).maybeSingle();
+          return p;
+        }
+      }
+      return null;
     },
   });
 
