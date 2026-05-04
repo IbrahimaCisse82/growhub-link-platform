@@ -178,12 +178,28 @@ export default function PublicProfilePage() {
                     </button>
                   )}
                   <WriteRecommendation userId={userId!} userName={profile?.display_name ?? "ce membre"} />
+                  {!isConnected && warmIntroBroker && (
+                    <button
+                      onClick={() => {
+                        navigate(`/messaging?partner=${warmIntroBroker.user_id}`);
+                        toast.info(`Demande d'intro à ${warmIntroBroker.display_name}`);
+                      }}
+                      className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-amber-500/20 transition-colors"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" /> Warm Intro via {warmIntroBroker.display_name}
+                    </button>
+                  )}
                 </>
               )}
               <button onClick={handleShareProfile} className="bg-secondary text-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 transition-colors">
                 <Share2 className="w-3.5 h-3.5" /> Partager
               </button>
             </div>
+          </div>
+          {/* SSI gauge */}
+          <div className="hidden md:flex flex-col items-center justify-center">
+            <SSIGauge score={profile.network_score ?? 0} />
+          </div>
           </div>
         </div>
       </div>
