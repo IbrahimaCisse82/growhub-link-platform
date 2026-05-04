@@ -4,7 +4,7 @@ import { GHCard } from "@/components/ui-custom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Sun, Moon, Monitor, Save, Trash2, Loader2, KeyRound, Shield, Bell } from "lucide-react";
+import { Sun, Moon, Monitor, Save, Trash2, Loader2, KeyRound, Shield, Bell, Eye, Download } from "lucide-react";
 import PushNotificationToggle from "@/components/PushNotificationToggle";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -40,9 +40,60 @@ export default function SettingsPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteText, setDeleteText] = useState("");
 
+  // Privacy
+  const [isPublic, setIsPublic] = useState<boolean>(profile?.is_public ?? true);
+  const [emailVisible, setEmailVisible] = useState<boolean>((profile as any)?.email_visible ?? false);
+  const [showInMatching, setShowInMatching] = useState<boolean>((profile as any)?.show_in_matching ?? true);
+  const [savingPrivacy, setSavingPrivacy] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
   // Notification preferences
   const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({});
   const [savingNotifs, setSavingNotifs] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      setIsPublic(profile.is_public ?? true);
+      setEmailVisible((profile as any).email_visible ?? false);
+      setShowInMatching((profile as any).show_in_matching ?? true);
+    }
+  }, [profile]);
+
+  const handleSavePrivacy = async () => {
+    if (!user) return;
+    setSavingPrivacy(true);
+    const { error } = await supabase.from("profiles").update({
+      is_public: isPublic,
+      email_visible: emailVisible,
+      show_in_matching: showInMatching,
+    } as any).eq("user_id", user.id);
+    setSavingPrivacy(false);
+    if (error) toast.error(error.message);
+    else toast.success("Préférences de confidentialité enregistrées");
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/export-user-data`, {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (!res.ok) throw new Error("Export impossible");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `growhub-export-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Vos données ont été téléchargées");
+    } catch (e: any) {
+      toast.error(e.message || "Erreur lors de l'export");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const { data: savedPrefs } = useQuery({
     queryKey: ["notification-preferences", user?.id],
