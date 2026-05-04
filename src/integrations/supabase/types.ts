@@ -1335,6 +1335,48 @@ export type Database = {
           },
         ]
       }
+      kyc_verifications: {
+        Row: {
+          created_at: string
+          document_type: string | null
+          document_url: string | null
+          id: string
+          notes: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_at: string
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type?: string | null
+          document_url?: string | null
+          id?: string
+          notes?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string | null
+          document_url?: string | null
+          id?: string
+          notes?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           company: string | null
@@ -1896,6 +1938,7 @@ export type Database = {
           country: string | null
           created_at: string
           display_name: string
+          email_visible: boolean
           headline: string | null
           id: string
           interests: string[] | null
@@ -1908,8 +1951,11 @@ export type Database = {
           looking_for: string[] | null
           network_score: number | null
           offering: string[] | null
+          onboarding_completed: boolean
+          onboarding_step: number
           profile_views: number | null
           sector: string | null
+          show_in_matching: boolean
           skills: string[] | null
           updated_at: string
           user_id: string
@@ -1925,6 +1971,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           display_name?: string
+          email_visible?: boolean
           headline?: string | null
           id?: string
           interests?: string[] | null
@@ -1937,8 +1984,11 @@ export type Database = {
           looking_for?: string[] | null
           network_score?: number | null
           offering?: string[] | null
+          onboarding_completed?: boolean
+          onboarding_step?: number
           profile_views?: number | null
           sector?: string | null
+          show_in_matching?: boolean
           skills?: string[] | null
           updated_at?: string
           user_id: string
@@ -1954,6 +2004,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           display_name?: string
+          email_visible?: boolean
           headline?: string | null
           id?: string
           interests?: string[] | null
@@ -1966,8 +2017,11 @@ export type Database = {
           looking_for?: string[] | null
           network_score?: number | null
           offering?: string[] | null
+          onboarding_completed?: boolean
+          onboarding_step?: number
           profile_views?: number | null
           sector?: string | null
+          show_in_matching?: boolean
           skills?: string[] | null
           updated_at?: string
           user_id?: string
