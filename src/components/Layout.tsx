@@ -43,7 +43,7 @@ export default function Layout() {
 
   const { role: userRole } = useUserRole();
 
-  const needsOnboarding = profile && onboardingStep !== "done" && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
+  const needsOnboarding = profile && onboardingStep !== "done" && !(profile as any).onboarding_completed && !profile.sector && !profile.company_name && (!profile.skills || profile.skills.length === 0);
 
   if (needsOnboarding && onboardingStep === "questionnaire") {
     return (
