@@ -24,7 +24,8 @@ export default function ObjectivesPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
-  const [form, setForm] = useState({ title: "", description: "", category: "", target_value: "100", deadline: "" });
+  const [form, setForm] = useState({ title: "", description: "", category: "", target_value: "100", deadline: "", specific: "", measurable: "", achievable: "", relevant: "", time_bound: "" });
+  const [showSmart, setShowSmart] = useState(false);
 
   const completed = objectives?.filter(o => o.is_completed) ?? [];
   const inProgress = objectives?.filter(o => !o.is_completed && (o.current_value ?? 0) > 0) ?? [];
@@ -40,8 +41,13 @@ export default function ObjectivesPage() {
       category: form.category || undefined,
       target_value: parseInt(form.target_value) || 100,
       deadline: form.deadline || undefined,
-    }, {
-      onSuccess: () => { toast.success("Objectif créé !"); setForm({ title: "", description: "", category: "", target_value: "100", deadline: "" }); setShowForm(false); },
+      specific: form.specific || undefined,
+      measurable: form.measurable || undefined,
+      achievable: form.achievable || undefined,
+      relevant: form.relevant || undefined,
+      time_bound: form.time_bound || undefined,
+    } as any, {
+      onSuccess: () => { toast.success("Objectif créé !"); setForm({ title: "", description: "", category: "", target_value: "100", deadline: "", specific: "", measurable: "", achievable: "", relevant: "", time_bound: "" }); setShowForm(false); setShowSmart(false); },
     });
   };
 
@@ -156,6 +162,18 @@ export default function ObjectivesPage() {
               <input type="date" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} className="flex-1 bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
             </div>
           </div>
+          <button type="button" onClick={() => setShowSmart(s => !s)} className="mt-3 text-[11px] font-bold text-primary hover:underline">
+            {showSmart ? "− Masquer" : "+ Affiner en objectif SMART"}
+          </button>
+          {showSmart && (
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-border pt-3">
+              <textarea value={form.specific} onChange={(e) => setForm({ ...form, specific: e.target.value })} placeholder="S — Spécifique : que voulez-vous accomplir ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.measurable} onChange={(e) => setForm({ ...form, measurable: e.target.value })} placeholder="M — Mesurable : comment mesurer le succès ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.achievable} onChange={(e) => setForm({ ...form, achievable: e.target.value })} placeholder="A — Atteignable : avez-vous les ressources ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.relevant} onChange={(e) => setForm({ ...form, relevant: e.target.value })} placeholder="R — Pertinent : pourquoi est-ce important ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.time_bound} onChange={(e) => setForm({ ...form, time_bound: e.target.value })} placeholder="T — Temporel : quel délai ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40 sm:col-span-2" />
+            </div>
+          )}
           <div className="flex justify-end mt-3 gap-2">
             <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">Annuler</button>
             <button onClick={handleCreate} disabled={!form.title.trim()} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">Créer</button>
