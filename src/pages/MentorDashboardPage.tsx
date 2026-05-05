@@ -8,12 +8,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import RoleGuard from "@/components/RoleGuard";
-import { Users, Calendar, Star, MessageSquare, TrendingUp, Clock } from "lucide-react";
+import { Users, Calendar, Star, MessageSquare, TrendingUp, Clock, Wallet } from "lucide-react";
+import { useCoachEarnings } from "@/hooks/useCoachingPayments";
 
 function MentorContent() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"mentees" | "sessions" | "reviews">("mentees");
+  const [tab, setTab] = useState<"mentees" | "sessions" | "reviews" | "earnings">("mentees");
 
   // Get coach profile
   const { data: coach } = useQuery({
@@ -109,15 +110,18 @@ function MentorContent() {
           { key: "mentees" as const, label: "👥 Mes mentorés", count: menteeIds.length },
           { key: "sessions" as const, label: "📅 Sessions", count: sessions.length },
           { key: "reviews" as const, label: "⭐ Avis", count: reviews.length },
+          { key: "earnings" as const, label: "💰 Gains", count: 0 },
         ]).map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             className={`h-[34px] px-4 rounded-xl text-xs font-bold font-heading border transition-colors ${
               tab === t.key ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-foreground/50 hover:border-primary/30"
             }`}>
-            {t.label} ({t.count})
+            {t.label}{t.count > 0 ? ` (${t.count})` : ""}
           </button>
         ))}
       </div>
+
+      {tab === "earnings" && <EarningsPanel coachId={coach.id} />}
 
       {/* Mentees tab */}
       {tab === "mentees" && (
@@ -230,5 +234,37 @@ export default function MentorDashboardPage() {
         <MentorContent />
       </motion.div>
     </RoleGuard>
+  );
+}
+
+function EarningsPanel({ coachId }: { coachId: string }) {
+  const { data, isLoading } = useCoachEarnings(coachId);
+  if (isLoading) return <GHCard className="py-6 text-center text-sm text-muted-foreground">Chargement…</GHCard>;
+  const e = data!;
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <GHCard><div className="flex items-center gap-3"><Wallet className="w-5 h-5 text-primary" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Brut perçu</div><div className="font-heading text-lg font-extrabold">{e.totalGross.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
+        <GHCard><div className="flex items-center gap-3"><TrendingUp className="w-5 h-5 text-primary" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Net (après 15 %)</div><div className="font-heading text-lg font-extrabold text-primary">{e.totalNet.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
+        <GHCard><div className="flex items-center gap-3"><Star className="w-5 h-5 text-muted-foreground" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Commission GrowHub</div><div className="font-heading text-lg font-extrabold text-muted-foreground">{e.totalCommission.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
+      </div>
+      <GHCard>
+        <div className="font-heading text-xs font-bold mb-2">Historique des paiements</div>
+        {e.rows.length === 0 ? (
+          <p className="text-xs text-muted-foreground py-4 text-center">Aucun paiement enregistré.</p>
+        ) : (
+          <div className="space-y-1.5">
+            {e.rows.slice(0, 10).map((r: any, i: number) => (
+              <div key={i} className="flex items-center justify-between text-xs border-b border-border/40 pb-1.5">
+                <span className="text-muted-foreground">{new Date(r.created_at).toLocaleDateString("fr-FR")}</span>
+                <span className="font-bold">{Number(r.gross_amount).toLocaleString("fr-FR")} {r.currency}</span>
+                <span className="text-primary font-bold">+{Number(r.net_amount).toLocaleString("fr-FR")}</span>
+                <span className={`text-[10px] font-bold uppercase ${r.status === "paid" ? "text-primary" : "text-muted-foreground"}`}>{r.status}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </GHCard>
+    </div>
   );
 }

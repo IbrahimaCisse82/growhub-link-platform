@@ -428,47 +428,181 @@ export type Database = {
       coaches: {
         Row: {
           availability: Json | null
+          bio: string | null
           created_at: string
           currency: string | null
           hourly_rate: number | null
           id: string
           is_active: boolean | null
+          languages: string[] | null
+          level: Database["public"]["Enums"]["coach_level"]
+          niche_tags: string[] | null
           rating: number | null
           specialties: string[] | null
           total_reviews: number | null
           total_sessions: number | null
           updated_at: string
           user_id: string
+          years_experience: number | null
         }
         Insert: {
           availability?: Json | null
+          bio?: string | null
           created_at?: string
           currency?: string | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
+          languages?: string[] | null
+          level?: Database["public"]["Enums"]["coach_level"]
+          niche_tags?: string[] | null
           rating?: number | null
           specialties?: string[] | null
           total_reviews?: number | null
           total_sessions?: number | null
           updated_at?: string
           user_id: string
+          years_experience?: number | null
         }
         Update: {
           availability?: Json | null
+          bio?: string | null
           created_at?: string
           currency?: string | null
           hourly_rate?: number | null
           id?: string
           is_active?: boolean | null
+          languages?: string[] | null
+          level?: Database["public"]["Enums"]["coach_level"]
+          niche_tags?: string[] | null
           rating?: number | null
           specialties?: string[] | null
           total_reviews?: number | null
           total_sessions?: number | null
           updated_at?: string
           user_id?: string
+          years_experience?: number | null
         }
         Relationships: []
+      }
+      coaching_disputes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          opened_by: string
+          reason: string
+          resolution: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          session_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          opened_by: string
+          reason: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          opened_by?: string
+          reason?: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coaching_disputes_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "coaching_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coaching_payments: {
+        Row: {
+          coach_id: string
+          commission_amount: number
+          commission_rate: number
+          created_at: string
+          currency: string
+          gross_amount: number
+          id: string
+          learner_id: string
+          net_amount: number
+          paid_at: string | null
+          provider: string
+          provider_reference: string | null
+          session_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          coach_id: string
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          currency?: string
+          gross_amount: number
+          id?: string
+          learner_id: string
+          net_amount?: number
+          paid_at?: string | null
+          provider?: string
+          provider_reference?: string | null
+          session_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          coach_id?: string
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          currency?: string
+          gross_amount?: number
+          id?: string
+          learner_id?: string
+          net_amount?: number
+          paid_at?: string | null
+          provider?: string
+          provider_reference?: string | null
+          session_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coaching_payments_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coaching_payments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "coaching_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       coaching_sessions: {
         Row: {
@@ -1655,6 +1789,7 @@ export type Database = {
       }
       objectives: {
         Row: {
+          achievable: string | null
           category: string | null
           created_at: string
           current_value: number | null
@@ -1662,12 +1797,17 @@ export type Database = {
           description: string | null
           id: string
           is_completed: boolean | null
+          measurable: string | null
+          relevant: string | null
+          specific: string | null
           target_value: number | null
+          time_bound: string | null
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          achievable?: string | null
           category?: string | null
           created_at?: string
           current_value?: number | null
@@ -1675,12 +1815,17 @@ export type Database = {
           description?: string | null
           id?: string
           is_completed?: boolean | null
+          measurable?: string | null
+          relevant?: string | null
+          specific?: string | null
           target_value?: number | null
+          time_bound?: string | null
           title: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          achievable?: string | null
           category?: string | null
           created_at?: string
           current_value?: number | null
@@ -1688,7 +1833,11 @@ export type Database = {
           description?: string | null
           id?: string
           is_completed?: boolean | null
+          measurable?: string | null
+          relevant?: string | null
+          specific?: string | null
           target_value?: number | null
+          time_bound?: string | null
           title?: string
           updated_at?: string
           user_id?: string
@@ -2611,6 +2760,7 @@ export type Database = {
         Args: { profile_user_id: string }
         Returns: undefined
       }
+      recompute_coach_level: { Args: { _coach_id: string }; Returns: undefined }
       set_user_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: undefined
@@ -2630,6 +2780,7 @@ export type Database = {
         | "aspirationnel"
         | "professionnel"
         | "corporate"
+      coach_level: "bronze" | "silver" | "gold" | "platinum"
       coaching_status: "scheduled" | "in_progress" | "completed" | "cancelled"
       connection_status: "pending" | "accepted" | "rejected" | "blocked"
       event_type: "webinar" | "workshop" | "meetup" | "conference" | "demo_day"
@@ -2784,6 +2935,7 @@ export const Constants = {
         "professionnel",
         "corporate",
       ],
+      coach_level: ["bronze", "silver", "gold", "platinum"],
       coaching_status: ["scheduled", "in_progress", "completed", "cancelled"],
       connection_status: ["pending", "accepted", "rejected", "blocked"],
       event_type: ["webinar", "workshop", "meetup", "conference", "demo_day"],
