@@ -8,12 +8,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import RoleGuard from "@/components/RoleGuard";
-import { Users, Calendar, Star, MessageSquare, TrendingUp, Clock } from "lucide-react";
+import { Users, Calendar, Star, MessageSquare, TrendingUp, Clock, Wallet } from "lucide-react";
+import { useCoachEarnings } from "@/hooks/useCoachingPayments";
 
 function MentorContent() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"mentees" | "sessions" | "reviews">("mentees");
+  const [tab, setTab] = useState<"mentees" | "sessions" | "reviews" | "earnings">("mentees");
 
   // Get coach profile
   const { data: coach } = useQuery({
@@ -109,15 +110,18 @@ function MentorContent() {
           { key: "mentees" as const, label: "👥 Mes mentorés", count: menteeIds.length },
           { key: "sessions" as const, label: "📅 Sessions", count: sessions.length },
           { key: "reviews" as const, label: "⭐ Avis", count: reviews.length },
+          { key: "earnings" as const, label: "💰 Gains", count: 0 },
         ]).map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             className={`h-[34px] px-4 rounded-xl text-xs font-bold font-heading border transition-colors ${
               tab === t.key ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-foreground/50 hover:border-primary/30"
             }`}>
-            {t.label} ({t.count})
+            {t.label}{t.count > 0 ? ` (${t.count})` : ""}
           </button>
         ))}
       </div>
+
+      {tab === "earnings" && <EarningsPanel coachId={coach.id} />}
 
       {/* Mentees tab */}
       {tab === "mentees" && (
