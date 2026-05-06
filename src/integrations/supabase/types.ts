@@ -1050,36 +1050,83 @@ export type Database = {
         }
         Relationships: []
       }
+      deal_room_audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          deal_room_id: string
+          id: string
+          metadata: Json | null
+          target_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          deal_room_id: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          deal_room_id?: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_room_audit_logs_deal_room_id_fkey"
+            columns: ["deal_room_id"]
+            isOneToOne: false
+            referencedRelation: "deal_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deal_room_documents: {
         Row: {
           created_at: string
           deal_room_id: string
           file_name: string
+          file_path: string | null
           file_size: number | null
           file_type: string | null
           file_url: string
           id: string
+          mime_type: string | null
           uploaded_by: string
+          version: number
         }
         Insert: {
           created_at?: string
           deal_room_id: string
           file_name: string
+          file_path?: string | null
           file_size?: number | null
           file_type?: string | null
           file_url: string
           id?: string
+          mime_type?: string | null
           uploaded_by: string
+          version?: number
         }
         Update: {
           created_at?: string
           deal_room_id?: string
           file_name?: string
+          file_path?: string | null
           file_size?: number | null
           file_type?: string | null
           file_url?: string
           id?: string
+          mime_type?: string | null
           uploaded_by?: string
+          version?: number
         }
         Relationships: [
           {
@@ -1122,6 +1169,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "deal_room_members_deal_room_id_fkey"
+            columns: ["deal_room_id"]
+            isOneToOne: false
+            referencedRelation: "deal_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_room_ndas: {
+        Row: {
+          deal_room_id: string
+          id: string
+          ip_address: string | null
+          nda_text: string
+          signature_hash: string
+          signed_at: string
+          user_id: string
+        }
+        Insert: {
+          deal_room_id: string
+          id?: string
+          ip_address?: string | null
+          nda_text: string
+          signature_hash: string
+          signed_at?: string
+          user_id: string
+        }
+        Update: {
+          deal_room_id?: string
+          id?: string
+          ip_address?: string | null
+          nda_text?: string
+          signature_hash?: string
+          signed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_room_ndas_deal_room_id_fkey"
             columns: ["deal_room_id"]
             isOneToOne: false
             referencedRelation: "deal_rooms"
@@ -1284,6 +1369,42 @@ export type Database = {
           tags?: string[] | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      fundraising_metrics: {
+        Row: {
+          amount_raised: number
+          closed_deals: number
+          currency: string
+          id: string
+          investors_contacted: number
+          meetings_held: number
+          term_sheets: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_raised?: number
+          closed_deals?: number
+          currency?: string
+          id?: string
+          investors_contacted?: number
+          meetings_held?: number
+          term_sheets?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_raised?: number
+          closed_deals?: number
+          currency?: string
+          id?: string
+          investors_contacted?: number
+          meetings_held?: number
+          term_sheets?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -2754,11 +2875,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_signed_nda: {
+        Args: { _room: string; _user: string }
+        Returns: boolean
+      }
       increment_post_comments: { Args: { post_id: string }; Returns: undefined }
       increment_post_likes: { Args: { post_id: string }; Returns: undefined }
       increment_profile_views: {
         Args: { profile_user_id: string }
         Returns: undefined
+      }
+      is_deal_room_member: {
+        Args: { _room: string; _user: string }
+        Returns: boolean
       }
       recompute_coach_level: { Args: { _coach_id: string }; Returns: undefined }
       set_user_role: {
