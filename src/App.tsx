@@ -36,6 +36,7 @@ import SpeedNetworkingPage from "./pages/SpeedNetworkingPage";
 import SpacesPage from "./pages/SpacesPage";
 import ContentCalendarPage from "./pages/ContentCalendarPage";
 import DealRoomPage from "./pages/DealRoomPage";
+import DealRoomDetailPage from "./pages/DealRoomDetailPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import ROIDashboardPage from "./pages/ROIDashboardPage";
 import ModerationPage from "./pages/ModerationPage";
@@ -127,6 +128,7 @@ const App = () => (
                   <Route path="coaching" element={<ToolGuard toolKey="coaching"><CoachingPage /></ToolGuard>} />
                   <Route path="content-calendar" element={<ToolGuard toolKey="content-calendar"><ContentCalendarPage /></ToolGuard>} />
                   <Route path="deal-room" element={<ToolGuard toolKey="deal-room"><RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomPage /></RoleGuard></ToolGuard>} />
+                  <Route path="deal-room/:id" element={<ToolGuard toolKey="deal-room"><RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomDetailPage /></RoleGuard></ToolGuard>} />
                   <Route path="templates" element={<ToolGuard toolKey="templates"><TemplatesPage /></ToolGuard>} />
                   <Route path="challenges" element={<ToolGuard toolKey="challenges"><ChallengesPage /></ToolGuard>} />
                   <Route path="marketing" element={<ToolGuard toolKey="marketing"><MarketingPage /></ToolGuard>} />

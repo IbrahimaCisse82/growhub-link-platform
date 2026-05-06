@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { DollarSign, Users, Plus, Trash2, Pencil, X } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { FundraisingROIWidget } from "@/components/FundraisingROIWidget";
 
 const statusLabels: Record<string, { label: string; variant: string }> = {
   identified: { label: "Identifié", variant: "default" },
@@ -170,6 +171,7 @@ export default function FundraisingPage() {
         </>
       ) : (
         <>
+          <FundraisingROIWidget />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
             <MetricCard icon="💰" value={`${(raised / 1000000).toFixed(1)}M€`} label="Levé" badge={`${pct}%`} badgeType="up" />
             <MetricCard icon="🎯" value={`${(target / 1000000).toFixed(1)}M€`} label="Objectif" badge={activeRound.stage ?? "—"} badgeType="neutral" />

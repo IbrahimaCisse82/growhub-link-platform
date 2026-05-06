@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { GHCard, MetricCard } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,9 +13,10 @@ export default function DealRoomPage() {
   usePageMeta({ title: "Deal Room", description: "Espace sécurisé pour vos relations investisseurs." });
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", description: "" });
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [, setSelectedRoom] = useState<string | null>(null);
 
   const { data: rooms = [] } = useQuery({
     queryKey: ["deal-rooms", user?.id],
@@ -78,7 +80,7 @@ export default function DealRoomPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {rooms.map((room: any) => (
-            <GHCard key={room.id} className="cursor-pointer hover:border-primary/30 transition-colors" onClick={() => setSelectedRoom(room.id)}>
+            <GHCard key={room.id} className="cursor-pointer hover:border-primary/30 transition-colors" onClick={() => navigate(`/deal-room/${room.id}`)}>
               <div className="flex items-start justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Lock className="w-5 h-5 text-primary" />
