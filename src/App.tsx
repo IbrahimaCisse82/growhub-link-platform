@@ -128,6 +128,7 @@ const App = () => (
                   <Route path="coaching" element={<ToolGuard toolKey="coaching"><CoachingPage /></ToolGuard>} />
                   <Route path="content-calendar" element={<ToolGuard toolKey="content-calendar"><ContentCalendarPage /></ToolGuard>} />
                   <Route path="deal-room" element={<ToolGuard toolKey="deal-room"><RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomPage /></RoleGuard></ToolGuard>} />
+                  <Route path="deal-room/:id" element={<ToolGuard toolKey="deal-room"><RoleGuard allowedRoles={["investor", "corporate", "startup"]}><DealRoomDetailPage /></RoleGuard></ToolGuard>} />
                   <Route path="templates" element={<ToolGuard toolKey="templates"><TemplatesPage /></ToolGuard>} />
                   <Route path="challenges" element={<ToolGuard toolKey="challenges"><ChallengesPage /></ToolGuard>} />
                   <Route path="marketing" element={<ToolGuard toolKey="marketing"><MarketingPage /></ToolGuard>} />
