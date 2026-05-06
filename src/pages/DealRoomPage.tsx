@@ -13,9 +13,10 @@ export default function DealRoomPage() {
   usePageMeta({ title: "Deal Room", description: "Espace sécurisé pour vos relations investisseurs." });
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", description: "" });
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [, setSelectedRoom] = useState<string | null>(null);
 
   const { data: rooms = [] } = useQuery({
     queryKey: ["deal-rooms", user?.id],
