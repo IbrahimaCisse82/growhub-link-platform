@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { DollarSign, Users, Plus, Trash2, Pencil, X } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { FundraisingROIWidget } from "@/components/FundraisingROIWidget";
 
 const statusLabels: Record<string, { label: string; variant: string }> = {
   identified: { label: "Identifié", variant: "default" },
