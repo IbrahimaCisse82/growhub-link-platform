@@ -36,6 +36,7 @@ import SpeedNetworkingPage from "./pages/SpeedNetworkingPage";
 import SpacesPage from "./pages/SpacesPage";
 import ContentCalendarPage from "./pages/ContentCalendarPage";
 import DealRoomPage from "./pages/DealRoomPage";
+import DealRoomDetailPage from "./pages/DealRoomDetailPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import ROIDashboardPage from "./pages/ROIDashboardPage";
 import ModerationPage from "./pages/ModerationPage";
