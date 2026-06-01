@@ -14,6 +14,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import SuggestedProfiles from "@/components/SuggestedProfiles";
 import { TrendingTags } from "@/components/SmartTags";
+import ReportPostButton from "@/components/ReportPostButton";
+
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
