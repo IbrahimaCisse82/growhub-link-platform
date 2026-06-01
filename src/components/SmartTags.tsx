@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { Hash, X, TrendingUp, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTrendingHashtags } from "@/hooks/useFeedExtras";
+
 
 // Predefined popular tags by category
 const tagSuggestions: Record<string, string[]> = {
