@@ -2068,6 +2068,27 @@ export type Database = {
           },
         ]
       }
+      post_hashtags: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          tag: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          tag: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          tag?: string
+        }
+        Relationships: []
+      }
       post_reactions: {
         Row: {
           created_at: string
@@ -2099,6 +2120,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      post_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          post_id: string
+          reason: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          post_id: string
+          reason: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          post_id?: string
+          reason?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: []
       }
       posts: {
         Row: {

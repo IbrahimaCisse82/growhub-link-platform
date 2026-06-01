@@ -14,6 +14,8 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import SuggestedProfiles from "@/components/SuggestedProfiles";
 import { TrendingTags } from "@/components/SmartTags";
+import ReportPostButton from "@/components/ReportPostButton";
+
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
   text: { label: "Publication", color: "default" },
@@ -505,11 +507,14 @@ export default function FeedPage() {
                       {new Date(post.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                     </div>
                   </div>
-                  {post.author_id === user?.id && (
-                    <button onClick={() => handleDelete(post.id)} className="text-muted-foreground hover:text-destructive transition-colors">
+                  {post.author_id === user?.id ? (
+                    <button onClick={() => handleDelete(post.id)} className="text-muted-foreground hover:text-destructive transition-colors" aria-label="Supprimer">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
+                  ) : (
+                    <ReportPostButton postId={post.id} />
                   )}
+
                 </div>
 
                 <p className="text-sm text-foreground/80 leading-relaxed mb-3 whitespace-pre-line">
