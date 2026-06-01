@@ -140,23 +140,31 @@ export function TagDisplay({ tags, size = "sm" }: { tags: string[]; size?: "sm" 
 
 // Trending tags component
 export function TrendingTags({ onTagClick }: { onTagClick?: (tag: string) => void }) {
-  // Static trending for now - could be computed from DB
-  const trending = ["SaaS", "AI/ML", "Fundraising", "Growth", "HealthTech", "Seed"];
-  
+  const { data, isLoading } = useTrendingHashtags(8);
+  const trending = data ?? [];
+
+  if (!isLoading && trending.length === 0) return null;
+
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground">
         <TrendingUp className="w-3 h-3" /> Tendances
       </div>
-      {trending.map(tag => (
-        <button
-          key={tag}
-          onClick={() => onTagClick?.(tag)}
-          className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-2 py-0.5 rounded-lg border border-border hover:border-primary/30 hover:text-primary transition-colors"
-        >
-          #{tag}
-        </button>
-      ))}
+      {isLoading
+        ? Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-5 w-16 rounded-lg bg-secondary/50 animate-pulse" />
+          ))
+        : trending.map(({ tag, count }) => (
+            <button
+              key={tag}
+              onClick={() => onTagClick?.(tag)}
+              className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-2 py-0.5 rounded-lg border border-border hover:border-primary/30 hover:text-primary transition-colors"
+              title={`${count} publication${count > 1 ? "s" : ""}`}
+            >
+              #{tag}
+            </button>
+          ))}
     </div>
   );
 }
+
