@@ -72,18 +72,50 @@ export function useToggleReaction() {
       if (existing) {
         await supabase.from("post_reactions").delete().eq("id", existing.id);
         await supabase.rpc("decrement_post_likes", { post_id: postId });
+        return { removed: true };
       } else {
         await supabase.from("post_reactions").insert({ post_id: postId, user_id: user!.id, emoji: emoji || "👍" });
         await supabase.rpc("increment_post_likes", { post_id: postId });
+        return { removed: false };
       }
     },
-    onSuccess: () => {
+    // Optimistic update — flip reaction + tweak likes_count immediately
+    onMutate: async ({ postId, emoji }) => {
+      await queryClient.cancelQueries({ queryKey: ["post-reactions", user?.id] });
+      const prevReactions = queryClient.getQueryData<any[]>(["post-reactions", user?.id]) ?? [];
+      const already = prevReactions.some((r) => r.post_id === postId);
+      queryClient.setQueryData(["post-reactions", user?.id], () =>
+        already
+          ? prevReactions.filter((r) => r.post_id !== postId)
+          : [...prevReactions, { post_id: postId, emoji: emoji || "👍" }],
+      );
+
+      const bumpPosts = (list: any[] | undefined) =>
+        list?.map((p) =>
+          p.id === postId
+            ? { ...p, likes_count: Math.max(0, (p.likes_count ?? 0) + (already ? -1 : 1)) }
+            : p,
+        );
+      const prevPosts = queryClient.getQueryData<any[]>(["posts"]);
+      if (prevPosts) queryClient.setQueryData(["posts"], bumpPosts(prevPosts));
+      queryClient.setQueriesData({ queryKey: ["posts-infinite"] }, (data: any) => {
+        if (!data?.pages) return data;
+        return { ...data, pages: data.pages.map((pg: any) => ({ ...pg, posts: bumpPosts(pg.posts) ?? pg.posts })) };
+      });
+      return { prevReactions, prevPosts };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prevReactions) queryClient.setQueryData(["post-reactions", user?.id], ctx.prevReactions);
+      if (ctx?.prevPosts) queryClient.setQueryData(["posts"], ctx.prevPosts);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["posts-infinite"] });
       queryClient.invalidateQueries({ queryKey: ["post-reactions"] });
     },
   });
 }
+
 
 export function useUserReactions() {
   const { user } = useAuth();
