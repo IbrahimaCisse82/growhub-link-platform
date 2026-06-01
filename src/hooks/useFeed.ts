@@ -156,7 +156,7 @@ export function useComments(postId: string | null) {
 
 export function useAddComment() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   return useMutation({
     mutationFn: async ({ postId, content, parentId }: { postId: string; content: string; parentId?: string }) => {
       const { error } = await supabase.from("comments").insert({
@@ -168,13 +168,33 @@ export function useAddComment() {
       if (error) throw error;
       await supabase.rpc("increment_post_comments", { post_id: postId });
     },
-    onSuccess: (_, { postId }) => {
+    onMutate: async ({ postId, content, parentId }) => {
+      await queryClient.cancelQueries({ queryKey: ["comments", postId] });
+      const prev = queryClient.getQueryData<any[]>(["comments", postId]) ?? [];
+      const optimistic = {
+        id: `tmp-${Date.now()}`,
+        post_id: postId,
+        author_id: user?.id,
+        content,
+        parent_id: parentId ?? null,
+        created_at: new Date().toISOString(),
+        author: profile ?? null,
+        _optimistic: true,
+      };
+      queryClient.setQueryData(["comments", postId], [...prev, optimistic]);
+      return { prev };
+    },
+    onError: (_e, { postId }, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(["comments", postId], ctx.prev);
+    },
+    onSettled: (_d, _e, { postId }) => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["posts-infinite"] });
     },
   });
 }
+
 
 export function useDeletePost() {
   const queryClient = useQueryClient();
