@@ -328,42 +328,76 @@ export default function MessagingPage() {
               <>
                 <div className="px-4 py-3 border-b border-border font-heading text-sm font-bold flex items-center gap-2">
                   {isMobile && (
-                    <button onClick={() => setSelectedPartner(null)} className="text-muted-foreground hover:text-foreground">
+                    <button onClick={() => setSelectedPartner(null)} className="text-muted-foreground hover:text-foreground" aria-label="Retour">
                       <ArrowLeft className="w-4 h-4" />
                     </button>
                   )}
-                  {selectedConv?.partnerName ?? "Conversation"}
+                  <span className="flex items-center gap-1.5 flex-1">
+                    {isOnline(selectedConv?.partnerLastSeen) && (
+                      <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" aria-label="En ligne" />
+                    )}
+                    {selectedConv?.partnerName ?? "Conversation"}
+                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="text-muted-foreground hover:text-foreground text-xs px-2 py-1 rounded-md hover:bg-secondary">⋯</DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={handleBlock} className="text-destructive">
+                        <ShieldOff className="w-3.5 h-3.5 mr-2" /> Bloquer cet utilisateur
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2 max-h-[50vh] md:max-h-[380px]">
                   {messages.map((m) => (
-                    <div key={m.id} className={cn("max-w-[80%] md:max-w-[70%]", m.sender_id === user?.id ? "ml-auto" : "mr-auto")}>
+                    <div key={m.id} className={cn("group max-w-[80%] md:max-w-[70%]", m.sender_id === user?.id ? "ml-auto" : "mr-auto")}>
                       <div className={cn(
-                        "rounded-xl px-3 py-2 text-xs",
-                        m.sender_id === user?.id ? "bg-primary text-primary-foreground" : "bg-secondary"
+                        "rounded-xl px-3 py-2 text-xs relative",
+                        m.sender_id === user?.id ? "bg-primary text-primary-foreground" : "bg-secondary",
+                        m._optimistic && "opacity-60"
                       )}>
                         {m.content}
+                        {m.sender_id !== user?.id && !String(m.id).startsWith("tmp-") && (
+                          <button
+                            onClick={() => reportMessage.mutate({ messageId: m.id, reason: "inappropriate" })}
+                            className="absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition text-muted-foreground hover:text-destructive"
+                            aria-label="Signaler"
+                          >
+                            <Flag className="w-3 h-3" />
+                          </button>
+                        )}
                       </div>
                       <div className="text-[10px] text-muted-foreground mt-0.5">
                         {new Date(m.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                       </div>
                     </div>
                   ))}
+                  {partnerTyping && (
+                    <div className="text-[11px] text-muted-foreground italic flex items-center gap-1.5">
+                      <span className="inline-flex gap-0.5">
+                        <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce" />
+                        <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:120ms]" />
+                        <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:240ms]" />
+                      </span>
+                      {selectedConv?.partnerName ?? "Votre contact"} écrit…
+                    </div>
+                  )}
                   <div ref={bottomRef} />
                 </div>
                 <div className="p-3 border-t border-border flex gap-2">
                   <input
                     value={newMsg}
-                    onChange={(e) => setNewMsg(e.target.value)}
+                    onChange={(e) => { setNewMsg(e.target.value); broadcastTyping(); }}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                     placeholder="Votre message..."
                     className="flex-1 bg-secondary/50 rounded-lg px-3 py-2 text-xs outline-none border border-border focus:border-primary/40"
                   />
-                  <button onClick={sendMessage} className="bg-primary text-primary-foreground rounded-lg px-3 py-2 hover:bg-primary-hover transition-colors">
+                  <button onClick={sendMessage} className="bg-primary text-primary-foreground rounded-lg px-3 py-2 hover:bg-primary-hover transition-colors" aria-label="Envoyer">
                     <Send className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </>
             )}
+
           </GHCard>
         )}
       </div>
