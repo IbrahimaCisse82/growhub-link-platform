@@ -17,6 +17,8 @@ import { useRealtimeNotifications, useRealtimeMessages, useRealtimeConnections }
 import AICoachAssistant from "@/components/AICoachAssistant";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { useNotificationPush } from "@/components/PushNotificationToggle";
+import { usePresenceHeartbeat } from "@/hooks/usePresence";
+
 
 const routeToHelpKey: Record<string, string> = {
   "/": "dashboard",
