@@ -211,8 +211,9 @@ export default function MessagingPage() {
 
   const acceptedConnections = connections?.filter(c => c.status === "accepted") ?? [];
   const filteredConversations = conversations.filter(c =>
-    c.partnerName.toLowerCase().includes(searchTerm.toLowerCase())
+    c.partnerName.toLowerCase().includes(searchTerm.toLowerCase()) && !blockedSet.has(c.partnerId)
   );
+
   const selectedConv = conversations.find((c) => c.partnerId === selectedPartner);
 
   // Mobile: show either list or chat
