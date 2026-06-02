@@ -161,6 +161,30 @@ export type Database = {
         }
         Relationships: []
       }
+      blocked_users: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       bookmarks: {
         Row: {
           created_at: string
@@ -1728,6 +1752,36 @@ export type Database = {
         }
         Relationships: []
       }
+      message_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          message_id: string
+          reason: string
+          reporter_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          message_id: string
+          reason: string
+          reporter_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          message_id?: string
+          reason?: string
+          reporter_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       message_templates: {
         Row: {
           category: string | null
@@ -2272,6 +2326,7 @@ export type Database = {
           is_public: boolean | null
           is_verified: boolean | null
           last_login_date: string | null
+          last_seen_at: string | null
           linkedin_url: string | null
           login_streak: number | null
           longest_streak: number | null
@@ -2305,6 +2360,7 @@ export type Database = {
           is_public?: boolean | null
           is_verified?: boolean | null
           last_login_date?: string | null
+          last_seen_at?: string | null
           linkedin_url?: string | null
           login_streak?: number | null
           longest_streak?: number | null
@@ -2338,6 +2394,7 @@ export type Database = {
           is_public?: boolean | null
           is_verified?: boolean | null
           last_login_date?: string | null
+          last_seen_at?: string | null
           linkedin_url?: string | null
           login_streak?: number | null
           longest_streak?: number | null
@@ -2922,6 +2979,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      are_connected: { Args: { _a: string; _b: string }; Returns: boolean }
       check_and_award_badges: { Args: { _user_id: string }; Returns: undefined }
       decrement_post_comments: { Args: { post_id: string }; Returns: undefined }
       decrement_post_likes: { Args: { post_id: string }; Returns: undefined }
@@ -2942,6 +3000,7 @@ export type Database = {
         Args: { profile_user_id: string }
         Returns: undefined
       }
+      is_blocked: { Args: { _a: string; _b: string }; Returns: boolean }
       is_deal_room_member: {
         Args: { _room: string; _user: string }
         Returns: boolean
@@ -2951,6 +3010,7 @@ export type Database = {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: undefined
       }
+      touch_last_seen: { Args: never; Returns: undefined }
       update_login_streak: { Args: { _user_id: string }; Returns: undefined }
     }
     Enums: {
