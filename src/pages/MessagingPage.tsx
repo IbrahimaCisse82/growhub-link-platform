@@ -65,10 +65,10 @@ export default function MessagingPage() {
     });
 
     const partnerIds = [...convMap.keys()];
-    let profileMap: Record<string, string> = {};
+    let profileMap: Record<string, { name: string; last_seen_at: string | null }> = {};
     if (partnerIds.length > 0) {
-      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", partnerIds);
-      profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, p.display_name]));
+      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, last_seen_at").in("user_id", partnerIds);
+      profileMap = Object.fromEntries((profiles ?? []).map((p: any) => [p.user_id, { name: p.display_name, last_seen_at: p.last_seen_at }]));
     }
 
     const convList: Conversation[] = partnerIds.map((pid) => {
@@ -77,7 +77,8 @@ export default function MessagingPage() {
       const unread = msgs.filter((m) => m.receiver_id === user.id && !m.is_read).length;
       return {
         partnerId: pid,
-        partnerName: profileMap[pid] ?? "Utilisateur",
+        partnerName: profileMap[pid]?.name ?? "Utilisateur",
+        partnerLastSeen: profileMap[pid]?.last_seen_at ?? null,
         lastMessage: last.content,
         lastAt: last.created_at,
         unread,
@@ -86,6 +87,7 @@ export default function MessagingPage() {
 
     setConversations(convList);
     setLoading(false);
+
   }, [user]);
 
   useEffect(() => {
