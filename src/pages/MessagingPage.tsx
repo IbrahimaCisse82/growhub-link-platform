@@ -127,6 +127,27 @@ export default function MessagingPage() {
     if (selectedPartner && user) loadMessages(selectedPartner);
   }, [selectedPartner, user]);
 
+  // Typing indicator — one realtime channel per conversation
+  useEffect(() => {
+    if (!user || !selectedPartner) return;
+    const key = [user.id, selectedPartner].sort().join("-");
+    const channel = supabase.channel(`typing-${key}`)
+      .on("broadcast", { event: "typing" }, (payload) => {
+        if (payload.payload?.from === selectedPartner) {
+          setPartnerTyping(true);
+          window.clearTimeout(typingTimeoutRef.current ?? undefined);
+          typingTimeoutRef.current = window.setTimeout(() => setPartnerTyping(false), 2500);
+        }
+      })
+      .subscribe();
+    typingChannelRef.current = channel;
+    return () => {
+      setPartnerTyping(false);
+      supabase.removeChannel(channel);
+      typingChannelRef.current = null;
+    };
+  }, [user, selectedPartner]);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -144,15 +165,42 @@ export default function MessagingPage() {
     loadConversations();
   };
 
-  const sendMessage = async () => {
-    if (!newMsg.trim() || !selectedPartner || !user) return;
-    await supabase.from("messages").insert({
-      sender_id: user.id,
-      receiver_id: selectedPartner,
-      content: newMsg.trim(),
-    });
-    setNewMsg("");
+  const broadcastTyping = () => {
+    if (!user || !typingChannelRef.current) return;
+    typingChannelRef.current.send({ type: "broadcast", event: "typing", payload: { from: user.id } });
   };
+
+  const sendMessage = async () => {
+    const content = newMsg.trim();
+    if (!content || !selectedPartner || !user) return;
+    // Optimistic
+    const tmpId = `tmp-${Date.now()}`;
+    setMessages((prev) => [...prev, {
+      id: tmpId, sender_id: user.id, receiver_id: selectedPartner, content,
+      created_at: new Date().toISOString(), is_read: false, _optimistic: true,
+    }]);
+    setNewMsg("");
+    const { error, data } = await supabase.from("messages").insert({
+      sender_id: user.id, receiver_id: selectedPartner, content,
+    }).select().single();
+    if (error) {
+      setMessages((prev) => prev.filter((m) => m.id !== tmpId));
+      toast.error(error.message.includes("are_connected")
+        ? "Vous devez être connectés pour échanger"
+        : "Envoi impossible");
+    } else if (data) {
+      setMessages((prev) => prev.map((m) => m.id === tmpId ? data : m));
+    }
+  };
+
+  const handleBlock = () => {
+    if (!selectedPartner) return;
+    blockUser.mutate({ userId: selectedPartner }, {
+      onSuccess: () => setSelectedPartner(null),
+    });
+  };
+
+
 
   const startNewChat = (partnerId: string) => {
     setSelectedPartner(partnerId);
