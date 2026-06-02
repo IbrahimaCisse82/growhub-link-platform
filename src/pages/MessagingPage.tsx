@@ -39,8 +39,16 @@ export default function MessagingPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showNewChat, setShowNewChat] = useState(false);
+  const [partnerTyping, setPartnerTyping] = useState(false);
+  const typingChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const selectedPartnerRef = useRef<string | null>(null);
+  const { data: blockedRows } = useBlockedUsers();
+  const blockedSet = new Set((blockedRows ?? []).map((b: any) => b.blocked_id));
+  const blockUser = useBlockUser();
+  const reportMessage = useReportMessage();
+
 
   // Keep ref in sync
   useEffect(() => {
