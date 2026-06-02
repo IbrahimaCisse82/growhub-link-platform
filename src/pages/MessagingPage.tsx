@@ -294,11 +294,17 @@ export default function MessagingPage() {
                     )}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-heading text-xs font-bold truncate">{conv.partnerName}</span>
+                      <span className="font-heading text-xs font-bold truncate flex items-center gap-1.5">
+                        {isOnline(conv.partnerLastSeen) && (
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" aria-label="En ligne" />
+                        )}
+                        {conv.partnerName}
+                      </span>
                       {conv.unread > 0 && (
                         <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">{conv.unread}</span>
                       )}
                     </div>
+
                     <p className="text-[11px] text-muted-foreground truncate mt-0.5">{conv.lastMessage}</p>
                     <p className="text-[10px] text-muted-foreground/50 mt-0.5">
                       {new Date(conv.lastAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
