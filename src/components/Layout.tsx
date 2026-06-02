@@ -17,6 +17,8 @@ import { useRealtimeNotifications, useRealtimeMessages, useRealtimeConnections }
 import AICoachAssistant from "@/components/AICoachAssistant";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { useNotificationPush } from "@/components/PushNotificationToggle";
+import { usePresenceHeartbeat } from "@/hooks/usePresence";
+
 
 const routeToHelpKey: Record<string, string> = {
   "/": "dashboard",
@@ -35,11 +37,13 @@ export default function Layout() {
   const location = useLocation();
   const { showTour, completeTour } = useOnboardingTour();
 
-  // Activate realtime listeners
+  // Activate realtime listeners + presence heartbeat
   useRealtimeNotifications();
   useRealtimeMessages();
   useRealtimeConnections();
   useNotificationPush();
+  usePresenceHeartbeat();
+
 
   const { role: userRole } = useUserRole();
 
