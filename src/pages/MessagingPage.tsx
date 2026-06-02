@@ -4,11 +4,15 @@ import { GHCard } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
 import { useConnections } from "@/hooks/useGrowHub";
 import { supabase } from "@/integrations/supabase/client";
-import { Send, Search, MessageSquarePlus, ArrowLeft } from "lucide-react";
+import { Send, Search, MessageSquarePlus, ArrowLeft, ShieldOff, Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useSearchParams } from "react-router-dom";
+import { isOnline, useBlockedUsers, useBlockUser, useReportMessage } from "@/hooks/usePresence";
+import { toast } from "sonner";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
 
 interface Conversation {
   partnerId: string;
