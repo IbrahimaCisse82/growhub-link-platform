@@ -17,10 +17,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 interface Conversation {
   partnerId: string;
   partnerName: string;
+  partnerLastSeen: string | null;
   lastMessage: string;
   lastAt: string;
   unread: number;
 }
+
+
 
 export default function MessagingPage() {
   usePageMeta({ title: "Messages", description: "Échangez avec votre réseau en temps réel." });
