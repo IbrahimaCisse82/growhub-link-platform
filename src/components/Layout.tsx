@@ -37,11 +37,13 @@ export default function Layout() {
   const location = useLocation();
   const { showTour, completeTour } = useOnboardingTour();
 
-  // Activate realtime listeners
+  // Activate realtime listeners + presence heartbeat
   useRealtimeNotifications();
   useRealtimeMessages();
   useRealtimeConnections();
   useNotificationPush();
+  usePresenceHeartbeat();
+
 
   const { role: userRole } = useUserRole();
 
