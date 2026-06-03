@@ -241,6 +241,7 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
   const { data: messages } = useSpaceMessages(space.id);
   const [newTask, setNewTask] = useState("");
   const [newMsg, setNewMsg] = useState("");
+  const [replyTo, setReplyTo] = useState<{ id: string; preview: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Realtime messages & tasks
