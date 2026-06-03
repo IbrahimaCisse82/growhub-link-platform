@@ -409,34 +409,62 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
         <div className="flex flex-col h-[60vh] md:h-[400px]">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1">
-            {(messages ?? []).map(m => {
-              const isMe = m.user_id === user?.id;
-              return (
-                <div key={m.id} className={cn("flex gap-2", isMe && "flex-row-reverse")}>
-                  {!isMe && (
-                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[8px] font-bold text-primary flex-shrink-0">
-                      {(m.profile?.display_name ?? "?").substring(0, 1)}
-                    </div>
-                  )}
-                  <div className={cn("max-w-[75%]", isMe ? "text-right" : "")}>
-                    {!isMe && <div className="text-[9px] font-bold text-muted-foreground mb-0.5">{m.profile?.display_name}</div>}
-                    <div className={cn("rounded-2xl px-3 py-2 text-xs inline-block",
-                      isMe ? "bg-primary text-primary-foreground rounded-br-md" : "bg-secondary text-foreground rounded-bl-md")}>
-                      {m.content}
-                    </div>
-                    <div className="text-[8px] text-muted-foreground mt-0.5">
-                      {new Date(m.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+            {(() => {
+              const all = messages ?? [];
+              const roots = all.filter((m: any) => !m.parent_id);
+              const childrenByParent: Record<string, any[]> = {};
+              all.forEach((m: any) => {
+                if (m.parent_id) (childrenByParent[m.parent_id] ||= []).push(m);
+              });
+              const renderBubble = (m: any, isReply = false) => {
+                const isMe = m.user_id === user?.id;
+                return (
+                  <div key={m.id} className={cn("flex gap-2 group", isMe && "flex-row-reverse", isReply && "ml-8")}>
+                    {!isMe && (
+                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[8px] font-bold text-primary flex-shrink-0">
+                        {(m.profile?.display_name ?? "?").substring(0, 1)}
+                      </div>
+                    )}
+                    <div className={cn("max-w-[75%]", isMe ? "text-right" : "")}>
+                      {!isMe && <div className="text-[9px] font-bold text-muted-foreground mb-0.5">{m.profile?.display_name}</div>}
+                      <div className={cn("rounded-2xl px-3 py-2 text-xs inline-block",
+                        isMe ? "bg-primary text-primary-foreground rounded-br-md" : "bg-secondary text-foreground rounded-bl-md")}>
+                        {m.content}
+                      </div>
+                      <div className="text-[8px] text-muted-foreground mt-0.5 flex items-center gap-2">
+                        <span>{new Date(m.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                        {!isReply && (
+                          <button onClick={() => setReplyTo({ id: m.id, preview: m.content.slice(0, 40) })}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary font-semibold">
+                            Répondre
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
+                );
+              };
+              return roots.map((m: any) => (
+                <div key={m.id} className="space-y-2">
+                  {renderBubble(m)}
+                  {(childrenByParent[m.id] ?? []).map((r: any) => renderBubble(r, true))}
                 </div>
-              );
-            })}
+              ));
+            })()}
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Reply banner */}
+          {replyTo && (
+            <div className="flex items-center justify-between bg-primary/5 border border-primary/20 rounded-lg px-3 py-1.5 mb-2 text-[10px]">
+              <span className="text-muted-foreground truncate">Réponse à : <span className="text-foreground font-semibold">"{replyTo.preview}"</span></span>
+              <button onClick={() => setReplyTo(null)} className="text-muted-foreground hover:text-destructive font-bold">×</button>
+            </div>
+          )}
+
           {/* Input with file sharing */}
           <div className="flex gap-2">
-            <input value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder="Message..."
+            <input value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder={replyTo ? "Votre réponse..." : "Message..."}
               onKeyDown={e => e.key === "Enter" && newMsg.trim() && sendMsg.mutate()}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
             <button
