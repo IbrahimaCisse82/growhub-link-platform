@@ -117,6 +117,19 @@ export default function SpeedNetworkingPage() {
     },
   });
 
+  const runMatching = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { data, error } = await (supabase as any).rpc("compute_speed_matches", { _session_id: sessionId });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (count) => {
+      toast.success(`${count} paire${count > 1 ? "s" : ""} générée${count > 1 ? "s" : ""} !`);
+      queryClient.invalidateQueries({ queryKey: ["speed-networking-participations"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Erreur lors du matching"),
+  });
+
   const upcomingSessions = sessions?.filter(s => new Date(s.scheduled_at) > new Date()) ?? [];
   const pastSessions = sessions?.filter(s => new Date(s.scheduled_at) <= new Date()) ?? [];
 
