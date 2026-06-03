@@ -214,6 +214,9 @@ export default function SpeedNetworkingPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-5">
           {upcomingSessions.map(session => {
             const isJoined = participationsSet.has(session.id);
+            const isOwner = session.created_by === user?.id;
+            const matchedId = matchBySession[session.id];
+            const matchedProfile = matchedId ? (matchedProfiles ?? {})[matchedId] : null;
             const count = participantCounts?.[session.id] ?? 0;
             const isFull = count >= (session.max_participants ?? 20);
             const date = new Date(session.scheduled_at);
@@ -234,6 +237,15 @@ export default function SpeedNetworkingPage() {
                     <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {count}/{session.max_participants ?? 20}</span>
                     <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {session.duration_minutes ?? 5} min/rencontre</span>
                   </div>
+                  {matchedProfile && (
+                    <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-lg px-3 py-2 mb-3">
+                      <Star className="w-3.5 h-3.5 text-primary" />
+                      <div className="text-xs">
+                        <span className="font-bold">Votre match :</span> {matchedProfile.display_name}
+                        {matchedProfile.headline && <span className="text-muted-foreground"> · {matchedProfile.headline}</span>}
+                      </div>
+                    </div>
+                  )}
                   {isJoined ? (
                     <button onClick={() => leaveSession.mutate(session.id)} className="w-full bg-destructive/10 text-destructive rounded-lg py-2 text-xs font-bold hover:bg-destructive/20 transition-colors">
                       Se désinscrire
@@ -242,6 +254,12 @@ export default function SpeedNetworkingPage() {
                     <button onClick={() => joinSession.mutate(session.id)} disabled={isFull}
                       className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors disabled:opacity-50">
                       <Zap className="w-3 h-3 inline mr-1" /> {isFull ? "Complet" : "Rejoindre"}
+                    </button>
+                  )}
+                  {isOwner && count >= 2 && (
+                    <button onClick={() => runMatching.mutate(session.id)} disabled={runMatching.isPending}
+                      className="w-full mt-2 bg-secondary border border-border rounded-lg py-2 text-xs font-bold hover:border-primary/30 transition-colors disabled:opacity-50">
+                      🎯 Lancer le matching ({count} participants)
                     </button>
                   )}
                 </div>
