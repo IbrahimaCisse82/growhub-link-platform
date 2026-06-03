@@ -146,7 +146,7 @@ export default function SpeedNetworkingPage() {
         <MetricCard icon="⚡" value={String(upcomingSessions.length)} label="Sessions à venir" badge="Prochaines" badgeType="up" />
         <MetricCard icon="👥" value={String(Object.values(participantCounts ?? {}).reduce((a, b) => a + b, 0))} label="Participants" badge="Total" badgeType="neutral" />
         <MetricCard icon="🎯" value="5 min" label="Par rencontre" badge="Format" badgeType="neutral" />
-        <MetricCard icon="🤝" value={String(myParticipations?.size ?? 0)} label="Mes inscriptions" badge="Actives" badgeType="up" />
+        <MetricCard icon="🤝" value={String(participationsSet.size)} label="Mes inscriptions" badge="Actives" badgeType="up" />
       </div>
 
       {/* Create Session Modal */}
@@ -200,7 +200,7 @@ export default function SpeedNetworkingPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-5">
           {upcomingSessions.map(session => {
-            const isJoined = myParticipations?.has(session.id);
+            const isJoined = participationsSet.has(session.id);
             const count = participantCounts?.[session.id] ?? 0;
             const isFull = count >= (session.max_participants ?? 20);
             const date = new Date(session.scheduled_at);
