@@ -211,6 +211,7 @@ export default function EventsPage() {
                       start: startDate,
                       end: e.ends_at ? new Date(e.ends_at) : undefined,
                     }} />
+                    <ReminderButton eventId={e.id} startsAt={e.starts_at} title={e.title} />
                     {isRegistered ? (
                       <button
                         onClick={() => handleUnregister(e.id)}
