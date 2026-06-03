@@ -36,10 +36,25 @@ export default function SpeedNetworkingPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("speed_networking_participants")
-        .select("session_id")
+        .select("session_id, matched_with")
         .eq("user_id", user!.id);
       if (error) throw error;
-      return new Set((data ?? []).map(p => p.session_id));
+      return data ?? [];
+    },
+  });
+  const participationsSet = new Set((myParticipations ?? []).map(p => p.session_id));
+  const matchBySession: Record<string, string | null> = Object.fromEntries(
+    (myParticipations ?? []).map(p => [p.session_id, p.matched_with])
+  );
+
+  const { data: matchedProfiles } = useQuery({
+    queryKey: ["speed-matched-profiles", myParticipations?.map(p => p.matched_with).join(",")],
+    enabled: !!myParticipations && myParticipations.some(p => p.matched_with),
+    queryFn: async () => {
+      const ids = [...new Set((myParticipations ?? []).map(p => p.matched_with).filter(Boolean))] as string[];
+      if (ids.length === 0) return {};
+      const { data } = await supabase.from("profiles").select("user_id, display_name, avatar_url, headline").in("user_id", ids);
+      return Object.fromEntries((data ?? []).map(p => [p.user_id, p]));
     },
   });
 
