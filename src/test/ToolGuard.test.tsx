@@ -4,6 +4,10 @@ import ToolGuard from "@/components/ToolGuard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 
+vi.mock("@/hooks/useUserRole", () => ({
+  useUserRole: () => ({ role: "startup", isLoading: false }),
+}));
+
 vi.mock("@/hooks/useActivatedTools", () => ({
   useActivatedTools: () => ({
     isActivated: (key: string) => key === "pitchdeck",
@@ -12,6 +16,7 @@ vi.mock("@/hooks/useActivatedTools", () => ({
     activatedTools: [],
     activatedKeys: ["pitchdeck"],
     deactivateTool: { mutate: vi.fn(), isPending: false },
+    trackToolOpen: vi.fn(),
     allTools: [],
   }),
   ALL_TOOLS: [
@@ -19,7 +24,7 @@ vi.mock("@/hooks/useActivatedTools", () => ({
     { key: "coaching", label: "Coaching", icon: "🎓", path: "/coaching", description: "Test", category: "growth" },
   ],
   TOOL_CATEGORIES: [],
-  ROLE_RECOMMENDED_TOOLS: {},
+  ROLE_RECOMMENDED_TOOLS: { startup: ["pitchdeck"] },
 }));
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
