@@ -73,12 +73,22 @@ export function useActivatedTools() {
     },
   });
 
+  const logEvent = async (toolKey: string, eventType: "activate" | "deactivate" | "open") => {
+    if (!user) return;
+    await (supabase as any).from("tool_activation_events").insert({
+      user_id: user.id,
+      tool_key: toolKey,
+      event_type: eventType,
+    });
+  };
+
   const activateTool = useMutation({
     mutationFn: async (toolKey: string) => {
       const { error } = await (supabase as any)
         .from("user_activated_tools")
         .insert({ user_id: user!.id, tool_key: toolKey });
       if (error) throw error;
+      await logEvent(toolKey, "activate");
     },
     onSuccess: (_, toolKey) => {
       const tool = ALL_TOOLS.find(t => t.key === toolKey);
@@ -96,6 +106,7 @@ export function useActivatedTools() {
         .eq("user_id", user!.id)
         .eq("tool_key", toolKey);
       if (error) throw error;
+      await logEvent(toolKey, "deactivate");
     },
     onSuccess: (_, toolKey) => {
       const tool = ALL_TOOLS.find(t => t.key === toolKey);
@@ -104,6 +115,18 @@ export function useActivatedTools() {
     },
     onError: () => toast.error("Erreur lors de la désactivation"),
   });
+
+  const trackToolOpen = async (toolKey: string) => {
+    if (!user) return;
+    await Promise.all([
+      (supabase as any)
+        .from("user_activated_tools")
+        .update({ last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id)
+        .eq("tool_key", toolKey),
+      logEvent(toolKey, "open"),
+    ]);
+  };
 
   const isActivated = (toolKey: string) => activatedKeys.includes(toolKey);
   const activatedTools = ALL_TOOLS.filter(t => activatedKeys.includes(t.key));
@@ -114,6 +137,7 @@ export function useActivatedTools() {
     isActivated,
     activateTool,
     deactivateTool,
+    trackToolOpen,
     isLoading,
     allTools: ALL_TOOLS,
   };

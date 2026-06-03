@@ -37,7 +37,7 @@ export default function MarketplacePage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { activatedTools, isActivated, activateTool, deactivateTool, allTools } = useActivatedTools();
+  const { activatedTools, isActivated, activateTool, deactivateTool, trackToolOpen, allTools } = useActivatedTools();
   const { role } = useUserRole();
 
   const [mainTab, setMainTab] = useState<"tools" | "services">("tools");
@@ -275,7 +275,7 @@ export default function MarketplacePage() {
                     {active ? (
                       <>
                         <button
-                          onClick={() => navigate(tool.path)}
+                          onClick={() => { trackToolOpen(tool.key); navigate(tool.path); }}
                           className="flex-1 h-8 rounded-lg bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-primary-hover transition-colors"
                         >
                           <ArrowRight className="w-3 h-3" /> Ouvrir
