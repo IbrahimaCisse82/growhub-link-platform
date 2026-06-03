@@ -1336,6 +1336,44 @@ export type Database = {
           },
         ]
       }
+      event_reminders: {
+        Row: {
+          channel: string
+          created_at: string
+          event_id: string
+          id: string
+          remind_at: string
+          sent_at: string | null
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          event_id: string
+          id?: string
+          remind_at: string
+          sent_at?: string | null
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          remind_at?: string
+          sent_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_reminders_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           cover_image_url: string | null
@@ -2596,6 +2634,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          parent_id: string | null
           space_id: string
           user_id: string
         }
@@ -2603,6 +2642,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           space_id: string
           user_id: string
         }
@@ -2610,10 +2650,18 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           space_id?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "space_messages_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "space_messages"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "space_messages_space_id_fkey"
             columns: ["space_id"]
@@ -3011,6 +3059,7 @@ export type Database = {
     Functions: {
       are_connected: { Args: { _a: string; _b: string }; Returns: boolean }
       check_and_award_badges: { Args: { _user_id: string }; Returns: undefined }
+      compute_speed_matches: { Args: { _session_id: string }; Returns: number }
       decrement_post_comments: { Args: { post_id: string }; Returns: undefined }
       decrement_post_likes: { Args: { post_id: string }; Returns: undefined }
       has_role: {
