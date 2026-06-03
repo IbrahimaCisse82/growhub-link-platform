@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Plus, MapPin, Globe, Users, Calendar } from "lucide-react";
 import EventMatchmaking from "@/components/EventMatchmaking";
 import { ExportEventButton, ExportAllEventsButton } from "@/components/CalendarExport";
+import ReminderButton from "@/components/ReminderButton";
 
 const eventColors = [
   "from-[#0a1a0a] to-primary/80",
@@ -210,6 +211,7 @@ export default function EventsPage() {
                       start: startDate,
                       end: e.ends_at ? new Date(e.ends_at) : undefined,
                     }} />
+                    <ReminderButton eventId={e.id} startsAt={e.starts_at} title={e.title} />
                     {isRegistered ? (
                       <button
                         onClick={() => handleUnregister(e.id)}

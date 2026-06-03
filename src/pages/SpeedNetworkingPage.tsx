@@ -36,10 +36,25 @@ export default function SpeedNetworkingPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("speed_networking_participants")
-        .select("session_id")
+        .select("session_id, matched_with")
         .eq("user_id", user!.id);
       if (error) throw error;
-      return new Set((data ?? []).map(p => p.session_id));
+      return data ?? [];
+    },
+  });
+  const participationsSet = new Set((myParticipations ?? []).map(p => p.session_id));
+  const matchBySession: Record<string, string | null> = Object.fromEntries(
+    (myParticipations ?? []).map(p => [p.session_id, p.matched_with])
+  );
+
+  const { data: matchedProfiles } = useQuery({
+    queryKey: ["speed-matched-profiles", myParticipations?.map(p => p.matched_with).join(",")],
+    enabled: !!myParticipations && myParticipations.some(p => p.matched_with),
+    queryFn: async () => {
+      const ids = [...new Set((myParticipations ?? []).map(p => p.matched_with).filter(Boolean))] as string[];
+      if (ids.length === 0) return {};
+      const { data } = await supabase.from("profiles").select("user_id, display_name, avatar_url, headline").in("user_id", ids);
+      return Object.fromEntries((data ?? []).map(p => [p.user_id, p]));
     },
   });
 
@@ -102,6 +117,19 @@ export default function SpeedNetworkingPage() {
     },
   });
 
+  const runMatching = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { data, error } = await (supabase as any).rpc("compute_speed_matches", { _session_id: sessionId });
+      if (error) throw error;
+      return data as number;
+    },
+    onSuccess: (count) => {
+      toast.success(`${count} paire${count > 1 ? "s" : ""} générée${count > 1 ? "s" : ""} !`);
+      queryClient.invalidateQueries({ queryKey: ["speed-networking-participations"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Erreur lors du matching"),
+  });
+
   const upcomingSessions = sessions?.filter(s => new Date(s.scheduled_at) > new Date()) ?? [];
   const pastSessions = sessions?.filter(s => new Date(s.scheduled_at) <= new Date()) ?? [];
 
@@ -131,7 +159,7 @@ export default function SpeedNetworkingPage() {
         <MetricCard icon="⚡" value={String(upcomingSessions.length)} label="Sessions à venir" badge="Prochaines" badgeType="up" />
         <MetricCard icon="👥" value={String(Object.values(participantCounts ?? {}).reduce((a, b) => a + b, 0))} label="Participants" badge="Total" badgeType="neutral" />
         <MetricCard icon="🎯" value="5 min" label="Par rencontre" badge="Format" badgeType="neutral" />
-        <MetricCard icon="🤝" value={String(myParticipations?.size ?? 0)} label="Mes inscriptions" badge="Actives" badgeType="up" />
+        <MetricCard icon="🤝" value={String(participationsSet.size)} label="Mes inscriptions" badge="Actives" badgeType="up" />
       </div>
 
       {/* Create Session Modal */}
@@ -185,7 +213,10 @@ export default function SpeedNetworkingPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-5">
           {upcomingSessions.map(session => {
-            const isJoined = myParticipations?.has(session.id);
+            const isJoined = participationsSet.has(session.id);
+            const isOwner = session.created_by === user?.id;
+            const matchedId = matchBySession[session.id];
+            const matchedProfile = matchedId ? (matchedProfiles ?? {})[matchedId] : null;
             const count = participantCounts?.[session.id] ?? 0;
             const isFull = count >= (session.max_participants ?? 20);
             const date = new Date(session.scheduled_at);
@@ -206,6 +237,15 @@ export default function SpeedNetworkingPage() {
                     <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {count}/{session.max_participants ?? 20}</span>
                     <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {session.duration_minutes ?? 5} min/rencontre</span>
                   </div>
+                  {matchedProfile && (
+                    <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-lg px-3 py-2 mb-3">
+                      <Star className="w-3.5 h-3.5 text-primary" />
+                      <div className="text-xs">
+                        <span className="font-bold">Votre match :</span> {matchedProfile.display_name}
+                        {matchedProfile.headline && <span className="text-muted-foreground"> · {matchedProfile.headline}</span>}
+                      </div>
+                    </div>
+                  )}
                   {isJoined ? (
                     <button onClick={() => leaveSession.mutate(session.id)} className="w-full bg-destructive/10 text-destructive rounded-lg py-2 text-xs font-bold hover:bg-destructive/20 transition-colors">
                       Se désinscrire
@@ -214,6 +254,12 @@ export default function SpeedNetworkingPage() {
                     <button onClick={() => joinSession.mutate(session.id)} disabled={isFull}
                       className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors disabled:opacity-50">
                       <Zap className="w-3 h-3 inline mr-1" /> {isFull ? "Complet" : "Rejoindre"}
+                    </button>
+                  )}
+                  {isOwner && count >= 2 && (
+                    <button onClick={() => runMatching.mutate(session.id)} disabled={runMatching.isPending}
+                      className="w-full mt-2 bg-secondary border border-border rounded-lg py-2 text-xs font-bold hover:border-primary/30 transition-colors disabled:opacity-50">
+                      🎯 Lancer le matching ({count} participants)
                     </button>
                   )}
                 </div>
