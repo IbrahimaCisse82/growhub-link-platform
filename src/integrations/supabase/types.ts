@@ -2870,22 +2870,52 @@ export type Database = {
         }
         Relationships: []
       }
+      tool_activation_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          tool_key: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          tool_key: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          tool_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_activated_tools: {
         Row: {
           activated_at: string
           id: string
+          last_used_at: string | null
           tool_key: string
           user_id: string
         }
         Insert: {
           activated_at?: string
           id?: string
+          last_used_at?: string | null
           tool_key: string
           user_id: string
         }
         Update: {
           activated_at?: string
           id?: string
+          last_used_at?: string | null
           tool_key?: string
           user_id?: string
         }
