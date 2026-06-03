@@ -282,11 +282,15 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
 
   const sendMsg = useMutation({
     mutationFn: async () => {
-      await supabase.from("space_messages").insert({ space_id: space.id, user_id: user!.id, content: newMsg });
+      await supabase.from("space_messages").insert({
+        space_id: space.id, user_id: user!.id, content: newMsg,
+        parent_id: replyTo?.id ?? null,
+      } as any);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["space-messages", space.id] });
       setNewMsg("");
+      setReplyTo(null);
     },
   });
 
