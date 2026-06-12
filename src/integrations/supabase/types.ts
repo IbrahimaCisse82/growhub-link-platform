@@ -407,6 +407,148 @@ export type Database = {
         }
         Relationships: []
       }
+      coach_applications: {
+        Row: {
+          admin_notes: string | null
+          bio: string
+          created_at: string
+          currency: string | null
+          hourly_rate: number | null
+          id: string
+          languages: string[]
+          linkedin_url: string | null
+          reviewed_at: string | null
+          specialties: string[]
+          status: string
+          updated_at: string
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          bio: string
+          created_at?: string
+          currency?: string | null
+          hourly_rate?: number | null
+          id?: string
+          languages?: string[]
+          linkedin_url?: string | null
+          reviewed_at?: string | null
+          specialties?: string[]
+          status?: string
+          updated_at?: string
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          admin_notes?: string | null
+          bio?: string
+          created_at?: string
+          currency?: string | null
+          hourly_rate?: number | null
+          id?: string
+          languages?: string[]
+          linkedin_url?: string | null
+          reviewed_at?: string | null
+          specialties?: string[]
+          status?: string
+          updated_at?: string
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      coach_availability: {
+        Row: {
+          coach_id: string
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: string
+          start_time: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: string
+          start_time: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          start_time?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_availability_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coach_payout_requests: {
+        Row: {
+          account_details: string | null
+          admin_notes: string | null
+          amount: number
+          coach_id: string
+          created_at: string
+          currency: string
+          id: string
+          method: string
+          processed_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          account_details?: string | null
+          admin_notes?: string | null
+          amount: number
+          coach_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          method: string
+          processed_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          account_details?: string | null
+          admin_notes?: string | null
+          amount?: number
+          coach_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          method?: string
+          processed_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_payout_requests_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coach_reviews: {
         Row: {
           coach_id: string
