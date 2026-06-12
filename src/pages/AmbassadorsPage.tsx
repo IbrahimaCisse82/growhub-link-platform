@@ -200,6 +200,16 @@ export default function AmbassadorsPage() {
         </div>
       </section>
 
+        </div>
+      </section>
+
+      {/* Leaderboard */}
+      <section className="pb-16 px-4">
+        <div className="max-w-lg mx-auto">
+          <AmbassadorLeaderboard />
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} GrowHubLink — L'écosystème du secteur privé en Afrique
