@@ -133,6 +133,10 @@ export default function CoachingPage() {
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
             Votre <span className="text-primary">accompagnement</span> personnalisé
           </h1>
+          <div className="flex gap-2 mt-3">
+            <a href="/become-coach" className="text-[11px] font-bold text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10">Devenir coach</a>
+            <a href="/coach-studio" className="text-[11px] font-bold text-muted-foreground border border-border rounded-full px-3 py-1 hover:bg-secondary">Studio coach</a>
+          </div>
         </div>
       </div>
 
