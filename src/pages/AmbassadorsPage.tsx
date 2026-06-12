@@ -16,6 +16,7 @@ import {
   Globe, Users, Award, Rocket, Star, Zap, Check, Loader2,
   MapPin, Mail, Linkedin, ArrowLeft, Trophy, Target, Heart
 } from "lucide-react";
+import { AmbassadorLeaderboard } from "@/components/AmbassadorLeaderboard";
 
 const BENEFITS = [
   { icon: Trophy, title: "Accès Premium gratuit", desc: "Plan Business offert tant que vous êtes ambassadeur actif" },
