@@ -45,6 +45,8 @@ import TemplatesPage from "./pages/TemplatesPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import MentorDashboardPage from "./pages/MentorDashboardPage";
+import CoachStudioPage from "./pages/CoachStudioPage";
+import BecomeCoachPage from "./pages/BecomeCoachPage";
 import InvestorDealFlowPage from "./pages/InvestorDealFlowPage";
 import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
 import FreelancePipelinePage from "./pages/FreelancePipelinePage";
