@@ -45,6 +45,8 @@ import TemplatesPage from "./pages/TemplatesPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import MentorDashboardPage from "./pages/MentorDashboardPage";
+import CoachStudioPage from "./pages/CoachStudioPage";
+import BecomeCoachPage from "./pages/BecomeCoachPage";
 import InvestorDealFlowPage from "./pages/InvestorDealFlowPage";
 import IncubatorCohortsPage from "./pages/IncubatorCohortsPage";
 import FreelancePipelinePage from "./pages/FreelancePipelinePage";
@@ -138,6 +140,8 @@ const App = () => (
                   <Route path="badges" element={<ToolGuard toolKey="badges"><BadgesPage /></ToolGuard>} />
                   {/* Role-specific pages — role + tool guard */}
                   <Route path="mentor-dashboard" element={<RoleGuard allowedRoles={["mentor"]}><MentorDashboardPage /></RoleGuard>} />
+                  <Route path="coach-studio" element={<CoachStudioPage />} />
+                  <Route path="become-coach" element={<BecomeCoachPage />} />
                   <Route path="deal-flow" element={<RoleGuard allowedRoles={["investor"]}><InvestorDealFlowPage /></RoleGuard>} />
                   <Route path="cohorts" element={<RoleGuard allowedRoles={["incubateur"]}><IncubatorCohortsPage /></RoleGuard>} />
                   <Route path="pipeline" element={<RoleGuard allowedRoles={["freelance", "expert"]}><FreelancePipelinePage /></RoleGuard>} />
