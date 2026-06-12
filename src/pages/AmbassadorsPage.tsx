@@ -200,9 +200,6 @@ export default function AmbassadorsPage() {
         </div>
       </section>
 
-        </div>
-      </section>
-
       {/* Leaderboard */}
       <section className="pb-16 px-4">
         <div className="max-w-lg mx-auto">
