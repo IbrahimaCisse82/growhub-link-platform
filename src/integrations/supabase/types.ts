@@ -54,6 +54,8 @@ export type Database = {
           referral_code: string | null
           referral_count: number | null
           status: string
+          total_conversions: number
+          total_referrals: number
           updated_at: string
           user_id: string | null
         }
@@ -69,6 +71,8 @@ export type Database = {
           referral_code?: string | null
           referral_count?: number | null
           status?: string
+          total_conversions?: number
+          total_referrals?: number
           updated_at?: string
           user_id?: string | null
         }
@@ -84,6 +88,8 @@ export type Database = {
           referral_code?: string | null
           referral_count?: number | null
           status?: string
+          total_conversions?: number
+          total_referrals?: number
           updated_at?: string
           user_id?: string | null
         }
@@ -3083,6 +3089,10 @@ export type Database = {
       is_deal_room_member: {
         Args: { _room: string; _user: string }
         Returns: boolean
+      }
+      progress_challenges: {
+        Args: { _delta?: number; _types: string[]; _user_id: string }
+        Returns: undefined
       }
       recompute_coach_level: { Args: { _coach_id: string }; Returns: undefined }
       set_user_role: {
