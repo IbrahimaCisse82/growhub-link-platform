@@ -16,6 +16,7 @@ import {
   Globe, Users, Award, Rocket, Star, Zap, Check, Loader2,
   MapPin, Mail, Linkedin, ArrowLeft, Trophy, Target, Heart
 } from "lucide-react";
+import { AmbassadorLeaderboard } from "@/components/AmbassadorLeaderboard";
 
 const BENEFITS = [
   { icon: Trophy, title: "Accès Premium gratuit", desc: "Plan Business offert tant que vous êtes ambassadeur actif" },
@@ -196,6 +197,13 @@ export default function AmbassadorsPage() {
               )}
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Leaderboard */}
+      <section className="pb-16 px-4">
+        <div className="max-w-lg mx-auto">
+          <AmbassadorLeaderboard />
         </div>
       </section>
 

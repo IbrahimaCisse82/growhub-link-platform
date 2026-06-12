@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +31,16 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [searchParams] = useSearchParams();
+  const [refCode, setRefCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fromUrl = searchParams.get("ref");
+    const stored = localStorage.getItem("ghl_ref");
+    const code = fromUrl || stored;
+    if (fromUrl) localStorage.setItem("ghl_ref", fromUrl);
+    if (code) { setRefCode(code); setIsLogin(false); }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,9 +53,13 @@ export default function AuthPage() {
       } else {
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { data: { full_name: fullName }, emailRedirectTo: window.location.origin },
+          options: {
+            data: { full_name: fullName, ...(refCode ? { referral_code: refCode } : {}) },
+            emailRedirectTo: window.location.origin,
+          },
         });
         if (error) throw error;
+        if (refCode) localStorage.removeItem("ghl_ref");
         toast.success("Vérifiez votre email pour confirmer votre compte !");
       }
     } catch (error: any) {
