@@ -154,6 +154,7 @@ const App = () => (
                   <Route path="moderation" element={<ModerationPage />} />
                   <Route path="admin" element={<AdminDashboardPage />} />
                   <Route path="admin/back-office" element={<AdminBackOfficePage />} />
+                  <Route path="admin/analytics" element={<ProductAnalyticsPage />} />
                 </Route>
                 <Route path="/dashboard" element={<Navigate to="/" replace />} />
                 <Route path="*" element={<NotFound />} />
