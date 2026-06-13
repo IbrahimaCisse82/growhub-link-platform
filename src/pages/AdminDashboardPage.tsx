@@ -140,6 +140,9 @@ export default function AdminDashboardPage() {
           <p className="text-foreground/60 text-sm max-w-[460px]">
             Vue d'ensemble de la plateforme, statistiques et gestion.
           </p>
+          <Link to="/admin/back-office" className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-destructive text-destructive-foreground text-xs font-bold hover:opacity-90">
+            Back-Office avancé <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </div>
 
