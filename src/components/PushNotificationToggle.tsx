@@ -57,10 +57,29 @@ export function usePushNotifications() {
   return { isSupported, isSubscribed, permission, requestPermission, showLocalNotification };
 }
 
+// Map notification type -> notification_preferences column
+const PREF_KEY: Record<string, string> = {
+  connection_request: "connection_request",
+  connection_accepted: "connection_accepted",
+  coaching_booked: "coaching_booked",
+  coaching_reminder: "coaching_reminder",
+  event_reminder: "event_reminder",
+  post_reaction: "post_reaction",
+  post_comment: "post_comment",
+  badge_earned: "badge_earned",
+};
+
 // Hook to listen for new notifications and trigger browser notifications
 export function useNotificationPush() {
   const { user } = useAuth();
   const { permission, showLocalNotification } = usePushNotifications();
+  const [prefs, setPrefs] = useState<Record<string, boolean> | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    (supabase as any).from("notification_preferences").select("*").eq("user_id", user.id).maybeSingle()
+      .then(({ data }: any) => setPrefs(data ?? {}));
+  }, [user]);
 
   useEffect(() => {
     if (!user || permission !== "granted") return;
@@ -72,6 +91,10 @@ export function useNotificationPush() {
         { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
         (payload) => {
           const notif = payload.new as any;
+          // Filter by user prefs (default = on if pref missing)
+          const prefKey = PREF_KEY[notif.type];
+          if (prefs && prefKey && prefs[prefKey] === false) return;
+          if (prefs && !prefKey && prefs.system_notifications === false) return;
           showLocalNotification(
             notif.title || "GrowHubLink",
             notif.message || "",
@@ -85,7 +108,7 @@ export function useNotificationPush() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [user, permission, showLocalNotification]);
+  }, [user, permission, showLocalNotification, prefs]);
 }
 
 // UI Component for enabling push notifications  
