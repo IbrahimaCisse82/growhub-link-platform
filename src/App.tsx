@@ -152,6 +152,7 @@ const App = () => (
                   <Route path="explorer" element={<RoleGuard allowedRoles={["aspirationnel"]}><AspirationalExplorerPage /></RoleGuard>} />
                   <Route path="moderation" element={<ModerationPage />} />
                   <Route path="admin" element={<AdminDashboardPage />} />
+                  <Route path="admin/back-office" element={<AdminBackOfficePage />} />
                 </Route>
                 <Route path="/dashboard" element={<Navigate to="/" replace />} />
                 <Route path="*" element={<NotFound />} />
