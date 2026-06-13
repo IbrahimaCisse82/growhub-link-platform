@@ -188,10 +188,10 @@ function BackOffice() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        <MetricCard icon="🚩" value={String(pendingPostReports)} label="Signalements" badge="En attente" badgeType={pendingPostReports > 0 ? "down" : "default"} />
-        <MetricCard icon="💳" value={String(pendingPayouts)} label="Retraits" badge="À traiter" badgeType={pendingPayouts > 0 ? "down" : "default"} />
-        <MetricCard icon="✋" value={String(pendingApps)} label="Candidatures" badge="Coachs" badgeType={pendingApps > 0 ? "up" : "default"} />
-        <MetricCard icon="⚖️" value={String(openDisputes)} label="Litiges" badge="Ouverts" badgeType={openDisputes > 0 ? "down" : "default"} />
+        <MetricCard icon="🚩" value={String(pendingPostReports)} label="Signalements" badge="En attente" badgeType={pendingPostReports > 0 ? "down" : "neutral"} />
+        <MetricCard icon="💳" value={String(pendingPayouts)} label="Retraits" badge="À traiter" badgeType={pendingPayouts > 0 ? "down" : "neutral"} />
+        <MetricCard icon="✋" value={String(pendingApps)} label="Candidatures" badge="Coachs" badgeType={pendingApps > 0 ? "up" : "neutral"} />
+        <MetricCard icon="⚖️" value={String(openDisputes)} label="Litiges" badge="Ouverts" badgeType={openDisputes > 0 ? "down" : "neutral"} />
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4 items-center">
