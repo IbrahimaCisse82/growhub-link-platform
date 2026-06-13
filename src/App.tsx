@@ -44,6 +44,7 @@ import MarketplacePage from "./pages/MarketplacePage";
 import TemplatesPage from "./pages/TemplatesPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminBackOfficePage from "./pages/AdminBackOfficePage";
+import ProductAnalyticsPage from "./pages/ProductAnalyticsPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import MentorDashboardPage from "./pages/MentorDashboardPage";
 import CoachStudioPage from "./pages/CoachStudioPage";
