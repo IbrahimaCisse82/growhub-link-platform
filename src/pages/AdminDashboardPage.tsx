@@ -8,8 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Shield, Users, FileText, Calendar, MessageSquare, TrendingUp,
-  BarChart3, Award, Eye, Activity, Clock, AlertTriangle
+  BarChart3, Award, Eye, Activity, Clock, AlertTriangle, ArrowRight
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig
 } from "@/components/ui/chart";
