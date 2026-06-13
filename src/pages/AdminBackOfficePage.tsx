@@ -188,10 +188,10 @@ function BackOffice() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        <MetricCard icon="🚩" value={String(pendingPostReports)} label="Signalements" badge="En attente" badgeType={pendingPostReports > 0 ? "down" : "neutral"} />
-        <MetricCard icon="💳" value={String(pendingPayouts)} label="Retraits" badge="À traiter" badgeType={pendingPayouts > 0 ? "down" : "neutral"} />
-        <MetricCard icon="✋" value={String(pendingApps)} label="Candidatures" badge="Coachs" badgeType={pendingApps > 0 ? "up" : "neutral"} />
-        <MetricCard icon="⚖️" value={String(openDisputes)} label="Litiges" badge="Ouverts" badgeType={openDisputes > 0 ? "down" : "neutral"} />
+        <MetricCard icon="🚩" value={String(pendingPostReports)} label="Signalements" badge="En attente" badgeType={pendingPostReports > 0 ? "down" : "default"} />
+        <MetricCard icon="💳" value={String(pendingPayouts)} label="Retraits" badge="À traiter" badgeType={pendingPayouts > 0 ? "down" : "default"} />
+        <MetricCard icon="✋" value={String(pendingApps)} label="Candidatures" badge="Coachs" badgeType={pendingApps > 0 ? "up" : "default"} />
+        <MetricCard icon="⚖️" value={String(openDisputes)} label="Litiges" badge="Ouverts" badgeType={openDisputes > 0 ? "down" : "default"} />
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4 items-center">
@@ -215,7 +215,7 @@ function BackOffice() {
             <GHCard key={r.id} className={r.status === "pending" ? "border-amber-500/30" : ""}>
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex items-center gap-2">
-                  <Tag variant={r.status === "pending" ? "blue" : r.status === "actioned" ? "green" : "neutral"}>{r.status}</Tag>
+                  <Tag variant={r.status === "pending" ? "blue" : r.status === "actioned" ? "green" : "default"}>{r.status}</Tag>
                   <span className="text-[10px] text-muted-foreground">{new Date(r.created_at).toLocaleString("fr-FR")}</span>
                 </div>
                 <span className="text-[10px] text-muted-foreground">par {r.reporter?.display_name ?? "?"}</span>
@@ -244,7 +244,7 @@ function BackOffice() {
           ) : (msgReports.data ?? []).map((r: any) => (
             <GHCard key={r.id}>
               <div className="flex items-center gap-2 mb-2">
-                <Tag variant={r.status === "pending" ? "blue" : "neutral"}>{r.status}</Tag>
+                <Tag variant={r.status === "pending" ? "blue" : "default"}>{r.status}</Tag>
                 <span className="text-[10px] text-muted-foreground">{new Date(r.created_at).toLocaleString("fr-FR")}</span>
               </div>
               <p className="text-xs font-bold text-destructive mb-1">Motif : {r.reason}</p>
@@ -269,7 +269,7 @@ function BackOffice() {
                   <p className="font-heading text-sm font-bold">{p.coaches?.profiles?.display_name ?? "Coach"}</p>
                   <p className="text-[10px] text-muted-foreground">{new Date(p.created_at).toLocaleString("fr-FR")}</p>
                 </div>
-                <Tag variant={p.status === "pending" ? "blue" : p.status === "paid" ? "green" : p.status === "rejected" ? "red" : "neutral"}>{p.status}</Tag>
+                <Tag variant={p.status === "pending" ? "blue" : p.status === "paid" ? "green" : p.status === "rejected" ? "red" : "default"}>{p.status}</Tag>
               </div>
               <div className="grid grid-cols-2 gap-2 mb-2 text-xs">
                 <div><span className="text-muted-foreground">Montant : </span><span className="font-bold">{p.amount} {p.currency}</span></div>
@@ -335,7 +335,7 @@ function BackOffice() {
           ) : (disputes.data ?? []).map((d: any) => (
             <GHCard key={d.id} className={d.status === "open" ? "border-destructive/30" : ""}>
               <div className="flex items-center gap-2 mb-2">
-                <Tag variant={d.status === "resolved" ? "green" : d.status === "closed" ? "neutral" : "red"}>{d.status}</Tag>
+                <Tag variant={d.status === "resolved" ? "green" : d.status === "closed" ? "default" : "red"}>{d.status}</Tag>
                 <span className="text-[10px] text-muted-foreground">{new Date(d.created_at).toLocaleString("fr-FR")}</span>
               </div>
               <p className="text-xs font-bold mb-1">Motif : {d.reason}</p>
