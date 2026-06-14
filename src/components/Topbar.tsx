@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useUnreadNotificationsCount } from "@/hooks/useUnreadCounts";
 import GlobalSearch from "@/components/GlobalSearch";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 interface TopbarProps {
   onMobileMenuToggle: () => void;
@@ -23,8 +25,9 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
   const navigate = useNavigate();
   const { resolvedTheme, setTheme } = useTheme();
   const { data: unreadNotifs = 0 } = useUnreadNotificationsCount();
+  const { t } = useTranslation();
 
-  const displayName = profile?.display_name ?? "Utilisateur";
+  const displayName = profile?.display_name ?? t("nav.account");
   const initials = displayName.substring(0, 2).toUpperCase();
   const shortName = displayName.split(" ").map((n, i) => i === 0 ? n : n[0] + ".").join(" ");
 
@@ -55,24 +58,27 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
           <button
             onClick={onHelpToggle}
             className="hidden md:flex w-9 h-9 rounded-[9px] bg-card border border-border items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all"
-            aria-label="Aide"
+            aria-label={t("nav.help")}
           >
             <HelpCircle className="w-[15px] h-[15px]" />
           </button>
         )}
+        <LanguageSwitcher />
         <button
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           className="w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all flex-shrink-0"
+          aria-label={resolvedTheme === "dark" ? "Light mode" : "Dark mode"}
         >
           {resolvedTheme === "dark" ? <Sun className="w-[15px] h-[15px]" /> : <Moon className="w-[15px] h-[15px]" />}
         </button>
         <button
           onClick={() => navigate("/notifications")}
           className="w-9 h-9 rounded-[9px] bg-card border border-border flex items-center justify-center cursor-pointer text-foreground/70 hover:bg-secondary hover:text-foreground transition-all relative flex-shrink-0"
+          aria-label={t("nav.notifications")}
         >
-          <Bell className="w-[15px] h-[15px]" />
+          <Bell className="w-[15px] h-[15px]" aria-hidden="true" />
           {unreadNotifs > 0 && (
-            <div className="absolute -top-1 -right-1 min-w-[16px] h-[16px] bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-[9px] font-bold px-0.5">
+            <div className="absolute -top-1 -right-1 min-w-[16px] h-[16px] bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-[9px] font-bold px-0.5" aria-label={`${unreadNotifs} non lues`}>
               {unreadNotifs > 99 ? "99+" : unreadNotifs}
             </div>
           )}
@@ -105,28 +111,28 @@ export default function Topbar({ onMobileMenuToggle, onHelpToggle }: TopbarProps
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("nav.account")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2">
               <User className="w-4 h-4" />
-              <span>Mon Profil</span>
+              <span>{t("nav.profile")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/bookmarks")} className="cursor-pointer gap-2">
               <Bookmark className="w-4 h-4" />
-              <span>Favoris</span>
+              <span>{t("nav.bookmarks")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/referral")} className="cursor-pointer gap-2">
               <Gift className="w-4 h-4" />
-              <span>Parrainage</span>
+              <span>{t("nav.referral")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer gap-2">
               <Settings className="w-4 h-4" />
-              <span>Paramètres</span>
+              <span>{t("nav.settings")}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signOut} className="cursor-pointer gap-2 text-destructive focus:text-destructive focus:bg-destructive/10">
               <LogOut className="w-4 h-4" />
-              <span>Déconnexion</span>
+              <span>{t("nav.logout")}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
