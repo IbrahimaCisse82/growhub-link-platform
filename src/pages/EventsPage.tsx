@@ -135,7 +135,7 @@ export default function EventsPage() {
             onClick={() => setShowCreate(!showCreate)}
             className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
           >
-            <Plus className="w-3.5 h-3.5" /> Créer
+            <Plus className="w-3.5 h-3.5" /> {t("common.create")}
           </button>
         </div>
       </div>
@@ -217,7 +217,7 @@ export default function EventsPage() {
                         onClick={() => handleUnregister(e.id)}
                         className="px-2.5 py-1 rounded-lg bg-secondary border border-border font-heading text-[10px] font-bold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all"
                       >
-                        Se désinscrire
+                        {t("events.unregister")}
                       </button>
                     ) : (
                       <button
@@ -225,7 +225,7 @@ export default function EventsPage() {
                         disabled={registerEvent.isPending}
                         className="px-2.5 py-1 rounded-lg bg-primary text-primary-foreground font-heading text-[10px] font-bold hover:bg-primary-hover transition-all disabled:opacity-50"
                       >
-                        S'inscrire
+                        {t("events.register")}
                       </button>
                     )}
                   </div>
