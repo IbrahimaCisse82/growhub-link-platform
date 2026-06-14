@@ -13,11 +13,14 @@ import NetworkGraph from "@/components/NetworkGraph";
 import { IntentEditor, IntentMatchResults } from "@/components/IntentMatching";
 import DailyMatchFeed from "@/components/DailyMatchFeed";
 import ProfileComparison from "@/components/ProfileComparison";
+import EmptyState from "@/components/EmptyState";
+import { useTranslation } from "react-i18next";
 
 const gradients = ["from-[#200a30] to-[#A064FF]","from-[#103050] to-[#4096FF]","from-[#1a3a10] to-[#5CBF00]","from-[#301a08] to-[#D06020]","from-[#0a3040] to-[#00B8A0]"];
 
 export default function NetworkingPage() {
-  usePageMeta({ title: "Networking", description: "Développez votre réseau professionnel et trouvez des partenaires." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.networking"), description: "Développez votre réseau professionnel et trouvez des partenaires." });
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: profiles, isLoading: profilesLoading } = useProfiles();
@@ -41,15 +44,15 @@ export default function NetworkingPage() {
       <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-2xl md:rounded-[20px] p-4 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5"><span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Networking</div>
-          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">Votre <span className="text-primary">réseau</span> professionnel</h1>
+          <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5"><span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> {t("nav.networking")}</div>
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">{t("networking.title")} <span className="text-primary">{t("networking.titleAccent")}</span> {t("networking.titleEnd")}</h1>
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="👥" value={String(acceptedConnections.length)} label="Connexions" badge="Actives" badgeType="up" />
-        <MetricCard icon="📩" value={String(pendingCount)} label="En attente" badge="Demandes" badgeType={pendingCount > 0 ? "up" : "neutral"} />
-        <MetricCard icon="🔍" value={String(suggestions.length)} label="Suggestions" badge="Disponibles" badgeType="neutral" />
-        <MetricCard icon="🌐" value={String((profiles ?? []).length)} label="Membres" badge="Réseau" badgeType="neutral" />
+        <MetricCard icon="👥" value={String(acceptedConnections.length)} label={t("networking.connections")} badge={t("networking.active")} badgeType="up" />
+        <MetricCard icon="📩" value={String(pendingCount)} label={t("networking.pending")} badge={t("networking.requests")} badgeType={pendingCount > 0 ? "up" : "neutral"} />
+        <MetricCard icon="🔍" value={String(suggestions.length)} label={t("networking.suggestions")} badge={t("networking.available")} badgeType="neutral" />
+        <MetricCard icon="🌐" value={String((profiles ?? []).length)} label={t("networking.members")} badge={t("networking.network")} badgeType="neutral" />
       </div>
       {/* Daily Match Feed */}
       <DailyMatchFeed />
@@ -70,16 +73,16 @@ export default function NetworkingPage() {
 
 
       <div className="flex gap-2 mb-5 flex-wrap">
-        {([{ key: "suggestions" as const, label: "Suggestions", icon: UserPlus },{ key: "connections" as const, label: `Connexions (${acceptedConnections.length})`, icon: Users },{ key: "pending" as const, label: `En attente (${pendingCount})`, icon: MessageSquare }]).map(tab => (
+        {([{ key: "suggestions" as const, label: t("networking.suggestions"), icon: UserPlus },{ key: "connections" as const, label: `${t("networking.connections")} (${acceptedConnections.length})`, icon: Users },{ key: "pending" as const, label: `${t("networking.pending")} (${pendingCount})`, icon: MessageSquare }]).map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={cn("flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors", activeTab === tab.key ? "bg-primary text-primary-foreground" : "bg-card border border-border text-foreground/70 hover:border-primary/35")}>
             <tab.icon className="w-3.5 h-3.5" /> {tab.label}
           </button>
         ))}
       </div>
       {activeTab === "suggestions" && (<>
-        <div className="flex items-center bg-secondary border border-border rounded-xl px-3 gap-2 h-10 mb-4 max-w-md"><Search className="w-4 h-4 text-muted-foreground" /><input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Rechercher..." className="bg-transparent outline-none text-sm w-full" /></div>
+        <div className="flex items-center bg-secondary border border-border rounded-xl px-3 gap-2 h-10 mb-4 max-w-md"><Search className="w-4 h-4 text-muted-foreground" /><input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder={t("common.search") + "..."} className="bg-transparent outline-none text-sm w-full" aria-label={t("common.search")} /></div>
         {profilesLoading ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-36 rounded-2xl" />)}</div>
-        : suggestions.length === 0 ? <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Aucune suggestion</p></GHCard>
+        : suggestions.length === 0 ? <EmptyState icon={UserPlus} title={t("empty.noSuggestion")} />
         : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {suggestions.map((p, idx) => (
             <GHCard key={p.id} className="cursor-pointer" onClick={() => navigate(`/profile/${p.user_id}`)}>
@@ -88,12 +91,12 @@ export default function NetworkingPage() {
                 <div className="flex-1 min-w-0"><div className="font-heading text-sm font-bold truncate">{p.display_name}</div><div className="text-[11px] text-muted-foreground truncate">{p.company_name ?? ""}{p.sector ? ` · ${p.sector}` : ""}</div></div>
               </div>
               {p.skills && p.skills.length > 0 && <div className="flex flex-wrap gap-1 mb-3">{p.skills.slice(0, 3).map((s: string) => <Tag key={s} variant="green">{s}</Tag>)}</div>}
-              <button onClick={e => { e.stopPropagation(); handleConnect(p.user_id); }} className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors flex items-center justify-center gap-1.5"><UserPlus className="w-3.5 h-3.5" /> Se connecter</button>
+              <button onClick={e => { e.stopPropagation(); handleConnect(p.user_id); }} className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors flex items-center justify-center gap-1.5"><UserPlus className="w-3.5 h-3.5" /> {t("networking.connect")}</button>
             </GHCard>
           ))}
         </div>}
       </>)}
-      {activeTab === "connections" && (acceptedConnections.length === 0 ? <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Aucune connexion</p></GHCard> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">{acceptedConnections.map((c: any, idx: number) => (
+      {activeTab === "connections" && (acceptedConnections.length === 0 ? <EmptyState icon={Users} title={t("empty.noConnection")} /> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">{acceptedConnections.map((c: any, idx: number) => (
         <GHCard key={c.id} className="cursor-pointer" onClick={() => navigate(`/profile/${c.partner_profile?.user_id}`)}>
           <div className="flex gap-3 items-center">
             <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${gradients[idx % gradients.length]} flex items-center justify-center text-xs font-bold text-white flex-shrink-0`}>{(c.partner_profile?.display_name ?? "?").substring(0, 2).toUpperCase()}</div>
@@ -102,15 +105,15 @@ export default function NetworkingPage() {
           </div>
         </GHCard>
       ))}</div>)}
-      {activeTab === "pending" && (!pendingRequests || pendingRequests.length === 0 ? <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Aucune demande</p></GHCard> : <div className="space-y-3">{pendingRequests.map((r: any) => (
+      {activeTab === "pending" && (!pendingRequests || pendingRequests.length === 0 ? <EmptyState icon={MessageSquare} title={t("empty.noPending")} /> : <div className="space-y-3">{pendingRequests.map((r: any) => (
         <GHCard key={r.id}><div className="flex flex-col sm:flex-row gap-3 sm:items-center">
           <div className="flex gap-3 items-center flex-1 min-w-0">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">{(r.requester_profile?.display_name ?? "?").substring(0, 2).toUpperCase()}</div>
             <div className="flex-1 min-w-0"><div className="font-heading text-sm font-bold truncate">{r.requester_profile?.display_name ?? "Membre"}</div><div className="text-[11px] text-muted-foreground truncate">{r.requester_profile?.company_name ?? ""}</div></div>
           </div>
           <div className="flex gap-2 flex-shrink-0">
-            <button onClick={() => handleRespond(r.id, "accepted", r.requester_id)} className="bg-primary text-primary-foreground rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 flex-1 sm:flex-none justify-center"><Check className="w-3 h-3" /> Accepter</button>
-            <button onClick={() => handleRespond(r.id, "rejected")} className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs font-bold text-muted-foreground hover:text-destructive flex items-center gap-1 flex-1 sm:flex-none justify-center"><X className="w-3 h-3" /> Refuser</button>
+            <button onClick={() => handleRespond(r.id, "accepted", r.requester_id)} className="bg-primary text-primary-foreground rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 flex-1 sm:flex-none justify-center"><Check className="w-3 h-3" /> {t("networking.accept")}</button>
+            <button onClick={() => handleRespond(r.id, "rejected")} className="bg-card border border-border rounded-lg px-3 py-1.5 text-xs font-bold text-muted-foreground hover:text-destructive flex items-center gap-1 flex-1 sm:flex-none justify-center"><X className="w-3 h-3" /> {t("networking.reject")}</button>
           </div>
         </div></GHCard>
       ))}</div>)}
