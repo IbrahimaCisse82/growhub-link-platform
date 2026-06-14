@@ -111,15 +111,15 @@ export default function EventsPage() {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
         <div className="flex gap-1.5 flex-wrap">
-          {["all", "webinar", "workshop", "meetup", "conference", "demo_day"].map(t => (
+          {["all", "webinar", "workshop", "meetup", "conference", "demo_day"].map(k => (
             <button
-              key={t}
-              onClick={() => setFilter(t)}
+              key={k}
+              onClick={() => setFilter(k)}
               className={`h-[30px] px-3 rounded-lg text-[11px] font-semibold font-heading border transition-colors ${
-                filter === t ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50 hover:text-foreground/80"
+                filter === k ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50 hover:text-foreground/80"
               }`}
             >
-              {t === "all" ? "" : ""}{(t as unknown as string) === "all" ? "" : ""}{/* keep */}{((): string => (t as any))(undefined as any) || ""}
+              {k === "all" ? t("events.all") : typeLabels[k] ?? k}
             </button>
           ))}
         </div>
