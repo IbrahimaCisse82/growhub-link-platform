@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import SuggestedProfiles from "@/components/SuggestedProfiles";
 import { TrendingTags } from "@/components/SmartTags";
 import ReportPostButton from "@/components/ReportPostButton";
+import EmptyState from "@/components/EmptyState";
+import { useTranslation } from "react-i18next";
 
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
