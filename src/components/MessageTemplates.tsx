@@ -74,7 +74,7 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
     },
   });
 
-  const useTemplate = (content: string) => {
+  const applyTemplate = (content: string) => {
     if (onSelect) {
       onSelect(content);
     } else {
@@ -100,7 +100,7 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
         {allTemplates.map((t: any, i: number) => (
           <button
             key={t.id ?? i}
-            onClick={() => useTemplate(t.content)}
+            onClick={() => applyTemplate(t.content)}
             className="w-full text-left px-3 py-2 rounded-lg hover:bg-secondary/50 transition-colors group"
           >
             <div className="flex items-center justify-between">
@@ -161,7 +161,7 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
               <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{t.content}</p>
             </div>
             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-              <button onClick={() => useTemplate(t.content)} className="p-1 hover:text-primary"><Copy className="w-3.5 h-3.5" /></button>
+              <button onClick={() => applyTemplate(t.content)} className="p-1 hover:text-primary"><Copy className="w-3.5 h-3.5" /></button>
               {t.id && t.user_id === user?.id && (
                 <button onClick={() => deleteTemplate.mutate(t.id)} className="p-1 hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
               )}
