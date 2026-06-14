@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import SuggestedProfiles from "@/components/SuggestedProfiles";
 import { TrendingTags } from "@/components/SmartTags";
 import ReportPostButton from "@/components/ReportPostButton";
+import EmptyState from "@/components/EmptyState";
+import { useTranslation } from "react-i18next";
 
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
@@ -202,7 +204,8 @@ function MediaGallery({ urls }: { urls: string[] }) {
 }
 
 export default function FeedPage() {
-  usePageMeta({ title: "Fil d'actualité", description: "Suivez les actualités de la communauté startup GrowHub." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.feed"), description: "Suivez les actualités de la communauté startup GrowHub." });
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -483,9 +486,7 @@ export default function FeedPage() {
       {isLoading ? (
         Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl mb-3" />)
       ) : allPosts.length === 0 ? (
-        <GHCard className="text-center py-8">
-          <p className="text-sm text-muted-foreground">Aucune publication pour le moment. Soyez le premier à publier !</p>
-        </GHCard>
+        <EmptyState icon={MessageCircle} title={t("empty.noPost")} />
       ) : (
         <>
           {allPosts.map((post, idx) => {

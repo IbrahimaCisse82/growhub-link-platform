@@ -12,6 +12,8 @@ import { Plus, MapPin, Globe, Users, Calendar } from "lucide-react";
 import EventMatchmaking from "@/components/EventMatchmaking";
 import { ExportEventButton, ExportAllEventsButton } from "@/components/CalendarExport";
 import ReminderButton from "@/components/ReminderButton";
+import EmptyState from "@/components/EmptyState";
+import { useTranslation } from "react-i18next";
 
 const eventColors = [
   "from-[#0a1a0a] to-primary/80",
@@ -29,7 +31,8 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function EventsPage() {
-  usePageMeta({ title: "Événements", description: "Participez à des webinars, workshops et meetups de l'écosystème startup." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.events"), description: "Participez à des webinars, workshops et meetups de l'écosystème startup." });
   const { user } = useAuth();
   const { data: events, isLoading } = useEvents();
   const registerEvent = useRegisterEvent();
@@ -88,35 +91,35 @@ export default function EventsPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
             <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
-            Événements & Rencontres
+            {t("events.badge")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Ne ratez <span className="text-primary">aucune opportunité</span>
+            {t("events.title")} <span className="text-primary">{t("events.titleAccent")}</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
-            Summits, workshops, networking events — rejoignez la communauté.
+            {t("events.subtitle")}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="📅" value={String(events?.length ?? 0)} label="Événements à venir" badge="Total" badgeType="neutral" />
-        <MetricCard icon="✅" value={String(myRegistrations.length)} label="Mes inscriptions" badge="Confirmées" badgeType="up" />
-        <MetricCard icon="🌐" value={String(events?.filter(e => e.is_online).length ?? 0)} label="En ligne" badge="Accessibles" badgeType="neutral" />
-        <MetricCard icon="👥" value={String(events?.reduce((s, e) => s + (e.registrations?.length ?? 0), 0) ?? 0)} label="Participants" badge="Total" badgeType="up" />
+        <MetricCard icon="📅" value={String(events?.length ?? 0)} label={t("events.upcoming")} badge="Total" badgeType="neutral" />
+        <MetricCard icon="✅" value={String(myRegistrations.length)} label={t("events.myRegistrations")} badge="Confirmées" badgeType="up" />
+        <MetricCard icon="🌐" value={String(events?.filter(e => e.is_online).length ?? 0)} label={t("events.online")} badge="Accessibles" badgeType="neutral" />
+        <MetricCard icon="👥" value={String(events?.reduce((s, e) => s + (e.registrations?.length ?? 0), 0) ?? 0)} label={t("events.participants")} badge="Total" badgeType="up" />
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
         <div className="flex gap-1.5 flex-wrap">
-          {["all", "webinar", "workshop", "meetup", "conference", "demo_day"].map(t => (
+          {["all", "webinar", "workshop", "meetup", "conference", "demo_day"].map(k => (
             <button
-              key={t}
-              onClick={() => setFilter(t)}
+              key={k}
+              onClick={() => setFilter(k)}
               className={`h-[30px] px-3 rounded-lg text-[11px] font-semibold font-heading border transition-colors ${
-                filter === t ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50 hover:text-foreground/80"
+                filter === k ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50 hover:text-foreground/80"
               }`}
             >
-              {t === "all" ? "Tous" : typeLabels[t] ?? t}
+              {k === "all" ? t("events.all") : typeLabels[k] ?? k}
             </button>
           ))}
         </div>
@@ -132,7 +135,7 @@ export default function EventsPage() {
             onClick={() => setShowCreate(!showCreate)}
             className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
           >
-            <Plus className="w-3.5 h-3.5" /> Créer
+            <Plus className="w-3.5 h-3.5" /> {t("common.create")}
           </button>
         </div>
       </div>
@@ -163,10 +166,7 @@ export default function EventsPage() {
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-56 rounded-2xl" />)}
         </div>
       ) : !filteredEvents || filteredEvents.length === 0 ? (
-        <GHCard className="text-center py-8 mb-5">
-          <Calendar className="w-10 h-10 text-muted-foreground/20 mx-auto mb-2" />
-          <p className="text-xs text-muted-foreground">Aucun événement à venir.</p>
-        </GHCard>
+        <EmptyState icon={Calendar} title={t("empty.noEvent")} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 mb-5">
           {filteredEvents.map((e, idx) => {
@@ -217,7 +217,7 @@ export default function EventsPage() {
                         onClick={() => handleUnregister(e.id)}
                         className="px-2.5 py-1 rounded-lg bg-secondary border border-border font-heading text-[10px] font-bold hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-all"
                       >
-                        Se désinscrire
+                        {t("events.unregister")}
                       </button>
                     ) : (
                       <button
@@ -225,7 +225,7 @@ export default function EventsPage() {
                         disabled={registerEvent.isPending}
                         className="px-2.5 py-1 rounded-lg bg-primary text-primary-foreground font-heading text-[10px] font-bold hover:bg-primary-hover transition-all disabled:opacity-50"
                       >
-                        S'inscrire
+                        {t("events.register")}
                       </button>
                     )}
                   </div>

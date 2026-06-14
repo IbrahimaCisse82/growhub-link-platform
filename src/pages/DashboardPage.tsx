@@ -17,9 +17,13 @@ import ActivityFeed from "@/components/ActivityFeed";
 import { useActivatedTools } from "@/hooks/useActivatedTools";
 import { useUserRole } from "@/hooks/useUserRole";
 import { RoleMetrics, RoleQuickActions, RoleGuidance, roleHeroConfig } from "@/components/RoleDashboard";
+import EmptyState from "@/components/EmptyState";
+import { Target, CalendarDays } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function DashboardPage() {
-  usePageMeta({ title: "Dashboard", description: "Tableau de bord GrowHub — suivez vos KPIs en temps réel." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.dashboard"), description: "Tableau de bord GrowHub — suivez vos KPIs en temps réel." });
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { data: objectives } = useObjectives();
@@ -91,7 +95,7 @@ export default function DashboardPage() {
       <RoleGuidance role={role} />
 
       {/* Activity Feed */}
-      <GHCard title="Activité récente" className="mb-[18px]">
+      <GHCard title={t("dashboard.recentActivity")} className="mb-[18px]">
         <ActivityFeed />
       </GHCard>
 
@@ -99,9 +103,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-[18px] mb-4 md:mb-[18px]">
         <div className="md:col-span-2 space-y-[18px]">
           {isActivated("progression") && (
-            <GHCard title="Objectifs en cours" headerRight={<Tag variant="green">En cours</Tag>}>
+            <GHCard title={t("dashboard.currentGoals")} headerRight={<Tag variant="green">{t("dashboard.inProgress")}</Tag>}>
               {!objectives || objectives.length === 0 ? (
-                <p className="text-xs text-muted-foreground py-4 text-center">Aucun objectif défini. Créez-en depuis la page Progression.</p>
+                <EmptyState icon={Target} title={t("empty.noObjectives")} />
               ) : (
                 objectives.slice(0, 5).map((obj) => (
                   <ProgressBar
@@ -116,8 +120,8 @@ export default function DashboardPage() {
           )}
 
           {isActivated("coaching") && (
-            <GHCard title="Coaching Progress" headerRight={
-              <button onClick={() => navigate("/coaching")} className="text-xs text-primary font-semibold hover:opacity-70">Voir →</button>
+            <GHCard title={t("dashboard.coachingProgress")} headerRight={
+              <button onClick={() => navigate("/coaching")} className="text-xs text-primary font-semibold hover:opacity-70">{t("common.seeAll")} →</button>
             }>
               {nextSession ? (
                 <div className="flex gap-3.5 items-center bg-card border border-border rounded-xl p-3.5 mb-2.5">
@@ -134,9 +138,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground py-4 text-center">Aucune session prévue.</p>
+                <EmptyState icon={CalendarDays} title={t("empty.noSession")} />
               )}
-              <StatRow label="Sessions terminées" value={String(completedSessions.length)} />
+              <StatRow label={t("dashboard.completedSessions")} value={String(completedSessions.length)} />
             </GHCard>
           )}
         </div>
@@ -149,7 +153,7 @@ export default function DashboardPage() {
       {/* News Feed Widget */}
       {recentPosts.length > 0 && (
         <div className="mt-[18px]">
-          <SectionHeader title="🔥 Fil d'actualité — À la une" linkText="Voir tout →" onLink={() => navigate("/feed")} />
+          <SectionHeader title={t("dashboard.feedHeadline")} linkText={`${t("common.seeAll")} →`} onLink={() => navigate("/feed")} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {recentPosts.map((post) => (
               <GHCard key={post.id} className="cursor-pointer" onClick={() => navigate("/feed")}>
