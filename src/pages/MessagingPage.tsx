@@ -28,7 +28,8 @@ interface Conversation {
 
 
 export default function MessagingPage() {
-  usePageMeta({ title: "Messages", description: "Échangez avec votre réseau en temps réel." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.messaging"), description: "Échangez avec votre réseau en temps réel." });
   const { user } = useAuth();
   const { data: connections } = useConnections();
   const isMobile = useIsMobile();
