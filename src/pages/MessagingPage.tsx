@@ -345,7 +345,7 @@ export default function MessagingPage() {
                     <DropdownMenuTrigger className="text-muted-foreground hover:text-foreground text-xs px-2 py-1 rounded-md hover:bg-secondary">⋯</DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={handleBlock} className="text-destructive">
-                        <ShieldOff className="w-3.5 h-3.5 mr-2" /> Bloquer cet utilisateur
+                        <ShieldOff className="w-3.5 h-3.5 mr-2" /> {t("messaging.block")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
