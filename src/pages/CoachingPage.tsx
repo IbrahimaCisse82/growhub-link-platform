@@ -236,7 +236,7 @@ export default function CoachingPage() {
       )}
 
       {scheduledSessions.length > 0 && (<>
-        <h3 className="font-heading text-base font-extrabold mb-3">Sessions à venir</h3>
+        <h3 className="font-heading text-base font-extrabold mb-3">{t("coaching.upcoming")}</h3>
         <div className="space-y-3 mb-5">{scheduledSessions.map((s: any) => (
           <GHCard key={s.id}>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
