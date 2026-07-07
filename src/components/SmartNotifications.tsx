@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GHCard, Tag } from "@/components/ui-custom";
 import { Sparkles, TrendingUp, Users, Calendar, Award, MessageSquare, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface SmartNotif {
   id: string;
