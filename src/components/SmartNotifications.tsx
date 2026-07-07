@@ -20,6 +20,7 @@ interface SmartNotif {
 export default function SmartNotifications() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: notifs } = useQuery({
     queryKey: ["smart-notifications", user?.id],
