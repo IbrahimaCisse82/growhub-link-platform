@@ -1,15 +1,8 @@
 import { Home, Users, Rss, MessageSquare, Menu } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useUnreadMessagesCount } from "@/hooks/useUnreadCounts";
-
-const tabs = [
-  { path: "/", icon: Home, label: "Accueil" },
-  { path: "/networking", icon: Users, label: "Réseau" },
-  { path: "/feed", icon: Rss, label: "Feed" },
-  { path: "/messaging", icon: MessageSquare, label: "Messages", hasBadge: true },
-  { path: "more", icon: Menu, label: "Plus" },
-];
 
 interface MobileBottomNavProps {
   onMorePress: () => void;
@@ -18,7 +11,16 @@ interface MobileBottomNavProps {
 export default function MobileBottomNav({ onMorePress }: MobileBottomNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { data: unreadMsgs = 0 } = useUnreadMessagesCount();
+
+  const tabs = [
+    { path: "/", icon: Home, label: t("nav.home") },
+    { path: "/networking", icon: Users, label: t("nav.network") },
+    { path: "/feed", icon: Rss, label: t("nav.feed") },
+    { path: "/messaging", icon: MessageSquare, label: t("nav.messages"), hasBadge: true },
+    { path: "more", icon: Menu, label: t("nav.more") },
+  ];
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -27,7 +29,7 @@ export default function MobileBottomNav({ onMorePress }: MobileBottomNavProps) {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[200] bg-card/95 backdrop-blur-lg border-t border-border md:hidden safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-[200] bg-card/95 backdrop-blur-lg border-t border-border md:hidden safe-area-bottom" aria-label={t("nav.home")}>
       <div className="flex items-center justify-around h-[60px] px-1 max-w-md mx-auto">
         {tabs.map((tab) => {
           const active = isActive(tab.path);
@@ -35,6 +37,7 @@ export default function MobileBottomNav({ onMorePress }: MobileBottomNavProps) {
             <button
               key={tab.path}
               onClick={() => tab.path === "more" ? onMorePress() : navigate(tab.path)}
+              aria-label={tab.label}
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-colors relative touch-target",
                 active ? "text-primary" : "text-muted-foreground"
