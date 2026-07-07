@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useActivatedTools } from "@/hooks/useActivatedTools";
 
 interface SidebarProps {
@@ -15,63 +16,64 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
-const communityItems = [
-  { path: "/networking", icon: Users, label: "Networking" },
-  { path: "/speed-networking", icon: Bolt, label: "Speed Dating" },
-  { path: "/circles", icon: CircleDot, label: "Cercles" },
-  { path: "/spaces", icon: FolderKanban, label: "Espaces" },
-  { path: "/events", icon: Calendar, label: "Événements" },
-  { path: "/feed", icon: Rss, label: "Fil d'actu" },
-  { path: "/messaging", icon: MessageSquare, label: "Messages" },
-];
-
 export default function AppSidebar({ activeRole = "startup", mobileOpen = false, onMobileClose }: SidebarProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { signOut, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { activatedTools } = useActivatedTools();
+
+  const communityItems = [
+    { path: "/networking", icon: Users, label: t("nav.networking") },
+    { path: "/speed-networking", icon: Bolt, label: t("nav.speedDating") },
+    { path: "/circles", icon: CircleDot, label: t("nav.circles") },
+    { path: "/spaces", icon: FolderKanban, label: t("nav.spaces") },
+    { path: "/events", icon: Calendar, label: t("nav.events") },
+    { path: "/feed", icon: Rss, label: t("nav.feedFull") },
+    { path: "/messaging", icon: MessageSquare, label: t("nav.messages") },
+  ];
 
   const communityItemsForRole = communityItems.map(item => {
     if (activeRole === "aspirationnel" && item.path === "/feed") {
-      return { ...item, label: "Inspiration" };
+      return { ...item, label: t("nav.inspiration") };
     }
     if ((activeRole === "incubateur" || activeRole === "corporate") && item.path === "/networking") {
-      return { ...item, label: "Startups" };
+      return { ...item, label: t("nav.startups") };
     }
     return item;
   });
 
   // Build activated tools nav items
-  const toolItems = activatedTools.map(t => ({ path: t.path, icon: t.lucideIcon, label: t.label }));
+  const toolItems = activatedTools.map(tool => ({ path: tool.path, icon: tool.lucideIcon, label: tool.label }));
 
   // Role-specific entry
   const roleEntry = (() => {
     switch (activeRole) {
-      case "etudiant": return { path: "/career", icon: Briefcase, label: "Carrière" };
-      case "corporate": return { path: "/open-innovation", icon: Trophy, label: "Open Innovation" };
-      case "professionnel": return { path: "/dev-goals", icon: TrendingUp, label: "Dév. pro" };
-      case "aspirationnel": return { path: "/explorer", icon: Sparkles, label: "Explorer" };
-      case "incubateur": return { path: "/cohorts", icon: Building2, label: "Cohortes" };
-      case "mentor": return { path: "/mentor-dashboard", icon: GraduationCap, label: "Mentorat" };
-      case "investor": return { path: "/deal-flow", icon: TrendingUp, label: "Deal Flow" };
+      case "etudiant": return { path: "/career", icon: Briefcase, label: t("nav.career") };
+      case "corporate": return { path: "/open-innovation", icon: Trophy, label: t("nav.openInnovation") };
+      case "professionnel": return { path: "/dev-goals", icon: TrendingUp, label: t("nav.devPro") };
+      case "aspirationnel": return { path: "/explorer", icon: Sparkles, label: t("nav.explorer") };
+      case "incubateur": return { path: "/cohorts", icon: Building2, label: t("nav.cohorts") };
+      case "mentor": return { path: "/mentor-dashboard", icon: GraduationCap, label: t("nav.mentorship") };
+      case "investor": return { path: "/deal-flow", icon: TrendingUp, label: t("nav.dealFlow") };
       case "freelance":
-      case "expert": return { path: "/pipeline", icon: Briefcase, label: "Pipeline" };
+      case "expert": return { path: "/pipeline", icon: Briefcase, label: t("nav.pipeline") };
       default: return null;
     }
   })();
 
   const principalItems = [
-    { path: "/", icon: Home, label: "Dashboard" },
+    { path: "/", icon: Home, label: t("nav.dashboard") },
     ...(roleEntry ? [roleEntry] : []),
-    { path: "/courses", icon: GraduationCap, label: "Formations" },
-    { path: "/marketplace", icon: ShoppingBag, label: "Marketplace" },
+    { path: "/courses", icon: GraduationCap, label: t("nav.courses") },
+    { path: "/marketplace", icon: ShoppingBag, label: t("nav.marketplace") },
   ];
 
   const navSections = [
-    { title: "Principal", items: principalItems },
-    ...(toolItems.length > 0 ? [{ title: "Mes outils", items: toolItems }] : []),
-    { title: "Communauté", items: communityItemsForRole },
+    { title: t("nav.sectionPrincipal"), items: principalItems },
+    ...(toolItems.length > 0 ? [{ title: t("nav.sectionTools"), items: toolItems }] : []),
+    { title: t("nav.sectionCommunity"), items: communityItemsForRole },
   ];
 
   const handleNav = (path: string) => {
