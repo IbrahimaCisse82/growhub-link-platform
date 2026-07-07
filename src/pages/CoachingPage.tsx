@@ -145,10 +145,10 @@ export default function CoachingPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="🎓" value={String((coaches ?? []).length)} label="Coachs" badge="Actifs" badgeType="up" />
-        <MetricCard icon="📅" value={String(scheduledSessions.length)} label="Planifiées" badge="À venir" badgeType="up" />
-        <MetricCard icon="✅" value={String(completedSessions.length)} label="Terminées" badge="Total" badgeType="neutral" />
-        <MetricCard icon="⭐" value={avgRating} label="Satisfaction" badge="/5" badgeType="up" />
+        <MetricCard icon="🎓" value={String((coaches ?? []).length)} label={t("coaching.coaches")} badge={t("networking.active")} badgeType="up" />
+        <MetricCard icon="📅" value={String(scheduledSessions.length)} label={t("coaching.scheduled")} badge={t("events.upcoming")} badgeType="up" />
+        <MetricCard icon="✅" value={String(completedSessions.length)} label={t("coaching.completed")} badge="Total" badgeType="neutral" />
+        <MetricCard icon="⭐" value={avgRating} label={t("coaching.satisfaction")} badge="/5" badgeType="up" />
       </div>
 
       {/* Filtres marketplace */}
