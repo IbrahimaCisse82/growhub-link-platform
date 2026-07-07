@@ -171,7 +171,7 @@ export default function SmartNotifications() {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="w-5 h-5 text-primary" />
-        <h2 className="font-heading text-base font-bold">Pour vous aujourd'hui</h2>
+        <h2 className="font-heading text-base font-bold">{t("smart.heading")}</h2>
       </div>
       <div className="space-y-2">
         {notifs.map(notif => (
