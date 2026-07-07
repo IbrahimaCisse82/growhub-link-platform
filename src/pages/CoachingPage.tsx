@@ -254,7 +254,7 @@ export default function CoachingPage() {
       </>)}
 
       {completedSessions.length > 0 && (<>
-        <h3 className="font-heading text-base font-extrabold mb-3">Historique</h3>
+        <h3 className="font-heading text-base font-extrabold mb-3">{t("coaching.history")}</h3>
         <div className="space-y-3">{completedSessions.map((s: any) => (
           <GHCard key={s.id}>
             <div className="flex items-center gap-3 flex-wrap">
