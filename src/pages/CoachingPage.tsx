@@ -132,14 +132,14 @@ export default function CoachingPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Coaching Hub
+            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> {t("coaching.badge")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Votre <span className="text-primary">accompagnement</span> personnalisé
+            {t("coaching.title")} <span className="text-primary">{t("coaching.titleAccent")}</span> {t("coaching.titleEnd")}
           </h1>
           <div className="flex gap-2 mt-3">
-            <a href="/become-coach" className="text-[11px] font-bold text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10">Devenir coach</a>
-            <a href="/coach-studio" className="text-[11px] font-bold text-muted-foreground border border-border rounded-full px-3 py-1 hover:bg-secondary">Studio coach</a>
+            <a href="/become-coach" className="text-[11px] font-bold text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10">{t("coaching.becomeCoach")}</a>
+            <a href="/coach-studio" className="text-[11px] font-bold text-muted-foreground border border-border rounded-full px-3 py-1 hover:bg-secondary">{t("coaching.coachStudio")}</a>
           </div>
         </div>
       </div>
