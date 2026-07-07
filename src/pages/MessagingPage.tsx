@@ -285,7 +285,7 @@ export default function MessagingPage() {
 
             <div className="overflow-y-auto max-h-[440px]">
               {filteredConversations.length === 0 ? (
-                <p className="text-xs text-muted-foreground text-center py-8">Aucune conversation</p>
+                <EmptyState icon={MessageSquare} title={t("messaging.noConversation")} />
               ) : (
                 filteredConversations.map((conv) => (
                   <button
