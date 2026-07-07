@@ -155,22 +155,22 @@ export default function CoachingPage() {
       <GHCard className="mb-4">
         <div className="flex items-center gap-2 mb-3">
           <Filter className="w-3.5 h-3.5 text-primary" />
-          <span className="font-heading text-xs font-bold">Filtrer les coachs</span>
+          <span className="font-heading text-xs font-bold">{t("coaching.filterCoaches")}</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <select value={filterSpecialty} onChange={e => setFilterSpecialty(e.target.value)} className="bg-secondary/50 border border-border rounded-lg px-2 py-2 text-xs">
-            <option value="">Toutes spécialités</option>
+            <option value="">{t("coaching.allSpecialties")}</option>
             {allSpecialties.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
           <select value={filterLevel} onChange={e => setFilterLevel(e.target.value)} className="bg-secondary/50 border border-border rounded-lg px-2 py-2 text-xs">
-            <option value="all">Tous niveaux</option>
+            <option value="all">{t("coaching.allLevels")}</option>
             <option value="bronze">🥉 Bronze</option>
             <option value="silver">🥈 Silver</option>
             <option value="gold">🥇 Gold</option>
             <option value="platinum">💎 Platinum</option>
           </select>
-          <input type="number" value={filterMaxRate} onChange={e => setFilterMaxRate(e.target.value)} placeholder="Tarif max /h" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
-          <input value={filterLanguage} onChange={e => setFilterLanguage(e.target.value)} placeholder="Langue (ex: fr)" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
+          <input type="number" value={filterMaxRate} onChange={e => setFilterMaxRate(e.target.value)} placeholder={t("coaching.maxRate")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
+          <input value={filterLanguage} onChange={e => setFilterLanguage(e.target.value)} placeholder={t("coaching.language")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
         </div>
       </GHCard>
 
