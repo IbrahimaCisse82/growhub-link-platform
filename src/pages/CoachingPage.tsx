@@ -8,6 +8,9 @@ import { toast } from "sonner";
 import { Calendar, Star, X, Filter, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useTranslation } from "react-i18next";
+import EmptyState from "@/components/EmptyState";
+import { Users } from "lucide-react";
 
 const LEVEL_BADGE: Record<string, { label: string; cls: string }> = {
   bronze: { label: "🥉 Bronze", cls: "bg-amber-700/15 text-amber-700 border-amber-700/30" },
