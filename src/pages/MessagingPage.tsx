@@ -325,7 +325,7 @@ export default function MessagingPage() {
             {!selectedPartner ? (
               <div className="flex-1 flex flex-col items-center justify-center text-sm text-muted-foreground gap-2">
                 <MessageSquarePlus className="w-10 h-10 text-muted-foreground/20" />
-                Sélectionnez une conversation ou démarrez-en une nouvelle
+                {t("messaging.selectHint")}
               </div>
             ) : (
               <>
