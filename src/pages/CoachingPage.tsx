@@ -218,15 +218,15 @@ export default function CoachingPage() {
                         <option key={p} value={p}>{PROVIDER_LABELS[p]}</option>
                       ))}
                     </select>
-                    <p className="text-[10px] text-muted-foreground">Commission plateforme : 15 %. Vous payez {c.hourly_rate ?? 0} {c.currency ?? "EUR"}.</p>
+                    <p className="text-[10px] text-muted-foreground">{t("coaching.commission")} {c.hourly_rate ?? 0} {c.currency ?? "EUR"}.</p>
                     <div className="flex gap-2">
-                      <button onClick={() => handleBook(c)} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-xs font-bold flex-1">Confirmer</button>
-                      <button onClick={() => setBookingCoachId(null)} className="bg-card border border-border rounded-lg px-4 py-2 text-xs font-bold">Annuler</button>
+                      <button onClick={() => handleBook(c)} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-xs font-bold flex-1">{t("coaching.confirm")}</button>
+                      <button onClick={() => setBookingCoachId(null)} className="bg-card border border-border rounded-lg px-4 py-2 text-xs font-bold">{t("common.cancel")}</button>
                     </div>
                   </div>
                 ) : (
                   <button onClick={() => setBookingCoachId(c.id)} className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors flex items-center justify-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" /> Réserver
+                    <Calendar className="w-3.5 h-3.5" /> {t("coaching.book")}
                   </button>
                 )}
               </GHCard>
