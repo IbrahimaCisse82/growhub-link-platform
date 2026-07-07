@@ -90,7 +90,7 @@ export default function AppSidebar({ activeRole = "startup", mobileOpen = false,
 
   return (
     <nav
-      aria-label="Navigation principale"
+      aria-label={t("nav.sectionPrincipal")}
       className={cn(
         "fixed top-0 left-0 bottom-0 z-[200] flex flex-col items-center py-4 transition-all duration-300 bg-sidebar-bg",
         mobileOpen ? "w-[220px] translate-x-0" : "w-[220px] -translate-x-full lg:translate-x-0",
