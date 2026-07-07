@@ -233,7 +233,7 @@ export default function MessagingPage() {
             Messagerie
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Vos <span className="text-primary">conversations</span>
+            {t("messaging.title")} <span className="text-primary">{t("messaging.titleAccent")}</span>
           </h1>
         </div>
       </div>
