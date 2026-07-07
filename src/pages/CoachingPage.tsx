@@ -174,13 +174,13 @@ export default function CoachingPage() {
         </div>
       </GHCard>
 
-      <h3 className="font-heading text-base font-extrabold mb-3">Coachs disponibles</h3>
+      <h3 className="font-heading text-base font-extrabold mb-3">{t("coaching.availableCoaches")}</h3>
       {coachesLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
           {Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl" />)}
         </div>
       ) : filteredCoaches.length === 0 ? (
-        <GHCard className="text-center py-8 mb-5"><p className="text-sm text-muted-foreground">Aucun coach ne correspond à vos filtres</p></GHCard>
+        <GHCard className="mb-5"><EmptyState icon={Users} title={t("coaching.noMatch")} /></GHCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
           {filteredCoaches.map((c: any) => {
