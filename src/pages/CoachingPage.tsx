@@ -8,6 +8,9 @@ import { toast } from "sonner";
 import { Calendar, Star, X, Filter, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useTranslation } from "react-i18next";
+import EmptyState from "@/components/EmptyState";
+import { Users } from "lucide-react";
 
 const LEVEL_BADGE: Record<string, { label: string; cls: string }> = {
   bronze: { label: "🥉 Bronze", cls: "bg-amber-700/15 text-amber-700 border-amber-700/30" },
@@ -25,7 +28,8 @@ const PROVIDER_LABELS: Record<PaymentProvider, string> = {
 };
 
 export default function CoachingPage() {
-  usePageMeta({ title: "Coaching", description: "Trouvez un coach et réservez des sessions pour accélérer votre startup." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.coaching"), description: "Trouvez un coach et réservez des sessions pour accélérer votre startup." });
   const { data: coaches, isLoading: coachesLoading } = useCoaches();
   const { data: sessions } = useCoachingSessions();
   const bookSession = useBookSession();
@@ -128,55 +132,55 @@ export default function CoachingPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Coaching Hub
+            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> {t("coaching.badge")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Votre <span className="text-primary">accompagnement</span> personnalisé
+            {t("coaching.title")} <span className="text-primary">{t("coaching.titleAccent")}</span> {t("coaching.titleEnd")}
           </h1>
           <div className="flex gap-2 mt-3">
-            <a href="/become-coach" className="text-[11px] font-bold text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10">Devenir coach</a>
-            <a href="/coach-studio" className="text-[11px] font-bold text-muted-foreground border border-border rounded-full px-3 py-1 hover:bg-secondary">Studio coach</a>
+            <a href="/become-coach" className="text-[11px] font-bold text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10">{t("coaching.becomeCoach")}</a>
+            <a href="/coach-studio" className="text-[11px] font-bold text-muted-foreground border border-border rounded-full px-3 py-1 hover:bg-secondary">{t("coaching.coachStudio")}</a>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="🎓" value={String((coaches ?? []).length)} label="Coachs" badge="Actifs" badgeType="up" />
-        <MetricCard icon="📅" value={String(scheduledSessions.length)} label="Planifiées" badge="À venir" badgeType="up" />
-        <MetricCard icon="✅" value={String(completedSessions.length)} label="Terminées" badge="Total" badgeType="neutral" />
-        <MetricCard icon="⭐" value={avgRating} label="Satisfaction" badge="/5" badgeType="up" />
+        <MetricCard icon="🎓" value={String((coaches ?? []).length)} label={t("coaching.coaches")} badge={t("networking.active")} badgeType="up" />
+        <MetricCard icon="📅" value={String(scheduledSessions.length)} label={t("coaching.scheduled")} badge={t("events.upcoming")} badgeType="up" />
+        <MetricCard icon="✅" value={String(completedSessions.length)} label={t("coaching.completed")} badge="Total" badgeType="neutral" />
+        <MetricCard icon="⭐" value={avgRating} label={t("coaching.satisfaction")} badge="/5" badgeType="up" />
       </div>
 
       {/* Filtres marketplace */}
       <GHCard className="mb-4">
         <div className="flex items-center gap-2 mb-3">
           <Filter className="w-3.5 h-3.5 text-primary" />
-          <span className="font-heading text-xs font-bold">Filtrer les coachs</span>
+          <span className="font-heading text-xs font-bold">{t("coaching.filterCoaches")}</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <select value={filterSpecialty} onChange={e => setFilterSpecialty(e.target.value)} className="bg-secondary/50 border border-border rounded-lg px-2 py-2 text-xs">
-            <option value="">Toutes spécialités</option>
+            <option value="">{t("coaching.allSpecialties")}</option>
             {allSpecialties.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
           <select value={filterLevel} onChange={e => setFilterLevel(e.target.value)} className="bg-secondary/50 border border-border rounded-lg px-2 py-2 text-xs">
-            <option value="all">Tous niveaux</option>
+            <option value="all">{t("coaching.allLevels")}</option>
             <option value="bronze">🥉 Bronze</option>
             <option value="silver">🥈 Silver</option>
             <option value="gold">🥇 Gold</option>
             <option value="platinum">💎 Platinum</option>
           </select>
-          <input type="number" value={filterMaxRate} onChange={e => setFilterMaxRate(e.target.value)} placeholder="Tarif max /h" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
-          <input value={filterLanguage} onChange={e => setFilterLanguage(e.target.value)} placeholder="Langue (ex: fr)" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
+          <input type="number" value={filterMaxRate} onChange={e => setFilterMaxRate(e.target.value)} placeholder={t("coaching.maxRate")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
+          <input value={filterLanguage} onChange={e => setFilterLanguage(e.target.value)} placeholder={t("coaching.language")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs" />
         </div>
       </GHCard>
 
-      <h3 className="font-heading text-base font-extrabold mb-3">Coachs disponibles</h3>
+      <h3 className="font-heading text-base font-extrabold mb-3">{t("coaching.availableCoaches")}</h3>
       {coachesLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
           {Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl" />)}
         </div>
       ) : filteredCoaches.length === 0 ? (
-        <GHCard className="text-center py-8 mb-5"><p className="text-sm text-muted-foreground">Aucun coach ne correspond à vos filtres</p></GHCard>
+        <GHCard className="mb-5"><EmptyState icon={Users} title={t("coaching.noMatch")} /></GHCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
           {filteredCoaches.map((c: any) => {
@@ -214,15 +218,15 @@ export default function CoachingPage() {
                         <option key={p} value={p}>{PROVIDER_LABELS[p]}</option>
                       ))}
                     </select>
-                    <p className="text-[10px] text-muted-foreground">Commission plateforme : 15 %. Vous payez {c.hourly_rate ?? 0} {c.currency ?? "EUR"}.</p>
+                    <p className="text-[10px] text-muted-foreground">{t("coaching.commission")} {c.hourly_rate ?? 0} {c.currency ?? "EUR"}.</p>
                     <div className="flex gap-2">
-                      <button onClick={() => handleBook(c)} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-xs font-bold flex-1">Confirmer</button>
-                      <button onClick={() => setBookingCoachId(null)} className="bg-card border border-border rounded-lg px-4 py-2 text-xs font-bold">Annuler</button>
+                      <button onClick={() => handleBook(c)} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-xs font-bold flex-1">{t("coaching.confirm")}</button>
+                      <button onClick={() => setBookingCoachId(null)} className="bg-card border border-border rounded-lg px-4 py-2 text-xs font-bold">{t("common.cancel")}</button>
                     </div>
                   </div>
                 ) : (
                   <button onClick={() => setBookingCoachId(c.id)} className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors flex items-center justify-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" /> Réserver
+                    <Calendar className="w-3.5 h-3.5" /> {t("coaching.book")}
                   </button>
                 )}
               </GHCard>
@@ -232,7 +236,7 @@ export default function CoachingPage() {
       )}
 
       {scheduledSessions.length > 0 && (<>
-        <h3 className="font-heading text-base font-extrabold mb-3">Sessions à venir</h3>
+        <h3 className="font-heading text-base font-extrabold mb-3">{t("coaching.upcoming")}</h3>
         <div className="space-y-3 mb-5">{scheduledSessions.map((s: any) => (
           <GHCard key={s.id}>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -250,7 +254,7 @@ export default function CoachingPage() {
       </>)}
 
       {completedSessions.length > 0 && (<>
-        <h3 className="font-heading text-base font-extrabold mb-3">Historique</h3>
+        <h3 className="font-heading text-base font-extrabold mb-3">{t("coaching.history")}</h3>
         <div className="space-y-3">{completedSessions.map((s: any) => (
           <GHCard key={s.id}>
             <div className="flex items-center gap-3 flex-wrap">

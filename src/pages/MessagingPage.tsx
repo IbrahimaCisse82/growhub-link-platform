@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { GHCard } from "@/components/ui-custom";
+import EmptyState from "@/components/EmptyState";
 import { useAuth } from "@/hooks/useAuth";
 import { useConnections } from "@/hooks/useGrowHub";
 import { supabase } from "@/integrations/supabase/client";
-import { Send, Search, MessageSquarePlus, ArrowLeft, ShieldOff, Flag } from "lucide-react";
+import { Send, Search, MessageSquarePlus, ArrowLeft, ShieldOff, Flag, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePageMeta } from "@/hooks/usePageMeta";
@@ -12,6 +13,7 @@ import { useSearchParams } from "react-router-dom";
 import { isOnline, useBlockedUsers, useBlockUser, useReportMessage } from "@/hooks/usePresence";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useTranslation } from "react-i18next";
 
 
 interface Conversation {
@@ -26,7 +28,8 @@ interface Conversation {
 
 
 export default function MessagingPage() {
-  usePageMeta({ title: "Messages", description: "Échangez avec votre réseau en temps réel." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.messaging"), description: "Échangez avec votre réseau en temps réel." });
   const { user } = useAuth();
   const { data: connections } = useConnections();
   const isMobile = useIsMobile();
@@ -230,7 +233,7 @@ export default function MessagingPage() {
             Messagerie
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Vos <span className="text-primary">conversations</span>
+            {t("messaging.title")} <span className="text-primary">{t("messaging.titleAccent")}</span>
           </h1>
         </div>
       </div>
@@ -245,7 +248,7 @@ export default function MessagingPage() {
                 <input
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Rechercher..."
+                  placeholder={t("common.search") + "..."}
                   className="bg-transparent border-none outline-none text-xs w-full"
                 />
               </div>
@@ -259,9 +262,9 @@ export default function MessagingPage() {
 
             {showNewChat && (
               <div className="p-3 border-b border-border bg-primary/5">
-                <p className="text-[10px] font-bold text-primary uppercase mb-2">Nouvelle conversation</p>
+                <p className="text-[10px] font-bold text-primary uppercase mb-2">{t("messaging.newChat")}</p>
                 {acceptedConnections.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">Aucune connexion disponible</p>
+                  <p className="text-xs text-muted-foreground">{t("messaging.noConnection")}</p>
                 ) : (
                   acceptedConnections.map(conn => {
                     const profile = (conn as any).partner_profile;
@@ -282,7 +285,7 @@ export default function MessagingPage() {
 
             <div className="overflow-y-auto max-h-[440px]">
               {filteredConversations.length === 0 ? (
-                <p className="text-xs text-muted-foreground text-center py-8">Aucune conversation</p>
+                <EmptyState icon={MessageSquare} title={t("messaging.noConversation")} />
               ) : (
                 filteredConversations.map((conv) => (
                   <button
@@ -322,7 +325,7 @@ export default function MessagingPage() {
             {!selectedPartner ? (
               <div className="flex-1 flex flex-col items-center justify-center text-sm text-muted-foreground gap-2">
                 <MessageSquarePlus className="w-10 h-10 text-muted-foreground/20" />
-                Sélectionnez une conversation ou démarrez-en une nouvelle
+                {t("messaging.selectHint")}
               </div>
             ) : (
               <>
@@ -342,7 +345,7 @@ export default function MessagingPage() {
                     <DropdownMenuTrigger className="text-muted-foreground hover:text-foreground text-xs px-2 py-1 rounded-md hover:bg-secondary">⋯</DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={handleBlock} className="text-destructive">
-                        <ShieldOff className="w-3.5 h-3.5 mr-2" /> Bloquer cet utilisateur
+                        <ShieldOff className="w-3.5 h-3.5 mr-2" /> {t("messaging.block")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -360,7 +363,7 @@ export default function MessagingPage() {
                           <button
                             onClick={() => reportMessage.mutate({ messageId: m.id, reason: "inappropriate" })}
                             className="absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition text-muted-foreground hover:text-destructive"
-                            aria-label="Signaler"
+                            aria-label={t("messaging.report")}
                           >
                             <Flag className="w-3 h-3" />
                           </button>
@@ -378,7 +381,7 @@ export default function MessagingPage() {
                         <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:120ms]" />
                         <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:240ms]" />
                       </span>
-                      {selectedConv?.partnerName ?? "Votre contact"} écrit…
+                      {selectedConv?.partnerName ?? "Contact"} {t("messaging.typing")}
                     </div>
                   )}
                   <div ref={bottomRef} />
@@ -388,10 +391,10 @@ export default function MessagingPage() {
                     value={newMsg}
                     onChange={(e) => { setNewMsg(e.target.value); broadcastTyping(); }}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                    placeholder="Votre message..."
+                    placeholder={t("messaging.placeholder")}
                     className="flex-1 bg-secondary/50 rounded-lg px-3 py-2 text-xs outline-none border border-border focus:border-primary/40"
                   />
-                  <button onClick={sendMessage} className="bg-primary text-primary-foreground rounded-lg px-3 py-2 hover:bg-primary-hover transition-colors" aria-label="Envoyer">
+                  <button onClick={sendMessage} className="bg-primary text-primary-foreground rounded-lg px-3 py-2 hover:bg-primary-hover transition-colors" aria-label={t("messaging.send")}>
                     <Send className="w-3.5 h-3.5" />
                   </button>
                 </div>

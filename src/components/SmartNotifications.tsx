@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GHCard, Tag } from "@/components/ui-custom";
 import { Sparkles, TrendingUp, Users, Calendar, Award, MessageSquare, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface SmartNotif {
   id: string;
@@ -19,6 +20,7 @@ interface SmartNotif {
 export default function SmartNotifications() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: notifs } = useQuery({
     queryKey: ["smart-notifications", user?.id],
@@ -169,7 +171,7 @@ export default function SmartNotifications() {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="w-5 h-5 text-primary" />
-        <h2 className="font-heading text-base font-bold">Pour vous aujourd'hui</h2>
+        <h2 className="font-heading text-base font-bold">{t("smart.heading")}</h2>
       </div>
       <div className="space-y-2">
         {notifs.map(notif => (
