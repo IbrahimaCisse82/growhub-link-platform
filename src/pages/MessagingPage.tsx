@@ -262,9 +262,9 @@ export default function MessagingPage() {
 
             {showNewChat && (
               <div className="p-3 border-b border-border bg-primary/5">
-                <p className="text-[10px] font-bold text-primary uppercase mb-2">Nouvelle conversation</p>
+                <p className="text-[10px] font-bold text-primary uppercase mb-2">{t("messaging.newChat")}</p>
                 {acceptedConnections.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">Aucune connexion disponible</p>
+                  <p className="text-xs text-muted-foreground">{t("messaging.noConnection")}</p>
                 ) : (
                   acceptedConnections.map(conn => {
                     const profile = (conn as any).partner_profile;
