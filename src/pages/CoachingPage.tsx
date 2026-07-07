@@ -28,7 +28,8 @@ const PROVIDER_LABELS: Record<PaymentProvider, string> = {
 };
 
 export default function CoachingPage() {
-  usePageMeta({ title: "Coaching", description: "Trouvez un coach et réservez des sessions pour accélérer votre startup." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("nav.coaching"), description: "Trouvez un coach et réservez des sessions pour accélérer votre startup." });
   const { data: coaches, isLoading: coachesLoading } = useCoaches();
   const { data: sessions } = useCoachingSessions();
   const bookSession = useBookSession();
