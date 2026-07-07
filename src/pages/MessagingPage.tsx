@@ -363,7 +363,7 @@ export default function MessagingPage() {
                           <button
                             onClick={() => reportMessage.mutate({ messageId: m.id, reason: "inappropriate" })}
                             className="absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition text-muted-foreground hover:text-destructive"
-                            aria-label="Signaler"
+                            aria-label={t("messaging.report")}
                           >
                             <Flag className="w-3 h-3" />
                           </button>
