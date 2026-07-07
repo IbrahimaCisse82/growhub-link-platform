@@ -248,7 +248,7 @@ export default function MessagingPage() {
                 <input
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Rechercher..."
+                  placeholder={t("common.search") + "..."}
                   className="bg-transparent border-none outline-none text-xs w-full"
                 />
               </div>
