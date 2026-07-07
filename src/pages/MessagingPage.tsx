@@ -391,10 +391,10 @@ export default function MessagingPage() {
                     value={newMsg}
                     onChange={(e) => { setNewMsg(e.target.value); broadcastTyping(); }}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                    placeholder="Votre message..."
+                    placeholder={t("messaging.placeholder")}
                     className="flex-1 bg-secondary/50 rounded-lg px-3 py-2 text-xs outline-none border border-border focus:border-primary/40"
                   />
-                  <button onClick={sendMessage} className="bg-primary text-primary-foreground rounded-lg px-3 py-2 hover:bg-primary-hover transition-colors" aria-label="Envoyer">
+                  <button onClick={sendMessage} className="bg-primary text-primary-foreground rounded-lg px-3 py-2 hover:bg-primary-hover transition-colors" aria-label={t("messaging.send")}>
                     <Send className="w-3.5 h-3.5" />
                   </button>
                 </div>
