@@ -381,7 +381,7 @@ export default function MessagingPage() {
                         <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:120ms]" />
                         <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce [animation-delay:240ms]" />
                       </span>
-                      {selectedConv?.partnerName ?? "Votre contact"} écrit…
+                      {selectedConv?.partnerName ?? "Contact"} {t("messaging.typing")}
                     </div>
                   )}
                   <div ref={bottomRef} />
