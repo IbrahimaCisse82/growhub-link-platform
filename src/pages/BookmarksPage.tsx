@@ -8,22 +8,24 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { Bookmark, Trash2, FileText, Users, ShoppingBag, MessageSquare } from "lucide-react";
 import { useToggleBookmark } from "@/components/BookmarkButton";
+import { useTranslation } from "react-i18next";
 
-const typeConfig: Record<string, { label: string; icon: any; color: string }> = {
-  post: { label: "Publication", icon: FileText, color: "text-primary" },
-  profile: { label: "Profil", icon: Users, color: "text-ghblue" },
-  service: { label: "Service", icon: ShoppingBag, color: "text-ghorange" },
-  event: { label: "Événement", icon: MessageSquare, color: "text-ghpurple" },
+const typeConfig: Record<string, { key: string; icon: any; color: string }> = {
+  post: { key: "post", icon: FileText, color: "text-primary" },
+  profile: { key: "profile", icon: Users, color: "text-ghblue" },
+  service: { key: "service", icon: ShoppingBag, color: "text-ghorange" },
+  event: { key: "event", icon: MessageSquare, color: "text-ghpurple" },
 };
 
 export default function BookmarksPage() {
-  usePageMeta({ title: "Favoris", description: "Retrouvez tous vos éléments sauvegardés." });
+  const { t, i18n } = useTranslation();
+  usePageMeta({ title: t("nav.bookmarks"), description: t("bookmarks.seoDesc") });
   const { user } = useAuth();
   const { data: bookmarks, isLoading } = useBookmarks();
   const toggleBookmark = useToggleBookmark();
   const [filter, setFilter] = useState<string>("all");
+  const locale = i18n.language === "en" ? "en-US" : "fr-FR";
 
-  // Fetch related data for bookmarked items
   const { data: postDetails } = useQuery({
     queryKey: ["bookmark-posts", bookmarks],
     enabled: !!bookmarks && bookmarks.some(b => b.item_type === "post"),
@@ -49,59 +51,68 @@ export default function BookmarksPage() {
   const filtered = filter === "all" ? bookmarks : bookmarks?.filter(b => b.item_type === filter);
   const types = [...new Set(bookmarks?.map(b => b.item_type) ?? [])];
 
+  const labelForType = (type: string) =>
+    typeConfig[type] ? t(`bookmarks.types.${typeConfig[type].key}`) : type;
+
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
       <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <Bookmark className="w-3.5 h-3.5" /> Favoris
+            <Bookmark className="w-3.5 h-3.5" aria-hidden="true" /> {t("bookmarks.badge")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Vos <span className="text-primary">favoris</span>
+            {t("bookmarks.title")} <span className="text-primary">{t("bookmarks.titleAccent")}</span>
           </h1>
-          <p className="text-foreground/60 text-sm">{bookmarks?.length ?? 0} élément{(bookmarks?.length ?? 0) > 1 ? "s" : ""} sauvegardé{(bookmarks?.length ?? 0) > 1 ? "s" : ""}</p>
+          <p className="text-foreground/60 text-sm">{t("bookmarks.savedCount", { count: bookmarks?.length ?? 0 })}</p>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-1.5 mb-4 flex-wrap">
-        <button onClick={() => setFilter("all")}
+      <div className="flex gap-1.5 mb-4 flex-wrap" role="tablist">
+        <button
+          onClick={() => setFilter("all")}
+          role="tab"
+          aria-selected={filter === "all"}
           className={`h-[30px] px-3 rounded-lg text-[11px] font-semibold font-heading border transition-colors ${
             filter === "all" ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50"}`}>
-          Tous ({bookmarks?.length ?? 0})
+          {t("bookmarks.all")} ({bookmarks?.length ?? 0})
         </button>
-        {types.map(t => {
-          const conf = typeConfig[t] ?? { label: t, icon: Bookmark, color: "text-muted-foreground" };
-          const count = bookmarks?.filter(b => b.item_type === t).length ?? 0;
+        {types.map(ty => {
+          const conf = typeConfig[ty] ?? { key: ty, icon: Bookmark, color: "text-muted-foreground" };
+          const count = bookmarks?.filter(b => b.item_type === ty).length ?? 0;
           return (
-            <button key={t} onClick={() => setFilter(t)}
+            <button
+              key={ty}
+              onClick={() => setFilter(ty)}
+              role="tab"
+              aria-selected={filter === ty}
               className={`h-[30px] px-3 rounded-lg text-[11px] font-semibold font-heading border transition-colors flex items-center gap-1 ${
-                filter === t ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50"}`}>
-              <conf.icon className="w-3 h-3" /> {conf.label} ({count})
+                filter === ty ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50"}`}>
+              <conf.icon className="w-3 h-3" aria-hidden="true" /> {labelForType(ty)} ({count})
             </button>
           );
         })}
       </div>
 
-      {/* Bookmarks list */}
       {!filtered || filtered.length === 0 ? (
         <GHCard className="text-center py-12">
-          <Bookmark className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">Aucun favori pour le moment.</p>
+          <Bookmark className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" aria-hidden="true" />
+          <p className="text-sm text-muted-foreground">{t("bookmarks.empty")}</p>
         </GHCard>
       ) : (
-        <div className="space-y-2">
+        <ul className="space-y-2">
           {filtered.map(bm => {
-            const conf = typeConfig[bm.item_type] ?? { label: bm.item_type, icon: Bookmark, color: "text-muted-foreground" };
+            const conf = typeConfig[bm.item_type] ?? { key: bm.item_type, icon: Bookmark, color: "text-muted-foreground" };
             const Icon = conf.icon;
+            const label = labelForType(bm.item_type);
 
-            let title = `${conf.label} #${bm.item_id.slice(0, 8)}`;
+            let title = `${label} #${bm.item_id.slice(0, 8)}`;
             let subtitle = "";
 
             if (bm.item_type === "post" && postDetails?.[bm.item_id]) {
               title = postDetails[bm.item_id].content?.slice(0, 80) + "...";
-              subtitle = `❤️ ${postDetails[bm.item_id].likes_count ?? 0} likes`;
+              subtitle = `❤️ ${postDetails[bm.item_id].likes_count ?? 0}`;
             }
             if (bm.item_type === "profile" && profileDetails?.[bm.item_id]) {
               title = profileDetails[bm.item_id].display_name;
@@ -109,30 +120,34 @@ export default function BookmarksPage() {
             }
 
             return (
-              <GHCard key={bm.id} className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0`}>
-                  <Icon className={`w-4 h-4 ${conf.color}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-heading text-xs font-bold truncate">{title}</span>
-                    <Tag>{conf.label}</Tag>
+              <li key={bm.id}>
+                <GHCard className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                    <Icon className={`w-4 h-4 ${conf.color}`} />
                   </div>
-                  {subtitle && <p className="text-[10px] text-muted-foreground">{subtitle}</p>}
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[10px] text-muted-foreground">
-                    {new Date(bm.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                  </span>
-                  <button onClick={() => toggleBookmark.mutate({ itemType: bm.item_type, itemId: bm.item_id })}
-                    className="text-muted-foreground hover:text-destructive transition-colors p-1">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </GHCard>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-heading text-xs font-bold truncate">{title}</span>
+                      <Tag>{label}</Tag>
+                    </div>
+                    {subtitle && <p className="text-[10px] text-muted-foreground">{subtitle}</p>}
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-[10px] text-muted-foreground">
+                      {new Date(bm.created_at).toLocaleDateString(locale, { day: "numeric", month: "short" })}
+                    </span>
+                    <button
+                      onClick={() => toggleBookmark.mutate({ itemType: bm.item_type, itemId: bm.item_id })}
+                      aria-label={t("common.delete")}
+                      className="text-muted-foreground hover:text-destructive transition-colors p-1 min-h-11 min-w-11 inline-flex items-center justify-center">
+                      <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                    </button>
+                  </div>
+                </GHCard>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
     </motion.div>
   );
