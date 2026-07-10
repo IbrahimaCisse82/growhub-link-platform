@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import { Rocket, Loader2, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordPage() {
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,10 +18,9 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for recovery event
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
-        // User has clicked the recovery link
+        // no-op
       }
     });
     return () => subscription.unsubscribe();
@@ -27,23 +28,23 @@ export default function ResetPasswordPage() {
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirm) { toast.error("Les mots de passe ne correspondent pas"); return; }
-    if (password.length < 6) { toast.error("Le mot de passe doit contenir au moins 6 caractères"); return; }
+    if (password !== confirm) { toast.error(t("auth.passwordMismatch")); return; }
+    if (password.length < 6) { toast.error(t("auth.passwordTooShort")); return; }
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
     setLoading(false);
     if (error) { toast.error(error.message); return; }
     setDone(true);
-    toast.success("Mot de passe mis à jour !");
+    toast.success(t("auth.passwordUpdated"));
     setTimeout(() => navigate("/"), 2000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-dvh flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center" aria-hidden="true">
               <Rocket className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="font-heading text-2xl font-bold text-foreground">
@@ -55,31 +56,31 @@ export default function ResetPasswordPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-heading text-xl">
-              {done ? "Mot de passe mis à jour" : "Nouveau mot de passe"}
+              {done ? t("auth.resetDone") : t("auth.resetTitle")}
             </CardTitle>
             <CardDescription>
-              {done ? "Vous allez être redirigé..." : "Choisissez un nouveau mot de passe sécurisé"}
+              {done ? t("auth.resetRedirect") : t("auth.resetDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {done ? (
               <div className="text-center py-4">
-                <CheckCircle className="w-12 h-12 text-primary mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Redirection en cours...</p>
+                <CheckCircle className="w-12 h-12 text-primary mx-auto mb-3" aria-hidden="true" />
+                <p className="text-sm text-muted-foreground">{t("auth.redirecting")}</p>
               </div>
             ) : (
               <form onSubmit={handleReset} className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Nouveau mot de passe</Label>
-                  <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder="••••••••" />
+                  <Label htmlFor="new-password">{t("auth.newPassword")}</Label>
+                  <Input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder="••••••••" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Confirmer le mot de passe</Label>
-                  <Input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={6} placeholder="••••••••" />
+                  <Label htmlFor="confirm-password">{t("auth.confirmPassword")}</Label>
+                  <Input id="confirm-password" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={6} placeholder="••••••••" />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading && <Loader2 className="w-4 h-4 animate-spin mr-1" />}
-                  Mettre à jour
+                  {loading && <Loader2 className="w-4 h-4 animate-spin mr-1" aria-hidden="true" />}
+                  {t("auth.updatePassword")}
                 </Button>
               </form>
             )}

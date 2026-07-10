@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Rocket, ArrowRight, Loader2, Users, GraduationCap, TrendingUp, Briefcase, Code, Building2, BookOpen, Sparkles, UserCheck, Building } from "lucide-react";
+import { Rocket, Loader2, Users, GraduationCap, TrendingUp, Briefcase, Code, Building2, BookOpen, Sparkles, UserCheck, Building } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useTranslation } from "react-i18next";
 
 const DEMO_PROFILES = [
   { role: "startup", label: "Startup", icon: Rocket, color: "bg-green-600/10 text-green-500 border-green-600/20", desc: "Sophie Martin · GreenTech" },
