@@ -24,7 +24,8 @@ const DEMO_PROFILES = [
 ];
 
 export default function AuthPage() {
-  usePageMeta({ title: "Connexion", description: "Connectez-vous ou créez votre compte GrowHub." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("auth.seoTitle"), description: t("auth.seoDesc") });
   const [isLogin, setIsLogin] = useState(true);
   const [isForgot, setIsForgot] = useState(false);
   const [loading, setLoading] = useState(false);
