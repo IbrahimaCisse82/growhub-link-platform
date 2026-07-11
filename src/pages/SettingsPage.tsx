@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { GHCard } from "@/components/ui-custom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,20 +13,21 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-const notifTypes = [
-  { key: "connection_request", label: "Demandes de connexion" },
-  { key: "connection_accepted", label: "Connexions acceptées" },
-  { key: "coaching_booked", label: "Sessions de coaching réservées" },
-  { key: "coaching_reminder", label: "Rappels de coaching" },
-  { key: "event_reminder", label: "Rappels d'événements" },
-  { key: "post_reaction", label: "Réactions sur mes posts" },
-  { key: "post_comment", label: "Commentaires sur mes posts" },
-  { key: "badge_earned", label: "Badges débloqués" },
-  { key: "system_notifications", label: "Notifications système" },
+const NOTIF_KEYS = [
+  "connection_request",
+  "connection_accepted",
+  "coaching_booked",
+  "coaching_reminder",
+  "event_reminder",
+  "post_reaction",
+  "post_comment",
+  "badge_earned",
+  "system_notifications",
 ];
 
 export default function SettingsPage() {
-  usePageMeta({ title: "Paramètres", description: "Configurez votre compte et vos préférences GrowHub." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("settings.seoTitle"), description: t("settings.seoDesc") });
   const { theme, setTheme } = useTheme();
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ export default function SettingsPage() {
     } as any).eq("user_id", user.id);
     setSavingPrivacy(false);
     if (error) toast.error(error.message);
-    else toast.success("Préférences de confidentialité enregistrées");
+    else toast.success(t("settings.privacySaved"));
   };
 
   const handleExport = async () => {
@@ -79,7 +81,7 @@ export default function SettingsPage() {
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/export-user-data`, {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
-      if (!res.ok) throw new Error("Export impossible");
+      if (!res.ok) throw new Error(t("settings.exportImpossible"));
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -87,9 +89,9 @@ export default function SettingsPage() {
       a.download = `growhub-export-${Date.now()}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success("Vos données ont été téléchargées");
+      toast.success(t("settings.exportSuccess"));
     } catch (e: any) {
-      toast.error(e.message || "Erreur lors de l'export");
+      toast.error(e.message || t("settings.exportError"));
     } finally {
       setExporting(false);
     }
@@ -109,15 +111,9 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    if (savedPrefs) {
-      const prefs: Record<string, boolean> = {};
-      notifTypes.forEach(t => { prefs[t.key] = savedPrefs[t.key] ?? true; });
-      setNotifPrefs(prefs);
-    } else {
-      const prefs: Record<string, boolean> = {};
-      notifTypes.forEach(t => { prefs[t.key] = true; });
-      setNotifPrefs(prefs);
-    }
+    const prefs: Record<string, boolean> = {};
+    NOTIF_KEYS.forEach(k => { prefs[k] = savedPrefs?.[k] ?? true; });
+    setNotifPrefs(prefs);
   }, [savedPrefs]);
 
   const handleSaveNotifPrefs = async () => {
@@ -131,37 +127,37 @@ export default function SettingsPage() {
     }
     setSavingNotifs(false);
     queryClient.invalidateQueries({ queryKey: ["notification-preferences"] });
-    toast.success("Préférences sauvegardées !");
+    toast.success(t("settings.saved"));
   };
 
   const themes = [
-    { value: "light" as const, label: "Clair", icon: Sun },
-    { value: "dark" as const, label: "Sombre", icon: Moon },
-    { value: "system" as const, label: "Système", icon: Monitor },
+    { value: "light" as const, labelKey: "settings.themes.light", icon: Sun },
+    { value: "dark" as const, labelKey: "settings.themes.dark", icon: Moon },
+    { value: "system" as const, labelKey: "settings.themes.system", icon: Monitor },
   ];
 
   const handleChangePassword = async () => {
-    if (!newPassword || newPassword.length < 6) { toast.error("Le mot de passe doit faire au moins 6 caractères"); return; }
-    if (newPassword !== confirmPassword) { toast.error("Les mots de passe ne correspondent pas"); return; }
+    if (!newPassword || newPassword.length < 6) { toast.error(t("settings.passwordTooShort")); return; }
+    if (newPassword !== confirmPassword) { toast.error(t("settings.passwordMismatch")); return; }
     setChangingPassword(true);
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setChangingPassword(false);
     if (error) toast.error(error.message);
     else {
-      toast.success("Mot de passe mis à jour !");
+      toast.success(t("settings.passwordUpdated"));
       setNewPassword("");
       setConfirmPassword("");
     }
   };
 
+  const confirmWord = t("settings.confirmWord");
   const handleDeleteAccount = async () => {
-    if (deleteText !== "SUPPRIMER") { toast.error("Tapez SUPPRIMER pour confirmer"); return; }
+    if (deleteText !== confirmWord) { toast.error(t("settings.deleteError")); return; }
     if (user) {
       await supabase.from("profiles").delete().eq("user_id", user.id);
-      // Note: user_roles cleanup is handled by cascade or backoffice
     }
     await signOut();
-    toast.success("Compte désactivé. Vos données ont été supprimées.");
+    toast.success(t("settings.deleted"));
     navigate("/auth");
   };
 
@@ -171,72 +167,68 @@ export default function SettingsPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Paramètres
+            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" aria-hidden="true" /> {t("settings.badge")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            <span className="text-primary">Paramètres</span> du compte
+            <span className="text-primary">{t("settings.title")}</span> {t("settings.titleAccent")}
           </h1>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl">
-        {/* Theme */}
-        <GHCard title="Apparence">
+        <GHCard title={t("settings.appearance")}>
           <div className="grid grid-cols-3 gap-2">
-            {themes.map((t) => (
+            {themes.map((th) => (
               <button
-                key={t.value}
-                onClick={() => setTheme(t.value)}
+                key={th.value}
+                onClick={() => setTheme(th.value)}
+                aria-label={t(th.labelKey)}
+                aria-pressed={theme === th.value}
                 className={cn(
-                  "flex flex-col items-center gap-2 p-4 rounded-xl border transition-all",
-                  theme === t.value ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:border-primary/40"
+                  "flex flex-col items-center gap-2 p-4 rounded-xl border transition-all min-h-11",
+                  theme === th.value ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:border-primary/40"
                 )}
               >
-                <t.icon className="w-5 h-5" />
-                <span className="text-xs font-medium">{t.label}</span>
+                <th.icon className="w-5 h-5" aria-hidden="true" />
+                <span className="text-xs font-medium">{t(th.labelKey)}</span>
               </button>
             ))}
           </div>
         </GHCard>
 
-        {/* Push Notifications */}
-        <GHCard title="Notifications push">
-          <p className="text-xs text-muted-foreground mb-3">
-            Recevez des alertes en temps réel même quand l'app est en arrière-plan.
-          </p>
+        <GHCard title={t("settings.pushTitle")}>
+          <p className="text-xs text-muted-foreground mb-3">{t("settings.pushDesc")}</p>
           <PushNotificationToggle />
         </GHCard>
 
-        {/* Account info */}
-        <GHCard title="Compte">
+        <GHCard title={t("settings.account")}>
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Email</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("settings.email")}</label>
               <div className="bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm text-muted-foreground">{user?.email}</div>
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Nom</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("settings.name")}</label>
               <div className="bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm text-muted-foreground">{profile?.display_name ?? "—"}</div>
             </div>
           </div>
         </GHCard>
 
-        {/* Notification preferences */}
-        <GHCard title="Préférences de notifications" className="md:col-span-2">
+        <GHCard title={t("settings.notifPrefs")} className="md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
-            <Bell className="w-4 h-4 text-primary" />
-            <span className="text-xs text-muted-foreground">Choisissez les notifications que vous souhaitez recevoir</span>
+            <Bell className="w-4 h-4 text-primary" aria-hidden="true" />
+            <span className="text-xs text-muted-foreground">{t("settings.notifPrefsHint")}</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {notifTypes.map(t => (
-              <label key={t.key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-primary/30 transition-colors cursor-pointer">
+            {NOTIF_KEYS.map(key => (
+              <label key={key} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-primary/30 transition-colors cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={notifPrefs[t.key] ?? true}
-                  onChange={(e) => setNotifPrefs(prev => ({ ...prev, [t.key]: e.target.checked }))}
+                  checked={notifPrefs[key] ?? true}
+                  onChange={(e) => setNotifPrefs(prev => ({ ...prev, [key]: e.target.checked }))}
                   className="w-4 h-4 accent-primary rounded"
                 />
-                <span className="text-xs font-medium">{t.label}</span>
+                <span className="text-xs font-medium">{t(`settings.types.${key}`)}</span>
               </label>
             ))}
           </div>
@@ -244,104 +236,96 @@ export default function SettingsPage() {
             <button
               onClick={handleSaveNotifPrefs}
               disabled={savingNotifs}
-              className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 disabled:opacity-50 hover:bg-primary-hover transition-colors"
+              className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 disabled:opacity-50 hover:bg-primary-hover transition-colors min-h-11"
             >
-              {savingNotifs ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              Sauvegarder
+              {savingNotifs ? <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> : <Save className="w-3.5 h-3.5" aria-hidden="true" />}
+              {t("settings.save")}
             </button>
           </div>
         </GHCard>
 
-        {/* Change password */}
-        <GHCard title="Changer le mot de passe" className="md:col-span-2">
+        <GHCard title={t("settings.changePassword")} className="md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
-            <KeyRound className="w-4 h-4 text-primary" />
-            <span className="text-xs text-muted-foreground">Minimum 6 caractères</span>
+            <KeyRound className="w-4 h-4 text-primary" aria-hidden="true" />
+            <span className="text-xs text-muted-foreground">{t("settings.passwordHint")}</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Nouveau mot de passe</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("settings.newPassword")}</label>
               <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••" className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Confirmer</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("settings.confirmPassword")}</label>
               <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••" className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
             </div>
             <div className="flex items-end">
-              <button onClick={handleChangePassword} disabled={changingPassword || !newPassword} className="w-full bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-primary-hover transition-colors">
-                {changingPassword ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                Modifier
+              <button onClick={handleChangePassword} disabled={changingPassword || !newPassword} className="w-full bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-primary-hover transition-colors min-h-11">
+                {changingPassword ? <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> : <Save className="w-3.5 h-3.5" aria-hidden="true" />}
+                {t("settings.modify")}
               </button>
             </div>
           </div>
         </GHCard>
 
-        {/* Privacy */}
-        <GHCard title="Confidentialité" className="md:col-span-2">
+        <GHCard title={t("settings.privacy")} className="md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
-            <Eye className="w-4 h-4 text-primary" />
-            <span className="text-xs text-muted-foreground">Contrôlez la visibilité de vos données</span>
+            <Eye className="w-4 h-4 text-primary" aria-hidden="true" />
+            <span className="text-xs text-muted-foreground">{t("settings.privacyHint")}</span>
           </div>
           <div className="space-y-3">
             <label className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border">
               <div>
-                <p className="text-xs font-bold">Profil public</p>
-                <p className="text-[11px] text-muted-foreground">Permet aux autres membres de voir votre profil complet</p>
+                <p className="text-xs font-bold">{t("settings.publicProfile")}</p>
+                <p className="text-[11px] text-muted-foreground">{t("settings.publicProfileDesc")}</p>
               </div>
               <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border">
               <div>
-                <p className="text-xs font-bold">Email visible</p>
-                <p className="text-[11px] text-muted-foreground">Affiche votre adresse email sur votre profil public</p>
+                <p className="text-xs font-bold">{t("settings.emailVisible")}</p>
+                <p className="text-[11px] text-muted-foreground">{t("settings.emailVisibleDesc")}</p>
               </div>
               <input type="checkbox" checked={emailVisible} onChange={(e) => setEmailVisible(e.target.checked)} className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between gap-3 p-3 rounded-xl border border-border">
               <div>
-                <p className="text-xs font-bold">Apparaître dans les suggestions de matching</p>
-                <p className="text-[11px] text-muted-foreground">Votre profil pourra être suggéré aux autres membres</p>
+                <p className="text-xs font-bold">{t("settings.showInMatching")}</p>
+                <p className="text-[11px] text-muted-foreground">{t("settings.showInMatchingDesc")}</p>
               </div>
               <input type="checkbox" checked={showInMatching} onChange={(e) => setShowInMatching(e.target.checked)} className="w-4 h-4 accent-primary" />
             </label>
           </div>
           <div className="flex justify-end mt-4">
-            <button onClick={handleSavePrivacy} disabled={savingPrivacy} className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 disabled:opacity-50">
-              {savingPrivacy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} Sauvegarder
+            <button onClick={handleSavePrivacy} disabled={savingPrivacy} className="bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 disabled:opacity-50 min-h-11">
+              {savingPrivacy ? <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> : <Save className="w-3.5 h-3.5" aria-hidden="true" />} {t("settings.save")}
             </button>
           </div>
         </GHCard>
 
-        {/* Data export (RGPD) */}
-        <GHCard title="Mes données (RGPD)" className="md:col-span-2">
-          <p className="text-xs text-muted-foreground mb-3">
-            Téléchargez l'ensemble de vos données personnelles (profil, posts, messages, sessions) au format JSON.
-          </p>
-          <button onClick={handleExport} disabled={exporting} className="bg-secondary text-foreground border border-border rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 disabled:opacity-50">
-            {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />} Exporter mes données
+        <GHCard title={t("settings.dataTitle")} className="md:col-span-2">
+          <p className="text-xs text-muted-foreground mb-3">{t("settings.dataDesc")}</p>
+          <button onClick={handleExport} disabled={exporting} className="bg-secondary text-foreground border border-border rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 disabled:opacity-50 min-h-11">
+            {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> : <Download className="w-3.5 h-3.5" aria-hidden="true" />} {t("settings.exportData")}
           </button>
         </GHCard>
 
-
         <GHCard className="md:col-span-2 border-destructive/20">
           <div className="flex items-center gap-2 mb-3">
-            <Shield className="w-4 h-4 text-destructive" />
-            <h3 className="font-heading text-sm font-bold text-destructive">Zone dangereuse</h3>
+            <Shield className="w-4 h-4 text-destructive" aria-hidden="true" />
+            <h3 className="font-heading text-sm font-bold text-destructive">{t("settings.dangerZone")}</h3>
           </div>
-          <p className="text-xs text-muted-foreground mb-4">
-            La suppression de votre compte est irréversible. Toutes vos données seront effacées.
-          </p>
+          <p className="text-xs text-muted-foreground mb-4">{t("settings.dangerDesc")}</p>
           {!showDeleteConfirm ? (
-            <button onClick={() => setShowDeleteConfirm(true)} className="bg-destructive/10 text-destructive border border-destructive/20 rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-destructive/20 transition-colors">
-              <Trash2 className="w-3.5 h-3.5" /> Supprimer mon compte
+            <button onClick={() => setShowDeleteConfirm(true)} className="bg-destructive/10 text-destructive border border-destructive/20 rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-destructive/20 transition-colors min-h-11">
+              <Trash2 className="w-3.5 h-3.5" aria-hidden="true" /> {t("settings.deleteAccount")}
             </button>
           ) : (
             <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4 space-y-3">
-              <p className="text-xs font-bold text-destructive">Tapez SUPPRIMER pour confirmer :</p>
-              <input value={deleteText} onChange={(e) => setDeleteText(e.target.value)} placeholder="SUPPRIMER" className="w-full bg-background border border-destructive/30 rounded-lg px-3 py-2 text-sm focus:outline-none" />
+              <p className="text-xs font-bold text-destructive">{t("settings.typeToConfirm")}</p>
+              <input value={deleteText} onChange={(e) => setDeleteText(e.target.value)} placeholder={confirmWord} className="w-full bg-background border border-destructive/30 rounded-lg px-3 py-2 text-sm focus:outline-none" />
               <div className="flex gap-2">
-                <button onClick={handleDeleteAccount} disabled={deleteText !== "SUPPRIMER"} className="bg-destructive text-destructive-foreground rounded-lg px-4 py-2 text-xs font-bold disabled:opacity-50">Confirmer la suppression</button>
-                <button onClick={() => { setShowDeleteConfirm(false); setDeleteText(""); }} className="bg-card border border-border rounded-lg px-4 py-2 text-xs font-bold">Annuler</button>
+                <button onClick={handleDeleteAccount} disabled={deleteText !== confirmWord} className="bg-destructive text-destructive-foreground rounded-lg px-4 py-2 text-xs font-bold disabled:opacity-50">{t("settings.confirmDelete")}</button>
+                <button onClick={() => { setShowDeleteConfirm(false); setDeleteText(""); }} className="bg-card border border-border rounded-lg px-4 py-2 text-xs font-bold">{t("settings.cancel")}</button>
               </div>
             </div>
           )}
