@@ -1,59 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { X, ArrowRight, ArrowLeft, Home, Users, PenLine, Rss, MessageSquare, Sparkles } from "lucide-react";
 
 interface TourStep {
-  target: string; // CSS selector or description
-  title: string;
-  description: string;
+  key: string;
   icon: any;
   position: "center" | "top" | "bottom";
 }
 
 const tourSteps: TourStep[] = [
-  {
-    target: "welcome",
-    title: "Bienvenue sur GrowHubLink ! 🚀",
-    description: "Votre plateforme tout-en-un pour accélérer votre parcours entrepreneurial. Laissez-nous vous guider en 30 secondes.",
-    icon: Sparkles,
-    position: "center",
-  },
-  {
-    target: "dashboard",
-    title: "Votre Dashboard",
-    description: "Retrouvez vos objectifs, statistiques clés, checklist d'activation et recommandations personnalisées.",
-    icon: Home,
-    position: "top",
-  },
-  {
-    target: "networking",
-    title: "Networking Intelligent",
-    description: "Notre algorithme analyse vos compétences et objectifs pour vous recommander les profils les plus pertinents.",
-    icon: Users,
-    position: "top",
-  },
-  {
-    target: "coaching",
-    title: "Coaching Hub",
-    description: "Réservez des sessions avec des experts certifiés. Évaluez, suivez votre progression et gagnez des badges.",
-    icon: PenLine,
-    position: "top",
-  },
-  {
-    target: "feed",
-    title: "Fil d'Actualité & Cercles",
-    description: "Publiez, échangez et rejoignez des cercles thématiques pour enrichir votre réseau.",
-    icon: Rss,
-    position: "top",
-  },
-  {
-    target: "messaging",
-    title: "Messagerie en Temps Réel",
-    description: "Échangez directement avec vos connexions. Les notifications arrivent instantanément.",
-    icon: MessageSquare,
-    position: "bottom",
-  },
+  { key: "welcome", icon: Sparkles, position: "center" },
+  { key: "dashboard", icon: Home, position: "top" },
+  { key: "networking", icon: Users, position: "top" },
+  { key: "coaching", icon: PenLine, position: "top" },
+  { key: "feed", icon: Rss, position: "top" },
+  { key: "messaging", icon: MessageSquare, position: "bottom" },
 ];
+
 
 const TOUR_STORAGE_KEY = "growhublink_tour_completed";
 
