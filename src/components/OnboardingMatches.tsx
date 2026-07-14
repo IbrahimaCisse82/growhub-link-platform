@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useMatching } from "@/hooks/useMatching";
 import { useAuth } from "@/hooks/useAuth";
 import { useSendConnection } from "@/hooks/useConnections";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function OnboardingMatches({ onComplete }: Props) {
+  const { t } = useTranslation();
   const { data: matches, isLoading } = useMatching(6);
   const sendConnection = useSendConnection();
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
