@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useMatching } from "@/hooks/useMatching";
 import { useAuth } from "@/hooks/useAuth";
 import { useSendConnection } from "@/hooks/useConnections";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function OnboardingMatches({ onComplete }: Props) {
+  const { t } = useTranslation();
   const { data: matches, isLoading } = useMatching(6);
   const sendConnection = useSendConnection();
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
@@ -24,9 +26,9 @@ export default function OnboardingMatches({ onComplete }: Props) {
     sendConnection.mutate({ receiverId: userId }, {
       onSuccess: () => {
         setSentIds(prev => new Set(prev).add(userId));
-        toast.success("Demande envoyée !");
+        toast.success(t("onboardingMatches.sentToast"));
       },
-      onError: () => toast.error("Erreur lors de l'envoi"),
+      onError: () => toast.error(t("onboardingMatches.sendError")),
     });
   };
 
@@ -35,13 +37,13 @@ export default function OnboardingMatches({ onComplete }: Props) {
       <div className="w-full max-w-2xl space-y-6">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-2">
           <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-sm font-medium text-primary mb-2">
-            <Sparkles className="w-4 h-4" /> Matching intelligent
+            <Sparkles className="w-4 h-4" /> {t("onboardingMatches.badge")}
           </div>
           <h1 className="text-2xl md:text-3xl font-heading font-bold text-foreground">
-            Vos premiers matchs
+            {t("onboardingMatches.title")}
           </h1>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Basé sur votre profil, voici les membres qui correspondent le mieux à vos besoins. Connectez-vous dès maintenant !
+            {t("onboardingMatches.subtitle")}
           </p>
         </motion.div>
 
@@ -99,9 +101,9 @@ export default function OnboardingMatches({ onComplete }: Props) {
                       onClick={() => handleConnect(match.user_id)}
                     >
                       {sentIds.has(match.user_id) ? (
-                        <><Check className="w-3.5 h-3.5 mr-1" /> Demande envoyée</>
+                        <><Check className="w-3.5 h-3.5 mr-1" /> {t("onboardingMatches.sent")}</>
                       ) : (
-                        <><UserPlus className="w-3.5 h-3.5 mr-1" /> Se connecter</>
+                        <><UserPlus className="w-3.5 h-3.5 mr-1" /> {t("onboardingMatches.connect")}</>
                       )}
                     </Button>
                   </CardContent>
@@ -112,22 +114,22 @@ export default function OnboardingMatches({ onComplete }: Props) {
         ) : (
           <Card className="border-border/50">
             <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">Aucun match trouvé pour le moment. Plus de membres rejoignent chaque jour !</p>
+              <p className="text-muted-foreground">{t("onboardingMatches.noMatch")}</p>
             </CardContent>
           </Card>
         )}
 
         <div className="flex justify-center">
           <Button size="lg" onClick={onComplete} className="px-8">
-            {sentIds.size > 0 ? "Accéder au Dashboard" : "Passer et commencer"}
+            {sentIds.size > 0 ? t("onboardingMatches.goDashboard") : t("onboardingMatches.skip")}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
 
         <p className="text-center text-xs text-muted-foreground">
-          {sentIds.size > 0 
-            ? `${sentIds.size} connexion${sentIds.size > 1 ? "s" : ""} envoyée${sentIds.size > 1 ? "s" : ""} — retrouvez d'autres matchs sur votre Dashboard`
-            : "Vous pourrez trouver plus de matchs depuis votre Dashboard"
+          {sentIds.size > 0
+            ? t("onboardingMatches.hintSent", { count: sentIds.size })
+            : t("onboardingMatches.hintMore")
           }
         </p>
       </div>
