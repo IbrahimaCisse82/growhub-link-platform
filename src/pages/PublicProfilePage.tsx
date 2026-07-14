@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSendConnection, useConnections } from "@/hooks/useGrowHub";
@@ -18,7 +19,8 @@ import { RecommendationWall, WriteRecommendation } from "@/components/Recommenda
 import SSIGauge from "@/components/SSIGauge";
 
 export default function PublicProfilePage() {
-  usePageMeta({ title: "Profil public", description: "Découvrez le profil d'un membre de la communauté GrowHub." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("publicProfile.seoTitle"), description: t("publicProfile.seoDesc") });
   const { userId } = useParams<{ userId: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -86,25 +88,25 @@ export default function PublicProfilePage() {
   const handleConnect = () => {
     if (!userId) return;
     sendConnection.mutate({ receiverId: userId }, {
-      onSuccess: () => toast.success("Demande envoyée !"),
-      onError: () => toast.error("Erreur"),
+      onSuccess: () => toast.success(t("publicProfile.connectSent")),
+      onError: () => toast.error(t("common.error")),
     });
   };
 
   const handleEndorse = (skill: string) => {
     if (!userId || isOwnProfile) return;
     toggleEndorsement.mutate({ endorsedId: userId, skill }, {
-      onSuccess: () => toast.success("Recommandation mise à jour"),
+      onSuccess: () => toast.success(t("publicProfile.endorseUpdated")),
     });
   };
 
   const handleShareProfile = () => {
     const url = window.location.href;
     if (navigator.share) {
-      navigator.share({ title: profile?.display_name ?? "Profil", url });
+      navigator.share({ title: profile?.display_name ?? t("publicProfile.profileFallback"), url });
     } else {
       navigator.clipboard.writeText(url);
-      toast.success("Lien du profil copié !");
+      toast.success(t("publicProfile.shareCopied"));
     }
   };
 
@@ -114,19 +116,19 @@ export default function PublicProfilePage() {
   };
 
   if (isLoading) return <div className="space-y-4"><Skeleton className="h-48 rounded-2xl" /><Skeleton className="h-32 rounded-2xl" /></div>;
-  if (!profile) return <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Profil introuvable</p></GHCard>;
+  if (!profile) return <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">{t("publicProfile.notFound")}</p></GHCard>;
 
   const roleLabels: Record<string, string> = {
-    startup: "Startup", mentor: "Mentor", investor: "Investisseur", expert: "Expert",
-    freelance: "Freelance", incubateur: "Incubateur", etudiant: "Étudiant",
-    aspirationnel: "Aspirationnel", professionnel: "Professionnel", corporate: "Corporate",
+    startup: t("roles.startup"), mentor: t("roles.mentor"), investor: t("roles.investor"), expert: t("roles.expert"),
+    freelance: t("roles.freelance"), incubateur: t("roles.incubateur"), etudiant: t("roles.etudiant"),
+    aspirationnel: t("roles.aspirationnel"), professionnel: t("roles.professionnel"), corporate: t("roles.corporate"),
   };
   const initials = (profile.display_name ?? "?").substring(0, 2).toUpperCase();
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
-        <ArrowLeft className="w-4 h-4" /> Retour
+      <button onClick={() => navigate(-1)} aria-label={t("publicProfile.back")} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 min-h-11">
+        <ArrowLeft className="w-4 h-4" aria-hidden="true" /> {t("publicProfile.back")}
       </button>
 
       {/* Profile Header */}
@@ -134,7 +136,7 @@ export default function PublicProfilePage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row items-start gap-6">
           {profile.avatar_url ? (
-            <img src={profile.avatar_url} className="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-primary/20" alt="" />
+            <img src={profile.avatar_url} className="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-primary/20" alt={profile.display_name ?? ""} loading="lazy" />
           ) : (
             <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-br from-ghgreen-dark to-primary flex items-center justify-center font-heading text-2xl font-extrabold text-primary-foreground">
               {initials}
@@ -144,7 +146,7 @@ export default function PublicProfilePage() {
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="font-heading text-2xl md:text-[28px] font-extrabold">{profile.display_name}</h1>
               <VerifiedBadge isVerified={profile.is_verified} size="lg" />
-              <Tag variant="green">{roleLabels[userRole ?? "startup"] ?? "Membre"}</Tag>
+              <Tag variant="green">{roleLabels[userRole ?? "startup"] ?? t("publicProfile.memberFallback")}</Tag>
               {profile.company_stage && <Tag>{profile.company_stage}</Tag>}
             </div>
             {profile.headline && (
@@ -165,34 +167,34 @@ export default function PublicProfilePage() {
               {!isOwnProfile && (
                 <>
                   {isConnected ? (
-                    <button onClick={() => navigate(`/messaging?partner=${userId}`)} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
-                      <MessageSquare className="w-3.5 h-3.5" /> Envoyer un message
+                    <button onClick={() => navigate(`/messaging?partner=${userId}`)} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors min-h-11">
+                      <MessageSquare className="w-3.5 h-3.5" aria-hidden="true" /> {t("publicProfile.sendMessage")}
                     </button>
                   ) : isPending ? (
-                    <button disabled className="bg-secondary text-muted-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">
-                      Demande en attente
+                    <button disabled className="bg-secondary text-muted-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold min-h-11">
+                      {t("publicProfile.pending")}
                     </button>
                   ) : (
-                    <button onClick={handleConnect} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
-                      <UserPlus className="w-3.5 h-3.5" /> Se connecter
+                    <button onClick={handleConnect} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors min-h-11">
+                      <UserPlus className="w-3.5 h-3.5" aria-hidden="true" /> {t("publicProfile.connect")}
                     </button>
                   )}
-                  <WriteRecommendation userId={userId!} userName={profile?.display_name ?? "ce membre"} />
+                  <WriteRecommendation userId={userId!} userName={profile?.display_name ?? t("publicProfile.thisMember")} />
                   {!isConnected && warmIntroBroker && (
                     <button
                       onClick={() => {
                         navigate(`/messaging?partner=${warmIntroBroker.user_id}`);
-                        toast.info(`Demande d'intro à ${warmIntroBroker.display_name}`);
+                        toast.info(t("publicProfile.warmIntroToast", { name: warmIntroBroker.display_name }));
                       }}
-                      className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-amber-500/20 transition-colors"
+                      className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-amber-500/20 transition-colors min-h-11"
                     >
-                      <Sparkles className="w-3.5 h-3.5" /> Warm Intro via {warmIntroBroker.display_name}
+                      <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> {t("publicProfile.warmIntro", { name: warmIntroBroker.display_name })}
                     </button>
                   )}
                 </>
               )}
-              <button onClick={handleShareProfile} className="bg-secondary text-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 transition-colors">
-                <Share2 className="w-3.5 h-3.5" /> Partager
+              <button onClick={handleShareProfile} className="bg-secondary text-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 transition-colors min-h-11">
+                <Share2 className="w-3.5 h-3.5" aria-hidden="true" /> {t("publicProfile.share")}
               </button>
             </div>
           </div>
@@ -205,22 +207,22 @@ export default function PublicProfilePage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="👁️" value={String(profile.profile_views ?? 0)} label="Vues du profil" badge="Total" badgeType="up" />
-        <MetricCard icon="🤝" value={String(profile.network_score ?? 0)} label="Score réseau" badge="/100" badgeType="up" />
-        <MetricCard icon="🎯" value={String((profile.skills ?? []).length)} label="Compétences" badge="Actives" badgeType="neutral" />
-        <MetricCard icon="🌐" value={profile.sector ?? "—"} label="Secteur" badge="Actif" badgeType="neutral" />
+        <MetricCard icon="👁️" value={String(profile.profile_views ?? 0)} label={t("publicProfile.profileViews")} badge={t("publicProfile.total")} badgeType="up" />
+        <MetricCard icon="🤝" value={String(profile.network_score ?? 0)} label={t("publicProfile.networkScore")} badge="/100" badgeType="up" />
+        <MetricCard icon="🎯" value={String((profile.skills ?? []).length)} label={t("publicProfile.skills")} badge={t("publicProfile.active")} badgeType="neutral" />
+        <MetricCard icon="🌐" value={profile.sector ?? "—"} label={t("publicProfile.sector")} badge={t("publicProfile.activeBadge")} badgeType="neutral" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {profile.bio && (
-          <GHCard title="À propos" className="md:col-span-2">
+          <GHCard title={t("publicProfile.about")} className="md:col-span-2">
             <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{profile.bio}</p>
           </GHCard>
         )}
 
         {/* Skills with endorsements */}
         {profile.skills && profile.skills.length > 0 && (
-          <GHCard title="Compétences & Recommandations">
+          <GHCard title={t("publicProfile.skillsRecos")}>
             <div className="space-y-2">
               {profile.skills.map((s: string) => {
                 const count = endorsements?.[s]?.count ?? 0;
@@ -230,7 +232,7 @@ export default function PublicProfilePage() {
                     <span className="text-sm font-medium">{s}</span>
                     <div className="flex items-center gap-2">
                       {count > 0 && (
-                        <span className="text-[10px] text-muted-foreground">{count} recommandation{count > 1 ? "s" : ""}</span>
+                        <span className="text-[10px] text-muted-foreground">{t("publicProfile.recoCount", { count })}</span>
                       )}
                       {!isOwnProfile && user && (
                         <button
@@ -242,8 +244,8 @@ export default function PublicProfilePage() {
                               : "bg-muted text-muted-foreground hover:text-primary hover:bg-primary/5"
                           )}
                         >
-                          <ThumbsUp className={cn("w-3 h-3", endorsed && "fill-primary")} />
-                          {endorsed ? "Recommandé" : "+1"}
+                          <ThumbsUp className={cn("w-3 h-3", endorsed && "fill-primary")} aria-hidden="true" />
+                          {endorsed ? t("publicProfile.endorsed") : t("publicProfile.endorse")}
                         </button>
                       )}
                     </div>
@@ -255,7 +257,7 @@ export default function PublicProfilePage() {
         )}
 
         {profile.interests && profile.interests.length > 0 && (
-          <GHCard title="Intérêts">
+          <GHCard title={t("publicProfile.interests")}>
             <div className="flex flex-wrap gap-1.5">
               {profile.interests.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
             </div>
@@ -264,11 +266,11 @@ export default function PublicProfilePage() {
 
         {/* Looking for & Offering */}
         {(profile.looking_for?.length > 0 || profile.offering?.length > 0) && (
-          <GHCard title="Recherche & Propose">
+          <GHCard title={t("publicProfile.lookingOffering")}>
             <div className="space-y-3">
               {profile.looking_for?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🔍 Recherche</p>
+                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">{t("publicProfile.lookingHeader")}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {profile.looking_for.map((s: string) => <Tag key={s} variant="blue">{s}</Tag>)}
                   </div>
@@ -276,7 +278,7 @@ export default function PublicProfilePage() {
               )}
               {profile.offering?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">🎁 Propose</p>
+                  <p className="text-[10px] font-bold text-foreground/50 mb-1.5 uppercase tracking-wider">{t("publicProfile.offeringHeader")}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {profile.offering.map((s: string) => <Tag key={s} variant="teal">{s}</Tag>)}
                   </div>
@@ -287,16 +289,16 @@ export default function PublicProfilePage() {
         )}
 
         {(profile.linkedin_url || profile.website_url) && (
-          <GHCard title="Liens">
+          <GHCard title={t("publicProfile.links")}>
             <div className="space-y-2">
               {profile.linkedin_url && (
                 <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-primary hover:underline">
-                  <Linkedin className="w-4 h-4" /> LinkedIn
+                  <Linkedin className="w-4 h-4" aria-hidden="true" /> {t("publicProfile.linkedin", { defaultValue: "LinkedIn" })}
                 </a>
               )}
               {profile.website_url && (
                 <a href={profile.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-primary hover:underline">
-                  <Globe className="w-4 h-4" /> Site web
+                  <Globe className="w-4 h-4" aria-hidden="true" /> {t("publicProfile.website")}
                 </a>
               )}
             </div>
@@ -304,7 +306,7 @@ export default function PublicProfilePage() {
         )}
         {/* Collaboration History */}
         {collaborations && collaborations.length > 0 && (
-          <GHCard title="Historique de collaboration">
+          <GHCard title={t("publicProfile.collabHistory")}>
             <div className="space-y-2">
               {collaborations.slice(0, 5).map(collab => {
                 const partner = collab.user_id === userId ? collab.partner_profile : collab.user_profile;
