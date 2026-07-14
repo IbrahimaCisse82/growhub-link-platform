@@ -26,9 +26,9 @@ export default function OnboardingMatches({ onComplete }: Props) {
     sendConnection.mutate({ receiverId: userId }, {
       onSuccess: () => {
         setSentIds(prev => new Set(prev).add(userId));
-        toast.success("Demande envoyée !");
+        toast.success(t("onboardingMatches.sentToast"));
       },
-      onError: () => toast.error("Erreur lors de l'envoi"),
+      onError: () => toast.error(t("onboardingMatches.sendError")),
     });
   };
 
