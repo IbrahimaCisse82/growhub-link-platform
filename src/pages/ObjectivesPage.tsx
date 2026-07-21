@@ -1,26 +1,26 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { GHCard, MetricCard, ProgressBar, Tag, SectionHeader } from "@/components/ui-custom";
-import { useAuth } from "@/hooks/useAuth";
 import { useObjectives, useCreateObjective, useUpdateObjective, useDeleteObjective } from "@/hooks/useGrowHub";
 import { toast } from "sonner";
-import { Plus, Trash2, Check, Target, LayoutGrid, List, GripVertical } from "lucide-react";
+import { Plus, Trash2, Check, Target, LayoutGrid, List } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { cn } from "@/lib/utils";
 
-const kanbanColumns = [
-  { key: "todo", label: "À faire", color: "border-t-blue-500", bg: "bg-blue-500/5" },
-  { key: "in_progress", label: "En cours", color: "border-t-orange-500", bg: "bg-orange-500/5" },
-  { key: "done", label: "Terminé", color: "border-t-primary", bg: "bg-primary/5" },
-];
-
 export default function ObjectivesPage() {
-  usePageMeta({ title: "Objectifs", description: "Définissez et suivez vos objectifs de croissance startup." });
-  const { user } = useAuth();
+  const { t, i18n } = useTranslation();
+  usePageMeta({ title: t("objectives.title"), description: t("objectives.metaDesc") });
   const { data: objectives, isLoading } = useObjectives();
   const createObjective = useCreateObjective();
   const updateObjective = useUpdateObjective();
   const deleteObjective = useDeleteObjective();
+
+  const kanbanColumns = [
+    { key: "todo", label: t("objectives.colTodo"), color: "border-t-blue-500", bg: "bg-blue-500/5" },
+    { key: "in_progress", label: t("objectives.colDoing"), color: "border-t-orange-500", bg: "bg-orange-500/5" },
+    { key: "done", label: t("objectives.colDone"), color: "border-t-primary", bg: "bg-primary/5" },
+  ];
 
   const [showForm, setShowForm] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
@@ -32,6 +32,7 @@ export default function ObjectivesPage() {
   const todo = objectives?.filter(o => !o.is_completed && (o.current_value ?? 0) === 0) ?? [];
   const allInProgress = objectives?.filter(o => !o.is_completed) ?? [];
   const pct = objectives && objectives.length > 0 ? Math.round((completed.length / objectives.length) * 100) : 0;
+  const locale = i18n.language === "en" ? "en-US" : "fr-FR";
 
   const handleCreate = () => {
     if (!form.title.trim()) return;
@@ -47,13 +48,13 @@ export default function ObjectivesPage() {
       relevant: form.relevant || undefined,
       time_bound: form.time_bound || undefined,
     } as any, {
-      onSuccess: () => { toast.success("Objectif créé !"); setForm({ title: "", description: "", category: "", target_value: "100", deadline: "", specific: "", measurable: "", achievable: "", relevant: "", time_bound: "" }); setShowForm(false); setShowSmart(false); },
+      onSuccess: () => { toast.success(t("objectives.created")); setForm({ title: "", description: "", category: "", target_value: "100", deadline: "", specific: "", measurable: "", achievable: "", relevant: "", time_bound: "" }); setShowForm(false); setShowSmart(false); },
     });
   };
 
   const handleToggle = (id: string, currentCompleted: boolean) => {
     updateObjective.mutate({ id, is_completed: !currentCompleted }, {
-      onSuccess: () => toast.success(!currentCompleted ? "Objectif atteint 🎉" : "Objectif réouvert"),
+      onSuccess: () => toast.success(!currentCompleted ? t("objectives.reachedToast") : t("objectives.reopened")),
     });
   };
 
@@ -62,7 +63,7 @@ export default function ObjectivesPage() {
   };
 
   const handleDelete = (id: string) => {
-    deleteObjective.mutate(id, { onSuccess: () => toast.success("Supprimé") });
+    deleteObjective.mutate(id, { onSuccess: () => toast.success(t("objectives.deleted")) });
   };
 
   const renderObjectiveCard = (obj: any, compact = false) => {
@@ -99,7 +100,7 @@ export default function ObjectivesPage() {
         )}
         {obj.deadline && (
           <span className="text-[9px] text-muted-foreground">
-            📅 {new Date(obj.deadline).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+            📅 {new Date(obj.deadline).toLocaleDateString(locale, { day: "numeric", month: "short" })}
           </span>
         )}
       </GHCard>
@@ -113,27 +114,27 @@ export default function ObjectivesPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
             <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
-            Objectifs & Progression
+            {t("objectives.tag")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Vos <span className="text-primary">objectifs SMART</span>
+            {t("objectives.h1a")} <span className="text-primary">{t("objectives.h1b")}</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
-            Définissez, suivez et atteignez vos objectifs avec un suivi détaillé.
+            {t("objectives.subtitle")}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-[18px]">
-        <MetricCard icon="🎯" value={String(objectives?.length ?? 0)} label="Total objectifs" badge="Définis" badgeType="neutral" />
-        <MetricCard icon="✅" value={String(completed.length)} label="Atteints" badge={`${pct}%`} badgeType="up" />
-        <MetricCard icon="⏳" value={String(allInProgress.length)} label="En cours" badge="Actifs" badgeType="up" />
-        <MetricCard icon="📈" value={`${pct}%`} label="Taux de réussite" badge="Global" badgeType={pct >= 50 ? "up" : "neutral"} />
+        <MetricCard icon="🎯" value={String(objectives?.length ?? 0)} label={t("objectives.total")} badge={t("objectives.totalBadge")} badgeType="neutral" />
+        <MetricCard icon="✅" value={String(completed.length)} label={t("objectives.reached")} badge={`${pct}%`} badgeType="up" />
+        <MetricCard icon="⏳" value={String(allInProgress.length)} label={t("objectives.inProgress")} badge={t("objectives.inProgressBadge")} badgeType="up" />
+        <MetricCard icon="📈" value={`${pct}%`} label={t("objectives.successRate")} badge={t("objectives.successBadge")} badgeType={pct >= 50 ? "up" : "neutral"} />
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
         <div className="flex items-center gap-2">
-          <SectionHeader title="📋 Mes objectifs" />
+          <SectionHeader title={`📋 ${t("objectives.my")}`} />
           <div className="flex bg-card border border-border rounded-lg overflow-hidden">
             <button onClick={() => setViewMode("list")}
               className={cn("p-1.5 transition-colors", viewMode === "list" ? "bg-primary/10 text-primary" : "text-muted-foreground")}>
@@ -147,41 +148,40 @@ export default function ObjectivesPage() {
         </div>
         <button onClick={() => setShowForm(!showForm)}
           className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors self-start sm:self-auto">
-          <Plus className="w-3.5 h-3.5" /> Nouvel objectif
+          <Plus className="w-3.5 h-3.5" /> {t("objectives.newObjective")}
         </button>
       </div>
 
       {showForm && (
         <GHCard className="mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Titre de l'objectif *" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
-            <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Catégorie (ex: Growth, Product...)" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
-            <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
+            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder={t("objectives.titlePh")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
+            <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder={t("objectives.categoryPh")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
+            <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder={t("objectives.descriptionPh")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
             <div className="flex gap-2">
-              <input type="number" value={form.target_value} onChange={(e) => setForm({ ...form, target_value: e.target.value })} placeholder="Cible" className="flex-1 bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
+              <input type="number" value={form.target_value} onChange={(e) => setForm({ ...form, target_value: e.target.value })} placeholder={t("objectives.targetPh")} className="flex-1 bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
               <input type="date" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} className="flex-1 bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
             </div>
           </div>
           <button type="button" onClick={() => setShowSmart(s => !s)} className="mt-3 text-[11px] font-bold text-primary hover:underline">
-            {showSmart ? "− Masquer" : "+ Affiner en objectif SMART"}
+            {showSmart ? t("objectives.smartHide") : t("objectives.smartShow")}
           </button>
           {showSmart && (
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-border pt-3">
-              <textarea value={form.specific} onChange={(e) => setForm({ ...form, specific: e.target.value })} placeholder="S — Spécifique : que voulez-vous accomplir ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
-              <textarea value={form.measurable} onChange={(e) => setForm({ ...form, measurable: e.target.value })} placeholder="M — Mesurable : comment mesurer le succès ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
-              <textarea value={form.achievable} onChange={(e) => setForm({ ...form, achievable: e.target.value })} placeholder="A — Atteignable : avez-vous les ressources ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
-              <textarea value={form.relevant} onChange={(e) => setForm({ ...form, relevant: e.target.value })} placeholder="R — Pertinent : pourquoi est-ce important ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
-              <textarea value={form.time_bound} onChange={(e) => setForm({ ...form, time_bound: e.target.value })} placeholder="T — Temporel : quel délai ?" rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40 sm:col-span-2" />
+              <textarea value={form.specific} onChange={(e) => setForm({ ...form, specific: e.target.value })} placeholder={t("objectives.specificPh")} rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.measurable} onChange={(e) => setForm({ ...form, measurable: e.target.value })} placeholder={t("objectives.measurablePh")} rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.achievable} onChange={(e) => setForm({ ...form, achievable: e.target.value })} placeholder={t("objectives.achievablePh")} rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.relevant} onChange={(e) => setForm({ ...form, relevant: e.target.value })} placeholder={t("objectives.relevantPh")} rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40" />
+              <textarea value={form.time_bound} onChange={(e) => setForm({ ...form, time_bound: e.target.value })} placeholder={t("objectives.timePh")} rows={2} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-primary/40 sm:col-span-2" />
             </div>
           )}
           <div className="flex justify-end mt-3 gap-2">
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">Annuler</button>
-            <button onClick={handleCreate} disabled={!form.title.trim()} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">Créer</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">{t("common.cancel")}</button>
+            <button onClick={handleCreate} disabled={!form.title.trim()} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">{t("common.create")}</button>
           </div>
         </GHCard>
       )}
 
-      {/* Kanban View */}
       {viewMode === "kanban" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-x-auto">
           {kanbanColumns.map(col => {
@@ -195,7 +195,7 @@ export default function ObjectivesPage() {
                 <div className="space-y-2">
                   {items.map(obj => renderObjectiveCard(obj, true))}
                   {items.length === 0 && (
-                    <p className="text-[10px] text-muted-foreground text-center py-6">Aucun objectif</p>
+                    <p className="text-[10px] text-muted-foreground text-center py-6">{t("objectives.noObj")}</p>
                   )}
                 </div>
               </div>
@@ -204,17 +204,15 @@ export default function ObjectivesPage() {
         </div>
       ) : (
         <>
-          {/* List View - In progress */}
           {allInProgress.length > 0 && (
             <div className="space-y-2 mb-5">
               {allInProgress.map(obj => renderObjectiveCard(obj))}
             </div>
           )}
 
-          {/* List View - Completed */}
           {completed.length > 0 && (
             <>
-              <SectionHeader title="✅ Objectifs atteints" />
+              <SectionHeader title={`✅ ${t("objectives.reachedSection")}`} />
               <div className="space-y-2">
                 {completed.map(obj => renderObjectiveCard(obj))}
               </div>
@@ -226,7 +224,7 @@ export default function ObjectivesPage() {
       {(!objectives || objectives.length === 0) && !isLoading && (
         <GHCard className="text-center py-12">
           <Target className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">Aucun objectif défini. Commencez par en créer un !</p>
+          <p className="text-sm text-muted-foreground">{t("objectives.emptyAll")}</p>
         </GHCard>
       )}
     </motion.div>

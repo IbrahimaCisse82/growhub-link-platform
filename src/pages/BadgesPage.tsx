@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { GHCard, MetricCard, Tag } from "@/components/ui-custom";
 import { useUserBadges, useAllBadges } from "@/hooks/useGrowHub";
 import { Award } from "lucide-react";
@@ -14,11 +15,13 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function BadgesPage() {
-  usePageMeta({ title: "Badges", description: "Débloquez des badges en contribuant à la communauté GrowHub." });
+  const { t, i18n } = useTranslation();
+  usePageMeta({ title: t("badges.title"), description: t("badges.metaDesc") });
   const { data: userBadges } = useUserBadges();
   const { data: allBadges } = useAllBadges();
 
   const earnedBadgeIds = new Set(userBadges?.map(ub => ub.badge_id) ?? []);
+  const locale = i18n.language === "en" ? "en-US" : "fr-FR";
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
@@ -27,22 +30,22 @@ export default function BadgesPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
             <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
-            Gamification
+            {t("badges.tag")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Vos <span className="text-primary">badges & réussites</span>
+            {t("badges.h1a")} <span className="text-primary">{t("badges.h1b")}</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
-            Débloquez des badges en atteignant vos objectifs et en contribuant à la communauté.
+            {t("badges.subtitle")}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="🏆" value={String(userBadges?.length ?? 0)} label="Badges débloqués" badge="Total" badgeType="up" />
-        <MetricCard icon="🎯" value={String(allBadges?.length ?? 0)} label="Badges disponibles" badge="Catalogue" badgeType="neutral" />
-        <MetricCard icon="📈" value={allBadges && allBadges.length > 0 ? `${Math.round(((userBadges?.length ?? 0) / allBadges.length) * 100)}%` : "0%"} label="Progression" badge="Global" badgeType="up" />
-        <MetricCard icon="⭐" value={userBadges && userBadges.length > 0 ? "Actif" : "Débutant"} label="Niveau" badge="Statut" badgeType="neutral" />
+        <MetricCard icon="🏆" value={String(userBadges?.length ?? 0)} label={t("badges.unlocked")} badge={t("badges.unlockedBadge")} badgeType="up" />
+        <MetricCard icon="🎯" value={String(allBadges?.length ?? 0)} label={t("badges.available")} badge={t("badges.availableBadge")} badgeType="neutral" />
+        <MetricCard icon="📈" value={allBadges && allBadges.length > 0 ? `${Math.round(((userBadges?.length ?? 0) / allBadges.length) * 100)}%` : "0%"} label={t("badges.progress")} badge={t("badges.progressBadge")} badgeType="up" />
+        <MetricCard icon="⭐" value={userBadges && userBadges.length > 0 ? t("badges.levelActive") : t("badges.levelBeginner")} label={t("badges.level")} badge={t("badges.levelBadge")} badgeType="neutral" />
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
@@ -59,8 +62,8 @@ export default function BadgesPage() {
               {badge.category && <Tag variant={earned ? "green" : "default"}>{badge.category}</Tag>}
               {earned && (
                 <div className="text-[10px] text-primary font-bold mt-2">
-                  ✓ Débloqué {userBadges?.find(ub => ub.badge_id === badge.id)?.earned_at
-                    ? new Date(userBadges.find(ub => ub.badge_id === badge.id)!.earned_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
+                  ✓ {t("badges.unlockedOn")} {userBadges?.find(ub => ub.badge_id === badge.id)?.earned_at
+                    ? new Date(userBadges.find(ub => ub.badge_id === badge.id)!.earned_at).toLocaleDateString(locale, { day: "numeric", month: "short" })
                     : ""
                   }
                 </div>
@@ -72,7 +75,7 @@ export default function BadgesPage() {
         {(!allBadges || allBadges.length === 0) && (
           <GHCard className="col-span-full text-center py-12">
             <Award className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">Les badges seront bientôt disponibles !</p>
+            <p className="text-sm text-muted-foreground">{t("badges.empty")}</p>
           </GHCard>
         )}
       </div>
