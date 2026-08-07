@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { GHCard, MetricCard, Tag } from "@/components/ui-custom";
@@ -204,7 +205,10 @@ export default function SpeedNetworkingPage() {
       {/* Upcoming Sessions */}
       <h2 className="font-heading text-lg font-bold mb-3">⚡ Sessions à venir</h2>
       {isLoading ? (
-        <div className="text-sm text-muted-foreground py-8 text-center">Chargement...</div>
+        <div className="space-y-3 mb-5" role="status" aria-busy="true" aria-live="polite">
+          <Skeleton className="h-24 w-full rounded-2xl" />
+          <Skeleton className="h-24 w-full rounded-2xl" />
+        </div>
       ) : upcomingSessions.length === 0 ? (
         <GHCard className="text-center py-8 mb-5">
           <Zap className="w-8 h-8 text-muted-foreground mx-auto mb-2" />

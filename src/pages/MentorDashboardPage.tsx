@@ -239,7 +239,15 @@ export default function MentorDashboardPage() {
 
 function EarningsPanel({ coachId }: { coachId: string }) {
   const { data, isLoading } = useCoachEarnings(coachId);
-  if (isLoading) return <GHCard className="py-6 text-center text-sm text-muted-foreground">Chargement…</GHCard>;
+  if (isLoading) return (
+    <div role="status" aria-busy="true" aria-live="polite">
+      <GHCard className="space-y-3 py-6">
+        <Skeleton className="h-4 w-1/3" />
+        <Skeleton className="h-16 w-full rounded-xl" />
+        <Skeleton className="h-16 w-full rounded-xl" />
+      </GHCard>
+    </div>
+  );
   const e = data!;
   return (
     <div className="space-y-3">

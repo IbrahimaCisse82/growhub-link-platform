@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { GHCard } from "@/components/ui-custom";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -41,7 +42,14 @@ export default function DealRoomDetailPage() {
   const upload = useUploadDocument();
   const logAudit = useLogAudit();
 
-  if (!room) return <div className="p-6 text-sm text-muted-foreground">Chargement…</div>;
+  if (!room) return (
+    <div className="space-y-4" role="status" aria-busy="true" aria-live="polite">
+      <Skeleton className="h-6 w-24" />
+      <Skeleton className="h-28 w-full rounded-[20px]" />
+      <Skeleton className="h-10 w-64" />
+      <Skeleton className="h-40 w-full rounded-xl" />
+    </div>
+  );
 
   if (!ndaSigned) {
     return (
