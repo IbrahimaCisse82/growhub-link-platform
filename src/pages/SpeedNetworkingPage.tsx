@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { GHCard, MetricCard, Tag } from "@/components/ui-custom";
