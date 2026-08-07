@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { waitFor } from "@testing-library/dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 
@@ -73,7 +72,7 @@ describe("useCoachEarnings", () => {
       error: null,
     });
     const { result } = renderHook(() => useCoachEarnings("coach-1"), { wrapper });
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await vi.waitFor(() => expect(result.current.isSuccess).toBe(true));
     const d = result.current.data!;
     expect(d.totalGross).toBe(30000);
     expect(d.totalCommission).toBe(4500);
