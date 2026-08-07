@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { GHCard, MetricCard, Tag, SectionHeader } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
 import { usePageMeta } from "@/hooks/usePageMeta";
@@ -25,25 +26,35 @@ interface Lead {
   user_id: string;
 }
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  new: { label: "Nouveau", color: "bg-blue-500/10 text-blue-500 border-blue-500/20" },
-  contacted: { label: "Contacté", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" },
-  qualified: { label: "Qualifié", color: "bg-purple-500/10 text-purple-500 border-purple-500/20" },
-  proposal: { label: "Proposition", color: "bg-orange-500/10 text-orange-500 border-orange-500/20" },
-  won: { label: "Gagné", color: "bg-primary/10 text-primary border-primary/20" },
-  lost: { label: "Perdu", color: "bg-destructive/10 text-destructive border-destructive/20" },
-};
-
-const sourceOptions = ["Site web", "LinkedIn", "Recommandation", "Événement", "Autre"];
+function useStatusLabels() {
+  const { t } = useTranslation();
+  return {
+    new: { label: t("marketing.statusNew"), color: "bg-blue-500/10 text-blue-500 border-blue-500/20" },
+    contacted: { label: t("marketing.statusContacted"), color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" },
+    qualified: { label: t("marketing.statusQualified"), color: "bg-purple-500/10 text-purple-500 border-purple-500/20" },
+    proposal: { label: t("marketing.statusProposal"), color: "bg-orange-500/10 text-orange-500 border-orange-500/20" },
+    won: { label: t("marketing.statusWon"), color: "bg-primary/10 text-primary border-primary/20" },
+    lost: { label: t("marketing.statusLost"), color: "bg-destructive/10 text-destructive border-destructive/20" },
+  } as Record<string, { label: string; color: string }>;
+}
 
 export default function MarketingPage() {
-  usePageMeta({ title: "Marketing & CRM", description: "Gérez vos leads et pilotez votre prospection commerciale." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("marketing.metaTitle"), description: t("marketing.metaDesc") });
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const statusLabels = useStatusLabels();
+  const sourceOptions = [
+    t("marketing.sourceWebsite"),
+    t("marketing.sourceLinkedin"),
+    t("marketing.sourceReferral"),
+    t("marketing.sourceEvent"),
+    t("marketing.sourceOther"),
+  ];
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", source: "Site web", notes: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", source: t("marketing.sourceWebsite"), notes: "" });
   const [filter, setFilter] = useState<string>("all");
 
   // Fetch leads
@@ -77,12 +88,12 @@ export default function MarketingPage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Lead ajouté !");
+      toast.success(t("marketing.createToast"));
       queryClient.invalidateQueries({ queryKey: ["leads"] });
-      setForm({ name: "", email: "", phone: "", company: "", source: "Site web", notes: "" });
+      setForm({ name: "", email: "", phone: "", company: "", source: t("marketing.sourceWebsite"), notes: "" });
       setShowForm(false);
     },
-    onError: () => toast.error("Erreur lors de l'ajout"),
+    onError: () => toast.error(t("marketing.createError")),
   });
 
   // Update lead status
@@ -103,7 +114,7 @@ export default function MarketingPage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Lead supprimé");
+      toast.success(t("marketing.deleteToast"));
       queryClient.invalidateQueries({ queryKey: ["leads"] });
     },
   });
@@ -133,24 +144,24 @@ export default function MarketingPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
             <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" />
-            Marketing & Prospection
+            {t("marketing.tag")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Acquérez des <span className="text-primary">clients & partenaires</span>
+            {t("marketing.h1a")} <span className="text-primary">{t("marketing.h1b")}</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
-            CRM intégré, génération de leads et pipeline de conversion.
+            {t("marketing.subtitle")}
           </p>
         </div>
       </div>
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 mb-5">
-        <MetricCard icon="📋" value={String(stats.total)} label="Total leads" badge="Pipeline" badgeType="neutral" />
-        <MetricCard icon="🆕" value={String(stats.new)} label="Nouveaux" badge="À traiter" badgeType="up" />
-        <MetricCard icon="✅" value={String(stats.qualified)} label="Qualifiés" badge="En cours" badgeType="up" />
-        <MetricCard icon="🏆" value={String(stats.won)} label="Gagnés" badge="Convertis" badgeType="up" />
-        <MetricCard icon="📈" value={`${stats.conversionRate}%`} label="Conversion" badge="Taux" badgeType={stats.conversionRate > 20 ? "up" : "neutral"} />
+        <MetricCard icon="📋" value={String(stats.total)} label={t("marketing.totalLeads")} badge={t("marketing.pipelineBadge")} badgeType="neutral" />
+        <MetricCard icon="🆕" value={String(stats.new)} label={t("marketing.newLeads")} badge={t("marketing.toProcessBadge")} badgeType="up" />
+        <MetricCard icon="✅" value={String(stats.qualified)} label={t("marketing.qualified")} badge={t("marketing.inProgressBadge")} badgeType="up" />
+        <MetricCard icon="🏆" value={String(stats.won)} label={t("marketing.won")} badge={t("marketing.convertedBadge")} badgeType="up" />
+        <MetricCard icon="📈" value={`${stats.conversionRate}%`} label={t("marketing.conversion")} badge={t("marketing.rateBadge")} badgeType={stats.conversionRate > 20 ? "up" : "neutral"} />
       </div>
 
       {/* Actions bar */}
@@ -164,7 +175,7 @@ export default function MarketingPage() {
                 filter === s ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50 hover:text-foreground/80"
               }`}
             >
-              {s === "all" ? "Tous" : statusLabels[s]?.label ?? s}
+              {s === "all" ? t("marketing.all") : statusLabels[s]?.label ?? s}
             </button>
           ))}
         </div>
@@ -172,7 +183,7 @@ export default function MarketingPage() {
           onClick={() => setShowForm(!showForm)}
           className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
         >
-          <Plus className="w-3.5 h-3.5" /> Nouveau lead
+          <Plus className="w-3.5 h-3.5" /> {t("marketing.newLead")}
         </button>
       </div>
 
@@ -181,44 +192,44 @@ export default function MarketingPage() {
         <GHCard className="mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Nom *</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketing.labelName")}</label>
               <input 
                 value={form.name} 
                 onChange={(e) => setForm({ ...form, name: e.target.value })} 
-                placeholder="Nom du contact" 
+                placeholder={t("marketing.namePh")} 
                 className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" 
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Email</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketing.labelEmail")}</label>
               <input 
                 type="email"
                 value={form.email} 
                 onChange={(e) => setForm({ ...form, email: e.target.value })} 
-                placeholder="email@exemple.com" 
+                placeholder={t("marketing.emailPh")} 
                 className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" 
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Téléphone</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketing.labelPhone")}</label>
               <input 
                 value={form.phone} 
                 onChange={(e) => setForm({ ...form, phone: e.target.value })} 
-                placeholder="+33 6 12 34 56 78" 
+                placeholder={t("marketing.phonePh")} 
                 className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" 
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Entreprise</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketing.labelCompany")}</label>
               <input 
                 value={form.company} 
                 onChange={(e) => setForm({ ...form, company: e.target.value })} 
-                placeholder="Nom de l'entreprise" 
+                placeholder={t("marketing.companyPh")} 
                 className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" 
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Source</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketing.labelSource")}</label>
               <select 
                 value={form.source} 
                 onChange={(e) => setForm({ ...form, source: e.target.value })}
@@ -228,23 +239,23 @@ export default function MarketingPage() {
               </select>
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Notes</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketing.labelNotes")}</label>
               <input 
                 value={form.notes} 
                 onChange={(e) => setForm({ ...form, notes: e.target.value })} 
-                placeholder="Notes (optionnel)" 
+                placeholder={t("marketing.notesPh")} 
                 className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" 
               />
             </div>
           </div>
           <div className="flex justify-end mt-3 gap-2">
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">{t("marketing.cancel")}</button>
             <button 
               onClick={handleCreate} 
               disabled={!form.name.trim() || createLead.isPending} 
               className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50"
             >
-              Ajouter
+              {t("marketing.add")}
             </button>
           </div>
         </GHCard>
@@ -258,7 +269,7 @@ export default function MarketingPage() {
       ) : !filteredLeads || filteredLeads.length === 0 ? (
         <GHCard className="text-center py-12">
           <Megaphone className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">Aucun lead pour le moment. Ajoutez votre premier prospect !</p>
+          <p className="text-sm text-muted-foreground">{t("marketing.emptyLeads")}</p>
         </GHCard>
       ) : (
         <div className="space-y-2">
@@ -316,7 +327,7 @@ export default function MarketingPage() {
       {/* Pipeline visualization */}
       {leads && leads.length > 0 && (
         <div className="mt-6">
-          <SectionHeader title="📊 Pipeline visuel" />
+          <SectionHeader title={t("marketing.pipelineVisual")} />
           <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
             {Object.entries(statusLabels).map(([status, config]) => {
               const count = leads.filter(l => l.status === status).length;
@@ -326,7 +337,7 @@ export default function MarketingPage() {
                     {config.label}
                   </div>
                   <div className="font-heading text-2xl font-extrabold">{count}</div>
-                  <div className="text-[10px] text-muted-foreground">leads</div>
+                  <div className="text-[10px] text-muted-foreground">{t("marketing.leadsUnit")}</div>
                 </GHCard>
               );
             })}
