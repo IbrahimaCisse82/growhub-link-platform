@@ -10,14 +10,16 @@ import { Zap, Users, Clock, Plus, Calendar, Video, Star, MessageSquare } from "l
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export default function SpeedNetworkingPage() {
-  usePageMeta({ title: "Speed Networking", description: "Rencontrez des profils complémentaires en sessions de 5 minutes." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("speedNetworking.metaTitle"), description: t("speedNetworking.metaDesc") });
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
-  const [newSession, setNewSession] = useState({ title: "Speed Networking", description: "", scheduled_at: "", duration_minutes: 5, max_participants: 20 });
+  const [newSession, setNewSession] = useState({ title: t("speedNetworking.tag"), description: "", scheduled_at: "", duration_minutes: 5, max_participants: 20 });
 
   const { data: sessions, isLoading } = useQuery({
     queryKey: ["speed-networking-sessions"],
@@ -82,11 +84,11 @@ export default function SpeedNetworkingPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["speed-networking-sessions"] });
-      toast.success("Session créée !");
+      toast.success(t("speedNetworking.sessionCreatedToast"));
       setShowCreate(false);
-      setNewSession({ title: "Speed Networking", description: "", scheduled_at: "", duration_minutes: 5, max_participants: 20 });
+      setNewSession({ title: t("speedNetworking.tag"), description: "", scheduled_at: "", duration_minutes: 5, max_participants: 20 });
     },
-    onError: () => toast.error("Erreur lors de la création"),
+    onError: () => toast.error(t("speedNetworking.createErrorToast")),
   });
 
   const joinSession = useMutation({
@@ -99,9 +101,9 @@ export default function SpeedNetworkingPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["speed-networking"] });
-      toast.success("Inscrit ! Vous serez matché avec un participant complémentaire.");
+      toast.success(t("speedNetworking.joinedToast"));
     },
-    onError: () => toast.error("Erreur ou déjà inscrit"),
+    onError: () => toast.error(t("speedNetworking.joinErrorToast")),
   });
 
   const leaveSession = useMutation({
@@ -114,7 +116,7 @@ export default function SpeedNetworkingPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["speed-networking"] });
-      toast.success("Désinscrit");
+      toast.success(t("speedNetworking.unregisteredToast"));
     },
   });
 
@@ -125,10 +127,12 @@ export default function SpeedNetworkingPage() {
       return data as number;
     },
     onSuccess: (count) => {
-      toast.success(`${count} paire${count > 1 ? "s" : ""} générée${count > 1 ? "s" : ""} !`);
+      const pair = count > 1 ? t("speedNetworking.pairGeneratedPlural") : t("speedNetworking.pairGenerated");
+      const gen = count > 1 ? t("speedNetworking.generatedPlural") : t("speedNetworking.generated");
+      toast.success(`${count} ${pair} ${gen} !`);
       queryClient.invalidateQueries({ queryKey: ["speed-networking-participations"] });
     },
-    onError: (e: any) => toast.error(e?.message ?? "Erreur lors du matching"),
+    onError: (e: any) => toast.error(e?.message ?? t("speedNetworking.matchingErrorToast")),
   });
 
   const upcomingSessions = sessions?.filter(s => new Date(s.scheduled_at) > new Date()) ?? [];
@@ -141,50 +145,50 @@ export default function SpeedNetworkingPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Speed Networking
+            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> {t("speedNetworking.tag")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Rencontres <span className="text-primary">éclair</span> ⚡
+            {t("speedNetworking.h1a")} <span className="text-primary">{t("speedNetworking.h1b")}</span> ⚡
           </h1>
           <p className="text-foreground/60 text-sm max-w-[500px] mb-4">
-            Sessions de 5 minutes avec des profils complémentaires. Le matching intelligent trouve les meilleures connexions pour vous.
+            {t("speedNetworking.subtitle")}
           </p>
           <button onClick={() => setShowCreate(true)} className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-primary-hover hover:shadow-glow transition-all">
-            <Plus className="w-4 h-4" /> Organiser une session
+            <Plus className="w-4 h-4" /> {t("speedNetworking.organizeBtn")}
           </button>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="⚡" value={String(upcomingSessions.length)} label="Sessions à venir" badge="Prochaines" badgeType="up" />
-        <MetricCard icon="👥" value={String(Object.values(participantCounts ?? {}).reduce((a, b) => a + b, 0))} label="Participants" badge="Total" badgeType="neutral" />
-        <MetricCard icon="🎯" value="5 min" label="Par rencontre" badge="Format" badgeType="neutral" />
-        <MetricCard icon="🤝" value={String(participationsSet.size)} label="Mes inscriptions" badge="Actives" badgeType="up" />
+        <MetricCard icon="⚡" value={String(upcomingSessions.length)} label={t("speedNetworking.metricUpcoming")} badge={t("speedNetworking.metricUpcomingBadge")} badgeType="up" />
+        <MetricCard icon="👥" value={String(Object.values(participantCounts ?? {}).reduce((a, b) => a + b, 0))} label={t("speedNetworking.metricParticipants")} badge={t("speedNetworking.metricParticipantsBadge")} badgeType="neutral" />
+        <MetricCard icon="🎯" value="5 min" label={t("speedNetworking.metricPerMeeting")} badge={t("speedNetworking.metricPerMeetingBadge")} badgeType="neutral" />
+        <MetricCard icon="🤝" value={String(participationsSet.size)} label={t("speedNetworking.metricMyRegistrations")} badge={t("speedNetworking.metricMyRegistrationsBadge")} badgeType="up" />
       </div>
 
       {/* Create Session Modal */}
       {showCreate && (
-        <GHCard title="Nouvelle session" className="mb-5">
+        <GHCard title={t("speedNetworking.createSessionTitle")} className="mb-5">
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Titre</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("speedNetworking.labelTitle")}</label>
               <input value={newSession.title} onChange={e => setNewSession({ ...newSession, title: e.target.value })}
                 className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
             </div>
             <div>
-              <label className="text-xs font-bold text-foreground/70 mb-1 block">Description</label>
+              <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("speedNetworking.labelDescription")}</label>
               <textarea value={newSession.description} onChange={e => setNewSession({ ...newSession, description: e.target.value })}
                 className="w-full bg-secondary/50 border border-border rounded-xl p-3 text-sm resize-none min-h-[60px] focus:outline-none focus:border-primary/40" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-bold text-foreground/70 mb-1 block">Date & Heure</label>
+                <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("speedNetworking.labelDateTime")}</label>
                 <input type="datetime-local" value={newSession.scheduled_at} onChange={e => setNewSession({ ...newSession, scheduled_at: e.target.value })}
                   className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
               </div>
               <div>
-                <label className="text-xs font-bold text-foreground/70 mb-1 block">Max participants</label>
+                <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("speedNetworking.labelMaxParticipants")}</label>
                 <input type="number" value={newSession.max_participants} onChange={e => setNewSession({ ...newSession, max_participants: parseInt(e.target.value) || 20 })}
                   className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
               </div>
@@ -192,10 +196,10 @@ export default function SpeedNetworkingPage() {
             <div className="flex gap-2">
               <button onClick={() => createSession.mutate()} disabled={!newSession.scheduled_at}
                 className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold disabled:opacity-50 hover:bg-primary-hover transition-all">
-                Créer
+                {t("speedNetworking.create")}
               </button>
               <button onClick={() => setShowCreate(false)} className="bg-secondary text-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">
-                Annuler
+                {t("speedNetworking.cancel")}
               </button>
             </div>
           </div>
@@ -203,7 +207,7 @@ export default function SpeedNetworkingPage() {
       )}
 
       {/* Upcoming Sessions */}
-      <h2 className="font-heading text-lg font-bold mb-3">⚡ Sessions à venir</h2>
+      <h2 className="font-heading text-lg font-bold mb-3">{t("speedNetworking.upcomingSessions")}</h2>
       {isLoading ? (
         <div className="space-y-3 mb-5" role="status" aria-busy="true" aria-live="polite">
           <Skeleton className="h-24 w-full rounded-2xl" />
@@ -212,7 +216,7 @@ export default function SpeedNetworkingPage() {
       ) : upcomingSessions.length === 0 ? (
         <GHCard className="text-center py-8 mb-5">
           <Zap className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">Aucune session prévue. Soyez le premier à en organiser une !</p>
+          <p className="text-sm text-muted-foreground">{t("speedNetworking.noSessions")}</p>
         </GHCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-5">
@@ -233,37 +237,37 @@ export default function SpeedNetworkingPage() {
                       <h3 className="font-heading text-sm font-bold mb-1">{session.title}</h3>
                       {session.description && <p className="text-xs text-muted-foreground line-clamp-2">{session.description}</p>}
                     </div>
-                    <Tag variant={isJoined ? "green" : "default"}>{isJoined ? "Inscrit" : isFull ? "Complet" : "Ouvert"}</Tag>
+                    <Tag variant={isJoined ? "green" : "default"}>{isJoined ? t("speedNetworking.registered") : isFull ? t("speedNetworking.full") : t("speedNetworking.open")}</Tag>
                   </div>
                   <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-4">
                     <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {date.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}</span>
                     <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
                     <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {count}/{session.max_participants ?? 20}</span>
-                    <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {session.duration_minutes ?? 5} min/rencontre</span>
+                    <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {session.duration_minutes ?? 5} {t("speedNetworking.minutesPerMeeting")}</span>
                   </div>
                   {matchedProfile && (
                     <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-lg px-3 py-2 mb-3">
                       <Star className="w-3.5 h-3.5 text-primary" />
                       <div className="text-xs">
-                        <span className="font-bold">Votre match :</span> {matchedProfile.display_name}
+                        <span className="font-bold">{t("speedNetworking.yourMatch")}</span> {matchedProfile.display_name}
                         {matchedProfile.headline && <span className="text-muted-foreground"> · {matchedProfile.headline}</span>}
                       </div>
                     </div>
                   )}
                   {isJoined ? (
                     <button onClick={() => leaveSession.mutate(session.id)} className="w-full bg-destructive/10 text-destructive rounded-lg py-2 text-xs font-bold hover:bg-destructive/20 transition-colors">
-                      Se désinscrire
+                      {t("speedNetworking.unregister")}
                     </button>
                   ) : (
                     <button onClick={() => joinSession.mutate(session.id)} disabled={isFull}
                       className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors disabled:opacity-50">
-                      <Zap className="w-3 h-3 inline mr-1" /> {isFull ? "Complet" : "Rejoindre"}
+                      <Zap className="w-3 h-3 inline mr-1" /> {isFull ? t("speedNetworking.full") : t("speedNetworking.join")}
                     </button>
                   )}
                   {isOwner && count >= 2 && (
                     <button onClick={() => runMatching.mutate(session.id)} disabled={runMatching.isPending}
                       className="w-full mt-2 bg-secondary border border-border rounded-lg py-2 text-xs font-bold hover:border-primary/30 transition-colors disabled:opacity-50">
-                      🎯 Lancer le matching ({count} participants)
+                      {t("speedNetworking.launchMatching")} ({count} {t("speedNetworking.participants")})
                     </button>
                   )}
                 </div>
@@ -276,7 +280,7 @@ export default function SpeedNetworkingPage() {
       {/* Past Sessions */}
       {pastSessions.length > 0 && (
         <>
-          <h2 className="font-heading text-lg font-bold mb-3">📋 Sessions passées</h2>
+          <h2 className="font-heading text-lg font-bold mb-3">{t("speedNetworking.pastSessions")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {pastSessions.slice(0, 6).map(session => (
               <GHCard key={session.id} className="opacity-70">
@@ -285,10 +289,10 @@ export default function SpeedNetworkingPage() {
                     <h3 className="font-heading text-sm font-bold">{session.title}</h3>
                     <p className="text-xs text-muted-foreground">
                       {new Date(session.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
-                      {" · "}{participantCounts?.[session.id] ?? 0} participants
+                      {" · "}{participantCounts?.[session.id] ?? 0} {t("speedNetworking.participants")}
                     </p>
                   </div>
-                  <Tag>Terminée</Tag>
+                  <Tag>{t("speedNetworking.finished")}</Tag>
                 </div>
               </GHCard>
             ))}

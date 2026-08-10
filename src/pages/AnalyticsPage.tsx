@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 import PredictiveAnalytics from "@/components/PredictiveAnalytics";
 import DataExportButton from "@/components/DataExportButton";
 import RoleAnalyticsDashboard from "@/components/RoleAnalyticsDashboard";
@@ -70,7 +72,7 @@ function useAnalyticsData() {
       const { data } = await supabase.from("coaching_sessions").select("status").eq("learner_id", user!.id);
       const counts: Record<string, number> = {};
       (data ?? []).forEach((s) => { counts[s.status] = (counts[s.status] ?? 0) + 1; });
-      const labels: Record<string, string> = { scheduled: "Planifiées", in_progress: "En cours", completed: "Terminées", cancelled: "Annulées" };
+      const labels: Record<string, string> = { scheduled: i18n.t("analytics.scheduled"), in_progress: i18n.t("analytics.inProgress"), completed: i18n.t("analytics.completed"), cancelled: i18n.t("analytics.cancelled") };
       return Object.entries(counts).map(([status, value]) => ({ name: labels[status] || status, value }));
     },
   });
@@ -90,10 +92,10 @@ function useAnalyticsData() {
   return { objectivesByCategory, postActivity, sessionsByStatus, connectionGrowth };
 }
 
-const chartConfigBar: ChartConfig = { total: { label: "Total", color: "hsl(var(--primary))" }, done: { label: "Terminés", color: "hsl(var(--green))" } };
-const chartConfigLine: ChartConfig = { posts: { label: "Posts", color: "hsl(var(--primary))" }, likes: { label: "Likes", color: "hsl(var(--blue))" }, comments: { label: "Commentaires", color: "hsl(var(--orange))" } };
-const chartConfigArea: ChartConfig = { count: { label: "Connexions", color: "hsl(var(--primary))" } };
-const chartConfigPie: ChartConfig = { value: { label: "Sessions" } };
+const chartConfigBar: ChartConfig = { total: { label: i18n.t("analytics.total"), color: "hsl(var(--primary))" }, done: { label: i18n.t("analytics.completed"), color: "hsl(var(--green))" } };
+const chartConfigLine: ChartConfig = { posts: { label: i18n.t("analytics.kpiPosts"), color: "hsl(var(--primary))" }, likes: { label: i18n.t("analytics.likes"), color: "hsl(var(--blue))" }, comments: { label: i18n.t("analytics.commentsChart"), color: "hsl(var(--orange))" } };
+const chartConfigArea: ChartConfig = { count: { label: i18n.t("analytics.kpiConnections"), color: "hsl(var(--primary))" } };
+const chartConfigPie: ChartConfig = { value: { label: i18n.t("analytics.coachingSessionsChart") } };
 
 function SSIGauge({ score, label, max = 25, color }: { score: number; label: string; max?: number; color: string }) {
   const pct = Math.round((score / max) * 100);
@@ -123,35 +125,36 @@ function ProfileCheckItem({ ok, label }: { ok: boolean; label: string }) {
 }
 
 export default function AnalyticsPage() {
-  usePageMeta({ title: "Analytics & SSI", description: "Votre tableau de bord de performance et Social Selling Index." });
+  const { t } = useTranslation();
+  usePageMeta({ title: "Analytics & SSI", description: t("analytics.description") });
 
   const { data: stats, isLoading } = useDashboardStats();
   const { data: ssi, isLoading: ssiLoading } = useSSI();
   const { objectivesByCategory, postActivity, sessionsByStatus, connectionGrowth } = useAnalyticsData();
 
   const kpis = [
-    { icon: Users, label: "Connexions", value: stats?.connections ?? 0, color: "text-primary" },
-    { icon: Target, label: "Objectifs atteints", value: `${stats?.objectivePct ?? 0}%`, color: "text-ghblue" },
-    { icon: Calendar, label: "Sessions coaching", value: stats?.completedSessions ?? 0, color: "text-ghorange" },
-    { icon: MessageSquare, label: "Posts", value: stats?.totalPosts ?? 0, color: "text-ghpurple" },
-    { icon: Award, label: "Badges", value: stats?.totalBadges ?? 0, color: "text-ghgold" },
-    { icon: TrendingUp, label: "Événements", value: stats?.totalEvents ?? 0, color: "text-ghteal" },
+    { icon: Users, label: t("analytics.kpiConnections"), value: stats?.connections ?? 0, color: "text-primary" },
+    { icon: Target, label: t("analytics.kpiObjectives"), value: `${stats?.objectivePct ?? 0}%`, color: "text-ghblue" },
+    { icon: Calendar, label: t("analytics.kpiSessions"), value: stats?.completedSessions ?? 0, color: "text-ghorange" },
+    { icon: MessageSquare, label: t("analytics.kpiPosts"), value: stats?.totalPosts ?? 0, color: "text-ghpurple" },
+    { icon: Award, label: t("analytics.kpiBadges"), value: stats?.totalBadges ?? 0, color: "text-ghgold" },
+    { icon: TrendingUp, label: t("analytics.kpiEvents"), value: stats?.totalEvents ?? 0, color: "text-ghteal" },
   ];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} role="main" aria-label="Page Analytics">
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} role="main" aria-label={t("analytics.pageLabel")}>
       {/* Header */}
       <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <Zap className="w-3.5 h-3.5" /> Analytics & Performance
+            <Zap className="w-3.5 h-3.5" /> {t("analytics.badge")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Votre <span className="text-primary">Social Selling Index</span>
+            {t("analytics.title")} <span className="text-primary">{t("analytics.titleHighlight")}</span>
           </h1>
           <p className="text-foreground/60 text-sm max-w-[460px]">
-            Mesurez votre impact, votre visibilité et la qualité de votre réseau.
+            {t("analytics.description")}
           </p>
         </div>
       </div>
@@ -173,36 +176,36 @@ export default function AnalyticsPage() {
                 <span className="text-[10px] text-muted-foreground">/100</span>
               </div>
             </div>
-            <h3 className="font-heading text-sm font-bold mb-1">Social Selling Index</h3>
+            <h3 className="font-heading text-sm font-bold mb-1">{t("analytics.ssiTitle")}</h3>
             <div className={cn(
               "flex items-center gap-1 text-xs font-bold",
               ssi.weeklyChange >= 0 ? "text-primary" : "text-destructive"
             )}>
               {ssi.weeklyChange >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-              {ssi.weeklyChange >= 0 ? "+" : ""}{ssi.weeklyChange} cette semaine
+              {ssi.weeklyChange >= 0 ? "+" : ""}{ssi.weeklyChange} {t("analytics.thisWeek")}
             </div>
           </GHCard>
 
           {/* SSI Breakdown */}
           <GHCard className="md:col-span-1">
-            <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">Détail SSI</h4>
+            <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">{t("analytics.ssiDetail")}</h4>
             <div className="grid grid-cols-2 gap-4">
-              <SSIGauge score={ssi.profileStrength} label="Profil" color="stroke-primary" />
-              <SSIGauge score={ssi.networkQuality} label="Réseau" color="stroke-ghblue" />
-              <SSIGauge score={ssi.engagement} label="Engagement" color="stroke-ghorange" />
-              <SSIGauge score={ssi.visibility} label="Visibilité" color="stroke-ghpurple" />
+              <SSIGauge score={ssi.profileStrength} label={t("analytics.profile")} color="stroke-primary" />
+              <SSIGauge score={ssi.networkQuality} label={t("analytics.network")} color="stroke-ghblue" />
+              <SSIGauge score={ssi.engagement} label={t("analytics.engagement")} color="stroke-ghorange" />
+              <SSIGauge score={ssi.visibility} label={t("analytics.visibility")} color="stroke-ghpurple" />
             </div>
           </GHCard>
 
           {/* Profile Checklist */}
           <GHCard className="md:col-span-1">
-            <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Optimiser votre profil</h4>
-            <ProfileCheckItem ok={ssi.details.hasAvatar} label="Photo de profil" />
-            <ProfileCheckItem ok={ssi.details.hasBio} label="Biographie complète" />
-            <ProfileCheckItem ok={ssi.details.hasSkills} label="3+ compétences" />
-            <ProfileCheckItem ok={ssi.details.hasInterests} label="2+ intérêts" />
-            <ProfileCheckItem ok={ssi.details.hasLinkedin} label="LinkedIn connecté" />
-            <ProfileCheckItem ok={ssi.details.hasWebsite} label="Site web ajouté" />
+            <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">{t("analytics.optimizeProfile")}</h4>
+            <ProfileCheckItem ok={ssi.details.hasAvatar} label={t("analytics.hasAvatar")} />
+            <ProfileCheckItem ok={ssi.details.hasBio} label={t("analytics.hasBio")} />
+            <ProfileCheckItem ok={ssi.details.hasSkills} label={t("analytics.hasSkills")} />
+            <ProfileCheckItem ok={ssi.details.hasInterests} label={t("analytics.hasInterests")} />
+            <ProfileCheckItem ok={ssi.details.hasLinkedin} label={t("analytics.hasLinkedin")} />
+            <ProfileCheckItem ok={ssi.details.hasWebsite} label={t("analytics.hasWebsite")} />
           </GHCard>
         </div>
       )}
@@ -213,28 +216,28 @@ export default function AnalyticsPage() {
           <GHCard className="text-center py-3">
             <Eye className="w-4 h-4 mx-auto mb-1 text-ghpurple" />
             <div className="font-heading text-lg font-extrabold">{ssi.details.profileViews}</div>
-            <div className="text-[10px] text-muted-foreground">Vues profil</div>
+            <div className="text-[10px] text-muted-foreground">{t("analytics.profileViews")}</div>
           </GHCard>
           <GHCard className="text-center py-3">
             <UserCheck className="w-4 h-4 mx-auto mb-1 text-primary" />
             <div className="font-heading text-lg font-extrabold">{ssi.details.endorsementsReceived}</div>
-            <div className="text-[10px] text-muted-foreground">Recommandations</div>
+            <div className="text-[10px] text-muted-foreground">{t("analytics.endorsements")}</div>
           </GHCard>
           <GHCard className="text-center py-3">
             <BookOpen className="w-4 h-4 mx-auto mb-1 text-ghblue" />
             <div className="font-heading text-lg font-extrabold">{ssi.details.postCount}</div>
-            <div className="text-[10px] text-muted-foreground">Publications</div>
+            <div className="text-[10px] text-muted-foreground">{t("analytics.publications")}</div>
           </GHCard>
           <GHCard className="text-center py-3">
             <Star className="w-4 h-4 mx-auto mb-1 text-ghorange" />
             <div className="font-heading text-lg font-extrabold">{ssi.details.coachingSessions}</div>
-            <div className="text-[10px] text-muted-foreground">Sessions coaching</div>
+            <div className="text-[10px] text-muted-foreground">{t("analytics.coachingSessions")}</div>
           </GHCard>
         </div>
       )}
 
       {/* KPIs */}
-      <section aria-label="Indicateurs clés" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-5">
+      <section aria-label={t("analytics.kpiLabel")} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-5">
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
           : kpis.map((kpi) => (
@@ -248,9 +251,9 @@ export default function AnalyticsPage() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <GHCard title="Objectifs par catégorie" headerRight={<Tag variant="green">Barres</Tag>}>
+        <GHCard title={t("analytics.objectivesByCategory")} headerRight={<Tag variant="green">{t("analytics.bars")}</Tag>}>
           {objectivesByCategory.isLoading ? <Skeleton className="h-52" /> : !objectivesByCategory.data?.length ? (
-            <p className="text-xs text-muted-foreground text-center py-8">Aucun objectif.</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t("analytics.noObjective")}</p>
           ) : (
             <ChartContainer config={chartConfigBar} className="h-52 w-full">
               <BarChart data={objectivesByCategory.data} accessibilityLayer>
@@ -258,16 +261,16 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Total" />
-                <Bar dataKey="done" fill="hsl(var(--green-dark))" radius={[4, 4, 0, 0]} name="Terminés" />
+                <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name={t("analytics.total")} />
+                <Bar dataKey="done" fill="hsl(var(--green-dark))" radius={[4, 4, 0, 0]} name={t("analytics.completed")} />
               </BarChart>
             </ChartContainer>
           )}
         </GHCard>
 
-        <GHCard title="Sessions coaching" headerRight={<Tag variant="blue">Répartition</Tag>}>
+        <GHCard title={t("analytics.coachingSessionsChart")} headerRight={<Tag variant="blue">{t("analytics.distribution")}</Tag>}>
           {sessionsByStatus.isLoading ? <Skeleton className="h-52" /> : !sessionsByStatus.data?.length ? (
-            <p className="text-xs text-muted-foreground text-center py-8">Aucune session.</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t("analytics.noSession")}</p>
           ) : (
             <ChartContainer config={chartConfigPie} className="h-52 w-full">
               <PieChart accessibilityLayer>
@@ -280,9 +283,9 @@ export default function AnalyticsPage() {
           )}
         </GHCard>
 
-        <GHCard title="Activité du feed" headerRight={<Tag variant="purple">Tendance</Tag>}>
+        <GHCard title={t("analytics.feedActivity")} headerRight={<Tag variant="purple">{t("analytics.trend")}</Tag>}>
           {postActivity.isLoading ? <Skeleton className="h-52" /> : !postActivity.data?.length ? (
-            <p className="text-xs text-muted-foreground text-center py-8">Aucune activité.</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t("analytics.noActivity")}</p>
           ) : (
             <ChartContainer config={chartConfigLine} className="h-52 w-full">
               <LineChart data={postActivity.data} accessibilityLayer>
@@ -290,17 +293,17 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Line type="monotone" dataKey="posts" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} name="Posts" />
-                <Line type="monotone" dataKey="likes" stroke="hsl(var(--blue))" strokeWidth={2} dot={false} name="Likes" />
-                <Line type="monotone" dataKey="comments" stroke="hsl(var(--orange))" strokeWidth={2} dot={false} name="Commentaires" />
+                <Line type="monotone" dataKey="posts" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} name={t("analytics.kpiPosts")} />
+                <Line type="monotone" dataKey="likes" stroke="hsl(var(--blue))" strokeWidth={2} dot={false} name={t("analytics.likes")} />
+                <Line type="monotone" dataKey="comments" stroke="hsl(var(--orange))" strokeWidth={2} dot={false} name={t("analytics.commentsChart")} />
               </LineChart>
             </ChartContainer>
           )}
         </GHCard>
 
-        <GHCard title="Croissance réseau" headerRight={<Tag variant="teal">Cumulatif</Tag>}>
+        <GHCard title={t("analytics.networkGrowth")} headerRight={<Tag variant="teal">{t("analytics.cumulative")}</Tag>}>
           {connectionGrowth.isLoading ? <Skeleton className="h-52" /> : !connectionGrowth.data?.length ? (
-            <p className="text-xs text-muted-foreground text-center py-8">Aucune donnée.</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t("analytics.noData")}</p>
           ) : (
             <ChartContainer config={chartConfigArea} className="h-52 w-full">
               <AreaChart data={connectionGrowth.data} accessibilityLayer>
@@ -308,7 +311,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Area type="monotone" dataKey="count" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.15)" strokeWidth={2} name="Connexions" />
+                <Area type="monotone" dataKey="count" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.15)" strokeWidth={2} name={t("analytics.kpiConnections")} />
               </AreaChart>
             </ChartContainer>
           )}
@@ -323,7 +326,7 @@ export default function AnalyticsPage() {
       {/* Network ROI Analytics */}
       <div className="mt-5">
         <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-primary" /> ROI Networking
+          <TrendingUp className="w-5 h-5 text-primary" /> {t("analytics.networkingRoi")}
         </h2>
         <NetworkAnalytics />
       </div>
@@ -331,7 +334,7 @@ export default function AnalyticsPage() {
       {/* Networking ROI Tracker */}
       <div className="mt-5">
         <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
-          <Target className="w-5 h-5 text-ghblue" /> Networking ROI Tracker
+          <Target className="w-5 h-5 text-ghblue" /> {t("analytics.networkingRoiTracker")}
         </h2>
         <NetworkingROI />
       </div>
@@ -344,26 +347,26 @@ export default function AnalyticsPage() {
       {/* Role-based Analytics */}
       <div className="mt-5">
         <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-primary" /> Analytics par rôle
+          <BarChart3 className="w-5 h-5 text-primary" /> {t("analytics.roleAnalytics")}
         </h2>
         <RoleAnalyticsDashboard />
       </div>
 
       {/* Predictive Analytics */}
       <div className="mt-5">
-        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">🧠 Analytics Prédictif</h2>
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">{t("analytics.predictiveAnalytics")}</h2>
         <PredictiveAnalytics />
       </div>
 
       {/* Data Export */}
       <div className="mt-5">
-        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">📥 Exporter vos données</h2>
+        <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2">{t("analytics.exportData")}</h2>
         <div className="flex flex-wrap gap-2">
-          <DataExportButton table="connections" label="Connexions" filename="connexions" filterByUser={false} columns="requester_id,receiver_id,status,match_score,created_at" />
-          <DataExportButton table="leads" label="Leads CRM" filename="leads" columns="name,email,phone,company,source,status,notes,created_at" />
-          <DataExportButton table="objectives" label="Objectifs" filename="objectifs" columns="title,description,category,current_value,target_value,is_completed,deadline" />
-          <DataExportButton table="coaching_sessions" label="Sessions Coaching" filename="sessions_coaching" filterByUser={false} columns="coach_id,learner_id,status,scheduled_at,topic,rating" />
-          <DataExportButton table="posts" label="Publications" filename="publications" filterByUser={false} columns="content,post_type,likes_count,comments_count,created_at" />
+          <DataExportButton table="connections" label={t("analytics.exportConnections")} filename="connexions" filterByUser={false} columns="requester_id,receiver_id,status,match_score,created_at" />
+          <DataExportButton table="leads" label={t("analytics.exportLeads")} filename="leads" columns="name,email,phone,company,source,status,notes,created_at" />
+          <DataExportButton table="objectives" label={t("analytics.exportObjectives")} filename="objectifs" columns="title,description,category,current_value,target_value,is_completed,deadline" />
+          <DataExportButton table="coaching_sessions" label={t("analytics.exportSessions")} filename="sessions_coaching" filterByUser={false} columns="coach_id,learner_id,status,scheduled_at,topic,rating" />
+          <DataExportButton table="posts" label={t("analytics.exportPosts")} filename="publications" filterByUser={false} columns="content,post_type,likes_count,comments_count,created_at" />
         </div>
       </div>
     </motion.div>

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 function useSpaces() {
   const { user } = useAuth();
@@ -74,7 +75,8 @@ function useSpaceMessages(spaceId: string | null) {
 }
 
 export default function SpacesPage() {
-  usePageMeta({ title: "Espaces collaboratifs", description: "Travaillez en équipe avec vos connexions." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("spaces.metaTitle"), description: t("spaces.metaDesc") });
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: spaces, isLoading } = useSpaces();
@@ -109,12 +111,12 @@ export default function SpacesPage() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["spaces"] });
-      toast.success("Espace créé !");
+      toast.success(t("spaces.spaceCreatedToast"));
       setShowCreate(false);
       setNewName(""); setNewDesc(""); setSelectedMembers([]);
       setSelectedSpace(data.id);
     },
-    onError: () => toast.error("Erreur"),
+    onError: () => toast.error(t("spaces.errorToast")),
   });
 
   const space = spaces?.find(s => s.id === selectedSpace);
@@ -137,13 +139,13 @@ export default function SpacesPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <FolderKanban className="w-3.5 h-3.5" /> Espaces Collaboratifs
+            <FolderKanban className="w-3.5 h-3.5" /> {t("spaces.tag")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Vos <span className="text-primary">Espaces Projet</span>
+            {t("spaces.h1a")} <span className="text-primary">{t("spaces.h1b")}</span>
           </h1>
           <p className="text-foreground/60 text-sm max-w-[460px]">
-            Collaborez avec vos connexions : tâches partagées, chat intégré, suivi de projet.
+            {t("spaces.subtitle")}
           </p>
         </div>
       </div>
@@ -153,19 +155,19 @@ export default function SpacesPage() {
         <button onClick={() => setShowCreate(true)}
           className="w-full bg-card border-2 border-dashed border-border rounded-2xl p-6 flex items-center justify-center gap-3 text-muted-foreground hover:border-primary/40 hover:text-primary transition-all mb-5 cursor-pointer">
           <Plus className="w-5 h-5" />
-          <span className="font-heading text-sm font-bold">Créer un espace</span>
+          <span className="font-heading text-sm font-bold">{t("spaces.createSpace")}</span>
         </button>
       ) : (
-        <GHCard title="Nouvel espace" className="mb-5">
+        <GHCard title={t("spaces.createDialogTitle")} className="mb-5">
           <div className="space-y-3">
-            <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Nom de l'espace"
+            <input value={newName} onChange={e => setNewName(e.target.value)} placeholder={t("spaces.namePh")}
               className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
-            <textarea value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Description (optionnel)"
+            <textarea value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder={t("spaces.descPh")}
               className="w-full bg-secondary/50 border border-border rounded-xl p-3 text-sm resize-none min-h-[60px] focus:outline-none focus:border-primary/40" />
             
             {acceptedConnections.length > 0 && (
               <div>
-                <label className="text-xs font-bold text-foreground/70 mb-2 block">Inviter des membres</label>
+                <label className="text-xs font-bold text-foreground/70 mb-2 block">{t("spaces.inviteMembers")}</label>
                 <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
                   {acceptedConnections.map(c => {
                     const p = c.partner_profile;
@@ -190,10 +192,10 @@ export default function SpacesPage() {
             <div className="flex gap-2">
               <button onClick={() => createSpace.mutate()} disabled={!newName.trim()}
                 className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold disabled:opacity-50 hover:bg-primary-hover transition-all">
-                Créer
+                {t("spaces.create")}
               </button>
               <button onClick={() => setShowCreate(false)}
-                className="bg-secondary text-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">Annuler</button>
+                className="bg-secondary text-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">{t("spaces.cancel")}</button>
             </div>
           </div>
         </GHCard>
@@ -207,7 +209,7 @@ export default function SpacesPage() {
       ) : !spaces?.length ? (
         <GHCard className="text-center py-10">
           <FolderKanban className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">Aucun espace collaboratif. Créez-en un pour commencer !</p>
+          <p className="text-sm text-muted-foreground">{t("spaces.noSpaces")}</p>
         </GHCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -223,7 +225,7 @@ export default function SpacesPage() {
               <h3 className="font-heading text-sm font-bold mb-1">{s.name}</h3>
               {s.description && <p className="text-xs text-muted-foreground line-clamp-2">{s.description}</p>}
               <div className="text-[10px] text-muted-foreground mt-3">
-                Créé le {new Date(s.created_at).toLocaleDateString("fr-FR")}
+                {t("spaces.createdOn")} {new Date(s.created_at).toLocaleDateString("fr-FR")}
               </div>
             </div>
           ))}
@@ -234,6 +236,7 @@ export default function SpacesPage() {
 }
 
 function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () => void; tab: "tasks" | "chat"; setTab: (t: "tasks" | "chat") => void }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: members } = useSpaceMembers(space.id);
@@ -324,7 +327,7 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
                 {(m.profile?.display_name ?? "?").substring(0, 1)}
               </div>
             )}
-            <span className="text-[10px] font-medium">{m.profile?.display_name ?? "Membre"}</span>
+            <span className="text-[10px] font-medium">{m.profile?.display_name ?? t("spaces.member")}</span>
           </div>
         ))}
       </div>
@@ -334,12 +337,12 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
         <button onClick={() => setTab("tasks")}
           className={cn("flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition-all",
             tab === "tasks" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground")}>
-          <ListTodo className="w-3.5 h-3.5" /> Tâches ({(tasks ?? []).length})
+          <ListTodo className="w-3.5 h-3.5" /> {t("spaces.tasksTab")} ({(tasks ?? []).length})
         </button>
         <button onClick={() => setTab("chat")}
           className={cn("flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition-all",
             tab === "chat" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground")}>
-          <MessageSquare className="w-3.5 h-3.5" /> Chat ({(messages ?? []).length})
+          <MessageSquare className="w-3.5 h-3.5" /> {t("spaces.chatTab")} ({(messages ?? []).length})
         </button>
       </div>
 
@@ -347,7 +350,7 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
         <div>
           {/* Add task */}
           <div className="flex gap-2 mb-4">
-            <input value={newTask} onChange={e => setNewTask(e.target.value)} placeholder="Nouvelle tâche..."
+            <input value={newTask} onChange={e => setNewTask(e.target.value)} placeholder={t("spaces.newTaskPh")}
               onKeyDown={e => e.key === "Enter" && newTask.trim() && addTask.mutate()}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
             <select
@@ -358,9 +361,9 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
               className="bg-secondary/50 border border-border rounded-xl px-2 text-[10px] hidden sm:block"
               title="Assigner à"
             >
-              <option value="">Assigner</option>
+              <option value="">{t("spaces.assign")}</option>
               {members?.map(m => (
-                <option key={m.user_id} value={m.user_id}>{m.profile?.display_name ?? "Membre"}</option>
+                <option key={m.user_id} value={m.user_id}>{m.profile?.display_name ?? t("spaces.member")}</option>
               ))}
             </select>
             <button onClick={() => newTask.trim() && addTask.mutate()}
@@ -372,13 +375,13 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
           {/* Todo */}
           {todoTasks.length > 0 && (
             <div className="space-y-2 mb-4">
-              {todoTasks.map(t => (
-                <div key={t.id} className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3 group">
-                  <button onClick={() => toggleTask.mutate({ id: t.id, status: t.status })}>
+              {todoTasks.map(task => (
+                <div key={task.id} className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3 group">
+                  <button onClick={() => toggleTask.mutate({ id: task.id, status: task.status })}>
                     <Circle className="w-4 h-4 text-muted-foreground hover:text-primary transition-colors" />
                   </button>
-                  <span className="text-sm flex-1">{t.title}</span>
-                  {t.priority === "high" && <Tag variant="red">Urgent</Tag>}
+                  <span className="text-sm flex-1">{task.title}</span>
+                  {task.priority === "high" && <Tag variant="red">{t("spaces.urgent")}</Tag>}
                 </div>
               ))}
             </div>
@@ -387,14 +390,14 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
           {/* Done */}
           {doneTasks.length > 0 && (
             <div>
-              <div className="text-xs font-bold text-muted-foreground mb-2">Terminées ({doneTasks.length})</div>
+              <div className="text-xs font-bold text-muted-foreground mb-2">{t("spaces.doneTasks")} ({doneTasks.length})</div>
               <div className="space-y-1.5">
-                {doneTasks.map(t => (
-                  <div key={t.id} className="flex items-center gap-3 bg-secondary/30 rounded-xl px-4 py-2.5">
-                    <button onClick={() => toggleTask.mutate({ id: t.id, status: t.status })}>
+                {doneTasks.map(task => (
+                  <div key={task.id} className="flex items-center gap-3 bg-secondary/30 rounded-xl px-4 py-2.5">
+                    <button onClick={() => toggleTask.mutate({ id: task.id, status: task.status })}>
                       <CheckCircle2 className="w-4 h-4 text-primary" />
                     </button>
-                    <span className="text-sm text-muted-foreground line-through">{t.title}</span>
+                    <span className="text-sm text-muted-foreground line-through">{task.title}</span>
                   </div>
                 ))}
               </div>
@@ -402,7 +405,7 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
           )}
 
           {!todoTasks.length && !doneTasks.length && (
-            <div className="text-center py-10 text-muted-foreground text-sm">Aucune tâche. Ajoutez-en une !</div>
+            <div className="text-center py-10 text-muted-foreground text-sm">{t("spaces.noTasks")}</div>
           )}
         </div>
       ) : (
@@ -436,7 +439,7 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
                         {!isReply && (
                           <button onClick={() => setReplyTo({ id: m.id, preview: m.content.slice(0, 40) })}
                             className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary font-semibold">
-                            Répondre
+                            {t("spaces.reply")}
                           </button>
                         )}
                       </div>
@@ -457,14 +460,14 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
           {/* Reply banner */}
           {replyTo && (
             <div className="flex items-center justify-between bg-primary/5 border border-primary/20 rounded-lg px-3 py-1.5 mb-2 text-[10px]">
-              <span className="text-muted-foreground truncate">Réponse à : <span className="text-foreground font-semibold">"{replyTo.preview}"</span></span>
+              <span className="text-muted-foreground truncate">{t("spaces.replyTo")} <span className="text-foreground font-semibold">"{replyTo.preview}"</span></span>
               <button onClick={() => setReplyTo(null)} className="text-muted-foreground hover:text-destructive font-bold">×</button>
             </div>
           )}
 
           {/* Input with file sharing */}
           <div className="flex gap-2">
-            <input value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder={replyTo ? "Votre réponse..." : "Message..."}
+            <input value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder={replyTo ? t("spaces.replyPh") : t("spaces.messagePh")}
               onKeyDown={e => e.key === "Enter" && newMsg.trim() && sendMsg.mutate()}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
             <button
@@ -478,7 +481,7 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
                   const ext = file.name.split(".").pop();
                   const path = `spaces/${space.id}/${Date.now()}.${ext}`;
                   const { error } = await supabase.storage.from("post-media").upload(path, file);
-                  if (error) { toast.error("Erreur d'upload"); return; }
+                  if (error) { toast.error(t("spaces.uploadError")); return; }
                   const { data: urlData } = supabase.storage.from("post-media").getPublicUrl(path);
                   await supabase.from("space_messages").insert({
                     space_id: space.id,
@@ -486,12 +489,12 @@ function SpaceDetail({ space, onBack, tab, setTab }: { space: any; onBack: () =>
                     content: `📎 [${file.name}](${urlData.publicUrl})`
                   });
                   queryClient.invalidateQueries({ queryKey: ["space-messages", space.id] });
-                  toast.success("Fichier partagé !");
+                  toast.success(t("spaces.fileSharedToast"));
                 };
                 input.click();
               }}
               className="bg-secondary border border-border rounded-xl px-3 py-2.5 hover:bg-secondary/80 transition-all"
-              title="Partager un fichier"
+              title={t("spaces.shareFile")}
             >
               <Paperclip className="w-4 h-4 text-muted-foreground" />
             </button>

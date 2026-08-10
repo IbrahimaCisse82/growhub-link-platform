@@ -20,10 +20,31 @@ import {
   BookOpen, Clock, BarChart3, Play, Check, Plus, Search,
   GraduationCap, Award, Loader2, ChevronRight, Users
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const CATEGORIES = ["Tous", "Entrepreneuriat", "Marketing", "Finance", "Tech", "Leadership", "Fundraising", "Juridique"];
-const DIFFICULTIES = { beginner: "Débutant", intermediate: "Intermédiaire", advanced: "Avancé" };
+const CATEGORY_VALUES = ["Tous", "Entrepreneuriat", "Marketing", "Finance", "Tech", "Leadership", "Fundraising", "Juridique"];
 const DIFF_COLORS = { beginner: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400", intermediate: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400", advanced: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" };
+
+function useCategoryLabels(t: any): Record<string, string> {
+  return {
+    "Tous": t("courses.catAll"),
+    "Entrepreneuriat": t("courses.catEntrepreneurship"),
+    "Marketing": t("courses.catMarketing"),
+    "Finance": t("courses.catFinance"),
+    "Tech": t("courses.catTech"),
+    "Leadership": t("courses.catLeadership"),
+    "Fundraising": t("courses.catFundraising"),
+    "Juridique": t("courses.catLegal"),
+  };
+}
+
+function useDifficultyLabels(t: any): Record<string, string> {
+  return {
+    beginner: t("courses.diffBeginner"),
+    intermediate: t("courses.diffIntermediate"),
+    advanced: t("courses.diffAdvanced"),
+  };
+}
 
 function useCourses() {
   return useQuery({
@@ -50,7 +71,10 @@ function useMyEnrollments() {
 }
 
 export default function CoursesPage() {
-  usePageMeta({ title: "Formations — GrowHubLink", description: "Formez-vous avec des cours conçus pour les entrepreneurs africains." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("courses.metaTitle"), description: t("courses.metaDesc") });
+  const CATEGORY_LABELS = useCategoryLabels(t);
+  const DIFFICULTIES = useDifficultyLabels(t);
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: courses, isLoading } = useCourses();
@@ -68,8 +92,8 @@ export default function CoursesPage() {
       const { error } = await supabase.from("course_enrollments").insert({ user_id: user!.id, course_id: courseId });
       if (error) throw error;
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["enrollments"] }); toast.success("Inscrit au cours !"); },
-    onError: (e: any) => toast.error(e.message?.includes("unique") ? "Déjà inscrit" : "Erreur"),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["enrollments"] }); toast.success(t("courses.enrolledToast")); },
+    onError: (e: any) => toast.error(e.message?.includes("unique") ? t("courses.alreadyEnrolledToast") : t("courses.errorToast")),
   });
 
   const createCourse = useMutation({
@@ -83,7 +107,7 @@ export default function CoursesPage() {
         duration_minutes: newCourse.duration_minutes,
         is_published: true,
         lessons: [
-          { title: "Introduction", content: "Bienvenue dans ce cours !", type: "text", order: 0 },
+          { title: t("courses.introTitle"), content: t("courses.introContent"), type: "text", order: 0 },
         ],
       });
       if (error) throw error;
@@ -92,9 +116,9 @@ export default function CoursesPage() {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       setCreateOpen(false);
       setNewCourse({ title: "", description: "", category: "Entrepreneuriat", difficulty: "beginner", duration_minutes: 30 });
-      toast.success("Cours créé !");
+      toast.success(t("courses.createdToast"));
     },
-    onError: (e: any) => toast.error(e.message || "Erreur"),
+    onError: (e: any) => toast.error(e.message || t("courses.errorToast")),
   });
 
   const filtered = (courses ?? []).filter(c => {
@@ -111,27 +135,27 @@ export default function CoursesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-heading font-bold text-foreground flex items-center gap-2">
-            <GraduationCap className="w-6 h-6 text-primary" /> Formations
+            <GraduationCap className="w-6 h-6 text-primary" /> {t("courses.title")}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Développez vos compétences avec des cours adaptés à votre parcours</p>
+          <p className="text-sm text-muted-foreground mt-1">{t("courses.subtitle")}</p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
-            <Button size="sm"><Plus className="w-4 h-4 mr-1" /> Créer un cours</Button>
+            <Button size="sm"><Plus className="w-4 h-4 mr-1" /> {t("courses.createCourse")}</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader><DialogTitle>Créer un nouveau cours</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t("courses.createDialogTitle")}</DialogTitle></DialogHeader>
             <div className="space-y-4 pt-2">
-              <div className="space-y-1.5"><Label>Titre *</Label><Input placeholder="Ex: Les bases du pitch deck" value={newCourse.title} onChange={e => setNewCourse({ ...newCourse, title: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label>Description</Label><Textarea rows={3} placeholder="De quoi parle ce cours..." value={newCourse.description} onChange={e => setNewCourse({ ...newCourse, description: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>{t("courses.labelTitle")}</Label><Input placeholder={t("courses.titlePh")} value={newCourse.title} onChange={e => setNewCourse({ ...newCourse, title: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>{t("courses.labelDescription")}</Label><Textarea rows={3} placeholder={t("courses.descriptionPh")} value={newCourse.description} onChange={e => setNewCourse({ ...newCourse, description: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5"><Label>Catégorie</Label>
+                <div className="space-y-1.5"><Label>{t("courses.labelCategory")}</Label>
                   <Select value={newCourse.category} onValueChange={v => setNewCourse({ ...newCourse, category: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{CATEGORIES.filter(c => c !== "Tous").map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                    <SelectContent>{CATEGORY_VALUES.filter(c => c !== "Tous").map(c => <SelectItem key={c} value={c}>{CATEGORY_LABELS[c]}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1.5"><Label>Niveau</Label>
+                <div className="space-y-1.5"><Label>{t("courses.labelLevel")}</Label>
                   <Select value={newCourse.difficulty} onValueChange={v => setNewCourse({ ...newCourse, difficulty: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -140,9 +164,9 @@ export default function CoursesPage() {
                   </Select>
                 </div>
               </div>
-              <div className="space-y-1.5"><Label>Durée estimée (minutes)</Label><Input type="number" value={newCourse.duration_minutes} onChange={e => setNewCourse({ ...newCourse, duration_minutes: parseInt(e.target.value) || 30 })} /></div>
+              <div className="space-y-1.5"><Label>{t("courses.labelDuration")}</Label><Input type="number" value={newCourse.duration_minutes} onChange={e => setNewCourse({ ...newCourse, duration_minutes: parseInt(e.target.value) || 30 })} /></div>
               <Button className="w-full" disabled={!newCourse.title || createCourse.isPending} onClick={() => createCourse.mutate()}>
-                {createCourse.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />} Créer le cours
+                {createCourse.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />} {t("courses.createBtn")}
               </Button>
             </div>
           </DialogContent>
@@ -154,24 +178,24 @@ export default function CoursesPage() {
         <Card className="border-border/50"><CardContent className="p-4 text-center">
           <BookOpen className="w-5 h-5 text-primary mx-auto mb-1" />
           <div className="text-xl font-heading font-bold text-foreground">{courses?.length ?? 0}</div>
-          <div className="text-xs text-muted-foreground">Cours disponibles</div>
+          <div className="text-xs text-muted-foreground">{t("courses.statAvailable")}</div>
         </CardContent></Card>
         <Card className="border-border/50"><CardContent className="p-4 text-center">
           <Play className="w-5 h-5 text-primary mx-auto mb-1" />
           <div className="text-xl font-heading font-bold text-foreground">{enrollments?.length ?? 0}</div>
-          <div className="text-xs text-muted-foreground">En cours</div>
+          <div className="text-xs text-muted-foreground">{t("courses.statInProgress")}</div>
         </CardContent></Card>
         <Card className="border-border/50"><CardContent className="p-4 text-center">
           <Award className="w-5 h-5 text-primary mx-auto mb-1" />
           <div className="text-xl font-heading font-bold text-foreground">{myEnrolled.filter(e => e.is_completed).length}</div>
-          <div className="text-xs text-muted-foreground">Terminés</div>
+          <div className="text-xs text-muted-foreground">{t("courses.statCompleted")}</div>
         </CardContent></Card>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="explore">Explorer</TabsTrigger>
-          <TabsTrigger value="enrolled">Mes formations ({enrollments?.length ?? 0})</TabsTrigger>
+          <TabsTrigger value="explore">{t("courses.tabExplore")}</TabsTrigger>
+          <TabsTrigger value="enrolled">{t("courses.tabEnrolled")} ({enrollments?.length ?? 0})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="explore" className="space-y-4 mt-4">
@@ -179,11 +203,11 @@ export default function CoursesPage() {
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Rechercher un cours..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
+              <Input placeholder={t("courses.searchPh")} className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {CATEGORIES.map(c => (
-                <Badge key={c} variant={category === c ? "default" : "outline"} className="cursor-pointer" onClick={() => setCategory(c)}>{c}</Badge>
+              {CATEGORY_VALUES.map(c => (
+                <Badge key={c} variant={category === c ? "default" : "outline"} className="cursor-pointer" onClick={() => setCategory(c)}>{CATEGORY_LABELS[c]}</Badge>
               ))}
             </div>
           </div>
@@ -194,7 +218,7 @@ export default function CoursesPage() {
             </div>
           ) : filtered.length === 0 ? (
             <Card className="border-border/50"><CardContent className="p-8 text-center text-muted-foreground">
-              Aucun cours trouvé. Soyez le premier à en créer un !
+              {t("courses.noCourses")}
             </CardContent></Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -204,7 +228,7 @@ export default function CoursesPage() {
                     <CardContent className="p-5 flex flex-col flex-1">
                       <div className="flex items-center gap-2 mb-3">
                         <Badge className={`text-[10px] px-2 py-0.5 ${DIFF_COLORS[course.difficulty as keyof typeof DIFF_COLORS] || DIFF_COLORS.beginner}`}>
-                          {DIFFICULTIES[course.difficulty as keyof typeof DIFFICULTIES] || "Débutant"}
+                          {DIFFICULTIES[course.difficulty as keyof typeof DIFFICULTIES] || t("courses.diffBeginner")}
                         </Badge>
                         <Badge variant="outline" className="text-[10px]">{course.category}</Badge>
                       </div>
@@ -213,13 +237,13 @@ export default function CoursesPage() {
                       <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3 mt-auto">
                         <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {course.duration_minutes} min</span>
                         <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {course.enrollment_count ?? 0}</span>
-                        <span className="flex items-center gap-1"><BarChart3 className="w-3.5 h-3.5" /> {(course.lessons as any[])?.length ?? 0} leçons</span>
+                        <span className="flex items-center gap-1"><BarChart3 className="w-3.5 h-3.5" /> {(course.lessons as any[])?.length ?? 0} {t("courses.lessonsCount")}</span>
                       </div>
                       {enrolledCourseIds.has(course.id) ? (
-                        <Button size="sm" variant="secondary" disabled className="w-full"><Check className="w-3.5 h-3.5 mr-1" /> Inscrit</Button>
+                        <Button size="sm" variant="secondary" disabled className="w-full"><Check className="w-3.5 h-3.5 mr-1" /> {t("courses.enrolled")}</Button>
                       ) : (
                         <Button size="sm" className="w-full" onClick={() => enroll.mutate(course.id)} disabled={enroll.isPending}>
-                          <Play className="w-3.5 h-3.5 mr-1" /> S'inscrire
+                          <Play className="w-3.5 h-3.5 mr-1" /> {t("courses.enroll")}
                         </Button>
                       )}
                     </CardContent>
@@ -234,7 +258,7 @@ export default function CoursesPage() {
           {myEnrolled.length === 0 ? (
             <Card className="border-border/50"><CardContent className="p-8 text-center text-muted-foreground">
               <GraduationCap className="w-10 h-10 mx-auto mb-3 text-muted-foreground/50" />
-              Vous n'êtes inscrit à aucun cours. Explorez le catalogue !
+              {t("courses.noEnrollment")}
             </CardContent></Card>
           ) : (
             <div className="space-y-3">
@@ -254,7 +278,7 @@ export default function CoursesPage() {
                         </div>
                       </div>
                       {e.is_completed ? (
-                        <Badge variant="default" className="shrink-0"><Check className="w-3 h-3 mr-1" /> Terminé</Badge>
+                        <Badge variant="default" className="shrink-0"><Check className="w-3 h-3 mr-1" /> {t("courses.completed")}</Badge>
                       ) : (
                         <Button size="sm" variant="outline" className="shrink-0"><ChevronRight className="w-4 h-4" /></Button>
                       )}

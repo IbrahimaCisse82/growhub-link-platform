@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { GHCard, MetricCard, SectionHeader, Tag } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
@@ -110,20 +111,22 @@ function useAdminStats() {
   return { userStats, roleDistribution, recentActivity, recentUsers, personaStats };
 }
 
-const roleLabels: Record<string, string> = {
-  startup: "Startup", mentor: "Mentor", investor: "Investisseur", expert: "Expert",
-  freelance: "Freelance", incubateur: "Incubateur", etudiant: "Étudiant",
-  aspirationnel: "Aspirationnel", professionnel: "Professionnel", corporate: "Corporate", admin: "Admin",
-};
+
 
 const chartConfig: ChartConfig = { posts: { label: "Publications", color: "hsl(var(--primary))" } };
 const barConfig: ChartConfig = { count: { label: "Utilisateurs", color: "hsl(var(--primary))" } };
 
 export default function AdminDashboardPage() {
+  const { t } = useTranslation();
   usePageMeta({ title: "Admin Dashboard", description: "Tableau de bord d'administration de la plateforme." });
   const { userStats, roleDistribution, recentActivity, recentUsers, personaStats } = useAdminStats();
   const stats = userStats.data;
   const personas = personaStats.data;
+  const roleLabels: Record<string, string> = {
+    startup: t("admin.roleStartup"), mentor: t("admin.roleMentor"), investor: t("admin.roleInvestor"), expert: t("admin.roleExpert"),
+    freelance: t("admin.roleFreelance"), incubateur: t("admin.roleIncubateur"), etudiant: t("admin.roleEtudiant"),
+    aspirationnel: t("admin.roleAspirationnel"), professionnel: t("admin.roleProfessionnel"), corporate: t("admin.roleCorporate"), admin: t("admin.roleAdmin"),
+  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
@@ -132,20 +135,20 @@ export default function AdminDashboardPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-destructive/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-destructive/10 border border-destructive/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-destructive uppercase tracking-wider mb-3.5">
-            <Shield className="w-3.5 h-3.5" /> Administration
+            <Shield className="w-3.5 h-3.5" /> {t("admin.dashboard")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Tableau de bord <span className="text-destructive">Admin</span>
+            {t("admin.dashboardTitle")} <span className="text-destructive">{t("admin.dashboardTitleHighlight")}</span>
           </h1>
           <p className="text-foreground/60 text-sm max-w-[460px]">
-            Vue d'ensemble de la plateforme, statistiques et gestion.
+            {t("admin.dashboardDesc")}
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <Link to="/admin/back-office" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-destructive text-destructive-foreground text-xs font-bold hover:opacity-90">
-              Back-Office avancé <ArrowRight className="w-3.5 h-3.5" />
+              {t("admin.advancedBackoffice")} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link to="/admin/analytics" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:opacity-90">
-              Analytics produit <ArrowRight className="w-3.5 h-3.5" />
+              {t("admin.productAnalytics")} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
@@ -157,36 +160,36 @@ export default function AdminDashboardPage() {
           Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
         ) : (
           <>
-            <MetricCard icon="👥" value={String(stats?.totalUsers ?? 0)} label="Utilisateurs" badge="Total" badgeType="neutral" />
-            <MetricCard icon="🤝" value={String(stats?.totalConnections ?? 0)} label="Connexions" badge="Actives" badgeType="up" />
-            <MetricCard icon="📝" value={String(stats?.totalPosts ?? 0)} label="Publications" badge="Total" badgeType="neutral" />
-            <MetricCard icon="📅" value={String(stats?.totalEvents ?? 0)} label="Événements" badge="Créés" badgeType="up" />
-            <MetricCard icon="🎓" value={String(stats?.totalSessions ?? 0)} label="Sessions" badge="Coaching" badgeType="neutral" />
-            <MetricCard icon="🏅" value={String(stats?.totalBadges ?? 0)} label="Badges" badge="Distribués" badgeType="up" />
+            <MetricCard icon="👥" value={String(stats?.totalUsers ?? 0)} label={t("admin.users")} badge={t("admin.total")} badgeType="neutral" />
+            <MetricCard icon="🤝" value={String(stats?.totalConnections ?? 0)} label={t("admin.connections")} badge={t("admin.active")} badgeType="up" />
+            <MetricCard icon="📝" value={String(stats?.totalPosts ?? 0)} label={t("admin.posts")} badge={t("admin.total")} badgeType="neutral" />
+            <MetricCard icon="📅" value={String(stats?.totalEvents ?? 0)} label={t("admin.events")} badge={t("admin.created")} badgeType="up" />
+            <MetricCard icon="🎓" value={String(stats?.totalSessions ?? 0)} label={t("admin.sessions")} badge={t("admin.coaching")} badgeType="neutral" />
+            <MetricCard icon="🏅" value={String(stats?.totalBadges ?? 0)} label={t("admin.badges")} badge={t("admin.distributed")} badgeType="up" />
           </>
         )}
       </div>
 
       {/* Persona-specific KPIs */}
-      <SectionHeader title="Activité des nouveaux profils" />
+      <SectionHeader title={t("admin.newProfilesActivity")} />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
         {personaStats.isLoading ? (
           Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
         ) : (
           <>
-            <MetricCard icon="🎓" value={String(personas?.students ?? 0)} label="Profils étudiants" badge="Carrière" badgeType="neutral" />
-            <MetricCard icon="🏢" value={String(personas?.challenges ?? 0)} label="Challenges Corporate" badge="Open Innov" badgeType="up" />
-            <MetricCard icon="📥" value={String(personas?.submissions ?? 0)} label="Candidatures" badge="Startups" badgeType="neutral" />
-            <MetricCard icon="🎯" value={String(personas?.goals ?? 0)} label="Objectifs Pro" badge="Skills" badgeType="up" />
-            <MetricCard icon="🌱" value={String(personas?.journeySteps ?? 0)} label="Étapes franchies" badge="Aspirationnels" badgeType="up" />
-            <MetricCard icon="🚀" value={String(personas?.cohorts ?? 0)} label="Cohortes" badge="Incubateurs" badgeType="neutral" />
+            <MetricCard icon="🎓" value={String(personas?.students ?? 0)} label={t("admin.studentProfiles")} badge={t("admin.career")} badgeType="neutral" />
+            <MetricCard icon="🏢" value={String(personas?.challenges ?? 0)} label={t("admin.corporateChallenges")} badge={t("admin.openInnov")} badgeType="up" />
+            <MetricCard icon="📥" value={String(personas?.submissions ?? 0)} label={t("admin.applications")} badge={t("admin.startups")} badgeType="neutral" />
+            <MetricCard icon="🎯" value={String(personas?.goals ?? 0)} label={t("admin.proObjectives")} badge={t("admin.skills")} badgeType="up" />
+            <MetricCard icon="🌱" value={String(personas?.journeySteps ?? 0)} label={t("admin.stepsCompleted")} badge={t("admin.aspirational")} badgeType="up" />
+            <MetricCard icon="🚀" value={String(personas?.cohorts ?? 0)} label={t("admin.cohorts")} badge={t("admin.incubators")} badgeType="neutral" />
           </>
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
         {/* Role distribution */}
-        <GHCard title="Répartition par rôle" headerRight={<Tag>Utilisateurs</Tag>}>
+        <GHCard title={t("admin.roleDistribution")} headerRight={<Tag>{t("admin.chartUsers")}</Tag>}>
           {roleDistribution.isLoading ? <Skeleton className="h-52" /> : (
             <ChartContainer config={barConfig} className="h-52 w-full">
               <BarChart data={roleDistribution.data?.map(r => ({ ...r, name: roleLabels[r.role] ?? r.role }))}>
@@ -194,16 +197,16 @@ export default function AdminDashboardPage() {
                 <XAxis dataKey="name" tick={{ fontSize: 9 }} angle={-30} textAnchor="end" height={50} />
                 <YAxis tick={{ fontSize: 11 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Utilisateurs" />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name={t("admin.chartUsers")} />
               </BarChart>
             </ChartContainer>
           )}
         </GHCard>
 
         {/* Activity trend */}
-        <GHCard title="Activité (30 jours)" headerRight={<Tag variant="green">Publications</Tag>}>
+        <GHCard title={t("admin.activityTrend")} headerRight={<Tag variant="green">{t("admin.chartPublications")}</Tag>}>
           {recentActivity.isLoading ? <Skeleton className="h-52" /> : !recentActivity.data?.length ? (
-            <p className="text-xs text-muted-foreground text-center py-8">Aucune activité récente.</p>
+            <p className="text-xs text-muted-foreground text-center py-8">{t("admin.noRecentActivity")}</p>
           ) : (
             <ChartContainer config={chartConfig} className="h-52 w-full">
               <AreaChart data={recentActivity.data}>
@@ -219,7 +222,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Recent users */}
-      <GHCard title="Derniers inscrits" headerRight={<Tag variant="blue">Récent</Tag>}>
+      <GHCard title={t("admin.recentUsers")} headerRight={<Tag variant="blue">{t("admin.recent")}</Tag>}>
         {recentUsers.isLoading ? (
           <div className="space-y-2">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 rounded-lg" />)}</div>
         ) : (
@@ -234,7 +237,7 @@ export default function AdminDashboardPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="font-heading text-xs font-bold">{u.display_name || "Sans nom"}</span>
+                  <span className="font-heading text-xs font-bold">{u.display_name || t("admin.noName")}</span>
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                     {u.sector && <span>{u.sector}</span>}
                     {u.city && <span>📍 {u.city}</span>}
