@@ -15,25 +15,33 @@ import {
   Briefcase, Code, Palette, TrendingUp, BookOpen, Users, Trash2,
   ToggleLeft, ToggleRight, Puzzle, ArrowRight, CheckCircle, Zap, Sparkles
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const serviceCategories = [
-  { value: "consulting", label: "Conseil", icon: Briefcase },
-  { value: "development", label: "Développement", icon: Code },
-  { value: "design", label: "Design", icon: Palette },
-  { value: "marketing", label: "Marketing", icon: TrendingUp },
-  { value: "coaching", label: "Coaching", icon: BookOpen },
-  { value: "other", label: "Autre", icon: Users },
-];
+function useServiceCategories(t: any) {
+  return [
+    { value: "consulting", label: t("marketplace.catConsulting"), icon: Briefcase },
+    { value: "development", label: t("marketplace.catDevelopment"), icon: Code },
+    { value: "design", label: t("marketplace.catDesign"), icon: Palette },
+    { value: "marketing", label: t("marketplace.catMarketing"), icon: TrendingUp },
+    { value: "coaching", label: t("marketplace.catCoaching"), icon: BookOpen },
+    { value: "other", label: t("marketplace.catOther"), icon: Users },
+  ];
+}
 
-const priceTypes = [
-  { value: "fixed", label: "Prix fixe" },
-  { value: "hourly", label: "À l'heure" },
-  { value: "free", label: "Gratuit" },
-  { value: "negotiable", label: "Sur devis" },
-];
+function usePriceTypes(t: any) {
+  return [
+    { value: "fixed", label: t("marketplace.priceFixed") },
+    { value: "hourly", label: t("marketplace.priceHourly") },
+    { value: "free", label: t("marketplace.priceFree") },
+    { value: "negotiable", label: t("marketplace.priceNegotiable") },
+  ];
+}
 
 export default function MarketplacePage() {
-  usePageMeta({ title: "Marketplace & Outils", description: "Activez vos outils et trouvez des services entre membres." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("marketplace.metaTitle"), description: t("marketplace.metaDesc") });
+  const serviceCategories = useServiceCategories(t);
+  const priceTypes = usePriceTypes(t);
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -88,12 +96,12 @@ export default function MarketplacePage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Service publié !");
+      toast.success(t("marketplace.publishedToast"));
       queryClient.invalidateQueries({ queryKey: ["marketplace-services"] });
       setForm({ title: "", description: "", category: "consulting", price_type: "fixed", price: "", duration_minutes: "", tags: "" });
       setShowForm(false);
     },
-    onError: () => toast.error("Erreur lors de la publication"),
+    onError: () => toast.error(t("marketplace.publishErrorToast")),
   });
 
   const deleteService = useMutation({
@@ -101,19 +109,19 @@ export default function MarketplacePage() {
       const { error } = await (supabase as any).from("marketplace_services").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Service supprimé"); queryClient.invalidateQueries({ queryKey: ["marketplace-services"] }); },
+    onSuccess: () => { toast.success(t("marketplace.deletedToast")); queryClient.invalidateQueries({ queryKey: ["marketplace-services"] }); },
   });
 
   const bookService = useMutation({
     mutationFn: async (service: any) => {
       const { error } = await (supabase as any).from("service_bookings").insert({
         service_id: service.id, buyer_id: user!.id, seller_id: service.user_id,
-        message: `Intéressé par votre service "${service.title}"`,
+        message: t("marketplace.interestedMessage", { title: service.title }),
       });
       if (error) throw error;
     },
-    onSuccess: () => toast.success("Demande envoyée au prestataire !"),
-    onError: () => toast.error("Erreur"),
+    onSuccess: () => toast.success(t("marketplace.bookedToast")),
+    onError: () => toast.error(t("marketplace.bookErrorToast")),
   });
 
   const myServices = allServices?.filter((s: any) => s.user_id === user?.id) ?? [];
@@ -134,8 +142,8 @@ export default function MarketplacePage() {
     : allTools.filter(t => t.category === toolFilter);
 
   const formatPrice = (s: any) => {
-    if (s.price_type === "free") return "Gratuit";
-    if (s.price_type === "negotiable") return "Sur devis";
+    if (s.price_type === "free") return t("marketplace.priceFree");
+    if (s.price_type === "negotiable") return t("marketplace.priceOnDemand");
     if (!s.price) return "—";
     return `${s.price}€${s.price_type === "hourly" ? "/h" : ""}`;
   };
@@ -147,31 +155,31 @@ export default function MarketplacePage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <Puzzle className="w-3 h-3" /> Marketplace & Outils
+            <Puzzle className="w-3 h-3" /> {t("marketplace.tag")}
           </div>
           <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
-            Activez vos <span className="text-primary">outils</span>
+            {t("marketplace.h1a")} <span className="text-primary">{t("marketplace.h1b")}</span>
           </h1>
           <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">
-            Choisissez les outils dont vous avez besoin. Ils apparaîtront directement dans votre menu latéral.
+            {t("marketplace.subtitle")}
           </p>
         </div>
       </div>
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="🧩" value={String(activatedTools.length)} label="Outils activés" badge={`/ ${allTools.length}`} badgeType="neutral" />
-        <MetricCard icon="🛒" value={String(allServices?.length ?? 0)} label="Services" badge="Total" badgeType="neutral" />
-        <MetricCard icon="📦" value={String(myServices.length)} label="Mes services" badge="Publiés" badgeType="up" />
-        <MetricCard icon="📂" value={String(new Set(allServices?.map((s: any) => s.category)).size)} label="Catégories" badge="Actives" badgeType="neutral" />
+        <MetricCard icon="🧩" value={String(activatedTools.length)} label={t("marketplace.metricToolsActivated")} badge={`/ ${allTools.length}`} badgeType="neutral" />
+        <MetricCard icon="🛒" value={String(allServices?.length ?? 0)} label={t("marketplace.metricServices")} badge={t("marketplace.metricServicesBadge")} badgeType="neutral" />
+        <MetricCard icon="📦" value={String(myServices.length)} label={t("marketplace.metricMyServices")} badge={t("marketplace.metricMyServicesBadge")} badgeType="up" />
+        <MetricCard icon="📂" value={String(new Set(allServices?.map((s: any) => s.category)).size)} label={t("marketplace.metricCategories")} badge={t("marketplace.metricCategoriesBadge")} badgeType="neutral" />
       </div>
 
       {/* Main tabs */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex gap-1.5">
           {([
-            { key: "tools" as const, label: "🧩 Outils", count: allTools.length },
-            { key: "services" as const, label: "🛒 Services", count: allServices?.length ?? 0 },
+            { key: "tools" as const, label: t("marketplace.tabTools"), count: allTools.length },
+            { key: "services" as const, label: t("marketplace.tabServices"), count: allServices?.length ?? 0 },
           ]).map(tab => (
             <button
               key={tab.key}
@@ -191,7 +199,7 @@ export default function MarketplacePage() {
             onClick={() => setShowForm(!showForm)}
             className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors"
           >
-            <Plus className="w-3.5 h-3.5" /> Proposer un service
+            <Plus className="w-3.5 h-3.5" /> {t("marketplace.proposeService")}
           </button>
         )}
       </div>
@@ -221,8 +229,8 @@ export default function MarketplacePage() {
             <div className="flex items-center gap-3 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3 mb-5">
               <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0" />
               <div>
-                <p className="text-xs font-bold font-heading">Outils recommandés pour votre profil <span className="capitalize text-primary">{role}</span></p>
-                <p className="text-[11px] text-muted-foreground">Filtrez par "⭐ Recommandés" pour voir les outils adaptés à votre activité.</p>
+                <p className="text-xs font-bold font-heading">{t("marketplace.recommendedFor")} <span className="capitalize text-primary">{role}</span></p>
+                <p className="text-[11px] text-muted-foreground">{t("marketplace.recommendedHint")}</p>
               </div>
             </div>
           )}
@@ -258,12 +266,12 @@ export default function MarketplacePage() {
                         <h3 className="font-heading text-sm font-bold truncate">{tool.label}</h3>
                         {active && (
                           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/10 text-primary rounded text-[9px] font-bold flex-shrink-0">
-                            <CheckCircle className="w-2.5 h-2.5" /> Actif
+                            <CheckCircle className="w-2.5 h-2.5" /> {t("marketplace.active")}
                           </span>
                         )}
                         {!active && recommendedKeys.includes(tool.key) && (
                           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[9px] font-bold flex-shrink-0">
-                            <Sparkles className="w-2.5 h-2.5" /> Recommandé
+                            <Sparkles className="w-2.5 h-2.5" /> {t("marketplace.recommended")}
                           </span>
                         )}
                       </div>
@@ -278,14 +286,14 @@ export default function MarketplacePage() {
                           onClick={() => { trackToolOpen(tool.key); navigate(tool.path); }}
                           className="flex-1 h-8 rounded-lg bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-primary-hover transition-colors"
                         >
-                          <ArrowRight className="w-3 h-3" /> Ouvrir
+                          <ArrowRight className="w-3 h-3" /> {t("marketplace.open")}
                         </button>
                         <button
                           onClick={() => deactivateTool.mutate(tool.key)}
                           disabled={deactivateTool.isPending}
                           className="h-8 px-3 rounded-lg border border-border text-foreground/50 text-xs font-bold flex items-center gap-1.5 hover:border-destructive/30 hover:text-destructive transition-colors"
                         >
-                          <ToggleRight className="w-3.5 h-3.5" /> Désactiver
+                          <ToggleRight className="w-3.5 h-3.5" /> {t("marketplace.deactivate")}
                         </button>
                       </>
                     ) : (
@@ -294,7 +302,7 @@ export default function MarketplacePage() {
                         disabled={activateTool.isPending}
                         className="flex-1 h-9 rounded-lg border-2 border-dashed border-primary/30 text-primary text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-primary/5 hover:border-primary/50 transition-all"
                       >
-                        <Zap className="w-3.5 h-3.5" /> Activer cet outil
+                        <Zap className="w-3.5 h-3.5" /> {t("marketplace.activateTool")}
                       </button>
                     )}
                   </div>
@@ -318,7 +326,7 @@ export default function MarketplacePage() {
                   serviceTab === tab ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50"
                 }`}
               >
-                {tab === "browse" ? "Explorer" : "Mes services"}
+                {tab === "browse" ? t("marketplace.browse") : t("marketplace.myServices")}
               </button>
             ))}
           </div>
@@ -331,7 +339,7 @@ export default function MarketplacePage() {
                 <input
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Rechercher un service..."
+                  placeholder={t("marketplace.searchServicePh")}
                   className="bg-transparent border-none outline-none text-xs w-full"
                 />
               </div>
@@ -340,7 +348,7 @@ export default function MarketplacePage() {
                   onClick={() => setFilterCat("all")}
                   className={`h-9 px-2.5 rounded-lg text-[10px] font-bold border ${filterCat === "all" ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50"}`}
                 >
-                  Tous
+                  {t("marketplace.all")}
                 </button>
                 {serviceCategories.map(cat => (
                   <button
@@ -360,19 +368,19 @@ export default function MarketplacePage() {
             <GHCard className="mb-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-foreground/70 mb-1 block">Titre *</label>
-                  <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Ex: Audit SEO complet"
+                  <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketplace.formTitle")}</label>
+                  <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder={t("marketplace.formTitlePh")}
                     className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-foreground/70 mb-1 block">Catégorie</label>
+                  <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketplace.formCategory")}</label>
                   <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}
                     className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40">
                     {serviceCategories.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-foreground/70 mb-1 block">Type de tarif</label>
+                  <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketplace.formPriceType")}</label>
                   <select value={form.price_type} onChange={e => setForm({ ...form, price_type: e.target.value })}
                     className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40">
                     {priceTypes.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
@@ -380,32 +388,32 @@ export default function MarketplacePage() {
                 </div>
                 {form.price_type !== "free" && form.price_type !== "negotiable" && (
                   <div>
-                    <label className="text-xs font-bold text-foreground/70 mb-1 block">Prix (€)</label>
+                    <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketplace.formPrice")}</label>
                     <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="0"
                       className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
                   </div>
                 )}
                 <div>
-                  <label className="text-xs font-bold text-foreground/70 mb-1 block">Durée (min)</label>
+                  <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketplace.formDuration")}</label>
                   <input type="number" value={form.duration_minutes} onChange={e => setForm({ ...form, duration_minutes: e.target.value })} placeholder="60"
                     className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
                 </div>
                 <div className="sm:col-span-2 lg:col-span-1">
-                  <label className="text-xs font-bold text-foreground/70 mb-1 block">Tags (séparés par ,)</label>
-                  <input value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} placeholder="SEO, audit, stratégie"
+                  <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketplace.formTags")}</label>
+                  <input value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} placeholder={t("marketplace.formTagsPh")}
                     className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40" />
                 </div>
                 <div className="sm:col-span-2 lg:col-span-3">
-                  <label className="text-xs font-bold text-foreground/70 mb-1 block">Description</label>
-                  <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} placeholder="Décrivez votre service..."
+                  <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("marketplace.formDescription")}</label>
+                  <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} placeholder={t("marketplace.formDescriptionPh")}
                     className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary/40 resize-none" />
                 </div>
               </div>
               <div className="flex justify-end mt-3 gap-2">
-                <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">Annuler</button>
+                <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">{t("marketplace.cancel")}</button>
                 <button onClick={() => createService.mutate()} disabled={!form.title.trim() || createService.isPending}
                   className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">
-                  Publier
+                  {t("marketplace.publish")}
                 </button>
               </div>
             </GHCard>
@@ -420,7 +428,7 @@ export default function MarketplacePage() {
             <GHCard className="text-center py-12">
               <ShoppingBag className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
               <p className="text-sm text-muted-foreground">
-                {serviceTab === "my" ? "Vous n'avez pas encore publié de service." : "Aucun service trouvé."}
+                {serviceTab === "my" ? t("marketplace.noServiceMine") : t("marketplace.noServiceFound")}
               </p>
             </GHCard>
           ) : (
@@ -440,7 +448,7 @@ export default function MarketplacePage() {
                         </div>
                         <div>
                           <h3 className="font-heading text-sm font-bold line-clamp-1">{service.title}</h3>
-                          <p className="text-[10px] text-muted-foreground">{profile?.display_name ?? "Membre"}</p>
+                          <p className="text-[10px] text-muted-foreground">{profile?.display_name ?? t("marketplace.member")}</p>
                         </div>
                       </div>
                       <span className="text-sm font-extrabold text-primary font-heading">{formatPrice(service)}</span>
@@ -459,12 +467,12 @@ export default function MarketplacePage() {
                       {isMine ? (
                         <button onClick={() => deleteService.mutate(service.id)}
                           className="flex-1 h-8 rounded-lg border border-destructive/30 text-destructive text-xs font-bold flex items-center justify-center gap-1 hover:bg-destructive/10 transition-colors">
-                          <Trash2 className="w-3 h-3" /> Supprimer
+                          <Trash2 className="w-3 h-3" /> {t("marketplace.delete")}
                         </button>
                       ) : (
                         <button onClick={() => bookService.mutate(service)}
                           className="flex-1 h-8 rounded-lg bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1 hover:bg-primary-hover transition-colors">
-                          <ShoppingBag className="w-3 h-3" /> Réserver
+                          <ShoppingBag className="w-3 h-3" /> {t("marketplace.book")}
                         </button>
                       )}
                     </div>
