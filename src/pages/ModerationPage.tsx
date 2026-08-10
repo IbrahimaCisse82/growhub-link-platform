@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { GHCard, MetricCard } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
@@ -47,6 +48,7 @@ function analyzeContent(content: string): { score: number; flags: string[] } {
 }
 
 export default function ModerationPage() {
+  const { t } = useTranslation();
   usePageMeta({ title: "Modération", description: "Modération IA de la communauté GrowHub." });
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -81,7 +83,7 @@ export default function ModerationPage() {
       const { error } = await supabase.from("posts").delete().eq("id", postId);
       if (error) throw error;
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["moderation-posts"] }); toast.success("Post supprimé"); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["moderation-posts"] }); toast.success(t("moderation.postDeleted")); },
   });
 
   const flaggedPosts = recentPosts.filter((p: any) => p.moderation.score > 0);
@@ -95,25 +97,25 @@ export default function ModerationPage() {
       <div className="bg-gradient-to-br from-card to-destructive/5 border-2 border-destructive/15 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-destructive/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-1.5 bg-destructive/10 border border-destructive/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-destructive uppercase tracking-wider mb-3.5"><Shield className="w-3 h-3" /> Modération IA</div>
-          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">Modération <span className="text-destructive">communautaire</span></h1>
-          <p className="text-sm text-muted-foreground max-w-lg">Surveillance automatique du contenu avec détection IA des comportements inappropriés.</p>
+          <div className="inline-flex items-center gap-1.5 bg-destructive/10 border border-destructive/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-destructive uppercase tracking-wider mb-3.5"><Shield className="w-3 h-3" /> {t("moderation.badge")}</div>
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">{t("moderation.title")} <span className="text-destructive">{t("moderation.titleHighlight")}</span></h1>
+          <p className="text-sm text-muted-foreground max-w-lg">{t("moderation.description")}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="📝" value={String(recentPosts.length)} label="Posts analysés" badge="Récents" badgeType="neutral" />
-        <MetricCard icon="⚠️" value={String(flaggedPosts.length)} label="Posts signalés" badge="À vérifier" badgeType={flaggedPosts.length > 0 ? "down" : "neutral"} />
-        <MetricCard icon="💬" value={String(recentComments.length)} label="Commentaires" badge="Analysés" badgeType="neutral" />
-        <MetricCard icon="🛡️" value={String(flaggedComments.length)} label="Commentaires flaggés" badge="IA" badgeType={flaggedComments.length > 0 ? "down" : "neutral"} />
+        <MetricCard icon="📝" value={String(recentPosts.length)} label={t("moderation.postsAnalyzed")} badge={t("moderation.recentLabel")} badgeType="neutral" />
+        <MetricCard icon="⚠️" value={String(flaggedPosts.length)} label={t("moderation.postsFlagged")} badge={t("moderation.toReview")} badgeType={flaggedPosts.length > 0 ? "down" : "neutral"} />
+        <MetricCard icon="💬" value={String(recentComments.length)} label={t("moderation.comments")} badge={t("moderation.analyzed")} badgeType="neutral" />
+        <MetricCard icon="🛡️" value={String(flaggedComments.length)} label={t("moderation.commentsFlagged")} badge={t("moderation.ai")} badgeType={flaggedComments.length > 0 ? "down" : "neutral"} />
       </div>
 
       {/* Filters */}
       <div className="flex gap-2 mb-5">
         {([
-          { key: "all" as const, label: "Tous", icon: Eye },
-          { key: "flagged" as const, label: `Signalés (${flaggedPosts.length})`, icon: AlertTriangle },
-          { key: "clean" as const, label: "Conformes", icon: CheckCircle },
+          { key: "all" as const, label: t("moderation.filterAll"), icon: Eye },
+          { key: "flagged" as const, label: t("moderation.filterFlagged", { count: flaggedPosts.length }), icon: AlertTriangle },
+          { key: "clean" as const, label: t("moderation.filterClean"), icon: CheckCircle },
         ]).map(f => (
           <button key={f.key} onClick={() => setFilter(f.key)} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors ${filter === f.key ? "bg-primary text-primary-foreground" : "bg-card border border-border text-foreground/70 hover:border-primary/35"}`}>
             <f.icon className="w-3.5 h-3.5" /> {f.label}
@@ -128,11 +130,11 @@ export default function ModerationPage() {
             <div className="flex items-start gap-3">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xs font-bold">{(post as any).profiles?.display_name ?? "Membre"}</span>
+                  <span className="text-xs font-bold">{(post as any).profiles?.display_name ?? t("moderation.member")}</span>
                   <span className="text-[9px] text-muted-foreground">{new Date(post.created_at).toLocaleDateString("fr")}</span>
-                  {post.moderation.score > 50 && <span className="px-1.5 py-0.5 bg-destructive/10 text-destructive rounded text-[9px] font-bold flex items-center gap-0.5"><AlertTriangle className="w-2.5 h-2.5" /> Haut risque</span>}
-                  {post.moderation.score > 0 && post.moderation.score <= 50 && <span className="px-1.5 py-0.5 bg-amber-500/10 text-amber-600 rounded text-[9px] font-bold flex items-center gap-0.5"><Flag className="w-2.5 h-2.5" /> Attention</span>}
-                  {post.moderation.score === 0 && <span className="px-1.5 py-0.5 bg-green-500/10 text-green-600 rounded text-[9px] font-bold flex items-center gap-0.5"><CheckCircle className="w-2.5 h-2.5" /> OK</span>}
+                  {post.moderation.score > 50 && <span className="px-1.5 py-0.5 bg-destructive/10 text-destructive rounded text-[9px] font-bold flex items-center gap-0.5"><AlertTriangle className="w-2.5 h-2.5" /> {t("moderation.highRisk")}</span>}
+                  {post.moderation.score > 0 && post.moderation.score <= 50 && <span className="px-1.5 py-0.5 bg-amber-500/10 text-amber-600 rounded text-[9px] font-bold flex items-center gap-0.5"><Flag className="w-2.5 h-2.5" /> {t("moderation.attention")}</span>}
+                  {post.moderation.score === 0 && <span className="px-1.5 py-0.5 bg-green-500/10 text-green-600 rounded text-[9px] font-bold flex items-center gap-0.5"><CheckCircle className="w-2.5 h-2.5" /> {t("moderation.ok")}</span>}
                 </div>
                 <p className="text-xs text-foreground/80 line-clamp-3 mb-2">{post.content}</p>
                 {post.moderation.flags.length > 0 && (
@@ -157,7 +159,7 @@ export default function ModerationPage() {
         {displayPosts.length === 0 && (
           <GHCard className="text-center py-8">
             <CheckCircle className="w-10 h-10 text-green-500/30 mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">Aucun contenu à afficher</p>
+            <p className="text-sm text-muted-foreground">{t("moderation.noContent")}</p>
           </GHCard>
         )}
       </div>

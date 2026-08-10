@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { MetricCard, GHCard, Tag, SectionHeader } from "@/components/ui-custom";
 import { useCircles, useCreateCircle, useJoinCircle, useLeaveCircle, useCircleMembers } from "@/hooks/useCircles";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,15 +10,19 @@ import { Users, Plus, Search, Globe, Lock, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const CATEGORIES = ["Tech", "Business", "Marketing", "Finance", "Impact", "Design", "IA", "Santé", "Éducation"];
-
 export default function CirclesPage() {
-  usePageMeta({ title: "Cercles", description: "Rejoignez des communautés thématiques sur GrowHubLink." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("circles.metaTitle"), description: t("circles.metaDesc") });
   const { user } = useAuth();
   const { data: circles, isLoading } = useCircles();
   const createCircle = useCreateCircle();
   const joinCircle = useJoinCircle();
   const leaveCircle = useLeaveCircle();
+
+  const CATEGORIES = [
+    t("circles.catTech"), t("circles.catBusiness"), t("circles.catMarketing"), t("circles.catFinance"),
+    t("circles.catImpact"), t("circles.catDesign"), t("circles.catAI"), t("circles.catHealth"), t("circles.catEducation"),
+  ];
 
   const [showCreate, setShowCreate] = useState(false);
   const [search, setSearch] = useState("");
@@ -39,29 +44,29 @@ export default function CirclesPage() {
     if (!form.name.trim()) return;
     try {
       await createCircle.mutateAsync(form);
-      toast.success("Cercle créé !");
+      toast.success(t("circles.createdToast"));
       setShowCreate(false);
       setForm({ name: "", description: "", category: "", isPrivate: false });
     } catch {
-      toast.error("Erreur lors de la création");
+      toast.error(t("circles.createErrorToast"));
     }
   };
 
   const handleJoin = async (circleId: string) => {
     try {
       await joinCircle.mutateAsync(circleId);
-      toast.success("Vous avez rejoint le cercle !");
+      toast.success(t("circles.joinedToast"));
     } catch {
-      toast.error("Erreur");
+      toast.error(t("circles.joinErrorToast"));
     }
   };
 
   const handleLeave = async (circleId: string) => {
     try {
       await leaveCircle.mutateAsync(circleId);
-      toast.success("Vous avez quitté le cercle");
+      toast.success(t("circles.leftToast"));
     } catch {
-      toast.error("Erreur");
+      toast.error(t("circles.joinErrorToast"));
     }
   };
 
@@ -69,31 +74,31 @@ export default function CirclesPage() {
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
-          <h1 className="font-heading text-xl md:text-2xl font-extrabold">🔗 Cercles</h1>
-          <p className="text-xs text-muted-foreground mt-1">Communautés thématiques pour échanger et collaborer</p>
+          <h1 className="font-heading text-xl md:text-2xl font-extrabold">{t("circles.title")}</h1>
+          <p className="text-xs text-muted-foreground mt-1">{t("circles.subtitle")}</p>
         </div>
         <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold hover:bg-primary/90 transition-all self-start sm:self-auto">
-          <Plus className="w-4 h-4" /> Créer un cercle
+          <Plus className="w-4 h-4" /> {t("circles.createCircle")}
         </button>
       </div>
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="🔗" value={String((circles ?? []).length)} label="Cercles disponibles" badge="Communauté" badgeType="neutral" />
-        <MetricCard icon="👥" value={String(myCircles.length)} label="Mes cercles" badge={myCircles.length > 0 ? "Actif" : "Rejoindre"} badgeType={myCircles.length > 0 ? "up" : "neutral"} />
-        <MetricCard icon="🌍" value={String((circles ?? []).filter(c => !c.is_private).length)} label="Cercles publics" badge="Ouverts" badgeType="up" />
-        <MetricCard icon="🔒" value={String((circles ?? []).filter(c => c.is_private).length)} label="Cercles privés" badge="Sur invitation" badgeType="neutral" />
+        <MetricCard icon="🔗" value={String((circles ?? []).length)} label={t("circles.metricAvailable")} badge={t("circles.metricAvailableBadge")} badgeType="neutral" />
+        <MetricCard icon="👥" value={String(myCircles.length)} label={t("circles.metricMine")} badge={myCircles.length > 0 ? t("circles.metricMineBadgeActive") : t("circles.metricMineBadgeJoin")} badgeType={myCircles.length > 0 ? "up" : "neutral"} />
+        <MetricCard icon="🌍" value={String((circles ?? []).filter(c => !c.is_private).length)} label={t("circles.metricPublic")} badge={t("circles.metricPublicBadge")} badgeType="up" />
+        <MetricCard icon="🔒" value={String((circles ?? []).filter(c => c.is_private).length)} label={t("circles.metricPrivate")} badge={t("circles.metricPrivateBadge")} badgeType="neutral" />
       </div>
 
       {/* Search + Tabs */}
       <div className="flex gap-3 items-center mb-4 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher un cercle..." className="w-full pl-9 pr-3 py-2.5 bg-card border border-border rounded-xl text-xs focus:ring-2 focus:ring-primary/30 outline-none" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t("circles.searchPh")} className="w-full pl-9 pr-3 py-2.5 bg-card border border-border rounded-xl text-xs focus:ring-2 focus:ring-primary/30 outline-none" />
         </div>
-        {(["all", "mine"] as const).map(t => (
-          <button key={t} onClick={() => setTab(t)} className={cn("px-4 py-2 rounded-xl text-xs font-bold transition-all", tab === t ? "bg-primary text-primary-foreground" : "bg-card border border-border text-foreground/70 hover:border-primary/30")}>
-            {t === "all" ? "Tous les cercles" : "Mes cercles"}
+        {(["all", "mine"] as const).map(tb => (
+          <button key={tb} onClick={() => setTab(tb)} className={cn("px-4 py-2 rounded-xl text-xs font-bold transition-all", tab === tb ? "bg-primary text-primary-foreground" : "bg-card border border-border text-foreground/70 hover:border-primary/30")}>
+            {tb === "all" ? t("circles.tabAll") : t("circles.tabMine")}
           </button>
         ))}
       </div>
@@ -104,14 +109,14 @@ export default function CirclesPage() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowCreate(false)}>
             <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-card border border-border rounded-2xl p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading text-base font-extrabold">Créer un cercle</h2>
+                <h2 className="font-heading text-base font-extrabold">{t("circles.createModalTitle")}</h2>
                 <button onClick={() => setShowCreate(false)}><X className="w-5 h-5 text-muted-foreground" /></button>
               </div>
               <div className="space-y-3">
-                <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Nom du cercle" className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/30" />
-                <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Description (optionnel)" rows={3} className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+                <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t("circles.namePh")} className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+                <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder={t("circles.descPh")} rows={3} className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
                 <div>
-                  <label className="text-xs font-bold text-foreground/70 mb-1.5 block">Catégorie</label>
+                  <label className="text-xs font-bold text-foreground/70 mb-1.5 block">{t("circles.category")}</label>
                   <div className="flex flex-wrap gap-1.5">
                     {CATEGORIES.map(cat => (
                       <button key={cat} onClick={() => setForm(f => ({ ...f, category: f.category === cat ? "" : cat }))} className={cn("px-3 py-1.5 rounded-full text-[11px] font-semibold border transition-all", form.category === cat ? "bg-primary text-primary-foreground border-primary" : "bg-secondary text-foreground/70 border-border hover:border-primary/30")}>
@@ -122,10 +127,10 @@ export default function CirclesPage() {
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={form.isPrivate} onChange={e => setForm(f => ({ ...f, isPrivate: e.target.checked }))} className="rounded" />
-                  <span className="text-xs font-medium">Cercle privé (sur invitation)</span>
+                  <span className="text-xs font-medium">{t("circles.privateLabel")}</span>
                 </label>
                 <button onClick={handleCreate} disabled={!form.name.trim() || createCircle.isPending} className="w-full bg-primary text-primary-foreground rounded-xl py-2.5 font-heading text-sm font-bold hover:bg-primary/90 transition-all disabled:opacity-50">
-                  {createCircle.isPending ? "Création..." : "Créer le cercle"}
+                  {createCircle.isPending ? t("circles.creating") : t("circles.createBtn")}
                 </button>
               </div>
             </motion.div>
@@ -139,7 +144,7 @@ export default function CirclesPage() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedCircle(null)}>
             <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-card border border-border rounded-2xl p-6 max-w-md w-full max-h-[70vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading text-base font-extrabold">Membres du cercle</h2>
+                <h2 className="font-heading text-base font-extrabold">{t("circles.membersModalTitle")}</h2>
                 <button onClick={() => setSelectedCircle(null)}><X className="w-5 h-5 text-muted-foreground" /></button>
               </div>
               {members?.map(m => (
@@ -148,13 +153,13 @@ export default function CirclesPage() {
                     {(m.profile?.display_name ?? "?").substring(0, 2).toUpperCase()}
                   </div>
                   <div className="flex-1">
-                    <div className="text-xs font-bold">{m.profile?.display_name ?? "Membre"}</div>
+                    <div className="text-xs font-bold">{m.profile?.display_name ?? t("circles.member")}</div>
                     <div className="text-[10px] text-muted-foreground">{m.profile?.company_name ?? ""}</div>
                   </div>
-                  {m.role === "admin" && <Tag variant="green">Admin</Tag>}
+                  {m.role === "admin" && <Tag variant="green">{t("circles.admin")}</Tag>}
                 </div>
               ))}
-              {(!members || members.length === 0) && <p className="text-xs text-muted-foreground text-center py-4">Aucun membre</p>}
+              {(!members || members.length === 0) && <p className="text-xs text-muted-foreground text-center py-4">{t("circles.noMembers")}</p>}
             </motion.div>
           </motion.div>
         )}
@@ -167,7 +172,7 @@ export default function CirclesPage() {
         </div>
       ) : filteredCircles.length === 0 ? (
         <GHCard className="text-center py-10">
-          <p className="text-sm text-muted-foreground">{tab === "mine" ? "Vous n'avez rejoint aucun cercle." : "Aucun cercle trouvé."}</p>
+          <p className="text-sm text-muted-foreground">{tab === "mine" ? t("circles.noCirclesMine") : t("circles.noCirclesFound")}</p>
         </GHCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
@@ -180,7 +185,7 @@ export default function CirclesPage() {
                   </div>
                   <div>
                     <div className="font-heading text-sm font-extrabold leading-tight">{circle.name}</div>
-                    <div className="text-[10px] text-muted-foreground">par {circle.creator_profile?.display_name ?? "Membre"}</div>
+                    <div className="text-[10px] text-muted-foreground">{t("circles.by")} {circle.creator_profile?.display_name ?? t("circles.member")}</div>
                   </div>
                 </div>
                 {circle.category && <Tag variant="blue">{circle.category}</Tag>}
@@ -188,15 +193,15 @@ export default function CirclesPage() {
               {circle.description && <p className="text-xs text-foreground/70 leading-relaxed mb-3 line-clamp-2">{circle.description}</p>}
               <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/40">
                 <button onClick={() => setSelectedCircle(circle.id)} className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors">
-                  <Users className="w-3.5 h-3.5" /> {circle.member_count} membre{circle.member_count !== 1 ? "s" : ""}
+                  <Users className="w-3.5 h-3.5" /> {circle.member_count} {circle.member_count !== 1 ? t("circles.membersCountPlural") : t("circles.membersCount")}
                 </button>
                 {circle.is_member ? (
                   <button onClick={() => handleLeave(circle.id)} className="text-[11px] font-bold text-destructive hover:opacity-70 transition-opacity">
-                    Quitter
+                    {t("circles.leave")}
                   </button>
                 ) : (
                   <button onClick={() => handleJoin(circle.id)} className="text-[11px] font-bold text-primary hover:opacity-70 transition-opacity">
-                    Rejoindre →
+                    {t("circles.join")}
                   </button>
                 )}
               </div>
