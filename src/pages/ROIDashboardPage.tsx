@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { GHCard, MetricCard } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardStats } from "@/hooks/useDashboard";
@@ -23,7 +24,8 @@ const areaConfig: ChartConfig = {
 };
 
 export default function ROIDashboardPage() {
-  usePageMeta({ title: "ROI Dashboard", description: "Mesurez l'impact de votre networking." });
+  const { t } = useTranslation();
+  usePageMeta({ title: "ROI Dashboard", description: t("roi.description") });
   const { user, profile } = useAuth();
   const { data: stats } = useDashboardStats();
   const { data: ssi } = useSSI();
@@ -51,12 +53,12 @@ export default function ROIDashboardPage() {
 
       // Attribution funnel
       const funnel = [
-        { stage: "Profil vu", value: profile?.profile_views ?? 0 },
-        { stage: "Connexions", value: allConns.length },
-        { stage: "Acceptées", value: accepted },
-        { stage: "Messages", value: msgs.count ?? 0 },
-        { stage: "Intros", value: allIntros.length },
-        { stage: "Collaborations", value: collabCount },
+        { stage: t("roi.stageProfileViewed"), value: profile?.profile_views ?? 0 },
+        { stage: t("roi.stageConnections"), value: allConns.length },
+        { stage: t("roi.stageAccepted"), value: accepted },
+        { stage: t("roi.stageMessages"), value: msgs.count ?? 0 },
+        { stage: t("roi.stageIntros"), value: allIntros.length },
+        { stage: t("roi.stageCollaborations"), value: collabCount },
       ];
 
       // Simulated weekly trend
@@ -92,31 +94,31 @@ export default function ROIDashboardPage() {
       <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5"><TrendingUp className="w-3 h-3" /> ROI Dashboard</div>
-          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">Retour sur <span className="text-primary">investissement</span></h1>
-          <p className="text-sm text-muted-foreground max-w-lg">Mesurez l'impact réel de votre networking avec des métriques d'attribution.</p>
+          <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5"><TrendingUp className="w-3 h-3" /> {t("roi.badge")}</div>
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">{t("roi.title")} <span className="text-primary">{t("roi.titleHighlight")}</span></h1>
+          <p className="text-sm text-muted-foreground max-w-lg">{t("roi.description")}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="📊" value={`${roiScore}%`} label="ROI Score" badge="Global" badgeType={roiScore > 50 ? "up" : "neutral"} />
-        <MetricCard icon="✅" value={`${conversions?.acceptRate ?? 0}%`} label="Taux d'acceptation" badge="Connexions" badgeType="up" />
-        <MetricCard icon="🤝" value={`${conversions?.introRate ?? 0}%`} label="Conversion intros" badge="Warm intros" badgeType="up" />
-        <MetricCard icon="💼" value={String(conversions?.collabs ?? 0)} label="Collaborations" badge="Démarrées" badgeType="up" />
+        <MetricCard icon="📊" value={`${roiScore}%`} label={t("roi.roiScore")} badge={t("roi.global")} badgeType={roiScore > 50 ? "up" : "neutral"} />
+        <MetricCard icon="✅" value={`${conversions?.acceptRate ?? 0}%`} label={t("roi.acceptanceRate")} badge={t("roi.connections")} badgeType="up" />
+        <MetricCard icon="🤝" value={`${conversions?.introRate ?? 0}%`} label={t("roi.introConversion")} badge={t("roi.warmIntros")} badgeType="up" />
+        <MetricCard icon="💼" value={String(conversions?.collabs ?? 0)} label={t("roi.collaborations")} badge={t("roi.started")} badgeType="up" />
       </div>
 
       {/* Period selector */}
       <div className="flex gap-2 mb-5">
         {(["7d", "30d", "90d"] as const).map(p => (
           <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${period === p ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"}`}>
-            {p === "7d" ? "7 jours" : p === "30d" ? "30 jours" : "90 jours"}
+            {p === "7d" ? t("roi.period7d") : p === "30d" ? t("roi.period30d") : t("roi.period90d")}
           </button>
         ))}
       </div>
 
       {/* Conversion Funnel */}
       <GHCard className="mb-5">
-        <h2 className="font-heading text-sm font-bold mb-4 flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> Entonnoir de conversion</h2>
+        <h2 className="font-heading text-sm font-bold mb-4 flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> {t("roi.funnel")}</h2>
         <div className="space-y-3">
           {conversions?.funnel.map((step, i) => {
             const maxVal = Math.max(...(conversions?.funnel.map(f => f.value) ?? [1]));
@@ -144,7 +146,7 @@ export default function ROIDashboardPage() {
 
       {/* Trend chart */}
       <GHCard className="mb-5">
-        <h2 className="font-heading text-sm font-bold mb-4 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-primary" /> Évolution</h2>
+        <h2 className="font-heading text-sm font-bold mb-4 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-primary" /> {t("roi.evolution")}</h2>
         <ChartContainer config={areaConfig} className="h-[200px] w-full">
           <AreaChart data={conversions?.trend ?? []}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -160,12 +162,12 @@ export default function ROIDashboardPage() {
       {/* Key metrics grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-5">
         {[
-          { icon: Users, label: "Connexions totales", value: conversions?.totalConns ?? 0, sub: `${conversions?.accepted ?? 0} acceptées` },
-          { icon: Handshake, label: "Warm Intros", value: conversions?.introsSent ?? 0, sub: `${conversions?.introsAccepted ?? 0} acceptées` },
-          { icon: DollarSign, label: "Collaborations", value: conversions?.collabs ?? 0, sub: "Démarrées" },
-          { icon: Calendar, label: "Sessions coaching", value: conversions?.sessions ?? 0, sub: "Complétées" },
-          { icon: Zap, label: "Messages", value: conversions?.messages ?? 0, sub: "Échangés" },
-          { icon: ArrowUpRight, label: "Vues profil", value: profile?.profile_views ?? 0, sub: "Total" },
+          { icon: Users, label: t("roi.totalConnections"), value: conversions?.totalConns ?? 0, sub: t("roi.accepted", { count: conversions?.accepted ?? 0 }) },
+          { icon: Handshake, label: t("roi.warmIntrosLabel"), value: conversions?.introsSent ?? 0, sub: t("roi.accepted", { count: conversions?.introsAccepted ?? 0 }) },
+          { icon: DollarSign, label: t("roi.collaborationsLabel"), value: conversions?.collabs ?? 0, sub: t("roi.started") },
+          { icon: Calendar, label: t("roi.coachingSessions"), value: conversions?.sessions ?? 0, sub: t("roi.completedLabel") },
+          { icon: Zap, label: t("roi.messages"), value: conversions?.messages ?? 0, sub: t("roi.exchanged") },
+          { icon: ArrowUpRight, label: t("roi.profileViews"), value: profile?.profile_views ?? 0, sub: t("roi.total") },
         ].map(m => (
           <GHCard key={m.label} className="text-center">
             <m.icon className="w-5 h-5 text-primary mx-auto mb-2" />
@@ -177,7 +179,7 @@ export default function ROIDashboardPage() {
       </div>
 
       {/* Predictive Analytics */}
-      <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2"><Brain className="w-5 h-5 text-primary" /> Prédictions IA</h2>
+      <h2 className="font-heading text-lg font-bold mb-3 flex items-center gap-2"><Brain className="w-5 h-5 text-primary" /> {t("roi.aiPredictions")}</h2>
       <PredictiveAnalytics />
     </motion.div>
   );

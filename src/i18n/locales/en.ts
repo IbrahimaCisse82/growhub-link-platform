@@ -1214,6 +1214,7 @@ export default {
     deletedToast: "Service deleted",
     bookedToast: "Request sent to the provider!",
     bookErrorToast: "Error",
+    interestedMessage: 'Interested in your service "{{title}}"',
     priceOnDemand: "On request",
   },
   courses: {
@@ -1436,6 +1437,7 @@ export default {
     metricUpcomingBadge: "Next",
     metricParticipants: "Participants",
     metricParticipantsBadge: "Total",
+    minutesPerMeeting: "min/meeting",
     metricPerMeeting: "Per meeting",
     metricPerMeetingBadge: "Format",
     metricMyRegistrations: "My registrations",
