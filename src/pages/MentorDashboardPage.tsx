@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Trans, useTranslation } from "react-i18next";
 import { GHCard, MetricCard, Tag } from "@/components/ui-custom";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +13,7 @@ import { Users, Calendar, Star, MessageSquare, TrendingUp, Clock, Wallet } from 
 import { useCoachEarnings } from "@/hooks/useCoachingPayments";
 
 function MentorContent() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<"mentees" | "sessions" | "reviews" | "earnings">("mentees");
@@ -85,10 +87,10 @@ function MentorContent() {
     return (
       <GHCard className="text-center py-12">
         <Users className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-        <h2 className="font-heading text-lg font-bold mb-2">Profil coach non configuré</h2>
-        <p className="text-sm text-muted-foreground mb-4">Créez votre profil coach pour commencer à accueillir des mentorés.</p>
+        <h2 className="font-heading text-lg font-bold mb-2">{t("mentorDash.noCoachTitle")}</h2>
+        <p className="text-sm text-muted-foreground mb-4">{t("mentorDash.noCoachDesc")}</p>
         <button onClick={() => navigate("/coaching")} className="bg-primary text-primary-foreground rounded-xl px-6 py-3 font-heading text-xs font-bold">
-          Configurer mon profil coach
+          {t("mentorDash.noCoachCta")}
         </button>
       </GHCard>
     );
@@ -98,25 +100,25 @@ function MentorContent() {
     <>
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="👥" value={String(menteeIds.length)} label="Mentorés" badge="Actifs" badgeType="up" />
-        <MetricCard icon="📅" value={String(scheduled.length)} label="Sessions à venir" badge="Planifiées" badgeType="up" />
-        <MetricCard icon="✅" value={String(completed.length)} label="Sessions terminées" badge="Total" badgeType="neutral" />
-        <MetricCard icon="⭐" value={avgRating} label="Note moyenne" badge="/5" badgeType={avgRating !== "—" ? "up" : "neutral"} />
+        <MetricCard icon="👥" value={String(menteeIds.length)} label={t("mentorDash.metrics.mentees")} badge={t("mentorDash.metrics.menteesBadge")} badgeType="up" />
+        <MetricCard icon="📅" value={String(scheduled.length)} label={t("mentorDash.metrics.upcoming")} badge={t("mentorDash.metrics.upcomingBadge")} badgeType="up" />
+        <MetricCard icon="✅" value={String(completed.length)} label={t("mentorDash.metrics.completed")} badge={t("mentorDash.metrics.completedBadge")} badgeType="neutral" />
+        <MetricCard icon="⭐" value={avgRating} label={t("mentorDash.metrics.rating")} badge="/5" badgeType={avgRating !== "—" ? "up" : "neutral"} />
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1.5 mb-5">
         {([
-          { key: "mentees" as const, label: "👥 Mes mentorés", count: menteeIds.length },
-          { key: "sessions" as const, label: "📅 Sessions", count: sessions.length },
-          { key: "reviews" as const, label: "⭐ Avis", count: reviews.length },
-          { key: "earnings" as const, label: "💰 Gains", count: 0 },
-        ]).map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)}
+          { key: "mentees" as const, label: t("mentorDash.tabs.mentees"), count: menteeIds.length },
+          { key: "sessions" as const, label: t("mentorDash.tabs.sessions"), count: sessions.length },
+          { key: "reviews" as const, label: t("mentorDash.tabs.reviews"), count: reviews.length },
+          { key: "earnings" as const, label: t("mentorDash.tabs.earnings"), count: 0 },
+        ]).map(t2 => (
+          <button key={t2.key} onClick={() => setTab(t2.key)}
             className={`h-[34px] px-4 rounded-xl text-xs font-bold font-heading border transition-colors ${
-              tab === t.key ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-foreground/50 hover:border-primary/30"
+              tab === t2.key ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border text-foreground/50 hover:border-primary/30"
             }`}>
-            {t.label}{t.count > 0 ? ` (${t.count})` : ""}
+            {t2.label}{t2.count > 0 ? ` (${t2.count})` : ""}
           </button>
         ))}
       </div>
@@ -128,7 +130,7 @@ function MentorContent() {
         <div className="space-y-3">
           {menteeStats.length === 0 ? (
             <GHCard className="text-center py-8">
-              <p className="text-sm text-muted-foreground">Aucun mentoré pour le moment. Partagez votre profil pour recevoir des demandes.</p>
+              <p className="text-sm text-muted-foreground">{t("mentorDash.mentees.empty")}</p>
             </GHCard>
           ) : menteeStats.map(m => (
             <GHCard key={m.id} className="flex items-center gap-4">
@@ -136,18 +138,18 @@ function MentorContent() {
                 {(m.profile?.display_name ?? "?").substring(0, 2).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-heading text-sm font-bold">{m.profile?.display_name ?? "Mentoré"}</div>
+                <div className="font-heading text-sm font-bold">{m.profile?.display_name ?? t("mentorDash.mentees.defaultName")}</div>
                 <div className="text-[11px] text-muted-foreground">
                   {m.profile?.company_name && <span>{m.profile.company_name} · </span>}
                   {m.profile?.sector && <span>{m.profile.sector}</span>}
                 </div>
                 <div className="flex gap-1.5 mt-1">
-                  <Tag variant="green">{m.completedCount} sessions</Tag>
-                  {m.nextSession && <Tag>Prochaine: {new Date(m.nextSession.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</Tag>}
+                  <Tag variant="green">{m.completedCount} {t("mentorDash.mentees.sessions")}</Tag>
+                  {m.nextSession && <Tag>{t("mentorDash.mentees.next", { date: new Date(m.nextSession.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) })}</Tag>}
                 </div>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => navigate(`/profile/${m.id}`)} className="text-xs text-primary font-bold hover:underline">Profil</button>
+                <button onClick={() => navigate(`/profile/${m.id}`)} className="text-xs text-primary font-bold hover:underline">{t("mentorDash.mentees.profile")}</button>
                 <button onClick={() => navigate("/messaging")} className="text-xs text-muted-foreground hover:text-foreground">
                   <MessageSquare className="w-4 h-4" />
                 </button>
@@ -161,21 +163,20 @@ function MentorContent() {
       {tab === "sessions" && (
         <div className="space-y-3">
           {sessions.length === 0 ? (
-            <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Aucune session.</p></GHCard>
+            <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">{t("mentorDash.sessions.empty")}</p></GHCard>
           ) : sessions.map(s => {
             const mentee = (menteeProfiles as any)[s.learner_id];
-            const isPast = new Date(s.scheduled_at) < new Date();
             return (
               <GHCard key={s.id} className="flex items-center gap-4">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.status === "completed" ? "bg-green-500/10" : s.status === "cancelled" ? "bg-destructive/10" : "bg-primary/10"}`}>
                   {s.status === "completed" ? <Star className="w-4 h-4 text-green-600" /> : s.status === "cancelled" ? <Clock className="w-4 h-4 text-destructive" /> : <Calendar className="w-4 h-4 text-primary" />}
                 </div>
                 <div className="flex-1">
-                  <div className="font-heading text-sm font-bold">{mentee?.display_name ?? "Mentoré"}</div>
-                  <div className="text-[11px] text-muted-foreground">{s.topic ?? "Session"} · {new Date(s.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</div>
+                  <div className="font-heading text-sm font-bold">{mentee?.display_name ?? t("mentorDash.sessions.defaultName")}</div>
+                  <div className="text-[11px] text-muted-foreground">{s.topic ?? t("mentorDash.sessions.defaultTopic")} · {new Date(s.scheduled_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</div>
                 </div>
                 <Tag variant={s.status === "completed" ? "green" : s.status === "cancelled" ? "red" : "default"}>
-                  {s.status === "completed" ? "Terminée" : s.status === "cancelled" ? "Annulée" : "Planifiée"}
+                  {s.status === "completed" ? t("mentorDash.sessions.completed") : s.status === "cancelled" ? t("mentorDash.sessions.cancelled") : t("mentorDash.sessions.scheduled")}
                 </Tag>
                 {s.rating && <span className="text-xs font-bold text-primary">⭐ {s.rating}/5</span>}
               </GHCard>
@@ -188,7 +189,7 @@ function MentorContent() {
       {tab === "reviews" && (
         <div className="space-y-3">
           {reviews.length === 0 ? (
-            <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Aucun avis reçu.</p></GHCard>
+            <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">{t("mentorDash.reviews.empty")}</p></GHCard>
           ) : reviews.map(r => {
             const reviewer = (reviewerProfiles as any)[r.reviewer_id];
             return (
@@ -199,7 +200,7 @@ function MentorContent() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-heading text-sm font-bold">{reviewer?.display_name ?? "Membre"}</span>
+                      <span className="font-heading text-sm font-bold">{reviewer?.display_name ?? t("mentorDash.reviews.defaultName")}</span>
                       <div className="flex gap-0.5">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`w-3 h-3 ${i < r.rating ? "fill-primary text-primary" : "text-muted-foreground/30"}`} />)}</div>
                     </div>
                     {r.review_text && <p className="text-xs text-foreground/70">{r.review_text}</p>}
@@ -216,19 +217,22 @@ function MentorContent() {
 }
 
 export default function MentorDashboardPage() {
-  usePageMeta({ title: "Espace Mentor", description: "Gérez vos mentorés et sessions de coaching." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("mentorDash.metaTitle"), description: t("mentorDash.metaDescription") });
 
   return (
-    <RoleGuard allowedRoles={["mentor", "expert"]} fallbackMessage="L'espace mentor est réservé aux profils Mentor et Expert.">
+    <RoleGuard allowedRoles={["mentor", "expert"]} fallbackMessage={t("mentorDash.guardMessage")}>
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
         <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
           <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10">
             <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-              <Users className="w-3 h-3" /> Espace Mentor
+              <Users className="w-3 h-3" /> {t("mentorDash.badge")}
             </div>
-            <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">Vos <span className="text-primary">mentorés</span> & sessions</h1>
-            <p className="text-sm text-muted-foreground max-w-lg">Suivez vos mentorés, gérez vos sessions et consultez vos avis.</p>
+            <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">
+              <Trans i18nKey="mentorDash.title" components={{ 1: <span className="text-primary" /> }} />
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-lg">{t("mentorDash.subtitle")}</p>
           </div>
         </div>
         <MentorContent />
@@ -238,6 +242,7 @@ export default function MentorDashboardPage() {
 }
 
 function EarningsPanel({ coachId }: { coachId: string }) {
+  const { t } = useTranslation();
   const { data, isLoading } = useCoachEarnings(coachId);
   if (isLoading) return (
     <div role="status" aria-busy="true" aria-live="polite">
@@ -252,14 +257,14 @@ function EarningsPanel({ coachId }: { coachId: string }) {
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <GHCard><div className="flex items-center gap-3"><Wallet className="w-5 h-5 text-primary" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Brut perçu</div><div className="font-heading text-lg font-extrabold">{e.totalGross.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
-        <GHCard><div className="flex items-center gap-3"><TrendingUp className="w-5 h-5 text-primary" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Net (après 15 %)</div><div className="font-heading text-lg font-extrabold text-primary">{e.totalNet.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
-        <GHCard><div className="flex items-center gap-3"><Star className="w-5 h-5 text-muted-foreground" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Commission GrowHub</div><div className="font-heading text-lg font-extrabold text-muted-foreground">{e.totalCommission.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
+        <GHCard><div className="flex items-center gap-3"><Wallet className="w-5 h-5 text-primary" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">{t("mentorDash.earnings.grossLabel")}</div><div className="font-heading text-lg font-extrabold">{e.totalGross.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
+        <GHCard><div className="flex items-center gap-3"><TrendingUp className="w-5 h-5 text-primary" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">{t("mentorDash.earnings.netLabel")}</div><div className="font-heading text-lg font-extrabold text-primary">{e.totalNet.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
+        <GHCard><div className="flex items-center gap-3"><Star className="w-5 h-5 text-muted-foreground" /><div><div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">{t("mentorDash.earnings.commissionLabel")}</div><div className="font-heading text-lg font-extrabold text-muted-foreground">{e.totalCommission.toLocaleString("fr-FR")} {e.currency}</div></div></div></GHCard>
       </div>
       <GHCard>
-        <div className="font-heading text-xs font-bold mb-2">Historique des paiements</div>
+        <div className="font-heading text-xs font-bold mb-2">{t("mentorDash.earnings.historyTitle")}</div>
         {e.rows.length === 0 ? (
-          <p className="text-xs text-muted-foreground py-4 text-center">Aucun paiement enregistré.</p>
+          <p className="text-xs text-muted-foreground py-4 text-center">{t("mentorDash.earnings.empty")}</p>
         ) : (
           <div className="space-y-1.5">
             {e.rows.slice(0, 10).map((r: any, i: number) => (

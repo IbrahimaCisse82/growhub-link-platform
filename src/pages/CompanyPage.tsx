@@ -5,11 +5,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCompanyPage, useCompanyMembers, useCreateCompanyPage, useUpdateCompanyPage } from "@/hooks/useCompanyPages";
 import { Building2, Globe, MapPin, Edit2, Plus, Save, Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function CompanyPage() {
-  usePageMeta({ title: "Page Entreprise", description: "Gérez la vitrine de votre startup." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("company.meta.title"), description: t("company.meta.description") });
   const { user } = useAuth();
   const { data: companyRaw, isLoading, refetch } = useCompanyPage(user?.id);
   const company = companyRaw as any;
@@ -28,32 +30,32 @@ export default function CompanyPage() {
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user || !company) return;
-    if (file.size > 5 * 1024 * 1024) { toast.error("Le fichier est trop lourd (max 5MB)"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error(t("company.toasts.fileTooLarge")); return; }
     setUploadingLogo(true);
     const ext = file.name.split(".").pop();
     const path = `${company.id}/logo.${ext}`;
     const { error: uploadError } = await supabase.storage.from("company-logos").upload(path, file, { upsert: true });
-    if (uploadError) { toast.error("Erreur lors de l'upload"); setUploadingLogo(false); return; }
+    if (uploadError) { toast.error(t("company.toasts.uploadError")); setUploadingLogo(false); return; }
     const { data: { publicUrl } } = supabase.storage.from("company-logos").getPublicUrl(path);
     const logoUrl = `${publicUrl}?t=${Date.now()}`;
     await supabase.from("company_pages").update({ logo_url: logoUrl }).eq("id", company.id);
     await refetch();
     setUploadingLogo(false);
-    toast.success("Logo mis à jour !");
+    toast.success(t("company.toasts.logoUpdated"));
   };
 
   const handleCreate = () => {
-    if (!form.name.trim()) { toast.error("Nom requis"); return; }
+    if (!form.name.trim()) { toast.error(t("company.toasts.nameRequired")); return; }
     createPage.mutate(form, {
-      onSuccess: () => { toast.success("Page créée !"); setCreating(false); },
-      onError: () => toast.error("Erreur"),
+      onSuccess: () => { toast.success(t("company.toasts.pageCreated")); setCreating(false); },
+      onError: () => toast.error(t("company.toasts.createError")),
     });
   };
 
   const handleUpdate = () => {
     if (!company) return;
     updatePage.mutate({ id: company.id, ...form }, {
-      onSuccess: () => { toast.success("Mis à jour !"); setEditing(false); },
+      onSuccess: () => { toast.success(t("company.toasts.updated")); setEditing(false); },
     });
   };
 
@@ -64,12 +66,12 @@ export default function CompanyPage() {
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
         <GHCard className="text-center py-16">
           <Building2 className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
-          <h2 className="font-heading text-xl font-extrabold mb-2">Créez votre page entreprise</h2>
+          <h2 className="font-heading text-xl font-extrabold mb-2">{t("company.empty.title")}</h2>
           <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-            Présentez votre startup, votre équipe et vos métriques clés à tout l'écosystème.
+            {t("company.empty.subtitle")}
           </p>
           <button onClick={() => setCreating(true)} className="bg-primary text-primary-foreground rounded-xl px-6 py-3 font-heading text-sm font-bold flex items-center gap-2 mx-auto hover:bg-primary-hover transition-colors">
-            <Plus className="w-4 h-4" /> Créer ma page
+            <Plus className="w-4 h-4" /> {t("company.empty.cta")}
           </button>
         </GHCard>
       </motion.div>
@@ -79,16 +81,16 @@ export default function CompanyPage() {
   if (creating) {
     return (
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-heading text-2xl font-extrabold mb-5">Nouvelle <span className="text-primary">page entreprise</span></h1>
+        <h1 className="font-heading text-2xl font-extrabold mb-5">{t("company.create.title")} <span className="text-primary">{t("company.create.titleHighlight")}</span></h1>
         <GHCard>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { key: "name", label: "Nom de l'entreprise", placeholder: "Ma Startup" },
-              { key: "sector", label: "Secteur", placeholder: "SaaS, FinTech, HealthTech..." },
-              { key: "stage", label: "Stade", placeholder: "Pré-seed, Seed, Série A..." },
-              { key: "website", label: "Site web", placeholder: "https://..." },
-              { key: "location", label: "Localisation", placeholder: "Paris, France" },
-              { key: "team_size", label: "Taille d'équipe", placeholder: "1-10, 11-50..." },
+              { key: "name", label: t("company.create.fields.name"), placeholder: t("company.create.fields.namePlaceholder") },
+              { key: "sector", label: t("company.create.fields.sector"), placeholder: t("company.create.fields.sectorPlaceholder") },
+              { key: "stage", label: t("company.create.fields.stage"), placeholder: t("company.create.fields.stagePlaceholder") },
+              { key: "website", label: t("company.create.fields.website"), placeholder: t("company.create.fields.websitePlaceholder") },
+              { key: "location", label: t("company.create.fields.location"), placeholder: t("company.create.fields.locationPlaceholder") },
+              { key: "team_size", label: t("company.create.fields.teamSize"), placeholder: t("company.create.fields.teamSizePlaceholder") },
             ].map(f => (
               <div key={f.key}>
                 <label className="text-xs font-bold text-muted-foreground mb-1 block">{f.label}</label>
@@ -101,20 +103,20 @@ export default function CompanyPage() {
               </div>
             ))}
             <div className="md:col-span-2">
-              <label className="text-xs font-bold text-muted-foreground mb-1 block">Description</label>
+              <label className="text-xs font-bold text-muted-foreground mb-1 block">{t("company.create.description")}</label>
               <textarea
                 value={form.description}
                 onChange={e => setForm({ ...form, description: e.target.value })}
-                placeholder="Décrivez votre entreprise, votre mission, votre vision..."
+                placeholder={t("company.create.descriptionPlaceholder")}
                 className="w-full bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm min-h-[100px] resize-none focus:border-primary/40 outline-none"
               />
             </div>
           </div>
           <div className="flex gap-3 mt-5">
             <button onClick={handleCreate} className="bg-primary text-primary-foreground rounded-lg px-5 py-2.5 text-sm font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors">
-              <Save className="w-4 h-4" /> Créer
+              <Save className="w-4 h-4" /> {t("company.create.submit")}
             </button>
-            <button onClick={() => setCreating(false)} className="bg-secondary text-foreground rounded-lg px-5 py-2.5 text-sm font-bold">Annuler</button>
+            <button onClick={() => setCreating(false)} className="bg-secondary text-foreground rounded-lg px-5 py-2.5 text-sm font-bold">{t("company.create.cancel")}</button>
           </div>
         </GHCard>
       </motion.div>
@@ -148,19 +150,19 @@ export default function CompanyPage() {
             </div>
             <div>
               <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-                <Building2 className="w-3 h-3" /> Page Entreprise
+                <Building2 className="w-3 h-3" /> {t("company.badge")}
               </div>
               <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-1">{company.name}</h1>
               <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mt-2">
                 {company.sector && <span className="flex items-center gap-1"><Tag variant="green">{company.sector}</Tag></span>}
                 {company.stage && <span className="flex items-center gap-1"><Tag variant="blue">{company.stage}</Tag></span>}
                 {company.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {company.location}</span>}
-                {company.website && <a href={company.website} target="_blank" rel="noopener" className="flex items-center gap-1 text-primary hover:underline"><Globe className="w-3 h-3" /> Site web</a>}
+                {company.website && <a href={company.website} target="_blank" rel="noopener" className="flex items-center gap-1 text-primary hover:underline"><Globe className="w-3 h-3" /> {t("company.website")}</a>}
               </div>
             </div>
           </div>
           <button onClick={() => { setForm(company); setEditing(!editing); }} className="bg-card border border-border rounded-lg px-3 py-2 text-xs font-bold hover:border-primary/30 transition-colors flex items-center gap-1.5 flex-shrink-0">
-            <Edit2 className="w-3 h-3" /> Modifier
+            <Edit2 className="w-3 h-3" /> {t("company.edit")}
           </button>
         </div>
       </div>
@@ -169,37 +171,37 @@ export default function CompanyPage() {
         <GHCard className="mb-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {[
-              { key: "name", label: "Nom" }, { key: "sector", label: "Secteur" },
-              { key: "stage", label: "Stade" }, { key: "website", label: "Site web" },
-              { key: "location", label: "Localisation" }, { key: "team_size", label: "Équipe" },
+              { key: "name", label: t("company.fields.name") }, { key: "sector", label: t("company.fields.sector") },
+              { key: "stage", label: t("company.fields.stage") }, { key: "website", label: t("company.fields.website") },
+              { key: "location", label: t("company.fields.location") }, { key: "team_size", label: t("company.fields.team") },
             ].map(f => (
               <input key={f.key} value={(form as any)[f.key] || ""} onChange={e => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.label}
                 className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
             ))}
-            <textarea value={form.description || ""} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Description"
+            <textarea value={form.description || ""} onChange={e => setForm({ ...form, description: e.target.value })} placeholder={t("company.create.description")}
               className="md:col-span-2 bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm min-h-[80px] resize-none" />
           </div>
-          <button onClick={handleUpdate} className="mt-3 bg-primary text-primary-foreground rounded-lg px-4 py-2 text-xs font-bold">Enregistrer</button>
+          <button onClick={handleUpdate} className="mt-3 bg-primary text-primary-foreground rounded-lg px-4 py-2 text-xs font-bold">{t("company.save")}</button>
         </GHCard>
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="👥" value={company.team_size || "—"} label="Équipe" badge="Taille" badgeType="neutral" />
-        <MetricCard icon="📅" value={company.founded_year ? String(company.founded_year) : "—"} label="Fondée" badge="Année" badgeType="neutral" />
-        <MetricCard icon="🏢" value={String((members ?? []).length)} label="Membres" badge="Équipe" badgeType="up" />
-        <MetricCard icon="🌍" value={company.location || "—"} label="Localisation" badge="Siège" badgeType="neutral" />
+        <MetricCard icon="👥" value={company.team_size || "—"} label={t("company.metrics.team")} badge={t("company.metrics.teamBadge")} badgeType="neutral" />
+        <MetricCard icon="📅" value={company.founded_year ? String(company.founded_year) : "—"} label={t("company.metrics.founded")} badge={t("company.metrics.foundedBadge")} badgeType="neutral" />
+        <MetricCard icon="🏢" value={String((members ?? []).length)} label={t("company.metrics.members")} badge={t("company.metrics.membersBadge")} badgeType="up" />
+        <MetricCard icon="🌍" value={company.location || "—"} label={t("company.metrics.location")} badge={t("company.metrics.locationBadge")} badgeType="neutral" />
       </div>
 
       {company.description && (
         <GHCard className="mb-5">
-          <h3 className="font-heading text-base font-extrabold mb-2">À propos</h3>
+          <h3 className="font-heading text-base font-extrabold mb-2">{t("company.about")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{company.description}</p>
         </GHCard>
       )}
 
       {members && members.length > 0 && (
         <>
-          <h3 className="font-heading text-base font-extrabold mb-3">Équipe</h3>
+          <h3 className="font-heading text-base font-extrabold mb-3">{t("company.team")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {members.map((m: any) => (
               <GHCard key={m.id} className="flex items-center gap-3">
@@ -207,7 +209,7 @@ export default function CompanyPage() {
                   {(m.profile?.display_name ?? "?").substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <div className="font-heading text-sm font-bold">{m.profile?.display_name ?? "Membre"}</div>
+                  <div className="font-heading text-sm font-bold">{m.profile?.display_name ?? t("company.member")}</div>
                   <div className="text-[11px] text-muted-foreground">{m.title || m.role}</div>
                 </div>
               </GHCard>

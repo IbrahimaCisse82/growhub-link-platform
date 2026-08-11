@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { GHCard, ProgressBar, Tag, SectionHeader, MetricCard } from "@/components/ui-custom";
 
 export default function GenericPage({ pageId, title, subtitle, description }: {
@@ -7,6 +8,7 @@ export default function GenericPage({ pageId, title, subtitle, description }: {
   subtitle: string;
   description: string;
 }) {
+  const { t } = useTranslation();
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
       <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-9 mb-5 relative overflow-hidden">
@@ -22,17 +24,17 @@ export default function GenericPage({ pageId, title, subtitle, description }: {
       </div>
 
       <div className="grid grid-cols-4 gap-3.5 mb-[18px]">
-        <MetricCard icon="📊" value="—" label="En construction" badge="Bientôt" badgeType="neutral" />
-        <MetricCard icon="🚀" value="—" label="En construction" badge="Bientôt" badgeType="neutral" />
-        <MetricCard icon="💡" value="—" label="En construction" badge="Bientôt" badgeType="neutral" />
-        <MetricCard icon="🎯" value="—" label="En construction" badge="Bientôt" badgeType="neutral" />
+        <MetricCard icon="📊" value="—" label={t("generic.metricLabel")} badge={t("generic.metricBadge")} badgeType="neutral" />
+        <MetricCard icon="🚀" value="—" label={t("generic.metricLabel")} badge={t("generic.metricBadge")} badgeType="neutral" />
+        <MetricCard icon="💡" value="—" label={t("generic.metricLabel")} badge={t("generic.metricBadge")} badgeType="neutral" />
+        <MetricCard icon="🎯" value="—" label={t("generic.metricLabel")} badge={t("generic.metricBadge")} badgeType="neutral" />
       </div>
 
       <GHCard className="text-center py-12">
         <div className="text-5xl mb-4">🚧</div>
-        <h2 className="font-heading text-xl font-extrabold mb-2">Page en construction</h2>
+        <h2 className="font-heading text-xl font-extrabold mb-2">{t("generic.constructionTitle")}</h2>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          Cette section est en cours de développement. Revenez bientôt pour découvrir toutes les fonctionnalités !
+          {t("generic.constructionText")}
         </p>
       </GHCard>
     </motion.div>
