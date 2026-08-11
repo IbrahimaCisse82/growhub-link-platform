@@ -5,6 +5,8 @@ import fr from "./locales/fr";
 import en from "./locales/en";
 import frDeals from "./locales/fr.deals";
 import enDeals from "./locales/en.deals";
+import frCoach from "./locales/fr.coach";
+import enCoach from "./locales/en.coach";
 import frPublic from "./locales/fr.public";
 import enPublic from "./locales/en.public";
 
@@ -13,8 +15,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      fr: { translation: { ...fr, ...frDeals, ...frPublic } },
-      en: { translation: { ...en, ...enDeals, ...enPublic } },
+      fr: { translation: { ...fr, ...frDeals, ...frCoach, ...frPublic } },
+      en: { translation: { ...en, ...enDeals, ...enCoach, ...enPublic } },
     },
     fallbackLng: "fr",
     supportedLngs: ["fr", "en"],
