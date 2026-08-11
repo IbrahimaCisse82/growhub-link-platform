@@ -113,19 +113,22 @@ export default function AmbassadorsPage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-heading font-bold text-center text-foreground mb-8">{t("ambassadors.benefits.title")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {BENEFITS.map((b, i) => (
-              <motion.div key={b.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
+            {t("ambassadors.benefits.items", { returnObjects: true }).map((b: any, i: number) => (
+              (Icon => (
+                <motion.div key={b.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
                 <Card className="border-border/50 h-full hover:border-primary/30 transition-colors">
                   <CardContent className="p-5">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
-                      <b.icon className="w-5 h-5 text-primary" />
+                      <Icon className="w-5 h-5 text-primary" />
                     </div>
                     <h3 className="font-heading font-bold text-foreground mb-1">{b.title}</h3>
                     <p className="text-sm text-muted-foreground">{b.desc}</p>
                   </CardContent>
                 </Card>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))(BENEFIT_ICONS[i])
+            ))
+))}
           </div>
         </div>
       </section>
@@ -136,7 +139,7 @@ export default function AmbassadorsPage() {
           <Card className="border-primary/20 shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-xl font-heading">
-                {alreadyApplied ? "✅ Candidature envoyée" : "Postuler maintenant"}
+                {alreadyApplied ? t("ambassadors.form.submittedTitle") : t("ambassadors.form.applyTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -145,10 +148,10 @@ export default function AmbassadorsPage() {
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Check className="w-8 h-8 text-primary" />
                   </div>
-                  <p className="text-muted-foreground">Votre candidature est en cours d'examen. Nous vous contacterons bientôt !</p>
+                  <p className="text-muted-foreground">{t("ambassadors.form.submittedText")}</p>
                   {existingApp?.referral_code && (
                     <div className="bg-muted rounded-lg p-3 text-center">
-                      <p className="text-xs text-muted-foreground mb-1">Votre code ambassadeur</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t("ambassadors.form.codeLabel")}</p>
                       <p className="font-mono font-bold text-primary text-lg">{existingApp.referral_code}</p>
                     </div>
                   )}
@@ -157,34 +160,34 @@ export default function AmbassadorsPage() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label>Nom complet *</Label>
-                      <Input required placeholder="Fatou Diallo" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} />
+                      <Label>{t("ambassadors.form.fullName")}</Label>
+                      <Input required placeholder={t("ambassadors.form.fullNamePlaceholder")} value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> Email *</Label>
-                      <Input required type="email" placeholder="fatou@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                      <Label className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {t("ambassadors.form.email")}</Label>
+                      <Input required type="email" placeholder={t("ambassadors.form.emailPlaceholder")} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label className="flex items-center gap-1"><Globe className="w-3.5 h-3.5" /> Pays *</Label>
-                      <Input required placeholder="Sénégal" value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
+                      <Label className="flex items-center gap-1"><Globe className="w-3.5 h-3.5" /> {t("ambassadors.form.country")}</Label>
+                      <Input required placeholder={t("ambassadors.form.countryPlaceholder")} value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> Ville *</Label>
-                      <Input required placeholder="Dakar" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
+                      <Label className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {t("ambassadors.form.city")}</Label>
+                      <Input required placeholder={t("ambassadors.form.cityPlaceholder")} value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="flex items-center gap-1"><Linkedin className="w-3.5 h-3.5" /> LinkedIn (optionnel)</Label>
-                    <Input placeholder="https://linkedin.com/in/..." value={form.linkedin_url} onChange={e => setForm({ ...form, linkedin_url: e.target.value })} />
+                    <Label className="flex items-center gap-1"><Linkedin className="w-3.5 h-3.5" /> {t("ambassadors.form.linkedin")}</Label>
+                    <Input placeholder={t("ambassadors.form.linkedinPlaceholder")} value={form.linkedin_url} onChange={e => setForm({ ...form, linkedin_url: e.target.value })} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Pourquoi souhaitez-vous être ambassadeur ? *</Label>
-                    <Textarea required rows={3} placeholder="Décrivez votre motivation et votre réseau local..." value={form.motivation} onChange={e => setForm({ ...form, motivation: e.target.value })} />
+                    <Label>{t("ambassadors.form.motivation")}</Label>
+                    <Textarea required rows={3} placeholder={t("ambassadors.form.motivationPlaceholder")} value={form.motivation} onChange={e => setForm({ ...form, motivation: e.target.value })} />
                   </div>
                   <Button type="submit" className="w-full" disabled={submitting}>
-                    {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Envoi...</> : <><Award className="w-4 h-4 mr-2" /> Soumettre ma candidature</>}
+                    {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> {t("ambassadors.form.submitting")}</> : <><Award className="w-4 h-4 mr-2" /> {t("ambassadors.form.submit")}</>}
                   </Button>
                 </form>
               )}
@@ -202,7 +205,7 @@ export default function AmbassadorsPage() {
 
       {/* Footer */}
       <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} GrowHubLink — L'écosystème du secteur privé en Afrique
+        © {new Date().getFullYear()} {t("ambassadors.footer.rights")}
       </footer>
     </div>
   );
