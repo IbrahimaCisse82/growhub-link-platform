@@ -9,21 +9,23 @@ import { toast } from "sonner";
 import { DollarSign, Users, Plus, Trash2, Pencil, X } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { FundraisingROIWidget } from "@/components/FundraisingROIWidget";
-
-const statusLabels: Record<string, { label: string; variant: string }> = {
-  identified: { label: "Identifié", variant: "default" },
-  contacted: { label: "Contacté", variant: "blue" },
-  in_discussion: { label: "En discussion", variant: "orange" },
-  due_diligence: { label: "Due Diligence", variant: "purple" },
-  term_sheet: { label: "Term Sheet", variant: "green" },
-  committed: { label: "Engagé", variant: "green" },
-  declined: { label: "Décliné", variant: "red" },
-};
+import { useTranslation } from "react-i18next";
 
 export default function FundraisingPage() {
-  usePageMeta({ title: "Levée de fonds", description: "Gérez vos rounds de financement et suivez vos investisseurs." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("fundraising.page_meta_title"), description: t("fundraising.page_meta_description") });
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  const statusLabels: Record<string, { label: string; variant: string }> = {
+    identified: { label: t("fundraising.status.identified"), variant: "default" },
+    contacted: { label: t("fundraising.status.contacted"), variant: "blue" },
+    in_discussion: { label: t("fundraising.status.in_discussion"), variant: "orange" },
+    due_diligence: { label: t("fundraising.status.due_diligence"), variant: "purple" },
+    term_sheet: { label: t("fundraising.status.term_sheet"), variant: "green" },
+    committed: { label: t("fundraising.status.committed"), variant: "green" },
+    declined: { label: t("fundraising.status.declined"), variant: "red" },
+  };
 
   // State for forms
   const [showRoundForm, setShowRoundForm] = useState(false);
@@ -70,9 +72,9 @@ export default function FundraisingPage() {
       stage: roundForm.stage || null,
     });
     setCreatingRound(false);
-    if (error) toast.error("Erreur");
+    if (error) toast.error(t("fundraising.toast_error"));
     else {
-      toast.success("Round créé !");
+      toast.success(t("fundraising.toast_round_created"));
       setShowRoundForm(false);
       setRoundForm({ name: "", target_amount: "", stage: "" });
       queryClient.invalidateQueries({ queryKey: ["fundraising-rounds"] });
@@ -93,9 +95,9 @@ export default function FundraisingPage() {
       next_step: investorForm.next_step || null,
     });
     setCreatingInvestor(false);
-    if (error) toast.error("Erreur");
+    if (error) toast.error(t("fundraising.toast_error"));
     else {
-      toast.success("Investisseur ajouté !");
+      toast.success(t("fundraising.toast_investor_added"));
       setShowInvestorForm(false);
       setInvestorForm({ investor_name: "", firm: "", email: "", status: "identified", amount_committed: "", next_step: "" });
       queryClient.invalidateQueries({ queryKey: ["investor-contacts"] });
@@ -105,14 +107,14 @@ export default function FundraisingPage() {
   const handleDeleteContact = async (id: string) => {
     await supabase.from("investor_contacts").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["investor-contacts"] });
-    toast.success("Supprimé");
+    toast.success(t("fundraising.toast_deleted"));
   };
 
   const handleDeleteRound = async (id: string) => {
     await supabase.from("investor_contacts").delete().eq("round_id", id);
     await supabase.from("fundraising_rounds").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["fundraising-rounds"] });
-    toast.success("Round supprimé");
+    toast.success(t("fundraising.toast_round_deleted"));
   };
 
   const handleUpdateRaised = async (amount: number) => {
@@ -127,10 +129,10 @@ export default function FundraisingPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Fundraising Tracker
+            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> {t("fundraising.badge")}
           </div>
-          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">Pilotez votre <span className="text-primary">levée de fonds</span></h1>
-          <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">Suivez vos investisseurs, gérez votre pipeline et optimisez votre stratégie de levée.</p>
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">{t("fundraising.title_1")} <span className="text-primary">{t("fundraising.title_highlight")}</span></h1>
+          <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">{t("fundraising.subtitle")}</p>
         </div>
       </div>
 
@@ -140,21 +142,21 @@ export default function FundraisingPage() {
         <>
           <GHCard className="text-center py-12 mb-4">
             <DollarSign className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-            <h2 className="font-heading text-lg font-bold mb-2">Aucune levée en cours</h2>
-            <p className="text-sm text-muted-foreground mb-4">Créez votre première levée de fonds pour commencer le suivi.</p>
+            <h2 className="font-heading text-lg font-bold mb-2">{t("fundraising.empty_title")}</h2>
+            <p className="text-sm text-muted-foreground mb-4">{t("fundraising.empty_subtitle")}</p>
             <button onClick={() => setShowRoundForm(true)} className="bg-primary text-primary-foreground rounded-xl px-6 py-3 font-heading text-xs font-bold flex items-center gap-2 mx-auto hover:bg-primary-hover transition-colors">
-              <Plus className="w-4 h-4" /> Créer un round
+              <Plus className="w-4 h-4" /> {t("fundraising.create_round_button")}
             </button>
           </GHCard>
 
           {showRoundForm && (
             <GHCard className="mb-4">
-              <h3 className="font-heading text-sm font-bold mb-3">Nouveau round de financement</h3>
+              <h3 className="font-heading text-sm font-bold mb-3">{t("fundraising.new_round_form_title")}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input value={roundForm.name} onChange={(e) => setRoundForm({ ...roundForm, name: e.target.value })} placeholder="Nom du round (ex: Série A) *" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
-                <input type="number" value={roundForm.target_amount} onChange={(e) => setRoundForm({ ...roundForm, target_amount: e.target.value })} placeholder="Montant cible (€)" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input value={roundForm.name} onChange={(e) => setRoundForm({ ...roundForm, name: e.target.value })} placeholder={t("fundraising.placeholder_round_name")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input type="number" value={roundForm.target_amount} onChange={(e) => setRoundForm({ ...roundForm, target_amount: e.target.value })} placeholder={t("fundraising.placeholder_target_amount")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
                 <select value={roundForm.stage} onChange={(e) => setRoundForm({ ...roundForm, stage: e.target.value })} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm">
-                  <option value="">Stage...</option>
+                  <option value="">{t("fundraising.placeholder_stage")}</option>
                   <option value="Pre-Seed">Pre-Seed</option>
                   <option value="Seed">Seed</option>
                   <option value="Serie A">Série A</option>
@@ -163,8 +165,8 @@ export default function FundraisingPage() {
                 </select>
               </div>
               <div className="flex justify-end mt-3 gap-2">
-                <button onClick={() => setShowRoundForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">Annuler</button>
-                <button onClick={handleCreateRound} disabled={!roundForm.name.trim() || creatingRound} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">Créer</button>
+                <button onClick={() => setShowRoundForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">{t("fundraising.cancel")}</button>
+                <button onClick={handleCreateRound} disabled={!roundForm.name.trim() || creatingRound} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">{t("fundraising.create")}</button>
               </div>
             </GHCard>
           )}
@@ -173,31 +175,31 @@ export default function FundraisingPage() {
         <>
           <FundraisingROIWidget />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-            <MetricCard icon="💰" value={`${(raised / 1000000).toFixed(1)}M€`} label="Levé" badge={`${pct}%`} badgeType="up" />
-            <MetricCard icon="🎯" value={`${(target / 1000000).toFixed(1)}M€`} label="Objectif" badge={activeRound.stage ?? "—"} badgeType="neutral" />
-            <MetricCard icon="👥" value={String(contacts?.length ?? 0)} label="Investisseurs" badge="Pipeline" badgeType="up" />
-            <MetricCard icon="✅" value={String(contacts?.filter((c) => c.status === "term_sheet" || c.status === "committed").length ?? 0)} label="Engagés" badge="Confirmés" badgeType="up" />
+            <MetricCard icon="💰" value={`${(raised / 1000000).toFixed(1)}M€`} label={t("fundraising.metric_raised")} badge={`${pct}%`} badgeType="up" />
+            <MetricCard icon="🎯" value={`${(target / 1000000).toFixed(1)}M€`} label={t("fundraising.metric_target")} badge={activeRound.stage ?? "—"} badgeType="neutral" />
+            <MetricCard icon="👥" value={String(contacts?.length ?? 0)} label={t("fundraising.metric_investors")} badge={t("fundraising.metric_investors_badge")} badgeType="up" />
+            <MetricCard icon="✅" value={String(contacts?.filter((c) => c.status === "term_sheet" || c.status === "committed").length ?? 0)} label={t("fundraising.metric_committed")} badge={t("fundraising.metric_committed_badge")} badgeType="up" />
           </div>
 
           <GHCard className="mb-5">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-heading text-sm font-bold">{activeRound.name}</h3>
               <div className="flex gap-2">
-                <button onClick={() => setShowRoundForm(true)} className="text-xs text-primary font-bold hover:underline">+ Nouveau round</button>
-                <button onClick={() => handleDeleteRound(activeRound.id)} className="text-xs text-destructive font-bold hover:underline">Supprimer</button>
+                <button onClick={() => setShowRoundForm(true)} className="text-xs text-primary font-bold hover:underline">{t("fundraising.new_round_link")}</button>
+                <button onClick={() => handleDeleteRound(activeRound.id)} className="text-xs text-destructive font-bold hover:underline">{t("fundraising.delete_round")}</button>
               </div>
             </div>
-            <ProgressBar label="Progression de la levée" value={`${(raised / 1000).toFixed(0)}K€ / ${(target / 1000).toFixed(0)}K€`} percentage={pct} />
+            <ProgressBar label={t("fundraising.progress_label")} value={`${(raised / 1000).toFixed(0)}K€ / ${(target / 1000).toFixed(0)}K€`} percentage={pct} />
           </GHCard>
 
           {showRoundForm && (
             <GHCard className="mb-4">
-              <h3 className="font-heading text-sm font-bold mb-3">Nouveau round</h3>
+              <h3 className="font-heading text-sm font-bold mb-3">{t("fundraising.new_round_form_title_short")}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <input value={roundForm.name} onChange={(e) => setRoundForm({ ...roundForm, name: e.target.value })} placeholder="Nom *" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
-                <input type="number" value={roundForm.target_amount} onChange={(e) => setRoundForm({ ...roundForm, target_amount: e.target.value })} placeholder="Montant cible (€)" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input value={roundForm.name} onChange={(e) => setRoundForm({ ...roundForm, name: e.target.value })} placeholder={t("fundraising.placeholder_round_name_short")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input type="number" value={roundForm.target_amount} onChange={(e) => setRoundForm({ ...roundForm, target_amount: e.target.value })} placeholder={t("fundraising.placeholder_target_amount")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
                 <select value={roundForm.stage} onChange={(e) => setRoundForm({ ...roundForm, stage: e.target.value })} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm">
-                  <option value="">Stage...</option>
+                  <option value="">{t("fundraising.placeholder_stage")}</option>
                   <option value="Pre-Seed">Pre-Seed</option>
                   <option value="Seed">Seed</option>
                   <option value="Serie A">Série A</option>
@@ -206,35 +208,35 @@ export default function FundraisingPage() {
                 </select>
               </div>
               <div className="flex justify-end mt-3 gap-2">
-                <button onClick={() => setShowRoundForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">Annuler</button>
-                <button onClick={handleCreateRound} disabled={!roundForm.name.trim() || creatingRound} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">Créer</button>
+                <button onClick={() => setShowRoundForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">{t("fundraising.cancel")}</button>
+                <button onClick={handleCreateRound} disabled={!roundForm.name.trim() || creatingRound} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">{t("fundraising.create")}</button>
               </div>
             </GHCard>
           )}
 
           <div className="flex items-center justify-between mb-3">
-            <SectionHeader title="👥 Pipeline Investisseurs" />
+            <SectionHeader title={t("fundraising.pipeline_title")} />
             <button onClick={() => setShowInvestorForm(!showInvestorForm)} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-colors">
-              <Plus className="w-3.5 h-3.5" /> Ajouter
+              <Plus className="w-3.5 h-3.5" /> {t("fundraising.add")}
             </button>
           </div>
 
           {showInvestorForm && (
             <GHCard className="mb-4">
-              <h3 className="font-heading text-sm font-bold mb-3">Nouvel investisseur</h3>
+              <h3 className="font-heading text-sm font-bold mb-3">{t("fundraising.new_investor_form_title")}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input value={investorForm.investor_name} onChange={(e) => setInvestorForm({ ...investorForm, investor_name: e.target.value })} placeholder="Nom de l'investisseur *" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
-                <input value={investorForm.firm} onChange={(e) => setInvestorForm({ ...investorForm, firm: e.target.value })} placeholder="Fonds / Entreprise" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
-                <input type="email" value={investorForm.email} onChange={(e) => setInvestorForm({ ...investorForm, email: e.target.value })} placeholder="Email" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input value={investorForm.investor_name} onChange={(e) => setInvestorForm({ ...investorForm, investor_name: e.target.value })} placeholder={t("fundraising.placeholder_investor_name")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input value={investorForm.firm} onChange={(e) => setInvestorForm({ ...investorForm, firm: e.target.value })} placeholder={t("fundraising.placeholder_firm")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input type="email" value={investorForm.email} onChange={(e) => setInvestorForm({ ...investorForm, email: e.target.value })} placeholder={t("fundraising.placeholder_email")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
                 <select value={investorForm.status} onChange={(e) => setInvestorForm({ ...investorForm, status: e.target.value })} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm">
                   {Object.entries(statusLabels).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
                 </select>
-                <input type="number" value={investorForm.amount_committed} onChange={(e) => setInvestorForm({ ...investorForm, amount_committed: e.target.value })} placeholder="Montant engagé (€)" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
-                <input value={investorForm.next_step} onChange={(e) => setInvestorForm({ ...investorForm, next_step: e.target.value })} placeholder="Prochaine étape" className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input type="number" value={investorForm.amount_committed} onChange={(e) => setInvestorForm({ ...investorForm, amount_committed: e.target.value })} placeholder={t("fundraising.placeholder_amount_committed")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
+                <input value={investorForm.next_step} onChange={(e) => setInvestorForm({ ...investorForm, next_step: e.target.value })} placeholder={t("fundraising.placeholder_next_step")} className="bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm" />
               </div>
               <div className="flex justify-end mt-3 gap-2">
-                <button onClick={() => setShowInvestorForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">Annuler</button>
-                <button onClick={handleCreateInvestor} disabled={!investorForm.investor_name.trim() || creatingInvestor} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">Ajouter</button>
+                <button onClick={() => setShowInvestorForm(false)} className="px-4 py-2 bg-card border border-border rounded-lg text-xs font-bold">{t("fundraising.cancel")}</button>
+                <button onClick={handleCreateInvestor} disabled={!investorForm.investor_name.trim() || creatingInvestor} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-bold disabled:opacity-50">{t("fundraising.add")}</button>
               </div>
             </GHCard>
           )}
@@ -242,7 +244,7 @@ export default function FundraisingPage() {
           <div className="space-y-2">
             {!contacts || contacts.length === 0 ? (
               <GHCard className="text-center py-6">
-                <p className="text-xs text-muted-foreground">Aucun investisseur dans le pipeline. Cliquez sur "Ajouter" pour commencer.</p>
+                <p className="text-xs text-muted-foreground">{t("fundraising.no_investors")}</p>
               </GHCard>
             ) : (
               contacts.map((c) => {
@@ -260,7 +262,7 @@ export default function FundraisingPage() {
                       <div className="text-[11px] text-muted-foreground">
                         {c.firm && <span>{c.firm} · </span>}
                         {c.email && <span>{c.email} · </span>}
-                        {c.next_step && <span>Prochaine étape: {c.next_step}</span>}
+                        {c.next_step && <span>{t("fundraising.next_step_label", { step: c.next_step })}</span>}
                       </div>
                     </div>
                     {c.amount_committed && (

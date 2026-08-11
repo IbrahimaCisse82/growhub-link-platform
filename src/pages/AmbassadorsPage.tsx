@@ -17,24 +17,13 @@ import {
   MapPin, Mail, Linkedin, ArrowLeft, Trophy, Target, Heart
 } from "lucide-react";
 import { AmbassadorLeaderboard } from "@/components/AmbassadorLeaderboard";
+import { useTranslation } from "react-i18next";
 
-const BENEFITS = [
-  { icon: Trophy, title: "Accès Premium gratuit", desc: "Plan Business offert tant que vous êtes ambassadeur actif" },
-  { icon: Users, title: "Réseau exclusif", desc: "Accès au cercle privé des ambassadeurs GrowHubLink dans 40+ pays" },
-  { icon: Star, title: "Badges & visibilité", desc: "Badge ambassadeur vérifié + profil mis en avant dans les recherches" },
-  { icon: Zap, title: "Commission parrainage", desc: "Gagnez une commission sur chaque utilisateur Pro que vous parrainez" },
-  { icon: Globe, title: "Impact local", desc: "Représentez GrowHubLink dans votre pays et développez l'écosystème" },
-  { icon: Target, title: "Événements exclusifs", desc: "Invitations aux événements privés et accès anticipé aux nouvelles features" },
-];
-
-const STATS = [
-  { value: "40+", label: "Pays ciblés" },
-  { value: "50", label: "Ambassadeurs recherchés" },
-  { value: "10K+", label: "Utilisateurs à atteindre" },
-];
+const BENEFIT_ICONS = [Trophy, Users, Star, Zap, Globe, Target];
 
 export default function AmbassadorsPage() {
-  usePageMeta({ title: "Programme Ambassadeurs — GrowHubLink", description: "Rejoignez le programme ambassadeurs GrowHubLink et développez l'écosystème startup dans votre pays." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("ambassadors.meta.title"), description: t("ambassadors.meta.description") });
   const { user } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
@@ -52,7 +41,7 @@ export default function AmbassadorsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) { toast.error("Connectez-vous pour postuler"); navigate("/auth"); return; }
+    if (!user) { toast.error(t("ambassadors.form.loginRequired")); navigate("/auth"); return; }
     setSubmitting(true);
     try {
       const code = `GHL-${form.country.slice(0, 2).toUpperCase()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
@@ -68,9 +57,9 @@ export default function AmbassadorsPage() {
       });
       if (error) throw error;
       setSubmitted(true);
-      toast.success("Candidature envoyée avec succès ! 🎉");
+      toast.success(t("ambassadors.form.success"));
     } catch (e: any) {
-      toast.error(e.message?.includes("unique") ? "Vous avez déjà postulé" : e.message || "Erreur");
+      toast.error(e.message?.includes("unique") ? t("ambassadors.form.alreadyApplied") : e.message || t("ambassadors.form.error"));
     } finally { setSubmitting(false); }
   };
 
@@ -86,8 +75,8 @@ export default function AmbassadorsPage() {
             <span className="font-heading text-lg font-bold text-foreground">Grow<span className="text-primary">Hub</span>Link</span>
           </button>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/welcome")}><ArrowLeft className="w-4 h-4 mr-1" /> Retour</Button>
-            <Button size="sm" onClick={() => navigate("/auth")}>Se connecter</Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/welcome")}><ArrowLeft className="w-4 h-4 mr-1" /> {t("ambassadors.nav.back")}</Button>
+            <Button size="sm" onClick={() => navigate("/auth")}>{t("ambassadors.nav.login")}</Button>
           </div>
         </div>
       </header>
@@ -96,16 +85,20 @@ export default function AmbassadorsPage() {
       <section className="pt-28 pb-16 px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto text-center space-y-4">
           <Badge variant="secondary" className="text-sm px-4 py-1.5 gap-1.5">
-            <Heart className="w-3.5 h-3.5 text-destructive fill-destructive" /> Programme Ambassadeurs
+            <Heart className="w-3.5 h-3.5 text-destructive fill-destructive" /> {t("ambassadors.hero.badge")}
           </Badge>
           <h1 className="text-3xl md:text-5xl font-heading font-bold text-foreground leading-tight">
-            Devenez <span className="text-primary">Ambassadeur</span> GrowHubLink
+            {t("ambassadors.hero.title")} <span className="text-primary">{t("ambassadors.hero.titleHighlight")}</span> {t("ambassadors.hero.titleEnd")}
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Rejoignez notre réseau d'ambassadeurs et aidez à connecter les entrepreneurs de votre pays à l'écosystème startup africain.
+            {t("ambassadors.hero.subtitle")}
           </p>
           <div className="flex justify-center gap-6 pt-4">
-            {STATS.map(s => (
+            {[
+              { value: "40+", label: t("ambassadors.stats.countries") },
+              { value: "50", label: t("ambassadors.stats.ambassadors") },
+              { value: "10K+", label: t("ambassadors.stats.users") },
+            ].map(s => (
               <div key={s.label} className="text-center">
                 <div className="text-2xl md:text-3xl font-heading font-bold text-primary">{s.value}</div>
                 <div className="text-xs text-muted-foreground">{s.label}</div>
@@ -118,21 +111,24 @@ export default function AmbassadorsPage() {
       {/* Benefits */}
       <section className="pb-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-heading font-bold text-center text-foreground mb-8">Avantages ambassadeurs</h2>
+          <h2 className="text-2xl font-heading font-bold text-center text-foreground mb-8">{t("ambassadors.benefits.title")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {BENEFITS.map((b, i) => (
-              <motion.div key={b.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
-                <Card className="border-border/50 h-full hover:border-primary/30 transition-colors">
-                  <CardContent className="p-5">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
-                      <b.icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <h3 className="font-heading font-bold text-foreground mb-1">{b.title}</h3>
-                    <p className="text-sm text-muted-foreground">{b.desc}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            {(t("ambassadors.benefits.items", { returnObjects: true }) as any[]).map((b: any, i: number) => {
+              const Icon = BENEFIT_ICONS[i % BENEFIT_ICONS.length];
+              return (
+                <motion.div key={b.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
+                  <Card className="border-border/50 h-full hover:border-primary/30 transition-colors">
+                    <CardContent className="p-5">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <h3 className="font-heading font-bold text-foreground mb-1">{b.title}</h3>
+                      <p className="text-sm text-muted-foreground">{b.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -143,7 +139,7 @@ export default function AmbassadorsPage() {
           <Card className="border-primary/20 shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-xl font-heading">
-                {alreadyApplied ? "✅ Candidature envoyée" : "Postuler maintenant"}
+                {alreadyApplied ? t("ambassadors.form.submittedTitle") : t("ambassadors.form.applyTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -152,10 +148,10 @@ export default function AmbassadorsPage() {
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                     <Check className="w-8 h-8 text-primary" />
                   </div>
-                  <p className="text-muted-foreground">Votre candidature est en cours d'examen. Nous vous contacterons bientôt !</p>
+                  <p className="text-muted-foreground">{t("ambassadors.form.submittedText")}</p>
                   {existingApp?.referral_code && (
                     <div className="bg-muted rounded-lg p-3 text-center">
-                      <p className="text-xs text-muted-foreground mb-1">Votre code ambassadeur</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t("ambassadors.form.codeLabel")}</p>
                       <p className="font-mono font-bold text-primary text-lg">{existingApp.referral_code}</p>
                     </div>
                   )}
@@ -164,34 +160,34 @@ export default function AmbassadorsPage() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label>Nom complet *</Label>
-                      <Input required placeholder="Fatou Diallo" value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} />
+                      <Label>{t("ambassadors.form.fullName")}</Label>
+                      <Input required placeholder={t("ambassadors.form.fullNamePlaceholder")} value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> Email *</Label>
-                      <Input required type="email" placeholder="fatou@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                      <Label className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {t("ambassadors.form.email")}</Label>
+                      <Input required type="email" placeholder={t("ambassadors.form.emailPlaceholder")} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label className="flex items-center gap-1"><Globe className="w-3.5 h-3.5" /> Pays *</Label>
-                      <Input required placeholder="Sénégal" value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
+                      <Label className="flex items-center gap-1"><Globe className="w-3.5 h-3.5" /> {t("ambassadors.form.country")}</Label>
+                      <Input required placeholder={t("ambassadors.form.countryPlaceholder")} value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> Ville *</Label>
-                      <Input required placeholder="Dakar" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
+                      <Label className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {t("ambassadors.form.city")}</Label>
+                      <Input required placeholder={t("ambassadors.form.cityPlaceholder")} value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="flex items-center gap-1"><Linkedin className="w-3.5 h-3.5" /> LinkedIn (optionnel)</Label>
-                    <Input placeholder="https://linkedin.com/in/..." value={form.linkedin_url} onChange={e => setForm({ ...form, linkedin_url: e.target.value })} />
+                    <Label className="flex items-center gap-1"><Linkedin className="w-3.5 h-3.5" /> {t("ambassadors.form.linkedin")}</Label>
+                    <Input placeholder={t("ambassadors.form.linkedinPlaceholder")} value={form.linkedin_url} onChange={e => setForm({ ...form, linkedin_url: e.target.value })} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Pourquoi souhaitez-vous être ambassadeur ? *</Label>
-                    <Textarea required rows={3} placeholder="Décrivez votre motivation et votre réseau local..." value={form.motivation} onChange={e => setForm({ ...form, motivation: e.target.value })} />
+                    <Label>{t("ambassadors.form.motivation")}</Label>
+                    <Textarea required rows={3} placeholder={t("ambassadors.form.motivationPlaceholder")} value={form.motivation} onChange={e => setForm({ ...form, motivation: e.target.value })} />
                   </div>
                   <Button type="submit" className="w-full" disabled={submitting}>
-                    {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Envoi...</> : <><Award className="w-4 h-4 mr-2" /> Soumettre ma candidature</>}
+                    {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> {t("ambassadors.form.submitting")}</> : <><Award className="w-4 h-4 mr-2" /> {t("ambassadors.form.submit")}</>}
                   </Button>
                 </form>
               )}
@@ -209,7 +205,7 @@ export default function AmbassadorsPage() {
 
       {/* Footer */}
       <footer className="border-t border-border/50 py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} GrowHubLink — L'écosystème du secteur privé en Afrique
+        © {new Date().getFullYear()} {t("ambassadors.footer.rights")}
       </footer>
     </div>
   );

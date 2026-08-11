@@ -9,32 +9,16 @@ import { toast } from "sonner";
 import { Plus, Eye, FileText, Trash2, ChevronLeft, GripVertical, Save, Copy, EyeOff, Pencil, X, Maximize2 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface Slide {
   title: string;
   content: string;
 }
 
-const templates = [
-  { id: "classic", name: "Classic VC", description: "Structure standard pour investisseurs" },
-  { id: "storytelling", name: "Storytelling", description: "Narration immersive de votre vision" },
-  { id: "data-driven", name: "Data-Driven", description: "Focus sur les métriques et la traction" },
-  { id: "minimal", name: "Minimal", description: "Design épuré et percutant" },
-];
-
-const defaultSlides: Slide[] = [
-  { title: "Problème", content: "Décrivez le problème que vous résolvez" },
-  { title: "Solution", content: "Votre solution unique" },
-  { title: "Marché", content: "Taille du marché adressable" },
-  { title: "Business Model", content: "Comment vous gagnez de l'argent" },
-  { title: "Traction", content: "Vos métriques clés et jalons" },
-  { title: "Équipe", content: "Présentez votre équipe fondatrice" },
-  { title: "Roadmap", content: "Vos prochaines étapes" },
-  { title: "Ask", content: "Ce que vous recherchez" },
-];
-
 // ─── Slide Editor Component ─────────────────────────────
 function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [slides, setSlides] = useState<Slide[]>((deck.slides as Slide[]) ?? []);
@@ -55,9 +39,9 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
       is_public: isPublic,
     }).eq("id", deck.id);
     setSaving(false);
-    if (error) toast.error("Erreur de sauvegarde");
+    if (error) toast.error(t("pitchdeck.toast_save_error"));
     else {
-      toast.success("Sauvegardé !");
+      toast.success(t("pitchdeck.toast_saved"));
       queryClient.invalidateQueries({ queryKey: ["pitch-decks"] });
     }
   };
@@ -69,14 +53,14 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
   };
 
   const addSlide = () => {
-    const newSlide: Slide = { title: "Nouvelle slide", content: "Contenu à remplir..." };
+    const newSlide: Slide = { title: t("pitchdeck.editor.new_slide_title"), content: t("pitchdeck.editor.new_slide_content") };
     setSlides([...slides, newSlide]);
     setActiveIdx(slides.length);
   };
 
   const duplicateSlide = () => {
     if (!activeSlide) return;
-    const copy = { ...activeSlide, title: `${activeSlide.title} (copie)` };
+    const copy = { ...activeSlide, title: `${activeSlide.title}${t("pitchdeck.editor.duplicate_suffix")}` };
     const updated = [...slides];
     updated.splice(activeIdx + 1, 0, copy);
     setSlides(updated);
@@ -84,7 +68,7 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
   };
 
   const deleteSlide = (idx: number) => {
-    if (slides.length <= 1) { toast.error("Au moins 1 slide requise"); return; }
+    if (slides.length <= 1) { toast.error(t("pitchdeck.editor.min_slide_error")); return; }
     const updated = slides.filter((_, i) => i !== idx);
     setSlides(updated);
     if (activeIdx >= updated.length) setActiveIdx(updated.length - 1);
@@ -109,7 +93,7 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
           <X className="w-5 h-5" />
         </button>
         <div className="absolute top-4 left-4 text-sm text-muted-foreground font-heading font-bold">
-          {presentIdx + 1} / {slides.length}
+          {t("pitchdeck.editor.slide_indicator", { current: presentIdx + 1, total: slides.length })}
         </div>
         <div className="max-w-4xl w-full px-8">
           <div className="bg-card border border-border rounded-2xl p-12 shadow-2xl min-h-[400px] flex flex-col justify-center">
@@ -118,8 +102,8 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
           </div>
         </div>
         <div className="flex gap-3 mt-6">
-          <button disabled={presentIdx === 0} onClick={() => setPresentIdx(presentIdx - 1)} className="px-4 py-2 bg-card border border-border rounded-lg text-sm font-bold disabled:opacity-30">← Précédent</button>
-          <button disabled={presentIdx === slides.length - 1} onClick={() => setPresentIdx(presentIdx + 1)} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-bold disabled:opacity-30">Suivant →</button>
+          <button disabled={presentIdx === 0} onClick={() => setPresentIdx(presentIdx - 1)} className="px-4 py-2 bg-card border border-border rounded-lg text-sm font-bold disabled:opacity-30">{t("pitchdeck.editor.previous")}</button>
+          <button disabled={presentIdx === slides.length - 1} onClick={() => setPresentIdx(presentIdx + 1)} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-bold disabled:opacity-30">{t("pitchdeck.editor.next")}</button>
         </div>
       </div>
     );
@@ -130,7 +114,7 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
       {/* Toolbar */}
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <ChevronLeft className="w-4 h-4" /> Retour
+          <ChevronLeft className="w-4 h-4" /> {t("pitchdeck.editor.back")}
         </button>
         <input
           value={deckTitle}
@@ -139,13 +123,13 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
         />
         <button onClick={() => setIsPublic(!isPublic)} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors", isPublic ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-muted-foreground")}>
           {isPublic ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-          {isPublic ? "Public" : "Privé"}
+          {isPublic ? t("pitchdeck.editor.public") : t("pitchdeck.editor.private")}
         </button>
         <button onClick={() => { setPresentIdx(0); setPresenting(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-card border border-border hover:border-primary/35 transition-colors">
-          <Maximize2 className="w-3.5 h-3.5" /> Présenter
+          <Maximize2 className="w-3.5 h-3.5" /> {t("pitchdeck.editor.present")}
         </button>
         <button onClick={handleSave} disabled={saving} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 font-heading text-xs font-bold flex items-center gap-1.5 disabled:opacity-50 hover:bg-primary-hover transition-colors">
-          <Save className="w-3.5 h-3.5" /> {saving ? "..." : "Sauvegarder"}
+          <Save className="w-3.5 h-3.5" /> {saving ? t("pitchdeck.editor.saving") : t("pitchdeck.editor.save")}
         </button>
       </div>
 
@@ -176,7 +160,7 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
           ))}
           <div className="flex gap-2">
             <button onClick={addSlide} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-dashed border-border text-xs font-bold text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors">
-              <Plus className="w-3.5 h-3.5" /> Ajouter
+              <Plus className="w-3.5 h-3.5" /> {t("pitchdeck.editor.add_slide")}
             </button>
             <button onClick={duplicateSlide} className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-dashed border-border text-xs font-bold text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors">
               <Copy className="w-3.5 h-3.5" />
@@ -190,24 +174,24 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
             <GHCard className="min-h-[400px]">
               <div className="flex items-center gap-2 mb-4">
                 <Pencil className="w-4 h-4 text-primary" />
-                <span className="text-xs font-bold text-muted-foreground">Slide {activeIdx + 1} / {slides.length}</span>
+                <span className="text-xs font-bold text-muted-foreground">{t("pitchdeck.editor.slide_count", { current: activeIdx + 1, total: slides.length })}</span>
               </div>
               <input
                 value={activeSlide.title}
                 onChange={(e) => updateSlide("title", e.target.value)}
-                placeholder="Titre de la slide"
+                placeholder={t("pitchdeck.editor.placeholder_title")}
                 className="w-full font-heading text-2xl font-extrabold bg-transparent outline-none border-b-2 border-border focus:border-primary pb-2 mb-4 transition-colors"
               />
               <textarea
                 value={activeSlide.content}
                 onChange={(e) => updateSlide("content", e.target.value)}
-                placeholder="Contenu de la slide..."
+                placeholder={t("pitchdeck.editor.placeholder_content")}
                 className="w-full bg-secondary/30 border border-border rounded-xl p-4 text-sm leading-relaxed resize-none min-h-[250px] focus:outline-none focus:border-primary/40 transition-colors"
               />
 
               {/* Preview */}
               <div className="mt-4 border-t border-border pt-4">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Aperçu</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">{t("pitchdeck.editor.preview_label")}</p>
                 <div className="bg-card border border-border rounded-xl p-6 min-h-[120px]">
                   <h3 className="font-heading text-xl font-extrabold text-primary mb-2">{activeSlide.title}</h3>
                   <p className="text-sm text-foreground/80 whitespace-pre-line">{activeSlide.content}</p>
@@ -216,7 +200,7 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
             </GHCard>
           ) : (
             <GHCard className="text-center py-12">
-              <p className="text-sm text-muted-foreground">Sélectionnez une slide</p>
+              <p className="text-sm text-muted-foreground">{t("pitchdeck.editor.select_slide")}</p>
             </GHCard>
           )}
         </div>
@@ -227,10 +211,29 @@ function SlideEditor({ deck, onBack }: { deck: any; onBack: () => void }) {
 
 // ─── Main Page ──────────────────────────────────────────
 export default function PitchDeckPage() {
-  usePageMeta({ title: "Pitch Deck", description: "Créez et partagez vos pitch decks pour convaincre les investisseurs." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("pitchdeck.page_meta_title"), description: t("pitchdeck.page_meta_description") });
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [editingDeck, setEditingDeck] = useState<any | null>(null);
+
+  const templates = [
+    { id: "classic", name: t("pitchdeck.templates.classic_name"), description: t("pitchdeck.templates.classic_desc") },
+    { id: "storytelling", name: t("pitchdeck.templates.storytelling_name"), description: t("pitchdeck.templates.storytelling_desc") },
+    { id: "data-driven", name: t("pitchdeck.templates.data_driven_name"), description: t("pitchdeck.templates.data_driven_desc") },
+    { id: "minimal", name: t("pitchdeck.templates.minimal_name"), description: t("pitchdeck.templates.minimal_desc") },
+  ];
+
+  const defaultSlides: Slide[] = [
+    { title: t("pitchdeck.default_slides.problem_title"), content: t("pitchdeck.default_slides.problem_content") },
+    { title: t("pitchdeck.default_slides.solution_title"), content: t("pitchdeck.default_slides.solution_content") },
+    { title: t("pitchdeck.default_slides.market_title"), content: t("pitchdeck.default_slides.market_content") },
+    { title: t("pitchdeck.default_slides.business_model_title"), content: t("pitchdeck.default_slides.business_model_content") },
+    { title: t("pitchdeck.default_slides.traction_title"), content: t("pitchdeck.default_slides.traction_content") },
+    { title: t("pitchdeck.default_slides.team_title"), content: t("pitchdeck.default_slides.team_content") },
+    { title: t("pitchdeck.default_slides.roadmap_title"), content: t("pitchdeck.default_slides.roadmap_content") },
+    { title: t("pitchdeck.default_slides.ask_title"), content: t("pitchdeck.default_slides.ask_content") },
+  ];
 
   const { data: decks, isLoading } = useQuery({
     queryKey: ["pitch-decks", user?.id],
@@ -246,13 +249,13 @@ export default function PitchDeckPage() {
     if (!user) return;
     const { data, error } = await supabase.from("pitch_decks").insert([{
       user_id: user.id,
-      title: `Pitch Deck - ${new Date().toLocaleDateString("fr-FR")}`,
+      title: t("pitchdeck.default_deck_title", { date: new Date().toLocaleDateString("fr-FR") }),
       template,
       slides: defaultSlides as any,
     }]).select().single();
-    if (error) toast.error("Erreur lors de la création");
+    if (error) toast.error(t("pitchdeck.toast_creation_error"));
     else {
-      toast.success("Pitch Deck créé !");
+      toast.success(t("pitchdeck.toast_created"));
       queryClient.invalidateQueries({ queryKey: ["pitch-decks"] });
       setEditingDeck(data);
     }
@@ -261,7 +264,7 @@ export default function PitchDeckPage() {
   const deleteDeck = async (id: string) => {
     await supabase.from("pitch_decks").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["pitch-decks"] });
-    toast.success("Supprimé");
+    toast.success(t("pitchdeck.toast_deleted"));
   };
 
   if (editingDeck) {
@@ -278,40 +281,40 @@ export default function PitchDeckPage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> Pitch Deck Builder
+            <span className="w-[5px] h-[5px] bg-primary rounded-full animate-pulse-dot" /> {t("pitchdeck.badge")}
           </div>
-          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">Créez un pitch <span className="text-primary">irrésistible</span></h1>
-          <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">Templates conçus avec des VCs, éditeur de slides intégré, et mode présentation.</p>
+          <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">{t("pitchdeck.title_1")} <span className="text-primary">{t("pitchdeck.title_highlight")}</span></h1>
+          <p className="text-foreground/60 text-sm leading-relaxed max-w-[460px]">{t("pitchdeck.subtitle")}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="📄" value={String(decks?.length ?? 0)} label="Pitch Decks" badge="Créés" badgeType="up" />
-        <MetricCard icon="👁️" value={String(decks?.reduce((sum, d) => sum + (d.view_count ?? 0), 0) ?? 0)} label="Vues totales" badge="Total" badgeType="up" />
-        <MetricCard icon="📊" value={String(decks?.filter((d) => d.is_public).length ?? 0)} label="Publics" badge="Partagés" badgeType="neutral" />
-        <MetricCard icon="✨" value="4" label="Templates" badge="Disponibles" badgeType="neutral" />
+        <MetricCard icon="📄" value={String(decks?.length ?? 0)} label={t("pitchdeck.metric_decks")} badge={t("pitchdeck.metric_decks_badge")} badgeType="up" />
+        <MetricCard icon="👁️" value={String(decks?.reduce((sum, d) => sum + (d.view_count ?? 0), 0) ?? 0)} label={t("pitchdeck.metric_views")} badge="Total" badgeType="up" />
+        <MetricCard icon="📊" value={String(decks?.filter((d) => d.is_public).length ?? 0)} label={t("pitchdeck.metric_public")} badge={t("pitchdeck.metric_public_badge")} badgeType="neutral" />
+        <MetricCard icon="✨" value="4" label={t("pitchdeck.metric_templates")} badge={t("pitchdeck.metric_templates_badge")} badgeType="neutral" />
       </div>
 
-      <h3 className="font-heading text-sm font-bold mb-3">Créer un nouveau Pitch Deck</h3>
+      <h3 className="font-heading text-sm font-bold mb-3">{t("pitchdeck.create_new_title")}</h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        {templates.map((t) => (
-          <GHCard key={t.id} className="cursor-pointer hover:border-primary/40 transition-all" onClick={() => createDeck(t.id)}>
+        {templates.map((tpl) => (
+          <GHCard key={tpl.id} className="cursor-pointer hover:border-primary/40 transition-all" onClick={() => createDeck(tpl.id)}>
             <div className="text-center">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2"><Plus className="w-5 h-5 text-primary" /></div>
-              <div className="font-heading text-xs font-bold">{t.name}</div>
-              <p className="text-[10px] text-muted-foreground mt-1">{t.description}</p>
+              <div className="font-heading text-xs font-bold">{tpl.name}</div>
+              <p className="text-[10px] text-muted-foreground mt-1">{tpl.description}</p>
             </div>
           </GHCard>
         ))}
       </div>
 
-      <h3 className="font-heading text-sm font-bold mb-3">Mes Pitch Decks</h3>
+      <h3 className="font-heading text-sm font-bold mb-3">{t("pitchdeck.my_decks_title")}</h3>
       {isLoading ? (
         Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-2xl mb-2" />)
       ) : !decks || decks.length === 0 ? (
         <GHCard className="text-center py-8">
           <FileText className="w-10 h-10 text-muted-foreground/30 mx-auto mb-2" />
-          <p className="text-xs text-muted-foreground">Aucun pitch deck. Choisissez un template ci-dessus pour commencer.</p>
+          <p className="text-xs text-muted-foreground">{t("pitchdeck.empty_decks")}</p>
         </GHCard>
       ) : (
         decks.map((deck) => (
@@ -322,10 +325,10 @@ export default function PitchDeckPage() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <span className="font-heading text-sm font-bold">{deck.title}</span>
-                <Tag variant={deck.is_public ? "green" : "default"}>{deck.is_public ? "Public" : "Privé"}</Tag>
+                <Tag variant={deck.is_public ? "green" : "default"}>{deck.is_public ? t("pitchdeck.public") : t("pitchdeck.private")}</Tag>
               </div>
               <div className="text-[11px] text-muted-foreground">
-                Template: {deck.template} · {((deck.slides as any[]) ?? []).length} slides · {deck.view_count ?? 0} vues · Modifié le {new Date(deck.updated_at).toLocaleDateString("fr-FR")}
+                {t("pitchdeck.deck_meta", { template: deck.template, count: ((deck.slides as any[]) ?? []).length, views: deck.view_count ?? 0, date: new Date(deck.updated_at).toLocaleDateString("fr-FR") })}
               </div>
             </div>
             <div className="flex items-center gap-2">
