@@ -2,10 +2,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Download } from "lucide-react";
+import i18n from "@/i18n";
 
 function convertToCSV(data: Record<string, any>[], filename: string) {
   if (!data || data.length === 0) {
-    toast.error("Aucune donnée à exporter");
+    toast.error(i18n.t("prof.dataExport.noData"));
     return;
   }
   const headers = Object.keys(data[0]);
@@ -25,7 +26,7 @@ function convertToCSV(data: Record<string, any>[], filename: string) {
   a.download = `${filename}_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
-  toast.success(`${filename}.csv exporté !`);
+  toast.success(i18n.t("prof.dataExport.exported", { filename }));
 }
 
 interface ExportButtonProps {
@@ -47,7 +48,7 @@ export default function DataExportButton({ table, label, filename, columns = "*"
     }
     const { data, error } = await query.limit(1000);
     if (error) {
-      toast.error("Erreur lors de l'export");
+      toast.error(i18n.t("prof.dataExport.exportError"));
       return;
     }
     convertToCSV(data, filename);

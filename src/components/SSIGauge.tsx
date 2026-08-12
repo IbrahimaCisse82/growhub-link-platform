@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   score: number; // 0-100
@@ -6,7 +7,9 @@ interface Props {
   label?: string;
 }
 
-export default function SSIGauge({ score, size = 120, label = "SSI" }: Props) {
+export default function SSIGauge({ score, size = 120, label }: Props) {
+  const { t } = useTranslation();
+  const resolvedLabel = label ?? t("prof.ssiGauge.defaultLabel");
   const radius = size / 2 - 8;
   const circumference = 2 * Math.PI * radius;
   const clamped = Math.max(0, Math.min(100, score));
@@ -34,7 +37,7 @@ export default function SSIGauge({ score, size = 120, label = "SSI" }: Props) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="font-heading text-2xl font-extrabold text-foreground">{clamped}</span>
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{label}</span>
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{resolvedLabel}</span>
       </div>
     </div>
   );
