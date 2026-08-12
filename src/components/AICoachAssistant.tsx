@@ -6,6 +6,7 @@ import { useSSI } from "@/hooks/useSSI";
 import { useDashboardStats } from "@/hooks/useDashboard";
 import { Bot, Send, Sparkles, X, MessageCircle, Lightbulb, Target, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface Message {
   role: "assistant" | "user";
@@ -13,60 +14,64 @@ interface Message {
   timestamp: Date;
 }
 
-const quickActions = [
-  { icon: Target, label: "Optimiser mon SSI", prompt: "Comment puis-je améliorer mon score SSI rapidement ?" },
-  { icon: Users, label: "Stratégie réseau", prompt: "Quelle stratégie de networking me recommandes-tu cette semaine ?" },
-  { icon: Lightbulb, label: "Idées de contenu", prompt: "Suggère-moi 3 idées de posts pour engager ma communauté." },
-  { icon: Sparkles, label: "Plan d'action", prompt: "Crée-moi un plan d'action networking pour les 7 prochains jours." },
-];
+function useQuickActions() {
+  const { t } = useTranslation();
+  return [
+    { icon: Target, label: t("uic.aiCoach.quickActions.ssi.label"), prompt: t("uic.aiCoach.quickActions.ssi.prompt") },
+    { icon: Users, label: t("uic.aiCoach.quickActions.network.label"), prompt: t("uic.aiCoach.quickActions.network.prompt") },
+    { icon: Lightbulb, label: t("uic.aiCoach.quickActions.content.label"), prompt: t("uic.aiCoach.quickActions.content.prompt") },
+    { icon: Sparkles, label: t("uic.aiCoach.quickActions.plan.label"), prompt: t("uic.aiCoach.quickActions.plan.prompt") },
+  ];
+}
 
-function generateCoachResponse(message: string, profile: any, ssi: any, stats: any): string {
-  const name = profile?.display_name?.split(" ")[0] || "là";
+function generateCoachResponse(t: (key: string, opts?: any) => string, message: string, profile: any, ssi: any, stats: any): string {
+  const name = profile?.display_name?.split(" ")[0] || "";
   const score = ssi?.totalScore ?? 0;
   const connections = stats?.connections ?? 0;
   const posts = stats?.totalPosts ?? 0;
   const lowerMsg = message.toLowerCase();
 
   if (lowerMsg.includes("ssi") || lowerMsg.includes("score")) {
-    const weak = [];
+    const weak: string[] = [];
     if (ssi) {
-      if (ssi.profileStrength < 15) weak.push("compléter votre profil (photo, bio, compétences, LinkedIn)");
-      if (ssi.networkQuality < 15) weak.push("élargir votre réseau avec des connexions ciblées");
-      if (ssi.engagement < 15) weak.push("publier régulièrement et interagir avec les posts");
-      if (ssi.visibility < 15) weak.push("participer à des événements et sessions de coaching");
+      if (ssi.profileStrength < 15) weak.push(t("uic.aiCoach.weak.profile"));
+      if (ssi.networkQuality < 15) weak.push(t("uic.aiCoach.weak.network"));
+      if (ssi.engagement < 15) weak.push(t("uic.aiCoach.weak.engagement"));
+      if (ssi.visibility < 15) weak.push(t("uic.aiCoach.weak.visibility"));
     }
-    return `${name}, votre SSI est à **${score}/100**. ${score < 30 ? "Il y a un bon potentiel d'amélioration !" : score < 60 ? "Vous êtes sur la bonne voie !" : "Excellent travail !"}\n\n${weak.length > 0 ? `🎯 **Axes prioritaires :**\n${weak.map((w, i) => `${i + 1}. ${w}`).join("\n")}` : "Continuez à maintenir votre activité régulière !"}\n\n💡 **Astuce rapide** : Connectez-vous chaque jour pour maintenir votre streak et gagner des points bonus.`;
+    const trend = score < 30 ? t("uic.aiCoach.trend.low") : score < 60 ? t("uic.aiCoach.trend.mid") : t("uic.aiCoach.trend.high");
+    const prioritiesBlock = weak.length > 0
+      ? `${t("uic.aiCoach.prioritiesTitle")}\n${weak.map((w, i) => `${i + 1}. ${w}`).join("\n")}`
+      : t("uic.aiCoach.noPriorities");
+    return t("uic.aiCoach.ssiResponse", { name, score, trend, prioritiesBlock });
   }
 
   if (lowerMsg.includes("réseau") || lowerMsg.includes("network") || lowerMsg.includes("connexion")) {
-    return `${name}, avec **${connections} connexions** actuelles, voici ma stratégie recommandée :\n\n🔥 **Cette semaine :**\n1. Envoyez **3-5 demandes ciblées** par jour à des profils complémentaires\n2. Personnalisez chaque message avec un point commun (secteur, intérêt)\n3. Répondez aux **intentions actives** dans l'onglet matching\n\n📊 **Objectif** : Atteindre ${connections + 15} connexions d'ici vendredi\n\n🎯 **Pro tip** : Les profils qui publient du contenu ont 3x plus de chances d'accepter une connexion.`;
+    return t("uic.aiCoach.networkResponse", { name, connections, target: connections + 15 });
   }
 
   if (lowerMsg.includes("contenu") || lowerMsg.includes("post") || lowerMsg.includes("idée")) {
-    const topics = [
-      "📌 **Retour d'expérience** : Partagez un défi récent et comment vous l'avez surmonté",
-      "🔍 **Question ouverte** : Demandez l'avis de votre réseau sur une tendance du secteur",
-      "💡 **Conseil actionnable** : Partagez un outil ou une méthode qui a fait la différence",
-      "📊 **Milestone** : Célébrez un petit accomplissement et remerciez votre réseau",
-      "🤝 **Mise en lumière** : Recommandez publiquement un contact qui vous a impressionné",
-    ];
-    return `${name}, voici **5 idées de contenu** adaptées à votre profil :\n\n${topics.join("\n\n")}\n\n📅 **Fréquence idéale** : 2-3 posts par semaine, de préférence mardi et jeudi matin.\n\n💡 Vous avez publié **${posts} posts** jusqu'ici. ${posts < 5 ? "Commencer par 1 post cette semaine serait un excellent début !" : "Continuez cette dynamique !"}`;
+    const topics = (t("uic.aiCoach.contentTopics", { returnObjects: true }) as string[]).join("\n\n");
+    const postsNote = posts < 5 ? t("uic.aiCoach.postsNoteLow") : t("uic.aiCoach.postsNoteHigh");
+    return t("uic.aiCoach.contentResponse", { name, topics, posts, postsNote });
   }
 
   if (lowerMsg.includes("plan") || lowerMsg.includes("action") || lowerMsg.includes("semaine")) {
-    return `${name}, voici votre **Plan d'Action de la Semaine** 🚀\n\n**📅 Lundi** : Complétez/mettez à jour votre profil + publiez vos intentions\n**📅 Mardi** : Publiez un post + envoyez 5 demandes de connexion\n**📅 Mercredi** : Commentez 10 posts de votre réseau\n**📅 Jeudi** : Participez à un événement ou challenge communautaire\n**📅 Vendredi** : Publiez un retour d'expérience + envoyez 3 recommandations\n\n🎯 **KPIs à suivre** :\n- SSI : Viser +5 points cette semaine\n- Connexions : +10 minimum\n- Posts : 2 publications minimum\n- Streak : Ne pas casser la chaîne !\n\n💪 Vous en êtes capable !`;
+    return t("uic.aiCoach.planResponse", { name });
   }
 
-  return `${name}, je suis votre coach IA GrowHub ! 🤖\n\nJe peux vous aider avec :\n- 📊 **Analyse SSI** et recommandations personnalisées\n- 🤝 **Stratégie de networking** adaptée à votre profil\n- ✍️ **Idées de contenu** pour engager votre réseau\n- 📋 **Plans d'action** hebdomadaires\n\nQue souhaitez-vous travailler aujourd'hui ?`;
+  return t("uic.aiCoach.defaultResponse", { name });
 }
 
 export default function AICoachAssistant() {
+  const { t } = useTranslation();
+  const quickActions = useQuickActions();
   const { profile } = useAuth();
   const { data: ssi } = useSSI();
   const { data: stats } = useDashboardStats();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: `Bonjour ${profile?.display_name?.split(" ")[0] || ""} ! 👋 Je suis votre coach IA. Comment puis-je vous aider aujourd'hui ?`, timestamp: new Date() },
+    t("uic.aiCoach.greeting", { name: profile?.display_name?.split(" ")[0] || "" }) ? { role: "assistant", content: t("uic.aiCoach.greeting", { name: profile?.display_name?.split(" ")[0] || "" }), timestamp: new Date() } : { role: "assistant", content: "", timestamp: new Date() },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -84,7 +89,7 @@ export default function AICoachAssistant() {
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
     setTimeout(() => {
-      const response = generateCoachResponse(msg, profile, ssi, stats);
+      const response = generateCoachResponse(t, msg, profile, ssi, stats);
       setMessages(prev => [...prev, { role: "assistant", content: response, timestamp: new Date() }]);
       setIsTyping(false);
     }, 800 + Math.random() * 700);
@@ -121,8 +126,8 @@ export default function AICoachAssistant() {
                 <Bot className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1">
-                <div className="font-heading text-sm font-bold">Coach IA GrowHub</div>
-                <div className="text-[10px] text-green-500 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full" /> En ligne</div>
+                <div className="font-heading text-sm font-bold">{t("uic.aiCoach.title")}</div>
+                <div className="text-[10px] text-green-500 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full" /> {t("uic.aiCoach.status")}</div>
               </div>
               <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>
             </div>
@@ -169,7 +174,7 @@ export default function AICoachAssistant() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && handleSend()}
-                  placeholder="Posez votre question..."
+                  placeholder={t("uic.aiCoach.inputPlaceholder")}
                   className="flex-1 bg-transparent outline-none text-xs"
                 />
                 <button onClick={() => handleSend()} disabled={!input.trim()} className="text-primary disabled:opacity-30">
