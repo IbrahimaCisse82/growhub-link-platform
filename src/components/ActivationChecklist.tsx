@@ -77,7 +77,7 @@ export default function ActivationChecklist() {
             )}
             <div className="flex-1 min-w-0">
               <div className={cn("text-xs font-bold", item.done && "line-through")}>{t(`prof.activationChecklist.items.${item.key}.label`)}</div>
-              <div className="text-[10px] text-muted-foreground">{t(`prof.activationChecklist.items.${item.key}.description`, item.descriptionParams)}</div>
+              <div className="text-[10px] text-muted-foreground">{String(t(`prof.activationChecklist.items.${item.key}.description`, item.descriptionParams))}</div>
             </div>
             {!item.done && <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
           </button>
