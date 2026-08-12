@@ -9,8 +9,10 @@ import { UserPlus, X, Sparkles, MapPin, Building2, ArrowRight, Heart, ChevronLef
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export default function SmartMatchCards() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { data: matches, isLoading } = useMatching(15);
@@ -22,10 +24,10 @@ export default function SmartMatchCards() {
     try {
       await sendConnection.mutateAsync({ receiverId: match.user_id, matchScore: match.match_score });
       setDecisions(d => ({ ...d, [match.user_id]: "connect" }));
-      toast.success(`Demande envoyée à ${match.display_name} !`);
+      toast.success(t("net.smartMatchCards.requestSent", { name: match.display_name }));
       setCurrentIndex(i => i + 1);
     } catch {
-      toast.error("Erreur lors de l'envoi");
+      toast.error(t("net.smartMatchCards.requestError"));
     }
   };
 
@@ -44,7 +46,7 @@ export default function SmartMatchCards() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-5 h-5 text-primary" />
-          <h2 className="font-heading text-base font-bold">Match Express</h2>
+          <h2 className="font-heading text-base font-bold">{t("net.smartMatchCards.title")}</h2>
         </div>
         <Skeleton className="h-80 rounded-2xl" />
       </div>
@@ -58,17 +60,17 @@ export default function SmartMatchCards() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-5 h-5 text-primary" />
-          <h2 className="font-heading text-base font-bold">Match Express</h2>
+          <h2 className="font-heading text-base font-bold">{t("net.smartMatchCards.title")}</h2>
         </div>
         <GHCard className="text-center py-10">
           <Heart className="w-10 h-10 text-primary mx-auto mb-3" />
-          <h3 className="font-heading text-lg font-bold mb-2">Session terminée !</h3>
+          <h3 className="font-heading text-lg font-bold mb-2">{t("net.smartMatchCards.sessionEnded")}</h3>
           <p className="text-sm text-muted-foreground mb-1">
-            {connectCount} connexion{connectCount !== 1 ? "s" : ""} envoyée{connectCount !== 1 ? "s" : ""}
+            {t("net.smartMatchCards.connectionsSent", { count: connectCount })}
           </p>
           <button onClick={() => { setDecisions({}); setCurrentIndex(0); }}
             className="mt-4 bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold hover:bg-primary-hover transition-all">
-            Recommencer
+            {t("net.smartMatchCards.restart")}
           </button>
         </GHCard>
       </div>
@@ -80,10 +82,10 @@ export default function SmartMatchCards() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" />
-          <h2 className="font-heading text-base font-bold">Match Express</h2>
-          <span className="text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">{remaining.length} restant{remaining.length > 1 ? "s" : ""}</span>
+          <h2 className="font-heading text-base font-bold">{t("net.smartMatchCards.title")}</h2>
+          <span className="text-[10px] text-muted-foreground bg-secondary rounded-full px-2 py-0.5">{t("net.smartMatchCards.remaining", { count: remaining.length })}</span>
         </div>
-        <button onClick={() => navigate("/networking")} className="text-xs text-primary font-bold hover:opacity-70">Voir tout →</button>
+        <button onClick={() => navigate("/networking")} className="text-xs text-primary font-bold hover:opacity-70">{t("net.smartMatchCards.viewAll")}</button>
       </div>
 
       <div className="relative h-[360px]">
@@ -111,6 +113,7 @@ function SwipeCard({ match, onConnect, onPass, onViewProfile }: {
   onPass: () => void;
   onViewProfile: () => void;
 }) {
+  const { t } = useTranslation();
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-15, 15]);
   const connectOpacity = useTransform(x, [0, 100], [0, 1]);
@@ -143,17 +146,17 @@ function SwipeCard({ match, onConnect, onPass, onViewProfile }: {
         {/* Swipe indicators */}
         <motion.div style={{ opacity: connectOpacity }}
           className="absolute top-6 right-6 bg-primary/20 border-2 border-primary text-primary rounded-xl px-4 py-2 font-heading text-sm font-bold -rotate-12 z-10">
-          CONNECTER ✓
+          {t("net.smartMatchCards.connectBadge")}
         </motion.div>
         <motion.div style={{ opacity: passOpacity }}
           className="absolute top-6 left-6 bg-destructive/20 border-2 border-destructive text-destructive rounded-xl px-4 py-2 font-heading text-sm font-bold rotate-12 z-10">
-          PASSER ✗
+          {t("net.smartMatchCards.passBadge")}
         </motion.div>
 
         {/* Score badge */}
         <div className="absolute top-4 right-4 z-0">
           <div className={cn("font-heading text-2xl font-extrabold", scoreColor)}>{match.match_score}%</div>
-          <div className="text-[9px] text-muted-foreground text-right">match</div>
+          <div className="text-[9px] text-muted-foreground text-right">{t("net.smartMatchCards.matchLabel")}</div>
         </div>
 
         {/* Avatar + Info */}
@@ -183,7 +186,7 @@ function SwipeCard({ match, onConnect, onPass, onViewProfile }: {
 
         {/* Match reasons */}
         <div className="flex-1 space-y-2 mb-4">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Pourquoi ce match</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{t("net.smartMatchCards.whyMatch")}</div>
           {match.match_reasons?.slice(0, 3).map((reason: string, i: number) => (
             <div key={i} className="flex items-center gap-2 text-xs text-foreground/80">
               <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
@@ -205,7 +208,7 @@ function SwipeCard({ match, onConnect, onPass, onViewProfile }: {
         <div className="flex gap-3 mt-auto">
           <button onClick={onPass}
             className="flex-1 flex items-center justify-center gap-2 bg-secondary text-foreground rounded-xl py-3 font-heading text-xs font-bold hover:bg-destructive/10 hover:text-destructive transition-all">
-            <X className="w-4 h-4" /> Passer
+            <X className="w-4 h-4" /> {t("net.smartMatchCards.pass")}
           </button>
           <button onClick={onViewProfile}
             className="flex items-center justify-center bg-secondary text-foreground rounded-xl px-4 py-3 font-heading text-xs font-bold hover:bg-secondary/80 transition-all">
@@ -213,13 +216,13 @@ function SwipeCard({ match, onConnect, onPass, onViewProfile }: {
           </button>
           <button onClick={onConnect}
             className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl py-3 font-heading text-xs font-bold hover:bg-primary-hover transition-all">
-            <UserPlus className="w-4 h-4" /> Connecter
+            <UserPlus className="w-4 h-4" /> {t("net.smartMatchCards.connect")}
           </button>
         </div>
 
         {/* Swipe hint */}
         <div className="text-center text-[9px] text-muted-foreground/50 mt-2">
-          ← Glissez pour passer · Glissez pour connecter →
+          {t("net.smartMatchCards.swipeHint")}
         </div>
       </div>
     </motion.div>

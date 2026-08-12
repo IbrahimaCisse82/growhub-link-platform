@@ -321,4 +321,45 @@ export default {
     constructionTitle: "Page en construction",
     constructionText: "Cette section est en cours de développement. Revenez bientôt pour découvrir toutes les fonctionnalités !",
   },
+  investorFlow: {
+    meta: { title: "Deal Flow", description: "Gérez votre pipeline d'investissement et explorez les pitch decks." },
+    guard: { message: "Le Deal Flow est réservé aux profils Investisseur et Corporate." },
+    hero: {
+      badge: "Deal Flow",
+      title: "Votre",
+      titleHighlight: "pipeline",
+      titleEnd: "d'investissement",
+      subtitle: "Explorez les pitch decks, gérez vos deal rooms et suivez vos opportunités.",
+    },
+    metrics: {
+      dealRooms: "Deal Rooms", total: "Total",
+      pitchDecks: "Pitch Decks", public: "Publics",
+      startupsFollowed: "Startups suivies", network: "Réseau",
+      activeRooms: "Rooms actives", inProgress: "En cours",
+    },
+    tabs: {
+      pipeline: "💎 Deal Flow",
+      pitchdecks: "📊 Pitch Decks",
+      rooms: "🔒 Mes Rooms",
+    },
+    pipeline: {
+      emptyTitle: "Votre pipeline est vide",
+      emptyText: "Créez une Deal Room ou parcourez les Pitch Decks pour alimenter votre pipeline.",
+      createRoom: "Créer une Deal Room",
+      noDescription: "Aucune description",
+      active: "Active",
+      archived: "Archivée",
+    },
+    pitchdecks: {
+      all: "Tous",
+      empty: "Aucun pitch deck trouvé.",
+      startup: "Startup",
+      views: "vues",
+    },
+    rooms: {
+      manage: "Gérer mes Deal Rooms →",
+      empty: "Aucune Deal Room créée.",
+      code: "Code",
+    },
+  },
 };

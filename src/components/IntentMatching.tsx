@@ -7,21 +7,7 @@ import { Target, UserPlus, Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSendConnection } from "@/hooks/useGrowHub";
 import { toast } from "sonner";
-
-const intentSuggestions = {
-  looking_for: [
-    "CTO / Co-fondateur technique", "Investisseur Série A", "Mentor expérimenté",
-    "Designer UI/UX", "Développeur Full-Stack", "Expert Marketing",
-    "Business Developer", "Partenaire commercial", "Conseiller juridique",
-    "Community Manager", "Expert Fundraising", "Coach Business",
-  ],
-  offering: [
-    "Expertise technique", "Mentorat stratégique", "Investissement",
-    "Design & Branding", "Développement logiciel", "Conseil marketing",
-    "Réseau d'investisseurs", "Accompagnement startup", "Expertise juridique",
-    "Growth Hacking", "Conseil en levée de fonds", "Formation & Coaching",
-  ],
-};
+import { useTranslation } from "react-i18next";
 
 interface IntentMatch {
   user_id: string;
@@ -37,7 +23,12 @@ interface IntentMatch {
 }
 
 export function IntentEditor() {
+  const { t } = useTranslation();
   const { user, profile, refetchProfile } = useAuth();
+  const intentSuggestions = {
+    looking_for: t("net.intentMatching.suggestions.lookingFor", { returnObjects: true }) as string[],
+    offering: t("net.intentMatching.suggestions.offering", { returnObjects: true }) as string[],
+  };
   const [lookingFor, setLookingFor] = useState<string[]>((profile as any)?.looking_for ?? []);
   const [offering, setOffering] = useState<string[]>((profile as any)?.offering ?? []);
   const [headline, setHeadline] = useState((profile as any)?.headline ?? "");
@@ -65,26 +56,26 @@ export function IntentEditor() {
       headline: headline || null,
     } as any).eq("user_id", user.id);
     setSaving(false);
-    if (error) toast.error("Erreur");
-    else { toast.success("Intents mis à jour !"); await refetchProfile(); }
+    if (error) toast.error(t("net.intentMatching.error"));
+    else { toast.success(t("net.intentMatching.updated")); await refetchProfile(); }
   };
 
   return (
-    <GHCard title="🎯 Ce que vous cherchez & offrez" className="mb-5">
+    <GHCard title={t("net.intentMatching.editorTitle")} className="mb-5">
       <p className="text-xs text-muted-foreground mb-4">
-        Déclarez vos besoins et vos offres pour être matché avec les bonnes personnes.
+        {t("net.intentMatching.description")}
       </p>
 
       <div className="mb-4">
-        <label className="text-xs font-bold text-foreground/70 mb-1 block">Headline (phrase d'accroche)</label>
-        <input value={headline} onChange={e => setHeadline(e.target.value)} placeholder="Ex: CEO @ TechStartup — Cherche CTO pour révolutionner la FinTech"
+        <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("net.intentMatching.headlineLabel")}</label>
+        <input value={headline} onChange={e => setHeadline(e.target.value)} placeholder={t("net.intentMatching.headlinePlaceholder")}
           className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <label className="text-xs font-bold text-primary flex items-center gap-1 mb-2">
-            <Target className="w-3 h-3" /> Je cherche...
+            <Target className="w-3 h-3" /> {t("net.intentMatching.lookingForLabel")}
           </label>
           <div className="flex flex-wrap gap-1.5 mb-2">
             {intentSuggestions.looking_for.map(item => (
@@ -95,7 +86,7 @@ export function IntentEditor() {
             ))}
           </div>
           <div className="flex gap-1.5">
-            <input value={customLooking} onChange={e => setCustomLooking(e.target.value)} placeholder="Autre..."
+            <input value={customLooking} onChange={e => setCustomLooking(e.target.value)} placeholder={t("net.intentMatching.otherPlaceholder")}
               className="flex-1 bg-secondary/50 border border-border rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-primary/40"
               onKeyDown={e => e.key === "Enter" && addCustom(lookingFor, setLookingFor, customLooking, () => setCustomLooking(""))} />
             <button onClick={() => addCustom(lookingFor, setLookingFor, customLooking, () => setCustomLooking(""))}
@@ -115,7 +106,7 @@ export function IntentEditor() {
 
         <div>
           <label className="text-xs font-bold text-blue-500 flex items-center gap-1 mb-2">
-            <Sparkles className="w-3 h-3" /> J'offre...
+            <Sparkles className="w-3 h-3" /> {t("net.intentMatching.offeringLabel")}
           </label>
           <div className="flex flex-wrap gap-1.5 mb-2">
             {intentSuggestions.offering.map(item => (
@@ -126,7 +117,7 @@ export function IntentEditor() {
             ))}
           </div>
           <div className="flex gap-1.5">
-            <input value={customOffering} onChange={e => setCustomOffering(e.target.value)} placeholder="Autre..."
+            <input value={customOffering} onChange={e => setCustomOffering(e.target.value)} placeholder={t("net.intentMatching.otherPlaceholder")}
               className="flex-1 bg-secondary/50 border border-border rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-primary/40"
               onKeyDown={e => e.key === "Enter" && addCustom(offering, setOffering, customOffering, () => setCustomOffering(""))} />
             <button onClick={() => addCustom(offering, setOffering, customOffering, () => setCustomOffering(""))}
@@ -147,13 +138,14 @@ export function IntentEditor() {
 
       <button onClick={handleSave} disabled={saving}
         className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold disabled:opacity-50 hover:bg-primary-hover transition-all">
-        {saving ? "Sauvegarde..." : "Sauvegarder mes intents"}
+        {saving ? t("net.intentMatching.saving") : t("net.intentMatching.save")}
       </button>
     </GHCard>
   );
 }
 
 export function IntentMatchResults() {
+  const { t } = useTranslation();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const sendConnection = useSendConnection();
@@ -197,8 +189,8 @@ export function IntentMatchResults() {
             ? "mutual" : theyOfferWhatINeed.length > 0 ? "they_offer_what_you_need" : "they_need_what_you_offer";
 
           const reasons = [
-            ...theyOfferWhatINeed.map((r: string) => `Offre: ${r}`),
-            ...theyNeedWhatIOffer.map((r: string) => `Cherche: ${r}`),
+            ...theyOfferWhatINeed.map((r: string) => t("net.intentMatching.offerReason", { item: r })),
+            ...theyNeedWhatIOffer.map((r: string) => t("net.intentMatching.seekReason", { item: r })),
           ];
 
           results.push({
@@ -222,24 +214,24 @@ export function IntentMatchResults() {
   if (myLookingFor.length === 0 && myOffering.length === 0) return null;
 
   const matchTypeLabels = {
-    mutual: { label: "Match mutuel", color: "text-primary", bg: "bg-primary/10" },
-    they_offer_what_you_need: { label: "Offre ce que vous cherchez", color: "text-emerald-600", bg: "bg-emerald-500/10" },
-    they_need_what_you_offer: { label: "Cherche ce que vous offrez", color: "text-blue-600", bg: "bg-blue-500/10" },
+    mutual: { label: t("net.intentMatching.matchMutual"), color: "text-primary", bg: "bg-primary/10" },
+    they_offer_what_you_need: { label: t("net.intentMatching.matchTheyOffer"), color: "text-emerald-600", bg: "bg-emerald-500/10" },
+    they_need_what_you_offer: { label: t("net.intentMatching.matchTheyNeed"), color: "text-blue-600", bg: "bg-blue-500/10" },
   };
 
   return (
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="w-5 h-5 text-primary" />
-        <h2 className="font-heading text-lg font-bold">Matchs basés sur vos intents</h2>
-        <Tag variant="green">{matches?.length ?? 0} matchs</Tag>
+        <h2 className="font-heading text-lg font-bold">{t("net.intentMatching.resultsTitle")}</h2>
+        <Tag variant="green">{t("net.intentMatching.matchesCount", { count: matches?.length ?? 0 })}</Tag>
       </div>
 
       {isLoading ? (
-        <div className="text-sm text-muted-foreground py-4 text-center">Recherche de matchs...</div>
+        <div className="text-sm text-muted-foreground py-4 text-center">{t("net.intentMatching.searching")}</div>
       ) : !matches || matches.length === 0 ? (
         <GHCard className="text-center py-6">
-          <p className="text-sm text-muted-foreground">Aucun match trouvé. Ajoutez plus d'intents pour améliorer vos résultats.</p>
+          <p className="text-sm text-muted-foreground">{t("net.intentMatching.noMatches")}</p>
         </GHCard>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -271,11 +263,11 @@ export function IntentMatchResults() {
                 <button onClick={e => {
                   e.stopPropagation();
                   sendConnection.mutate({ receiverId: match.user_id }, {
-                    onSuccess: () => toast.success("Demande envoyée !"),
-                    onError: () => toast.error("Erreur"),
+                    onSuccess: () => toast.success(t("net.intentMatching.requestSent")),
+                    onError: () => toast.error(t("net.intentMatching.error2")),
                   });
                 }} className="w-full bg-primary/10 text-primary rounded-lg py-2 text-xs font-bold hover:bg-primary/20 transition-colors flex items-center justify-center gap-1.5">
-                  <UserPlus className="w-3.5 h-3.5" /> Se connecter
+                  <UserPlus className="w-3.5 h-3.5" /> {t("net.intentMatching.connect")}
                 </button>
               </GHCard>
             );

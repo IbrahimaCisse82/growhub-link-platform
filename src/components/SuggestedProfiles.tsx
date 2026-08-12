@@ -6,8 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, UserPlus, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export default function SuggestedProfiles() {
+  const { t } = useTranslation();
   const { data: matches, isLoading } = useMatching(3);
   const sendConnection = useSendConnection();
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ export default function SuggestedProfiles() {
       <div className="mb-5">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-4 h-4 text-primary" />
-          <h3 className="font-heading text-sm font-extrabold">Profils suggérés cette semaine</h3>
+          <h3 className="font-heading text-sm font-extrabold">{t("net.suggestedProfiles.loadingTitle")}</h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[1, 2, 3].map(i => <Skeleton key={i} className="h-32 rounded-2xl" />)}
@@ -31,9 +33,9 @@ export default function SuggestedProfiles() {
   const handleConnect = async (userId: string, score: number) => {
     try {
       await sendConnection.mutateAsync({ receiverId: userId, matchScore: score });
-      toast.success("Demande envoyée !");
+      toast.success(t("net.suggestedProfiles.requestSent"));
     } catch {
-      toast.error("Erreur ou déjà connecté");
+      toast.error(t("net.suggestedProfiles.requestError"));
     }
   };
 
@@ -44,10 +46,10 @@ export default function SuggestedProfiles() {
           <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
           </div>
-          <h3 className="font-heading text-sm font-extrabold">Personnes à connaître</h3>
+          <h3 className="font-heading text-sm font-extrabold">{t("net.suggestedProfiles.title")}</h3>
         </div>
         <button onClick={() => navigate("/networking")} className="text-xs text-primary font-semibold flex items-center gap-1 hover:opacity-70">
-          Voir tout <ArrowRight className="w-3 h-3" />
+          {t("net.suggestedProfiles.viewAll")} <ArrowRight className="w-3 h-3" />
         </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -81,7 +83,7 @@ export default function SuggestedProfiles() {
                 onClick={() => handleConnect(m.user_id, m.match_score)}
                 className="w-full bg-primary/10 text-primary rounded-lg py-1.5 text-xs font-bold hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
               >
-                <UserPlus className="w-3 h-3" /> Connecter
+                <UserPlus className="w-3 h-3" /> {t("net.suggestedProfiles.connect")}
               </button>
             </GHCard>
           </motion.div>

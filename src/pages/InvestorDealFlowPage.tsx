@@ -8,6 +8,7 @@ import { usePageMeta } from "@/hooks/usePageMeta";
 import { useNavigate } from "react-router-dom";
 import RoleGuard from "@/components/RoleGuard";
 import { TrendingUp, Eye, FileText, Users, Filter, ArrowUpRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const stageColors: Record<string, string> = {
   "Pre-Seed": "bg-blue-500/10 text-blue-600",
@@ -18,6 +19,7 @@ const stageColors: Record<string, string> = {
 };
 
 function InvestorContent() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [stageFilter, setStageFilter] = useState("all");
@@ -84,17 +86,17 @@ function InvestorContent() {
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-5">
-        <MetricCard icon="💎" value={String(allRooms.length)} label="Deal Rooms" badge="Total" badgeType="up" />
-        <MetricCard icon="📊" value={String(pitchDecks.length)} label="Pitch Decks" badge="Publics" badgeType="neutral" />
-        <MetricCard icon="👥" value={String(connections.length)} label="Startups suivies" badge="Réseau" badgeType="up" />
-        <MetricCard icon="🔒" value={String(activeRooms.length)} label="Rooms actives" badge="En cours" badgeType={activeRooms.length > 0 ? "up" : "neutral"} />
+        <MetricCard icon="💎" value={String(allRooms.length)} label={t("investorFlow.metrics.dealRooms")} badge={t("investorFlow.metrics.total")} badgeType="up" />
+        <MetricCard icon="📊" value={String(pitchDecks.length)} label={t("investorFlow.metrics.pitchDecks")} badge={t("investorFlow.metrics.public")} badgeType="neutral" />
+        <MetricCard icon="👥" value={String(connections.length)} label={t("investorFlow.metrics.startupsFollowed")} badge={t("investorFlow.metrics.network")} badgeType="up" />
+        <MetricCard icon="🔒" value={String(activeRooms.length)} label={t("investorFlow.metrics.activeRooms")} badge={t("investorFlow.metrics.inProgress")} badgeType={activeRooms.length > 0 ? "up" : "neutral"} />
       </div>
 
       <div className="flex gap-1.5 mb-5">
         {([
-          { key: "pipeline" as const, label: "💎 Deal Flow", count: allRooms.length },
-          { key: "pitchdecks" as const, label: "📊 Pitch Decks", count: pitchDecks.length },
-          { key: "rooms" as const, label: "🔒 Mes Rooms", count: ownedRooms.length },
+          { key: "pipeline" as const, label: t("investorFlow.tabs.pipeline"), count: allRooms.length },
+          { key: "pitchdecks" as const, label: t("investorFlow.tabs.pitchdecks"), count: pitchDecks.length },
+          { key: "rooms" as const, label: t("investorFlow.tabs.rooms"), count: ownedRooms.length },
         ]).map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             className={`h-[34px] px-4 rounded-xl text-xs font-bold font-heading border transition-colors ${
@@ -111,10 +113,10 @@ function InvestorContent() {
           {allRooms.length === 0 ? (
             <GHCard className="text-center py-10">
               <TrendingUp className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground mb-2">Votre pipeline est vide</p>
-              <p className="text-xs text-muted-foreground mb-4">Créez une Deal Room ou parcourez les Pitch Decks pour alimenter votre pipeline.</p>
+              <p className="text-sm text-muted-foreground mb-2">{t("investorFlow.pipeline.emptyTitle")}</p>
+              <p className="text-xs text-muted-foreground mb-4">{t("investorFlow.pipeline.emptyText")}</p>
               <button onClick={() => navigate("/deal-room")} className="bg-primary text-primary-foreground rounded-xl px-6 py-3 font-heading text-xs font-bold">
-                Créer une Deal Room
+                {t("investorFlow.pipeline.createRoom")}
               </button>
             </GHCard>
           ) : allRooms.map((room: any) => (
@@ -124,9 +126,9 @@ function InvestorContent() {
               </div>
               <div className="flex-1">
                 <div className="font-heading text-sm font-bold">{room.name}</div>
-                <div className="text-[11px] text-muted-foreground">{room.description || "Aucune description"}</div>
+                <div className="text-[11px] text-muted-foreground">{room.description || t("investorFlow.pipeline.noDescription")}</div>
               </div>
-              <Tag variant={room.status === "active" ? "green" : "default"}>{room.status === "active" ? "Active" : "Archivée"}</Tag>
+              <Tag variant={room.status === "active" ? "green" : "default"}>{room.status === "active" ? t("investorFlow.pipeline.active") : t("investorFlow.pipeline.archived")}</Tag>
               <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
             </GHCard>
           ))}
@@ -142,13 +144,13 @@ function InvestorContent() {
                 className={`h-[30px] px-3 rounded-lg text-[11px] font-bold border transition-colors ${
                   stageFilter === s ? "bg-primary/10 border-primary/35 text-primary" : "bg-card border-border text-foreground/50"
                 }`}>
-                {s === "all" ? "Tous" : s}
+                {s === "all" ? t("investorFlow.pitchdecks.all") : s}
               </button>
             ))}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {filteredDecks.length === 0 ? (
-              <GHCard className="col-span-full text-center py-8"><p className="text-sm text-muted-foreground">Aucun pitch deck trouvé.</p></GHCard>
+              <GHCard className="col-span-full text-center py-8"><p className="text-sm text-muted-foreground">{t("investorFlow.pitchdecks.empty")}</p></GHCard>
             ) : filteredDecks.map(deck => {
               const author = (deckProfiles as any)[deck.user_id];
               return (
@@ -159,13 +161,13 @@ function InvestorContent() {
                     </div>
                     <div className="flex-1">
                       <div className="font-heading text-sm font-bold">{deck.title}</div>
-                      <div className="text-[11px] text-muted-foreground">{author?.display_name ?? "Startup"} {author?.company_name ? `· ${author.company_name}` : ""}</div>
+                      <div className="text-[11px] text-muted-foreground">{author?.display_name ?? t("investorFlow.pitchdecks.startup")} {author?.company_name ? `· ${author.company_name}` : ""}</div>
                     </div>
                   </div>
                   <div className="flex gap-1.5 flex-wrap">
                     {author?.sector && <Tag variant="green">{author.sector}</Tag>}
                     {author?.company_stage && <Tag variant="default">{author.company_stage}</Tag>}
-                    <Tag>{deck.view_count ?? 0} vues</Tag>
+                    <Tag>{deck.view_count ?? 0} {t("investorFlow.pitchdecks.views")}</Tag>
                   </div>
                 </GHCard>
               );
@@ -179,19 +181,19 @@ function InvestorContent() {
         <div className="space-y-3">
           <div className="flex justify-end mb-2">
             <button onClick={() => navigate("/deal-room")} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-xs font-bold">
-              Gérer mes Deal Rooms →
+              {t("investorFlow.rooms.manage")}
             </button>
           </div>
           {ownedRooms.length === 0 ? (
-            <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">Aucune Deal Room créée.</p></GHCard>
+            <GHCard className="text-center py-8"><p className="text-sm text-muted-foreground">{t("investorFlow.rooms.empty")}</p></GHCard>
           ) : ownedRooms.map(room => (
             <GHCard key={room.id} className="flex items-center gap-4 cursor-pointer hover:border-primary/30" onClick={() => navigate("/deal-room")}>
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><FileText className="w-5 h-5 text-primary" /></div>
               <div className="flex-1">
                 <div className="font-heading text-sm font-bold">{room.name}</div>
-                <div className="text-[11px] text-muted-foreground">Code: {room.access_code}</div>
+                <div className="text-[11px] text-muted-foreground">{t("investorFlow.rooms.code")}: {room.access_code}</div>
               </div>
-              <Tag variant={room.status === "active" ? "green" : "default"}>{room.status === "active" ? "Active" : "Archivée"}</Tag>
+              <Tag variant={room.status === "active" ? "green" : "default"}>{room.status === "active" ? t("investorFlow.pipeline.active") : t("investorFlow.pipeline.archived")}</Tag>
             </GHCard>
           ))}
         </div>
@@ -201,19 +203,20 @@ function InvestorContent() {
 }
 
 export default function InvestorDealFlowPage() {
-  usePageMeta({ title: "Deal Flow", description: "Gérez votre pipeline d'investissement et explorez les pitch decks." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("investorFlow.meta.title"), description: t("investorFlow.meta.description") });
 
   return (
-    <RoleGuard allowedRoles={["investor", "corporate"]} fallbackMessage="Le Deal Flow est réservé aux profils Investisseur et Corporate.">
+    <RoleGuard allowedRoles={["investor", "corporate"]} fallbackMessage={t("investorFlow.guard.message")}>
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
         <div className="bg-gradient-to-br from-card to-primary/5 border-2 border-primary/25 rounded-[20px] p-6 md:p-9 mb-5 relative overflow-hidden">
           <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10">
             <div className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-2.5 py-[3px] text-[10px] font-bold text-primary uppercase tracking-wider mb-3.5">
-              <TrendingUp className="w-3 h-3" /> Deal Flow
+              <TrendingUp className="w-3 h-3" /> {t("investorFlow.hero.badge")}
             </div>
-            <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">Votre <span className="text-primary">pipeline</span> d'investissement</h1>
-            <p className="text-sm text-muted-foreground max-w-lg">Explorez les pitch decks, gérez vos deal rooms et suivez vos opportunités.</p>
+            <h1 className="font-heading text-2xl md:text-[32px] font-extrabold leading-tight mb-2.5">{t("investorFlow.hero.title")} <span className="text-primary">{t("investorFlow.hero.titleHighlight")}</span> {t("investorFlow.hero.titleEnd")}</h1>
+            <p className="text-sm text-muted-foreground max-w-lg">{t("investorFlow.hero.subtitle")}</p>
           </div>
         </div>
         <InvestorContent />

@@ -6,8 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Sparkles, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export default function SmartMatching() {
+  const { t } = useTranslation();
   const { data: matches, isLoading } = useMatching(6);
   const navigate = useNavigate();
   const sendConnection = useSendConnection();
@@ -17,7 +19,7 @@ export default function SmartMatching() {
       <div className="mb-5">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-4 h-4 text-primary" />
-          <h3 className="font-heading text-base font-extrabold">Recommandations</h3>
+          <h3 className="font-heading text-base font-extrabold">{t("net.smartMatching.loadingTitle")}</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl" />)}
@@ -31,9 +33,9 @@ export default function SmartMatching() {
   const handleConnect = async (userId: string, score: number) => {
     try {
       await sendConnection.mutateAsync({ receiverId: userId, matchScore: score });
-      toast.success("Demande envoyée !");
+      toast.success(t("net.smartMatching.requestSent"));
     } catch {
-      toast.error("Erreur lors de l'envoi");
+      toast.error(t("net.smartMatching.requestError"));
     }
   };
 
@@ -41,8 +43,8 @@ export default function SmartMatching() {
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="w-4 h-4 text-primary" />
-        <h3 className="font-heading text-base font-extrabold">🎯 Matching intelligent</h3>
-        <span className="text-[10px] text-muted-foreground ml-1">Profils complémentaires au vôtre</span>
+        <h3 className="font-heading text-base font-extrabold">{t("net.smartMatching.title")}</h3>
+        <span className="text-[10px] text-muted-foreground ml-1">{t("net.smartMatching.subtitle")}</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {matches.slice(0, 6).map((match, i) => (
@@ -71,10 +73,10 @@ export default function SmartMatching() {
               </div>
               <div className="flex gap-2 mt-auto">
                 <button onClick={() => navigate(`/profile/${match.user_id}`)} className="flex-1 text-[11px] font-bold text-foreground/70 bg-secondary rounded-lg py-2 hover:bg-secondary/80 transition-all text-center">
-                  Voir profil
+                  {t("net.smartMatching.viewProfile")}
                 </button>
                 <button onClick={() => handleConnect(match.user_id, match.match_score)} className="flex items-center gap-1 text-[11px] font-bold text-primary-foreground bg-primary rounded-lg px-3 py-2 hover:bg-primary/90 transition-all">
-                  <UserPlus className="w-3.5 h-3.5" /> Connecter
+                  <UserPlus className="w-3.5 h-3.5" /> {t("net.smartMatching.connect")}
                 </button>
               </div>
             </GHCard>
