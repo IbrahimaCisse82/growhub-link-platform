@@ -51,7 +51,7 @@ function generateCoachResponse(t: (key: string, opts?: any) => string, message: 
   }
 
   if (lowerMsg.includes("contenu") || lowerMsg.includes("post") || lowerMsg.includes("idée")) {
-    const topics = (t("uic.aiCoach.contentTopics", { returnObjects: true }) as string[]).join("\n\n");
+    const topics = (t("uic.aiCoach.contentTopics", { returnObjects: true }) as unknown as string[]).join("\n\n");
     const postsNote = posts < 5 ? t("uic.aiCoach.postsNoteLow") : t("uic.aiCoach.postsNoteHigh");
     return t("uic.aiCoach.contentResponse", { name, topics, posts, postsNote });
   }
