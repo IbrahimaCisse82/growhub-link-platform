@@ -6,6 +6,7 @@ import {
   BriefcaseBusiness, Code2, Lightbulb, Landmark, ShieldCheck, Building,
 } from "lucide-react";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useTranslation } from "react-i18next";
 
 type Plan = {
   name: string;
@@ -20,113 +21,80 @@ type Plan = {
   excluded: string[];
 };
 
-const PERSONAS = [
-  { value: "startup", label: "Startup", icon: Rocket },
-  { value: "etudiant", label: "Étudiant", icon: GraduationCap },
-  { value: "aspirationnel", label: "Aspirationnel", icon: Star },
-  { value: "professionnel", label: "Professionnel", icon: BriefcaseBusiness },
-  { value: "freelance", label: "Freelance", icon: Code2 },
-  { value: "mentor", label: "Mentor", icon: Lightbulb },
-  { value: "investor", label: "Investisseur", icon: Landmark },
-  { value: "expert", label: "Expert", icon: ShieldCheck },
-  { value: "incubateur", label: "Incubateur", icon: Building2 },
-  { value: "corporate", label: "Corporate", icon: Building },
-];
+const PERSONA_ICONS: Record<string, any> = {
+  startup: Rocket, etudiant: GraduationCap, aspirationnel: Star, professionnel: BriefcaseBusiness,
+  freelance: Code2, mentor: Lightbulb, investor: Landmark, expert: ShieldCheck,
+  incubateur: Building2, corporate: Building,
+};
+const PERSONA_ORDER = ["startup", "etudiant", "aspirationnel", "professionnel", "freelance", "mentor", "investor", "expert", "incubateur", "corporate"];
 
-const PLANS_BY_PERSONA: Record<string, Plan[]> = {
+// Prix et icônes non traduits (données structurelles)
+const PLAN_META: Record<string, Array<{ price: string; period: string; icon: any; highlighted?: boolean }>> = {
   startup: [
-    { name: "Gratuit", price: "0€", period: "/mois", description: "Lancer votre startup", icon: Zap, cta: "Commencer",
-      features: ["Profil startup public", "5 connexions /mois", "Fil d'actualité", "1 objectif SMART", "Événements gratuits"],
-      excluded: ["Pitch Deck Builder", "Fundraising Tracker", "Coaching illimité"] },
-    { name: "Pro", price: "29€", period: "/mois", description: "Scaler votre projet", icon: Crown, highlighted: true, badge: "Populaire", cta: "Passer à Pro",
-      features: ["Connexions illimitées", "Pitch Deck complet", "Fundraising Tracker", "5 sessions coaching /mois", "Matching prioritaire", "Deal Rooms"],
-      excluded: ["API & intégrations"] },
-    { name: "Business", price: "79€", period: "/mois", description: "Équipe & croissance", icon: Building2, cta: "Contacter",
-      features: ["Tout Pro", "Coaching illimité", "Tableau d'équipe (5)", "API & intégrations", "Account manager dédié", "SLA garanti"], excluded: [] },
+    { price: "0€", period: "/mois", icon: Zap },
+    { price: "29€", period: "/mois", icon: Crown, highlighted: true },
+    { price: "79€", period: "/mois", icon: Building2 },
   ],
   etudiant: [
-    { name: "Étudiant", price: "0€", period: "/mois", description: "Gratuit avec email .edu", icon: GraduationCap, highlighted: true, badge: "100% gratuit", cta: "Vérifier mon école",
-      features: ["Profil carrière public", "Suivi de candidatures illimité", "Accès aux mentors", "Événements & masterclass", "Templates CV / pitch", "Cours fondamentaux"],
-      excluded: [] },
-    { name: "Étudiant+", price: "9€", period: "/mois", description: "Pour aller plus loin", icon: Crown, cta: "Booster mon profil",
-      features: ["Tout Étudiant", "Mentorat 1-to-1 prioritaire", "Coaching carrière 2 sessions /mois", "Mise en avant aux recruteurs", "Préparation entretiens"],
-      excluded: [] },
+    { price: "0€", period: "/mois", icon: GraduationCap, highlighted: true },
+    { price: "9€", period: "/mois", icon: Crown },
   ],
   aspirationnel: [
-    { name: "Découverte", price: "0€", period: "/mois", description: "Explorer l'écosystème", icon: Star, highlighted: true, cta: "Démarrer mon parcours",
-      features: ["Parcours guidé personnalisé", "Bibliothèque de ressources", "Communauté & cercles ouverts", "Événements gratuits", "Suggestions de mentors"],
-      excluded: ["Coaching individuel", "Outils startup avancés"] },
-    { name: "Starter", price: "15€", period: "/mois", description: "Passer à l'action", icon: Crown, cta: "Lancer mon idée",
-      features: ["Tout Découverte", "1 session coaching /mois", "Templates de validation d'idée", "Atelier Idea-to-MVP", "Accès cercles privés"],
-      excluded: [] },
+    { price: "0€", period: "/mois", icon: Star, highlighted: true },
+    { price: "15€", period: "/mois", icon: Crown },
   ],
   professionnel: [
-    { name: "Gratuit", price: "0€", period: "/mois", description: "Réseauter & apprendre", icon: Zap, cta: "Commencer",
-      features: ["Profil professionnel public", "5 connexions /mois", "Fil d'actualité", "1 objectif de développement"],
-      excluded: ["Coaching illimité", "Cours premium"] },
-    { name: "Pro", price: "19€", period: "/mois", description: "Booster sa carrière", icon: Crown, highlighted: true, badge: "Populaire", cta: "Monter en compétences",
-      features: ["Objectifs de développement illimités", "3 sessions coaching /mois", "Cours premium", "Networking prioritaire", "Analytics carrière"],
-      excluded: [] },
+    { price: "0€", period: "/mois", icon: Zap },
+    { price: "19€", period: "/mois", icon: Crown, highlighted: true },
   ],
   freelance: [
-    { name: "Gratuit", price: "0€", period: "/mois", description: "Lancer son activité", icon: Zap, cta: "Commencer",
-      features: ["Profil freelance", "Pipeline 5 missions max", "Marketplace de leads basique"],
-      excluded: ["Pipeline illimité", "Mise en avant"] },
-    { name: "Pro", price: "25€", period: "/mois", description: "Sécuriser ses missions", icon: Crown, highlighted: true, badge: "Populaire", cta: "Passer à Pro",
-      features: ["Pipeline illimité", "Templates contrats & devis", "Mise en avant marketplace", "Coaching business 2/mois", "Analytics revenus"],
-      excluded: [] },
+    { price: "0€", period: "/mois", icon: Zap },
+    { price: "25€", period: "/mois", icon: Crown, highlighted: true },
   ],
   mentor: [
-    { name: "Mentor", price: "0€", period: "/mois", description: "Partagez votre expérience", icon: Lightbulb, highlighted: true, badge: "Toujours gratuit", cta: "Devenir mentor",
-      features: ["Profil mentor certifié", "Calendrier intégré", "Sessions illimitées", "Outils de suivi mentees", "Visibilité communauté"],
-      excluded: [] },
-    { name: "Mentor Pro", price: "Commission 15%", period: "", description: "Monétiser vos sessions", icon: Crown, cta: "Activer le payant",
-      features: ["Tout Mentor", "Sessions payantes (vous gardez 85%)", "Paiements automatisés", "Reviews & badges premium", "Statistiques d'impact"],
-      excluded: [] },
+    { price: "0€", period: "/mois", icon: Lightbulb, highlighted: true },
+    { price: "Commission 15%", period: "", icon: Crown },
   ],
   investor: [
-    { name: "Investisseur", price: "Sur devis", period: "", description: "Deal flow qualifié", icon: Landmark, highlighted: true, badge: "Sur invitation", cta: "Demander un accès",
-      features: ["Deal flow filtré par thèse", "Deal Rooms privées", "Due diligence collaborative", "Accès aux pitch decks", "Statistiques portefeuille"],
-      excluded: [] },
+    { price: "Sur devis", period: "", icon: Landmark, highlighted: true },
   ],
   expert: [
-    { name: "Expert", price: "0€", period: "/mois", description: "Partagez votre expertise", icon: ShieldCheck, highlighted: true, cta: "Rejoindre",
-      features: ["Profil expert sectoriel", "Publication d'analyses", "Réponses Q&A communauté", "Visibilité auprès des startups"],
-      excluded: [] },
-    { name: "Expert Pro", price: "Commission 15%", period: "", description: "Conseils payants", icon: Crown, cta: "Activer le payant",
-      features: ["Tout Expert", "Missions de conseil payantes", "Workshops monétisés", "Mise en avant prioritaire"],
-      excluded: [] },
+    { price: "0€", period: "/mois", icon: ShieldCheck, highlighted: true },
+    { price: "Commission 15%", period: "", icon: Crown },
   ],
   incubateur: [
-    { name: "Starter", price: "199€", period: "/mois", description: "1 cohorte active", icon: Building2, cta: "Démarrer",
-      features: ["1 cohorte active", "Jusqu'à 10 startups suivies", "Tableau de bord cohortes", "Event management"],
-      excluded: ["Cohortes illimitées", "Branding personnalisé"] },
-    { name: "Growth", price: "499€", period: "/mois", description: "Programmes multiples", icon: Crown, highlighted: true, badge: "Recommandé", cta: "Passer à Growth",
-      features: ["Cohortes illimitées", "Suivi de KPIs avancé", "Branding personnalisé", "Mise en relation investisseurs", "Reporting LP"],
-      excluded: [] },
-    { name: "Enterprise", price: "Sur devis", period: "", description: "Réseau d'incubateurs", icon: Building, cta: "Contacter",
-      features: ["Tout Growth", "Multi-sites & multi-équipes", "API & intégrations CRM", "Account manager dédié"],
-      excluded: [] },
+    { price: "199€", period: "/mois", icon: Building2 },
+    { price: "499€", period: "/mois", icon: Crown, highlighted: true },
+    { price: "Sur devis", period: "", icon: Building },
   ],
   corporate: [
-    { name: "Discover", price: "Sur devis", period: "", description: "Premier challenge", icon: Building, cta: "Demander une démo",
-      features: ["1 challenge actif", "Scouting de startups", "Deal Room privée", "Reporting innovation"],
-      excluded: ["Challenges illimités", "Workshops"] },
-    { name: "Innovation", price: "Sur devis", period: "", description: "Programme open innovation", icon: Crown, highlighted: true, badge: "Enterprise", cta: "Contacter",
-      features: ["Challenges illimités", "POC & expérimentations", "Workshops dédiés", "Branding partenaire", "Reporting CSR & ESG", "Account manager senior"],
-      excluded: [] },
+    { price: "Sur devis", period: "", icon: Building },
+    { price: "Sur devis", period: "", icon: Crown, highlighted: true },
   ],
 };
 
 export default function PricingPage() {
+  const { t } = useTranslation();
   usePageMeta({
-    title: "Tarifs — GrowHubLink",
-    description: "Choisissez le plan adapté à votre profil. Étudiant gratuit, Startup Pro, Corporate, Incubateur et plus.",
+    title: t("pricing.meta.title"),
+    description: t("pricing.meta.description"),
   });
   const navigate = useNavigate();
   const [persona, setPersona] = useState<string>("startup");
 
-  const plans = PLANS_BY_PERSONA[persona] ?? PLANS_BY_PERSONA.startup;
+  const translatedPlans = t(`pricing.plans.${persona}`, { returnObjects: true, defaultValue: t("pricing.plans.startup", { returnObjects: true }) }) as Array<{
+    name: string; description: string; badge?: string; cta: string; features: string[]; excluded: string[];
+  }>;
+  const meta = PLAN_META[persona] ?? PLAN_META.startup;
+  const plans: Plan[] = translatedPlans.map((p, i) => ({
+    ...p,
+    price: meta[i]?.price ?? "",
+    period: meta[i]?.period ?? "",
+    icon: meta[i]?.icon ?? Zap,
+    highlighted: meta[i]?.highlighted,
+  }));
+  const personaLabels = t("pricing.personas", { returnObjects: true }) as Record<string, string>;
+  const faqItems = t("pricing.faq.items", { returnObjects: true }) as Array<{ q: string; a: string }>;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -143,11 +111,11 @@ export default function PricingPage() {
           </button>
           <div className="flex gap-2 md:gap-3">
             <button onClick={() => navigate("/auth")} className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
-              Connexion
+              {t("pricing.nav.login")}
             </button>
             <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-xl px-4 md:px-5 py-2 text-xs md:text-sm font-bold hover:bg-primary-hover transition-colors">
-              <span className="hidden md:inline">S'inscrire</span>
-              <span className="md:hidden">Inscription</span>
+              <span className="hidden md:inline">{t("pricing.nav.signupFull")}</span>
+              <span className="md:hidden">{t("pricing.nav.signupShort")}</span>
             </button>
           </div>
         </div>
@@ -158,13 +126,13 @@ export default function PricingPage() {
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-4 md:mb-6">
-              <Crown className="w-3 h-3 md:w-3.5 md:h-3.5" /> Tarifs adaptés à chaque profil
+              <Crown className="w-3 h-3 md:w-3.5 md:h-3.5" /> {t("pricing.hero.badge")}
             </div>
             <h1 className="font-heading text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-3 md:mb-4 px-2">
-              Un plan pour chaque <span className="text-primary">profil</span>
+              {t("pricing.hero.title")} <span className="text-primary">{t("pricing.hero.titleHighlight")}</span>
             </h1>
             <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-              Sélectionnez votre profil pour découvrir les plans qui vous correspondent vraiment.
+              {t("pricing.hero.subtitle")}
             </p>
           </motion.div>
         </div>
@@ -174,13 +142,13 @@ export default function PricingPage() {
       <section className="px-4 md:px-6 pb-6 md:pb-10">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-wrap justify-center gap-2 md:gap-2.5">
-            {PERSONAS.map((p) => {
-              const Icon = p.icon;
-              const active = persona === p.value;
+            {PERSONA_ORDER.map((value) => {
+              const Icon = PERSONA_ICONS[value];
+              const active = persona === value;
               return (
                 <button
-                  key={p.value}
-                  onClick={() => setPersona(p.value)}
+                  key={value}
+                  onClick={() => setPersona(value)}
                   className={`flex items-center gap-1.5 px-3 md:px-4 py-2 rounded-full border text-xs md:text-sm font-medium transition-all ${
                     active
                       ? "bg-primary text-primary-foreground border-primary shadow-md"
@@ -188,7 +156,7 @@ export default function PricingPage() {
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                  {p.label}
+                  {personaLabels[value]}
                 </button>
               );
             })}
@@ -262,16 +230,10 @@ export default function PricingPage() {
       <section className="py-12 md:py-20 px-4 md:px-6 bg-muted/30">
         <div className="max-w-3xl mx-auto">
           <h2 className="font-heading text-xl md:text-3xl font-extrabold text-center mb-6 md:mb-10">
-            Questions fréquentes
+            {t("pricing.faq.title")}
           </h2>
           <div className="space-y-3 md:space-y-4">
-            {[
-              { q: "Comment choisir le bon plan ?", a: "Sélectionnez votre profil ci-dessus pour voir uniquement les plans pensés pour vous. Vous pouvez aussi changer de profil à tout moment depuis votre espace." },
-              { q: "Le plan Étudiant est-il vraiment gratuit ?", a: "Oui, avec une vérification via email .edu ou justificatif scolaire. Les fonctionnalités essentielles restent gratuites pendant toutes vos études." },
-              { q: "Puis-je changer de plan à tout moment ?", a: "Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. Le changement prend effet immédiatement." },
-              { q: "Y a-t-il un engagement ?", a: "Non, tous nos plans sont sans engagement. Vous pouvez annuler à tout moment." },
-              { q: "Comment fonctionnent les plans Corporate / Incubateur ?", a: "Ces offres sont sur devis ou via un onboarding accompagné — contactez notre équipe pour adapter le plan à vos besoins (programme, cohorte, KPIs)." },
-            ].map((faq) => (
+            {faqItems.map((faq) => (
               <details key={faq.q} className="bg-card border border-border rounded-xl group">
                 <summary className="px-4 md:px-6 py-3 md:py-4 font-heading text-xs md:text-sm font-bold cursor-pointer list-none flex items-center justify-between">
                   {faq.q}
@@ -294,7 +256,7 @@ export default function PricingPage() {
             <span className="font-heading text-sm font-bold">GrowHubLink</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} GrowHubLink. Tous droits réservés.
+            © {new Date().getFullYear()} GrowHubLink. {t("pricing.footer.rights")}
           </p>
         </div>
       </footer>

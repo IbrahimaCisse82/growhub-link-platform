@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Hash, X, TrendingUp, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTrendingHashtags } from "@/hooks/useFeedExtras";
+import { useTranslation } from "react-i18next";
 
 
 // Predefined popular tags by category
@@ -21,6 +22,7 @@ interface SmartTagsProps {
 }
 
 export default function SmartTags({ selectedTags, onChange, maxTags = 5, placeholder, context = "post" }: SmartTagsProps) {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -80,7 +82,7 @@ export default function SmartTags({ selectedTags, onChange, maxTags = 5, placeho
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             onKeyDown={handleKeyDown}
-            placeholder={selectedTags.length === 0 ? (placeholder ?? "Ajouter des tags...") : ""}
+            placeholder={selectedTags.length === 0 ? (placeholder ?? t("net.smartTags.placeholderDefault")) : ""}
             className="flex-1 min-w-[100px] bg-transparent outline-none text-xs"
           />
         )}
@@ -92,7 +94,7 @@ export default function SmartTags({ selectedTags, onChange, maxTags = 5, placeho
           {Object.entries(filteredSuggestions).map(([category, tags]) => (
             <div key={category}>
               <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-secondary/30">
-                {category}
+                {t(`net.smartTags.categories.${category}` as any)}
               </div>
               <div className="flex flex-wrap gap-1 p-2">
                 {tags.map(tag => (
@@ -113,7 +115,7 @@ export default function SmartTags({ selectedTags, onChange, maxTags = 5, placeho
       {selectedTags.length > 0 && (
         <div className="flex items-center gap-1 mt-1.5 text-[10px] text-muted-foreground">
           <Sparkles className="w-3 h-3" />
-          {selectedTags.length}/{maxTags} tags
+          {t("net.smartTags.tagsCount", { count: selectedTags.length, max: maxTags })}
         </div>
       )}
     </div>
@@ -142,6 +144,7 @@ export function TagDisplay({ tags, size = "sm" }: { tags: string[]; size?: "sm" 
 
 // Trending tags component
 export function TrendingTags({ onTagClick }: { onTagClick?: (tag: string) => void }) {
+  const { t } = useTranslation();
   const { data, isLoading } = useTrendingHashtags(8);
   const trending = data ?? [];
 
@@ -150,7 +153,7 @@ export function TrendingTags({ onTagClick }: { onTagClick?: (tag: string) => voi
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground">
-        <TrendingUp className="w-3 h-3" /> Tendances
+        <TrendingUp className="w-3 h-3" /> {t("net.smartTags.trending")}
       </div>
       {isLoading
         ? Array.from({ length: 4 }).map((_, i) => (
@@ -161,7 +164,7 @@ export function TrendingTags({ onTagClick }: { onTagClick?: (tag: string) => voi
               key={tag}
               onClick={() => onTagClick?.(tag)}
               className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-2 py-0.5 rounded-lg border border-border hover:border-primary/30 hover:text-primary transition-colors"
-              title={`${count} publication${count > 1 ? "s" : ""}`}
+              title={t("net.smartTags.publications", { count })}
             >
               #{tag}
             </button>
@@ -169,4 +172,3 @@ export function TrendingTags({ onTagClick }: { onTagClick?: (tag: string) => voi
     </div>
   );
 }
-

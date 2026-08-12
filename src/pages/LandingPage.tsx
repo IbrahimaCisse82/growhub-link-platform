@@ -9,36 +9,24 @@ import {
 import { usePageMeta } from "@/hooks/usePageMeta";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { usePlatformStats, usePlatformTestimonials } from "@/hooks/usePlatformStats";
+import { useTranslation } from "react-i18next";
 
-const features = [
-  { icon: Users, title: "Networking Intelligent", desc: "Matching par compétences, secteur et objectifs. Connectez-vous aux bons profils du secteur privé africain.", tag: "IA" },
-  { icon: Zap, title: "Coaching Hub", desc: "Réservez des sessions avec des experts certifiés, notez et évaluez vos coachs.", tag: "Live" },
-  { icon: Target, title: "Objectifs SMART", desc: "Définissez et suivez vos objectifs depuis votre tableau de bord personnel.", tag: "Dashboard" },
-  { icon: BookOpen, title: "Pitch Deck Builder", desc: "Créez des présentations investisseurs percutantes avec templates et mode plein écran.", tag: "Pro" },
-  { icon: DollarSign, title: "Fundraising Tracker", desc: "Pipeline d'investisseurs, suivi des rounds et next-steps — tout en un seul endroit.", tag: "CRM" },
-  { icon: Newspaper, title: "Fil d'actualité", desc: "Partagez vos actualités, réagissez et engagez votre réseau en temps réel.", tag: "Feed" },
-  { icon: MessageSquare, title: "Messagerie Temps Réel", desc: "Échangez directement avec vos contacts, prospects et coachs en toute fluidité.", tag: "Chat" },
-  { icon: BarChart3, title: "Analytics & KPIs", desc: "Tableaux de bord personnalisés, progression et impact mesurés en temps réel.", tag: "Data" },
+const FEATURE_ICONS = [Users, Zap, Target, BookOpen, DollarSign, Newspaper, MessageSquare, BarChart3];
+
+const ROLE_META = [
+  { emoji: "🚀", icon: Rocket, gradient: "from-emerald-500/20 to-green-500/10", border: "hover:border-emerald-500/40" },
+  { emoji: "🎯", icon: GraduationCap, gradient: "from-blue-500/20 to-cyan-500/10", border: "hover:border-blue-500/40" },
+  { emoji: "💎", icon: TrendingUp, gradient: "from-purple-500/20 to-violet-500/10", border: "hover:border-purple-500/40" },
+  { emoji: "🧠", icon: Brain, gradient: "from-orange-500/20 to-amber-500/10", border: "hover:border-orange-500/40" },
+  { emoji: "💼", icon: Briefcase, gradient: "from-pink-500/20 to-rose-500/10", border: "hover:border-pink-500/40" },
+  { emoji: "🏗️", icon: Building2, gradient: "from-teal-500/20 to-cyan-500/10", border: "hover:border-teal-500/40" },
+  { emoji: "🎓", icon: BookOpen, gradient: "from-cyan-500/20 to-sky-500/10", border: "hover:border-cyan-500/40" },
+  { emoji: "🤝", icon: UserCheck, gradient: "from-slate-500/20 to-gray-500/10", border: "hover:border-slate-500/40" },
+  { emoji: "🏛️", icon: Building, gradient: "from-indigo-500/20 to-blue-500/10", border: "hover:border-indigo-500/40" },
+  { emoji: "⭐", icon: Sparkles, gradient: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/40" },
 ];
 
-const roles = [
-  { title: "Startup", desc: "Lancez, structurez et scalez votre business", emoji: "🚀", icon: Rocket, gradient: "from-emerald-500/20 to-green-500/10", border: "hover:border-emerald-500/40", features: ["Pitch Deck Builder", "Fundraising Tracker", "Objectifs SMART", "Deal Room"] },
-  { title: "Mentor / Coach", desc: "Accompagnez et monétisez votre expertise", emoji: "🎯", icon: GraduationCap, gradient: "from-blue-500/20 to-cyan-500/10", border: "hover:border-blue-500/40", features: ["Profil certifié", "Réservation de sessions", "Avis & notations", "Dashboard mentor"] },
-  { title: "Investisseur", desc: "Sourcez et suivez votre deal flow africain", emoji: "💎", icon: TrendingUp, gradient: "from-purple-500/20 to-violet-500/10", border: "hover:border-purple-500/40", features: ["Pipeline startups", "Deal Room sécurisé", "Networking ciblé", "Analyse de marché"] },
-  { title: "Expert", desc: "Partagez votre expertise sectorielle", emoji: "🧠", icon: Brain, gradient: "from-orange-500/20 to-amber-500/10", border: "hover:border-orange-500/40", features: ["Marketplace services", "Consultations", "Publications d'expertise", "Formations"] },
-  { title: "Freelance", desc: "Trouvez des missions et développez votre activité", emoji: "💼", icon: Briefcase, gradient: "from-pink-500/20 to-rose-500/10", border: "hover:border-pink-500/40", features: ["Pipeline clients", "Offres marketplace", "Visibilité réseau", "Leads marketing"] },
-  { title: "Incubateur", desc: "Pilotez vos cohortes et accompagnez les startups", emoji: "🏗️", icon: Building2, gradient: "from-teal-500/20 to-cyan-500/10", border: "hover:border-teal-500/40", features: ["Gestion cohortes", "Événements", "Coaching collectif", "Analytics impact"] },
-  { title: "Étudiant", desc: "Préparez votre avenir entrepreneurial", emoji: "🎓", icon: BookOpen, gradient: "from-cyan-500/20 to-sky-500/10", border: "hover:border-cyan-500/40", features: ["Trouver un mentor", "Networking sectoriel", "Formations gratuites", "Objectifs carrière"] },
-  { title: "Professionnel", desc: "Élargissez votre réseau et trouvez des opportunités", emoji: "🤝", icon: UserCheck, gradient: "from-slate-500/20 to-gray-500/10", border: "hover:border-slate-500/40", features: ["Networking avancé", "Événements pro", "Messagerie directe", "Objectifs SMART"] },
-  { title: "Corporate", desc: "Innovez avec les startups via l'open innovation", emoji: "🏛️", icon: Building, gradient: "from-indigo-500/20 to-blue-500/10", border: "hover:border-indigo-500/40", features: ["Scouting startups", "Deal Room", "Partenariats", "Analytics innovation"] },
-  { title: "Aspirationnel", desc: "Explorez l'écosystème et passez à l'action", emoji: "⭐", icon: Sparkles, gradient: "from-amber-500/20 to-yellow-500/10", border: "hover:border-amber-500/40", features: ["Explorer le réseau", "Événements découverte", "Fil d'inspiration", "Premier coaching"] },
-];
-
-const steps = [
-  { num: "01", title: "Créez votre profil", desc: "Choisissez votre rôle parmi 10 profils et renseignez vos objectifs en 2 minutes.", icon: "👤" },
-  { num: "02", title: "Connectez-vous", desc: "Notre algorithme IA vous recommande les profils les plus pertinents pour votre parcours.", icon: "🤝" },
-  { num: "03", title: "Accélérez", desc: "Coaching, pitch deck, fundraising, formation — tout pour aller plus vite, plus loin.", icon: "🚀" },
-];
+const STEP_ICONS = ["👤", "🤝", "🚀"];
 
 function formatStatValue(value: number): string {
   if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}K+`;
@@ -46,16 +34,22 @@ function formatStatValue(value: number): string {
 }
 
 export default function LandingPage() {
-  usePageMeta({ title: "GrowHubLink — L'écosystème du secteur privé en Afrique", description: "Plateforme tout-en-un pour les acteurs du secteur privé en Afrique : networking, coaching, pitch deck, fundraising et plus." });
+  const { t } = useTranslation();
+  usePageMeta({ title: t("landing.meta.title"), description: t("landing.meta.description") });
   const navigate = useNavigate();
   const { data: platformStats } = usePlatformStats();
   const { data: testimonials } = usePlatformTestimonials();
 
+  const features = (t("landing.features.items", { returnObjects: true }) as Array<{ title: string; desc: string; tag: string }>).map((f, i) => ({ ...f, icon: FEATURE_ICONS[i] }));
+  const roles = (t("landing.roles.items", { returnObjects: true }) as Array<{ title: string; desc: string; features: string[] }>).map((r, i) => ({ ...r, ...ROLE_META[i] }));
+  const steps = (t("landing.how.steps", { returnObjects: true }) as Array<{ title: string; desc: string }>).map((s, i) => ({ ...s, num: String(i + 1).padStart(2, "0"), icon: STEP_ICONS[i] }));
+  const trustItems = t("landing.trust.items", { returnObjects: true }) as string[];
+
   const stats = [
-    { value: formatStatValue(platformStats?.totalMembers ?? 0), label: "Membres inscrits", icon: Users },
-    { value: formatStatValue(platformStats?.totalCoaches ?? 0), label: "Coachs actifs", icon: Award },
-    { value: formatStatValue(platformStats?.totalConnections ?? 0), label: "Connexions créées", icon: Handshake },
-    { value: formatStatValue(platformStats?.totalEvents ?? 0), label: "Événements organisés", icon: TrendingUp },
+    { value: formatStatValue(platformStats?.totalMembers ?? 0), label: t("landing.stats.members"), icon: Users },
+    { value: formatStatValue(platformStats?.totalCoaches ?? 0), label: t("landing.stats.coaches"), icon: Award },
+    { value: formatStatValue(platformStats?.totalConnections ?? 0), label: t("landing.stats.connections"), icon: Handshake },
+    { value: formatStatValue(platformStats?.totalEvents ?? 0), label: t("landing.stats.events"), icon: TrendingUp },
   ];
 
   return (
@@ -70,21 +64,21 @@ export default function LandingPage() {
             <span className="font-heading text-lg md:text-xl font-bold">Grow<span className="text-primary">Hub</span>Link</span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-            <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
-            <a href="#profiles" className="hover:text-foreground transition-colors">Profils</a>
-            <a href="#how" className="hover:text-foreground transition-colors">Comment ça marche</a>
+            <a href="#features" className="hover:text-foreground transition-colors">{t("landing.nav.features")}</a>
+            <a href="#profiles" className="hover:text-foreground transition-colors">{t("landing.nav.profiles")}</a>
+            <a href="#how" className="hover:text-foreground transition-colors">{t("landing.nav.how")}</a>
             {testimonials && testimonials.length > 0 && (
-              <a href="#testimonials" className="hover:text-foreground transition-colors">Témoignages</a>
+              <a href="#testimonials" className="hover:text-foreground transition-colors">{t("landing.nav.testimonials")}</a>
             )}
-            <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
+            <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">{t("landing.nav.pricing")}</button>
           </div>
           <div className="flex gap-2 md:gap-3">
             <button onClick={() => navigate("/auth")} className="hidden md:block text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-4 py-2">
-              Connexion
+              {t("landing.nav.login")}
             </button>
             <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-xl px-4 md:px-5 py-2 text-xs md:text-sm font-bold hover:bg-primary-hover transition-colors whitespace-nowrap">
-              <span className="hidden md:inline">Commencer gratuitement</span>
-              <span className="md:hidden">S'inscrire</span>
+              <span className="hidden md:inline">{t("landing.nav.signupFull")}</span>
+              <span className="md:hidden">{t("landing.nav.signupShort")}</span>
             </button>
           </div>
         </div>
@@ -100,24 +94,24 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-1.5 md:gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-6 md:mb-8">
-              <Sparkles className="w-3 h-3 md:w-3.5 md:h-3.5" /> L'écosystème du secteur privé en Afrique
+              <Sparkles className="w-3 h-3 md:w-3.5 md:h-3.5" /> {t("landing.hero.badge")}
             </div>
             <h1 className="font-heading text-[32px] sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.08] mb-5 md:mb-6 px-2 break-words hyphens-auto">
-              Construisez votre empire<br />
-              <span className="text-primary break-words">entrepreneurial</span>
+              {t("landing.hero.title1")}<br />
+              <span className="text-primary break-words">{t("landing.hero.titleHighlight")}</span>
             </h1>
             <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-2">
-              10 profils, un seul écosystème. Networking intelligent, coaching certifié, pitch deck, fundraising — la plateforme tout-en-un pour le secteur privé africain.
+              {t("landing.hero.subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4 sm:px-0">
               <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-6 md:px-8 py-3.5 md:py-4 font-heading text-sm md:text-base font-bold flex items-center justify-center gap-2 hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all">
-                Créer mon compte gratuit <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                {t("landing.hero.ctaPrimary")} <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
               </button>
               <button onClick={() => navigate("/auth")} className="bg-card border border-border text-foreground rounded-2xl px-6 md:px-8 py-3.5 md:py-4 font-heading text-sm md:text-base font-bold hover:border-primary/30 transition-all flex items-center justify-center gap-2">
-                <Play className="w-4 h-4" /> Tester en démo
+                <Play className="w-4 h-4" /> {t("landing.hero.ctaSecondary")}
               </button>
             </div>
-            <p className="text-xs text-muted-foreground mt-4">Gratuit pour toujours · Pas de carte bancaire requise</p>
+            <p className="text-xs text-muted-foreground mt-4">{t("landing.hero.note")}</p>
           </motion.div>
 
           {/* Floating role pills */}
@@ -165,10 +159,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10 md:mb-16">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-[10px] font-bold text-primary uppercase tracking-wider mb-4">
-              Fonctionnalités
+              {t("landing.features.badge")}
             </div>
-            <h2 className="font-heading text-2xl md:text-5xl font-extrabold mb-4">Tout ce dont vous avez <span className="text-primary">besoin</span></h2>
-            <p className="text-muted-foreground text-sm md:text-lg max-w-xl mx-auto">Des outils puissants conçus pour chaque étape de votre parcours.</p>
+            <h2 className="font-heading text-2xl md:text-5xl font-extrabold mb-4">{t("landing.features.title")} <span className="text-primary">{t("landing.features.titleHighlight")}</span></h2>
+            <p className="text-muted-foreground text-sm md:text-lg max-w-xl mx-auto">{t("landing.features.subtitle")}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
             {features.map((f, i) => (
@@ -195,10 +189,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-10 md:mb-16">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-[10px] font-bold text-primary uppercase tracking-wider mb-4">
-              🎭 Profils
+              {t("landing.roles.badge")}
             </div>
-            <h2 className="font-heading text-2xl md:text-5xl font-extrabold mb-4">Une plateforme, <span className="text-primary">10 expériences</span></h2>
-            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">Chaque profil bénéficie d'un dashboard, d'outils et de recommandations entièrement personnalisés.</p>
+            <h2 className="font-heading text-2xl md:text-5xl font-extrabold mb-4">{t("landing.roles.title")} <span className="text-primary">{t("landing.roles.titleHighlight")}</span></h2>
+            <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto">{t("landing.roles.subtitle")}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
             {roles.map((r, i) => (
@@ -229,7 +223,7 @@ export default function LandingPage() {
           </div>
           <div className="text-center mt-8">
             <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-6 md:px-8 py-3 md:py-3.5 font-heading text-sm font-bold hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all inline-flex items-center gap-2">
-              Tester avec un compte démo <ArrowRight className="w-4 h-4" />
+              {t("landing.roles.cta")} <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -239,8 +233,8 @@ export default function LandingPage() {
       <section id="how" className="py-16 md:py-24 px-4 md:px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10 md:mb-16">
-            <h2 className="font-heading text-2xl md:text-4xl font-extrabold mb-4">Comment ça <span className="text-primary">marche</span> ?</h2>
-            <p className="text-muted-foreground text-sm md:text-lg">3 étapes pour accélérer votre croissance</p>
+            <h2 className="font-heading text-2xl md:text-4xl font-extrabold mb-4">{t("landing.how.title")} <span className="text-primary">{t("landing.how.titleHighlight")}</span> ?</h2>
+            <p className="text-muted-foreground text-sm md:text-lg">{t("landing.how.subtitle")}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {steps.map((s, i) => (
@@ -261,8 +255,8 @@ export default function LandingPage() {
         <section id="testimonials" className="py-16 md:py-24 px-4 md:px-6 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-10 md:mb-14">
-              <h2 className="font-heading text-2xl md:text-4xl font-extrabold mb-4">Ils nous font <span className="text-primary">confiance</span></h2>
-              <p className="text-muted-foreground text-sm md:text-base">Avis vérifiés de nos membres</p>
+              <h2 className="font-heading text-2xl md:text-4xl font-extrabold mb-4">{t("landing.testimonials.title")} <span className="text-primary">{t("landing.testimonials.titleHighlight")}</span></h2>
+              <p className="text-muted-foreground text-sm md:text-base">{t("landing.testimonials.subtitle")}</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {testimonials.map((t, i) => (
@@ -293,11 +287,11 @@ export default function LandingPage() {
             <div className="relative z-10">
               <Crown className="w-8 h-8 md:w-10 md:h-10 text-primary mx-auto mb-4" />
               <h2 className="font-heading text-xl md:text-4xl font-extrabold mb-3">
-                Des plans adaptés à votre <span className="text-primary">ambition</span>
+                {t("landing.pricingCta.title")} <span className="text-primary">{t("landing.pricingCta.titleHighlight")}</span>
               </h2>
-              <p className="text-muted-foreground text-sm md:text-base mb-6 md:mb-8 max-w-lg mx-auto">Commencez gratuitement, passez à Pro quand vous êtes prêt.</p>
+              <p className="text-muted-foreground text-sm md:text-base mb-6 md:mb-8 max-w-lg mx-auto">{t("landing.pricingCta.subtitle")}</p>
               <button onClick={() => navigate("/pricing")} className="bg-primary text-primary-foreground rounded-2xl px-6 md:px-8 py-3.5 md:py-4 font-heading text-sm md:text-base font-bold hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all inline-flex items-center gap-2">
-                Voir les tarifs <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                {t("landing.pricingCta.cta")} <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
               </button>
             </div>
           </div>
@@ -308,14 +302,10 @@ export default function LandingPage() {
       <section className="py-10 md:py-16 px-4 md:px-6 bg-muted/30">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex flex-wrap justify-center gap-5 md:gap-8 text-xs md:text-sm text-muted-foreground">
-            {[
-              { icon: Shield, text: "Données chiffrées de bout en bout" },
-              { icon: Globe, text: "Infrastructure RGPD conforme" },
-              { icon: CheckCircle2, text: "Support réactif 7j/7" },
-            ].map((item) => (
-              <div key={item.text} className="flex items-center gap-2">
-                <item.icon className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>{item.text}</span>
+            {[Shield, Globe, CheckCircle2].map((Icon, i) => (
+              <div key={trustItems[i]} className="flex items-center gap-2">
+                <Icon className="w-4 h-4 text-primary flex-shrink-0" />
+                <span>{trustItems[i]}</span>
               </div>
             ))}
           </div>
@@ -326,18 +316,18 @@ export default function LandingPage() {
       <section className="py-16 md:py-28 px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="font-heading text-2xl md:text-5xl font-extrabold mb-5 md:mb-6">
-            Prêt à accélérer <span className="text-primary">votre croissance</span> ?
+            {t("landing.finalCta.title")} <span className="text-primary">{t("landing.finalCta.titleHighlight")}</span> ?
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground mb-8 md:mb-10">Rejoignez les entrepreneurs qui construisent l'avenir du continent.</p>
+          <p className="text-base md:text-lg text-muted-foreground mb-8 md:mb-10">{t("landing.finalCta.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button onClick={() => navigate("/auth")} className="bg-primary text-primary-foreground rounded-2xl px-8 md:px-10 py-3.5 md:py-4 font-heading text-base md:text-lg font-bold hover:bg-primary-hover hover:shadow-[var(--shadow-glow)] transition-all inline-flex items-center justify-center gap-3">
-              Commencer maintenant <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+              {t("landing.finalCta.ctaPrimary")} <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
             </button>
             <button onClick={() => navigate("/auth")} className="bg-card border border-border text-foreground rounded-2xl px-8 md:px-10 py-3.5 md:py-4 font-heading text-base md:text-lg font-bold hover:border-primary/30 transition-all inline-flex items-center justify-center gap-3">
-              Essayer en démo <Play className="w-4 h-4" />
+              {t("landing.finalCta.ctaSecondary")} <Play className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-xs text-muted-foreground mt-4">Gratuit · Sans engagement · Sans carte bancaire</p>
+          <p className="text-xs text-muted-foreground mt-4">{t("landing.finalCta.note")}</p>
         </div>
       </section>
 
@@ -352,12 +342,12 @@ export default function LandingPage() {
               <span className="font-heading text-base font-bold">GrowHubLink</span>
             </div>
             <div className="flex gap-5 md:gap-6 text-sm text-muted-foreground">
-              <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">Tarifs</button>
-              <button onClick={() => navigate("/ambassadors")} className="hover:text-foreground transition-colors">Ambassadeurs</button>
-              <a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a>
-              <a href="#profiles" className="hover:text-foreground transition-colors">Profils</a>
+              <button onClick={() => navigate("/pricing")} className="hover:text-foreground transition-colors">{t("landing.footer.tarifs")}</button>
+              <button onClick={() => navigate("/ambassadors")} className="hover:text-foreground transition-colors">{t("landing.footer.ambassadors")}</button>
+              <a href="#features" className="hover:text-foreground transition-colors">{t("landing.footer.features")}</a>
+              <a href="#profiles" className="hover:text-foreground transition-colors">{t("landing.footer.profiles")}</a>
             </div>
-            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} GrowHubLink. Tous droits réservés.</p>
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} GrowHubLink. {t("landing.footer.rights")}</p>
           </div>
         </div>
       </footer>

@@ -9,6 +9,7 @@ import { useSendConnection } from "@/hooks/useConnections";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 function getTimeRemaining(): string {
   const now = new Date();
@@ -45,24 +46,26 @@ function computeMatchScore(profile: any, myProfile: any): number {
   return Math.min(99, Math.max(20, score));
 }
 
-function getMatchReasons(profile: any, myProfile: any): string[] {
-  const reasons: string[] = [];
+type MatchReason = { kind: "skills"; count: number } | { kind: "offering" } | { kind: "sector"; value: string } | { kind: "city"; value: string } | { kind: "complementary" };
+
+function getMatchReasons(profile: any, myProfile: any): MatchReason[] {
+  const reasons: MatchReason[] = [];
   const mySkills = new Set((myProfile?.skills ?? []).map((s: string) => s.toLowerCase()));
   const theirSkills = (profile?.skills ?? []);
   const commonSkills = theirSkills.filter((s: string) => mySkills.has(s.toLowerCase()));
-  if (commonSkills.length > 0) reasons.push(`${commonSkills.length} compétence${commonSkills.length > 1 ? "s" : ""} en commun`);
+  if (commonSkills.length > 0) reasons.push({ kind: "skills", count: commonSkills.length });
 
   const myLookingFor = new Set((myProfile?.looking_for ?? []).map((s: string) => s.toLowerCase()));
   const theirOffering = (profile?.offering ?? []);
   const matchedOfferings = theirOffering.filter((s: string) => myLookingFor.has(s.toLowerCase()));
-  if (matchedOfferings.length > 0) reasons.push(`Propose ce que vous cherchez`);
+  if (matchedOfferings.length > 0) reasons.push({ kind: "offering" });
 
   if (profile.sector && myProfile.sector && profile.sector.toLowerCase() === myProfile.sector.toLowerCase())
-    reasons.push(`Même secteur : ${profile.sector}`);
+    reasons.push({ kind: "sector", value: profile.sector });
   if (profile.city && myProfile.city && profile.city.toLowerCase() === myProfile.city.toLowerCase())
-    reasons.push(`Même ville : ${profile.city}`);
+    reasons.push({ kind: "city", value: profile.city });
 
-  if (reasons.length === 0) reasons.push("Profil complémentaire");
+  if (reasons.length === 0) reasons.push({ kind: "complementary" });
   return reasons.slice(0, 3);
 }
 
@@ -73,11 +76,22 @@ const gradients = [
 ];
 
 export default function DailyMatchFeed() {
+  const { t } = useTranslation();
   const { user, profile: myProfile } = useAuth();
   const navigate = useNavigate();
   const sendConnection = useSendConnection();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [connected, setConnected] = useState<Set<string>>(new Set());
+
+  const formatReason = (reason: MatchReason): string => {
+    switch (reason.kind) {
+      case "skills": return t("net.dailyMatchFeed.skillsInCommon", { count: reason.count });
+      case "offering": return t("net.dailyMatchFeed.offersWhatYouNeed");
+      case "sector": return t("net.dailyMatchFeed.sameSector", { sector: reason.value });
+      case "city": return t("net.dailyMatchFeed.sameCity", { city: reason.value });
+      default: return t("net.dailyMatchFeed.complementaryProfile");
+    }
+  };
 
   const { data: dailyMatches, isLoading } = useQuery({
     queryKey: ["daily-matches", user?.id, new Date().toDateString()],
@@ -122,7 +136,7 @@ export default function DailyMatchFeed() {
       { receiverId: profileUserId, matchScore: score },
       {
         onSuccess: () => {
-          toast.success("Demande envoyée !");
+          toast.success(t("net.dailyMatchFeed.requestSent"));
           setConnected(s => new Set(s).add(profileUserId));
         },
       }
@@ -138,12 +152,12 @@ export default function DailyMatchFeed() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Flame className="w-5 h-5 text-ghorange" />
-          <h2 className="font-heading text-base font-bold">Matchs du jour</h2>
-          <Tag variant="orange">3 profils</Tag>
+          <h2 className="font-heading text-base font-bold">{t("net.dailyMatchFeed.title")}</h2>
+          <Tag variant="orange">{t("net.dailyMatchFeed.profilesCount")}</Tag>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Clock className="w-3.5 h-3.5" />
-          <span>Expire dans {getTimeRemaining()}</span>
+          <span>{t("net.dailyMatchFeed.expiresIn", { time: getTimeRemaining() })}</span>
         </div>
       </div>
 
@@ -162,7 +176,7 @@ export default function DailyMatchFeed() {
                 <div className={cn("h-16 bg-gradient-to-r relative", gradients[idx % gradients.length])}>
                   <div className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm rounded-full px-2 py-0.5 text-[10px] font-bold text-foreground flex items-center gap-1">
                     <Sparkles className="w-3 h-3 text-ghorange" />
-                    {match.matchScore}% match
+                    {t("net.dailyMatchFeed.matchPercent", { score: match.matchScore })}
                   </div>
                   <button
                     onClick={() => setDismissed(s => new Set(s).add(match.user_id))}
@@ -196,16 +210,16 @@ export default function DailyMatchFeed() {
 
                   {/* Match reasons */}
                   <div className="space-y-1 mb-3">
-                    {match.reasons.map((reason: string, i: number) => (
+                    {match.reasons.map((reason: MatchReason, i: number) => (
                       <div key={i} className="text-[10px] text-muted-foreground bg-secondary rounded-lg px-2 py-1">
-                        ✓ {reason}
+                        ✓ {formatReason(reason)}
                       </div>
                     ))}
                   </div>
 
                   {connected.has(match.user_id) ? (
                     <div className="text-xs font-bold text-primary flex items-center justify-center gap-1">
-                      ✓ Demande envoyée
+                      {t("net.dailyMatchFeed.requestSentLabel")}
                     </div>
                   ) : (
                     <div className="flex gap-2">
@@ -213,7 +227,7 @@ export default function DailyMatchFeed() {
                         onClick={() => handleConnect(match.user_id, match.matchScore)}
                         className="flex-1 bg-primary text-primary-foreground rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-primary-hover transition-colors"
                       >
-                        <UserPlus className="w-3.5 h-3.5" /> Connecter
+                        <UserPlus className="w-3.5 h-3.5" /> {t("net.dailyMatchFeed.connect")}
                       </button>
                       <button
                         onClick={() => navigate(`/profile/${match.user_id}`)}
