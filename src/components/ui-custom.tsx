@@ -1,5 +1,11 @@
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
+import i18n from "@/i18n";
+import frC4 from "@/i18n/locales/fr.c4";
+import enC4 from "@/i18n/locales/en.c4";
+
+i18n.addResourceBundle("fr", "translation", frC4, true, true);
+i18n.addResourceBundle("en", "translation", enC4, true, true);
 
 // Metric Card
 export function MetricCard({ icon, value, label, badge, badgeType = "up" }: {
