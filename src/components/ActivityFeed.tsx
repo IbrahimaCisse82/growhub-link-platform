@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Heart, MessageCircle, UserPlus, Award, Calendar, Zap, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface ActivityItem {
   id: string;
@@ -27,6 +28,7 @@ const activityIcons: Record<string, { icon: typeof Heart; color: string }> = {
 };
 
 export default function ActivityFeed() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +77,7 @@ export default function ActivityFeed() {
   if (activities.length === 0) {
     return (
       <div className="text-center py-6 text-sm text-muted-foreground">
-        Aucune activité récente
+        {t("c1.activityFeed.empty")}
       </div>
     );
   }

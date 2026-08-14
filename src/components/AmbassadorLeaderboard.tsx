@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Crown, Medal, Award, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const podiumIcons = [Crown, Medal, Award];
 const podiumColors = ["text-yellow-500", "text-slate-400", "text-amber-600"];
 
 export function AmbassadorLeaderboard() {
+  const { t } = useTranslation();
   const { data, isLoading } = useQuery({
     queryKey: ["ambassador-leaderboard"],
     queryFn: async () => {
@@ -24,7 +26,7 @@ export function AmbassadorLeaderboard() {
     <Card className="border-primary/20">
       <CardHeader>
         <CardTitle className="text-lg font-heading flex items-center gap-2">
-          <Crown className="w-5 h-5 text-yellow-500" /> Top Ambassadeurs
+          <Crown className="w-5 h-5 text-yellow-500" /> {t("c1.ambassadorLeaderboard.title")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -34,7 +36,7 @@ export function AmbassadorLeaderboard() {
           </div>
         ) : !data || data.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-6">
-            Aucun ambassadeur actif pour le moment. Soyez le premier !
+            {t("c1.ambassadorLeaderboard.empty")}
           </p>
         ) : (
           <div className="space-y-1">
@@ -53,7 +55,7 @@ export function AmbassadorLeaderboard() {
                   </div>
                   <div className="text-right flex-shrink-0">
                     <div className="font-heading text-sm font-extrabold text-primary">{a.total_conversions ?? 0}</div>
-                    <div className="text-[10px] text-muted-foreground">filleuls</div>
+                    <div className="text-[10px] text-muted-foreground">{t("c1.ambassadorLeaderboard.referrals")}</div>
                   </div>
                 </div>
               );

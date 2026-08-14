@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { GHCard } from "@/components/ui-custom";
 import { useFundraisingMetrics } from "@/hooks/useDealRoom";
 import { TrendingUp, Pencil, Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function FundraisingROIWidget() {
+  const { t } = useTranslation();
   const { metrics, upsert } = useFundraisingMetrics();
   const [editing, setEditing] = useState(false);
   const [vals, setVals] = useState({
@@ -32,18 +34,18 @@ export function FundraisingROIWidget() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-primary" />
-          <h3 className="font-heading text-sm font-bold">ROI Levée de fonds</h3>
+          <h3 className="font-heading text-sm font-bold">{t("c1.fundraisingROI.title")}</h3>
         </div>
         <button onClick={() => editing ? save() : setEditing(true)} className="text-[11px] flex items-center gap-1 text-primary font-bold">
-          {editing ? <><Check className="w-3 h-3" /> Sauvegarder</> : <><Pencil className="w-3 h-3" /> Éditer</>}
+          {editing ? <><Check className="w-3 h-3" /> {t("c1.fundraisingROI.save")}</> : <><Pencil className="w-3 h-3" /> {t("c1.fundraisingROI.edit")}</>}
         </button>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { k: "investors_contacted", label: "Contactés" },
-          { k: "meetings_held", label: "RDV tenus" },
-          { k: "term_sheets", label: "Term sheets" },
-          { k: "closed_deals", label: "Deals closés" },
+          { k: "investors_contacted", label: t("c1.fundraisingROI.contacted") },
+          { k: "meetings_held", label: t("c1.fundraisingROI.meetingsHeld") },
+          { k: "term_sheets", label: t("c1.fundraisingROI.termSheets") },
+          { k: "closed_deals", label: t("c1.fundraisingROI.closedDeals") },
         ].map(({ k, label }) => (
           <div key={k} className="bg-secondary/40 rounded-lg p-3">
             <p className="text-[10px] uppercase text-muted-foreground mb-1">{label}</p>
@@ -55,7 +57,7 @@ export function FundraisingROIWidget() {
           </div>
         ))}
         <div className="bg-primary/10 rounded-lg p-3">
-          <p className="text-[10px] uppercase text-primary mb-1">Conversion</p>
+          <p className="text-[10px] uppercase text-primary mb-1">{t("c1.fundraisingROI.conversion")}</p>
           <p className="text-lg font-bold text-primary">{conversion}%</p>
         </div>
       </div>

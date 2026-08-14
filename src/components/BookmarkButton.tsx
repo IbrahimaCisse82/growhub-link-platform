@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 export function useBookmarks(itemType?: string) {
   const { user } = useAuth();
@@ -51,9 +53,9 @@ export function useToggleBookmark() {
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
-      toast.success(result.action === "added" ? "Ajouté aux favoris ⭐" : "Retiré des favoris");
+      toast.success(result.action === "added" ? i18n.t("c1.bookmark.added") : i18n.t("c1.bookmark.removed"));
     },
-    onError: () => toast.error("Erreur"),
+    onError: () => toast.error(i18n.t("c1.bookmark.error")),
   });
 }
 
@@ -65,6 +67,7 @@ interface BookmarkButtonProps {
 }
 
 export default function BookmarkButton({ itemType, itemId, className, size = "sm" }: BookmarkButtonProps) {
+  const { t } = useTranslation();
   const { data: bookmarks } = useBookmarks();
   const toggle = useToggleBookmark();
 
@@ -80,7 +83,7 @@ export default function BookmarkButton({ itemType, itemId, className, size = "sm
         isBookmarked ? "text-primary" : "text-muted-foreground/40 hover:text-primary/70",
         className
       )}
-      title={isBookmarked ? "Retirer des favoris" : "Ajouter aux favoris"}
+      title={isBookmarked ? t("c1.bookmark.remove") : t("c1.bookmark.add")}
     >
       {isBookmarked ? <BookmarkCheck className={iconSize} /> : <Bookmark className={iconSize} />}
     </button>
