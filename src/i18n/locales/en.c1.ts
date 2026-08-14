@@ -1,0 +1,58 @@
+export default {
+  c1: {
+    activityFeed: {
+      empty: "No recent activity",
+    },
+    ambassadorLeaderboard: {
+      title: "Top Ambassadors",
+      empty: "No active ambassador yet. Be the first!",
+      referrals: "referrals",
+    },
+    bookmark: {
+      added: "Added to favorites ⭐",
+      removed: "Removed from favorites",
+      error: "Error",
+      remove: "Remove from favorites",
+      add: "Add to favorites",
+    },
+    calendarExport: {
+      downloadIcs: "Download .ics",
+      ical: "iCal",
+      googleCalendar: "Google Calendar",
+      google: "Google",
+      eventExported: "Event exported!",
+      noEventsToExport: "No events to export",
+      eventsExported: "{{count}} events exported!",
+      exportCalendar: "Export calendar ({{count}})",
+    },
+    coachReviews: {
+      noReviews: "No reviews yet",
+      reviewsCount: "({{count}} reviews)",
+      anonymous: "Anonymous",
+      yourReview: "Your review",
+      placeholder: "Describe your experience (optional)...",
+      selectRating: "Please select a rating",
+      published: "Review published!",
+      publishError: "Error publishing review",
+      publishing: "Publishing...",
+      publish: "Publish review",
+    },
+    eventMatchmaking: {
+      title: "Attendees to meet",
+      matchPercent: "{{score}}% match",
+      complementarySkills: "{{count}} complementary skill(s)",
+      sameSector: "Same sector",
+      sameCity: "Same city",
+    },
+    fundraisingROI: {
+      title: "Fundraising ROI",
+      save: "Save",
+      edit: "Edit",
+      contacted: "Contacted",
+      meetingsHeld: "Meetings held",
+      termSheets: "Term sheets",
+      closedDeals: "Closed deals",
+      conversion: "Conversion",
+    },
+  },
+};
