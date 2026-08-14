@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, X, Smartphone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -8,6 +9,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function PWAInstallPrompt() {
+  const { t } = useTranslation();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -65,10 +67,10 @@ export default function PWAInstallPrompt() {
             <Smartphone className="w-5 h-5 text-primary" />
           </div>
           <div className="flex-1">
-            <h3 className="font-heading text-sm font-bold mb-1">Installer GrowHub</h3>
-            <p className="text-[10px] text-muted-foreground mb-3">Accédez rapidement à GrowHub depuis votre écran d'accueil.</p>
+            <h3 className="font-heading text-sm font-bold mb-1">{t("c2.pwaInstall.title")}</h3>
+            <p className="text-[10px] text-muted-foreground mb-3">{t("c2.pwaInstall.description")}</p>
             <button onClick={handleInstall} className="w-full bg-primary text-primary-foreground rounded-lg py-2 text-xs font-bold flex items-center justify-center gap-1.5">
-              <Download className="w-3.5 h-3.5" /> Installer l'app
+              <Download className="w-3.5 h-3.5" /> {t("c2.pwaInstall.installButton")}
             </button>
           </div>
         </div>

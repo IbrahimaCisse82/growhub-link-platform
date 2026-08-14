@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Bell, BellOff } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -113,6 +114,7 @@ export function useNotificationPush() {
 
 // UI Component for enabling push notifications  
 export default function PushNotificationToggle() {
+  const { t } = useTranslation();
   const { isSupported, permission, requestPermission } = usePushNotifications();
 
   if (!isSupported) return null;
@@ -120,9 +122,9 @@ export default function PushNotificationToggle() {
   const handleEnable = async () => {
     const granted = await requestPermission();
     if (granted) {
-      toast.success("Notifications activées !");
+      toast.success(t("c2.pushNotif.enabledSuccess"));
     } else {
-      toast.error("Notifications refusées. Vous pouvez les activer dans les paramètres du navigateur.");
+      toast.error(t("c2.pushNotif.deniedError"));
     }
   };
 
@@ -130,7 +132,7 @@ export default function PushNotificationToggle() {
     return (
       <div className="flex items-center gap-2 px-3 py-2 bg-primary/5 border border-primary/20 rounded-xl">
         <Bell className="w-4 h-4 text-primary" />
-        <span className="text-xs font-medium text-primary">Notifications activées</span>
+        <span className="text-xs font-medium text-primary">{t("c2.pushNotif.enabledLabel")}</span>
       </div>
     );
   }
@@ -139,7 +141,7 @@ export default function PushNotificationToggle() {
     return (
       <div className="flex items-center gap-2 px-3 py-2 bg-destructive/5 border border-destructive/20 rounded-xl">
         <BellOff className="w-4 h-4 text-destructive" />
-        <span className="text-xs font-medium text-muted-foreground">Notifications bloquées dans le navigateur</span>
+        <span className="text-xs font-medium text-muted-foreground">{t("c2.pushNotif.blockedLabel")}</span>
       </div>
     );
   }
@@ -150,7 +152,7 @@ export default function PushNotificationToggle() {
       className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 border border-primary/20 rounded-xl hover:bg-primary/20 transition-colors"
     >
       <Bell className="w-4 h-4 text-primary" />
-      <span className="text-xs font-bold text-primary">Activer les notifications push</span>
+      <span className="text-xs font-bold text-primary">{t("c2.pushNotif.enableButton")}</span>
     </button>
   );
 }
