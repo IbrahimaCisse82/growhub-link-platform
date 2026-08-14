@@ -5,21 +5,26 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { GHCard, Tag } from "@/components/ui-custom";
 import { FileText, Plus, Copy, Trash2, Sparkles, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const defaultTemplates = [
-  { title: "Demande de connexion", content: "Bonjour {{nom}}, j'ai vu votre profil et je pense que nous pourrions avoir des synergies intéressantes. Seriez-vous disponible pour un échange ?", category: "networking" },
-  { title: "Demande d'intro chaleureuse", content: "Bonjour {{nom}}, j'aimerais beaucoup être mis en relation avec {{cible}}. Pensez-vous pouvoir faciliter cette introduction ?", category: "intro" },
-  { title: "Suivi après événement", content: "Bonjour {{nom}}, ravi de vous avoir rencontré lors de {{événement}}. J'aimerais poursuivre notre conversation. Quand seriez-vous disponible ?", category: "followup" },
-  { title: "Proposition de collaboration", content: "Bonjour {{nom}}, je travaille sur {{projet}} et je pense que votre expertise en {{domaine}} pourrait être complémentaire. Discutons-en ?", category: "collaboration" },
-];
+function getDefaultTemplates(t: (key: string) => string) {
+  return [
+    { title: t("c2.messageTemplates.defaults.connectionRequest.title"), content: t("c2.messageTemplates.defaults.connectionRequest.content"), category: "networking" },
+    { title: t("c2.messageTemplates.defaults.warmIntro.title"), content: t("c2.messageTemplates.defaults.warmIntro.content"), category: "intro" },
+    { title: t("c2.messageTemplates.defaults.eventFollowup.title"), content: t("c2.messageTemplates.defaults.eventFollowup.content"), category: "followup" },
+    { title: t("c2.messageTemplates.defaults.collaboration.title"), content: t("c2.messageTemplates.defaults.collaboration.content"), category: "collaboration" },
+  ];
+}
 
-const categoryLabels: Record<string, string> = {
-  networking: "Networking",
-  intro: "Introduction",
-  followup: "Suivi",
-  collaboration: "Collaboration",
-  other: "Autre",
-};
+function getCategoryLabels(t: (key: string) => string): Record<string, string> {
+  return {
+    networking: t("c2.messageTemplates.categories.networking"),
+    intro: t("c2.messageTemplates.categories.intro"),
+    followup: t("c2.messageTemplates.categories.followup"),
+    collaboration: t("c2.messageTemplates.categories.collaboration"),
+    other: t("c2.messageTemplates.categories.other"),
+  };
+}
 
 interface Props {
   onSelect?: (content: string) => void;
@@ -27,6 +32,7 @@ interface Props {
 }
 
 export default function MessageTemplates({ onSelect, compact = false }: Props) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
@@ -56,7 +62,7 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Template créé !");
+      toast.success(t("c2.messageTemplates.createdSuccess"));
       queryClient.invalidateQueries({ queryKey: ["message-templates"] });
       setForm({ title: "", content: "", category: "networking" });
       setShowCreate(false);
@@ -69,7 +75,7 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Template supprimé");
+      toast.success(t("c2.messageTemplates.deletedSuccess"));
       queryClient.invalidateQueries({ queryKey: ["message-templates"] });
     },
   });
@@ -79,20 +85,22 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
       onSelect(content);
     } else {
       navigator.clipboard.writeText(content);
-      toast.success("Copié dans le presse-papier !");
+      toast.success(t("c2.messageTemplates.copiedSuccess"));
     }
   };
 
+  const defaultTemplates = getDefaultTemplates(t);
+  const categoryLabels = getCategoryLabels(t);
   const allTemplates = [
     ...(templates ?? []),
-    ...defaultTemplates.filter(d => !(templates ?? []).some((t: any) => t.title === d.title)),
+    ...defaultTemplates.filter(d => !(templates ?? []).some((tpl: any) => tpl.title === d.title)),
   ];
 
   if (compact) {
     return (
       <div className="space-y-1.5 max-h-[300px] overflow-y-auto">
         <div className="flex items-center justify-between px-1 mb-1">
-          <span className="text-[10px] font-bold text-primary uppercase">Templates</span>
+          <span className="text-[10px] font-bold text-primary uppercase">{t("c2.messageTemplates.compactTitle")}</span>
           <button onClick={() => setShowCreate(!showCreate)} className="text-primary hover:text-primary-hover">
             <Plus className="w-3.5 h-3.5" />
           </button>
@@ -119,21 +127,21 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <FileText className="w-4 h-4 text-primary" />
-          <span className="font-heading text-sm font-bold">Templates de messages</span>
+          <span className="font-heading text-sm font-bold">{t("c2.messageTemplates.title")}</span>
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
           className="bg-primary text-primary-foreground rounded-lg px-3 py-1.5 text-[11px] font-bold flex items-center gap-1"
         >
-          <Plus className="w-3 h-3" /> Créer
+          <Plus className="w-3 h-3" /> {t("c2.messageTemplates.create")}
         </button>
       </div>
 
       {showCreate && (
         <div className="bg-secondary/30 rounded-lg p-3 mb-3 border border-border">
-          <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Nom du template"
+          <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder={t("c2.messageTemplates.titlePlaceholder")}
             className="w-full bg-card border border-border rounded-lg px-3 py-2 text-xs mb-2 focus:outline-none focus:border-primary/40" />
-          <textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} placeholder="Contenu (utilisez {{variable}} pour les champs dynamiques)" rows={3}
+          <textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} placeholder={t("c2.messageTemplates.contentPlaceholder")} rows={3}
             className="w-full bg-card border border-border rounded-lg px-3 py-2 text-xs mb-2 focus:outline-none focus:border-primary/40 resize-none" />
           <div className="flex items-center justify-between">
             <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}
@@ -141,9 +149,9 @@ export default function MessageTemplates({ onSelect, compact = false }: Props) {
               {Object.entries(categoryLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
             <div className="flex gap-2">
-              <button onClick={() => setShowCreate(false)} className="px-3 py-1 text-xs font-bold border border-border rounded-lg">Annuler</button>
+              <button onClick={() => setShowCreate(false)} className="px-3 py-1 text-xs font-bold border border-border rounded-lg">{t("c2.messageTemplates.cancel")}</button>
               <button onClick={() => createTemplate.mutate()} disabled={!form.title || !form.content}
-                className="px-3 py-1 text-xs font-bold bg-primary text-primary-foreground rounded-lg disabled:opacity-50">Sauver</button>
+                className="px-3 py-1 text-xs font-bold bg-primary text-primary-foreground rounded-lg disabled:opacity-50">{t("c2.messageTemplates.save")}</button>
             </div>
           </div>
         </div>
