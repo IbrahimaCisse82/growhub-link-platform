@@ -1,5 +1,6 @@
 import { Calendar, Download } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface CalendarEvent {
   title: string;
@@ -54,6 +55,7 @@ function generateGoogleCalendarUrl(event: CalendarEvent): string {
 
 // Export single event
 export function ExportEventButton({ event }: { event: CalendarEvent }) {
+  const { t } = useTranslation();
   const handleICS = () => {
     const ics = generateICS([event]);
     const blob = new Blob([ics], { type: "text/calendar" });
@@ -63,7 +65,7 @@ export function ExportEventButton({ event }: { event: CalendarEvent }) {
     a.download = `${event.title.replace(/\s+/g, "_")}.ics`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Événement exporté !");
+    toast.success(t("c1.calendarExport.eventExported"));
   };
 
   const handleGoogle = () => {
@@ -75,18 +77,18 @@ export function ExportEventButton({ event }: { event: CalendarEvent }) {
       <button
         onClick={handleICS}
         className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground hover:text-primary transition-colors px-2 py-1 rounded-lg border border-border hover:border-primary/30"
-        title="Télécharger .ics"
+        title={t("c1.calendarExport.downloadIcs")}
       >
         <Download className="w-3 h-3" />
-        iCal
+        {t("c1.calendarExport.ical")}
       </button>
       <button
         onClick={handleGoogle}
         className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground hover:text-primary transition-colors px-2 py-1 rounded-lg border border-border hover:border-primary/30"
-        title="Google Calendar"
+        title={t("c1.calendarExport.googleCalendar")}
       >
         <Calendar className="w-3 h-3" />
-        Google
+        {t("c1.calendarExport.google")}
       </button>
     </div>
   );
@@ -94,8 +96,9 @@ export function ExportEventButton({ event }: { event: CalendarEvent }) {
 
 // Export all events
 export function ExportAllEventsButton({ events }: { events: CalendarEvent[] }) {
+  const { t } = useTranslation();
   const handleExport = () => {
-    if (events.length === 0) { toast.error("Aucun événement à exporter"); return; }
+    if (events.length === 0) { toast.error(t("c1.calendarExport.noEventsToExport")); return; }
     const ics = generateICS(events);
     const blob = new Blob([ics], { type: "text/calendar" });
     const url = URL.createObjectURL(blob);
@@ -104,7 +107,7 @@ export function ExportAllEventsButton({ events }: { events: CalendarEvent[] }) {
     a.download = "growhublink-events.ics";
     a.click();
     URL.revokeObjectURL(url);
-    toast.success(`${events.length} événements exportés !`);
+    toast.success(t("c1.calendarExport.eventsExported", { count: events.length }));
   };
 
   return (
@@ -113,7 +116,7 @@ export function ExportAllEventsButton({ events }: { events: CalendarEvent[] }) {
       className="flex items-center gap-1.5 text-xs font-bold text-primary bg-primary/10 border border-primary/20 rounded-xl px-3 py-2 hover:bg-primary/20 transition-colors"
     >
       <Calendar className="w-3.5 h-3.5" />
-      Exporter calendrier ({events.length})
+      {t("c1.calendarExport.exportCalendar", { count: events.length })}
     </button>
   );
 }

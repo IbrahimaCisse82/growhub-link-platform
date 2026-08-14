@@ -6,6 +6,7 @@ import { GHCard, Tag } from "@/components/ui-custom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface EventMatchProps {
   eventId: string;
@@ -13,6 +14,7 @@ interface EventMatchProps {
 }
 
 export default function EventMatchmaking({ eventId, registrations }: EventMatchProps) {
+  const { t } = useTranslation();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
@@ -36,14 +38,14 @@ export default function EventMatchmaking({ eventId, registrations }: EventMatchP
 
           const theirSkills = (p.skills ?? []).map((s: string) => s.toLowerCase());
           const matchedSkills = theirSkills.filter((s: string) => myInterests.has(s)).length;
-          if (matchedSkills > 0) { score += matchedSkills * 15; reasons.push(`${matchedSkills} compétence(s) complémentaire(s)`); }
+          if (matchedSkills > 0) { score += matchedSkills * 15; reasons.push(t("c1.eventMatchmaking.complementarySkills", { count: matchedSkills })); }
 
           if (p.sector && profile!.sector && p.sector.toLowerCase() === profile!.sector.toLowerCase()) {
-            score += 20; reasons.push("Même secteur");
+            score += 20; reasons.push(t("c1.eventMatchmaking.sameSector"));
           }
 
           if (p.city && profile!.city && p.city.toLowerCase() === profile!.city.toLowerCase()) {
-            score += 10; reasons.push("Même ville");
+            score += 10; reasons.push(t("c1.eventMatchmaking.sameCity"));
           }
 
           return { ...p, match_score: Math.min(score, 100), match_reasons: reasons };
@@ -62,7 +64,7 @@ export default function EventMatchmaking({ eventId, registrations }: EventMatchP
     <div className="mt-3 border-t border-border pt-3">
       <div className="flex items-center gap-1.5 mb-2">
         <Sparkles className="w-3 h-3 text-primary" />
-        <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Participants à rencontrer</span>
+        <span className="text-[10px] font-bold text-primary uppercase tracking-wider">{t("c1.eventMatchmaking.title")}</span>
       </div>
       <div className="flex gap-2 overflow-x-auto pb-1">
         {matchedParticipants.map(p => (
@@ -76,7 +78,7 @@ export default function EventMatchmaking({ eventId, registrations }: EventMatchP
             </div>
             <div className="text-left">
               <div className="text-[10px] font-bold truncate max-w-[80px]">{p.display_name}</div>
-              <div className="text-[8px] text-primary font-bold">{p.match_score}% match</div>
+              <div className="text-[8px] text-primary font-bold">{t("c1.eventMatchmaking.matchPercent", { score: p.match_score })}</div>
             </div>
           </button>
         ))}

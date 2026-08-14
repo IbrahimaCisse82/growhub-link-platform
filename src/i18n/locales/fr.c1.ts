@@ -1,0 +1,58 @@
+export default {
+  c1: {
+    activityFeed: {
+      empty: "Aucune activité récente",
+    },
+    ambassadorLeaderboard: {
+      title: "Top Ambassadeurs",
+      empty: "Aucun ambassadeur actif pour le moment. Soyez le premier !",
+      referrals: "filleuls",
+    },
+    bookmark: {
+      added: "Ajouté aux favoris ⭐",
+      removed: "Retiré des favoris",
+      error: "Erreur",
+      remove: "Retirer des favoris",
+      add: "Ajouter aux favoris",
+    },
+    calendarExport: {
+      downloadIcs: "Télécharger .ics",
+      ical: "iCal",
+      googleCalendar: "Google Calendar",
+      google: "Google",
+      eventExported: "Événement exporté !",
+      noEventsToExport: "Aucun événement à exporter",
+      eventsExported: "{{count}} événements exportés !",
+      exportCalendar: "Exporter calendrier ({{count}})",
+    },
+    coachReviews: {
+      noReviews: "Aucun avis pour le moment",
+      reviewsCount: "({{count}} avis)",
+      anonymous: "Anonyme",
+      yourReview: "Votre avis",
+      placeholder: "Décrivez votre expérience (optionnel)...",
+      selectRating: "Sélectionnez une note",
+      published: "Avis publié !",
+      publishError: "Erreur lors de la publication",
+      publishing: "Publication...",
+      publish: "Publier l'avis",
+    },
+    eventMatchmaking: {
+      title: "Participants à rencontrer",
+      matchPercent: "{{score}}% match",
+      complementarySkills: "{{count}} compétence(s) complémentaire(s)",
+      sameSector: "Même secteur",
+      sameCity: "Même ville",
+    },
+    fundraisingROI: {
+      title: "ROI Levée de fonds",
+      save: "Sauvegarder",
+      edit: "Éditer",
+      contacted: "Contactés",
+      meetingsHeld: "RDV tenus",
+      termSheets: "Term sheets",
+      closedDeals: "Deals closés",
+      conversion: "Conversion",
+    },
+  },
+};
