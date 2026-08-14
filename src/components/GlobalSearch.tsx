@@ -3,6 +3,7 @@ import { Search, Users, FileText, Calendar, X, MapPin, Briefcase, Tag, SlidersHo
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 type ResultType = "profile" | "post" | "event";
 
@@ -15,16 +16,17 @@ interface SearchResult {
   link: string;
 }
 
-const typeConfig: Record<ResultType, { icon: any; label: string }> = {
-  profile: { icon: Users, label: "Membre" },
-  post: { icon: FileText, label: "Publication" },
-  event: { icon: Calendar, label: "Événement" },
+const typeIcons: Record<ResultType, any> = {
+  profile: Users,
+  post: FileText,
+  event: Calendar,
 };
 
 const roleOptions = ["startup", "mentor", "investor", "expert", "freelance", "incubateur", "etudiant", "corporate"];
 const sectorSuggestions = ["Tech", "Santé", "Finance", "Éducation", "E-commerce", "SaaS", "IA", "Green Tech", "Food Tech", "Immobilier"];
 
 export default function GlobalSearch() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -90,7 +92,7 @@ export default function GlobalSearch() {
       }
 
       filteredProfiles.forEach(p => all.push({
-        id: p.user_id, type: "profile", title: p.display_name ?? "Membre",
+        id: p.user_id, type: "profile", title: p.display_name ?? t("c2.globalSearch.typeLabels.profile"),
         subtitle: [p.company_name, p.sector, p.city].filter(Boolean).join(" · "),
         avatar: p.avatar_url ?? undefined, link: `/profile/${p.user_id}`,
       }));
@@ -145,7 +147,7 @@ export default function GlobalSearch() {
       <button onClick={() => { setOpen(true); setTimeout(() => inputRef.current?.focus(), 50); }}
         className="flex items-center bg-secondary border border-border rounded-[10px] px-2.5 md:px-3 gap-1.5 md:gap-2 h-8 md:h-9 transition-all hover:border-primary/35 cursor-pointer min-w-0 flex-1 max-w-[200px] md:max-w-[300px]">
         <Search className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-        <span className="text-[12px] md:text-[13px] text-muted-foreground/60 flex-1 text-left truncate">Rechercher...</span>
+        <span className="text-[12px] md:text-[13px] text-muted-foreground/60 flex-1 text-left truncate">{t("c2.globalSearch.searchButtonPlaceholder")}</span>
         <kbd className="hidden md:inline text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded font-mono">⌘K</kbd>
       </button>
     );
@@ -157,7 +159,7 @@ export default function GlobalSearch() {
       <div className="fixed top-0 md:top-[8vh] left-0 md:left-1/2 md:-translate-x-1/2 w-full md:max-w-xl h-full md:h-auto z-[301] bg-card md:border md:border-border md:rounded-2xl shadow-2xl overflow-hidden flex flex-col md:block">
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
           <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-          <input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher membres, publications, événements..."
+          <input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t("c2.globalSearch.inputPlaceholder")}
             className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground/60" autoFocus />
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
@@ -174,7 +176,7 @@ export default function GlobalSearch() {
             <button key={f} onClick={() => setFilter(f)}
               className={cn("text-[11px] font-bold px-2.5 py-1 rounded-lg transition-colors",
                 filter === f ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted")}>
-              {f === "all" ? "Tout" : f === "profile" ? "Membres" : f === "post" ? "Posts" : "Événements"}
+              {t(`c2.globalSearch.filters.${f}`)}
             </button>
           ))}
         </div>
@@ -183,10 +185,10 @@ export default function GlobalSearch() {
         {showAdvanced && (
           <div className="px-4 py-3 border-b border-border/50 space-y-2.5 bg-muted/30">
             <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground mb-1">
-              <SlidersHorizontal className="w-3 h-3" /> Filtres avancés
+              <SlidersHorizontal className="w-3 h-3" /> {t("c2.globalSearch.advanced.title")}
               {hasAdvancedFilters && (
                 <button onClick={resetFilters} className="ml-auto text-primary text-[10px] hover:underline">
-                  Réinitialiser
+                  {t("c2.globalSearch.advanced.reset")}
                 </button>
               )}
             </div>
@@ -194,7 +196,7 @@ export default function GlobalSearch() {
             {/* Role filter */}
             <div>
               <label className="text-[10px] font-bold text-muted-foreground flex items-center gap-1 mb-1">
-                <Briefcase className="w-3 h-3" /> Rôle
+                <Briefcase className="w-3 h-3" /> {t("c2.globalSearch.advanced.role")}
               </label>
               <div className="flex flex-wrap gap-1">
                 {roleOptions.map(r => (
@@ -217,7 +219,7 @@ export default function GlobalSearch() {
             {/* Sector filter */}
             <div>
               <label className="text-[10px] font-bold text-muted-foreground flex items-center gap-1 mb-1">
-                <Tag className="w-3 h-3" /> Secteur
+                <Tag className="w-3 h-3" /> {t("c2.globalSearch.advanced.sector")}
               </label>
               <div className="flex flex-wrap gap-1">
                 {sectorSuggestions.map(s => (
@@ -240,12 +242,12 @@ export default function GlobalSearch() {
             {/* City filter */}
             <div>
               <label className="text-[10px] font-bold text-muted-foreground flex items-center gap-1 mb-1">
-                <MapPin className="w-3 h-3" /> Ville
+                <MapPin className="w-3 h-3" /> {t("c2.globalSearch.advanced.city")}
               </label>
               <input
                 value={cityFilter}
                 onChange={(e) => setCityFilter(e.target.value)}
-                placeholder="Ex: Paris, Lyon, Dakar..."
+                placeholder={t("c2.globalSearch.advanced.cityPlaceholder")}
                 className="w-full bg-card border border-border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-primary/40 transition-colors"
               />
             </div>
@@ -255,26 +257,26 @@ export default function GlobalSearch() {
         {/* Results */}
         <div className="max-h-[50vh] md:max-h-[400px] overflow-y-auto flex-1 md:flex-none">
           {loading ? (
-            <div className="px-4 py-8 text-center text-sm text-muted-foreground">Recherche en cours...</div>
+            <div className="px-4 py-8 text-center text-sm text-muted-foreground">{t("c2.globalSearch.loading")}</div>
           ) : query.length < 2 && !hasAdvancedFilters ? (
             <div className="px-4 py-8 text-center">
-              <p className="text-sm text-muted-foreground mb-3">Tapez au moins 2 caractères ou utilisez les filtres avancés</p>
+              <p className="text-sm text-muted-foreground mb-3">{t("c2.globalSearch.typeAtLeast")}</p>
               <button
                 onClick={() => setShowAdvanced(true)}
                 className="text-xs text-primary font-bold hover:underline flex items-center gap-1 mx-auto"
               >
-                <SlidersHorizontal className="w-3 h-3" /> Ouvrir les filtres avancés
+                <SlidersHorizontal className="w-3 h-3" /> {t("c2.globalSearch.advanced.openButton")}
               </button>
             </div>
           ) : filtered.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-              Aucun résultat {query && `pour "${query}"`}
-              {hasAdvancedFilters && " avec ces filtres"}
+              {query ? t("c2.globalSearch.noResultsFor", { query }) : t("c2.globalSearch.noResults")}
+              {hasAdvancedFilters && t("c2.globalSearch.withFilters")}
             </div>
           ) : (
             filtered.map((r) => {
-              const config = typeConfig[r.type];
-              const Icon = config.icon;
+              const Icon = typeIcons[r.type];
+              const label = t(`c2.globalSearch.typeLabels.${r.type}`);
               return (
                 <button key={`${r.type}-${r.id}`} onClick={() => goTo(r.link)}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors text-left">
@@ -289,7 +291,7 @@ export default function GlobalSearch() {
                     <div className="text-sm font-medium truncate">{r.title}</div>
                     <div className="text-[11px] text-muted-foreground truncate">{r.subtitle}</div>
                   </div>
-                  <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full flex-shrink-0">{config.label}</span>
+                  <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full flex-shrink-0">{label}</span>
                 </button>
               );
             })
@@ -297,8 +299,8 @@ export default function GlobalSearch() {
         </div>
 
         <div className="px-4 py-2 border-t border-border/50 text-[10px] text-muted-foreground flex justify-between">
-          <span>↑↓ Naviguer · ↵ Ouvrir · Esc Fermer</span>
-          <span>{filtered.length} résultat{filtered.length > 1 ? "s" : ""}</span>
+          <span>{t("c2.globalSearch.footer.hint")}</span>
+          <span>{t("c2.globalSearch.footer.resultCount", { count: filtered.length })}</span>
         </div>
       </div>
     </>
