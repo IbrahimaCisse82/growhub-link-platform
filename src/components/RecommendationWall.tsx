@@ -6,6 +6,7 @@ import { GHCard, Tag } from "@/components/ui-custom";
 import { Star, Quote, Send, User } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface Recommendation {
   id: string;
@@ -18,6 +19,7 @@ interface Recommendation {
 }
 
 export function RecommendationWall({ userId }: { userId: string }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const isOwnProfile = userId === user?.id;
@@ -54,14 +56,14 @@ export function RecommendationWall({ userId }: { userId: string }) {
   if (!recommendations || recommendations.length === 0) {
     if (!isOwnProfile) return null;
     return (
-      <GHCard title="💬 Recommandations" className="md:col-span-2">
-        <p className="text-xs text-muted-foreground text-center py-4">Aucune recommandation encore. Demandez à vos contacts de vous recommander !</p>
+      <GHCard title={t("c3.recommendationWall.title")} className="md:col-span-2">
+        <p className="text-xs text-muted-foreground text-center py-4">{t("c3.recommendationWall.empty")}</p>
       </GHCard>
     );
   }
 
   return (
-    <GHCard title="💬 Recommandations" className="md:col-span-2">
+    <GHCard title={t("c3.recommendationWall.title")} className="md:col-span-2">
       <div className="space-y-3">
         {recommendations.map(rec => (
           <div key={rec.id} className="bg-secondary/30 rounded-xl p-4 relative">
@@ -78,7 +80,7 @@ export function RecommendationWall({ userId }: { userId: string }) {
               )}
               <div>
                 <div className="text-xs font-bold cursor-pointer hover:text-primary" onClick={() => navigate(`/profile/${rec.recommender_id}`)}>
-                  {rec.recommender_profile?.display_name ?? "Membre"}
+                  {rec.recommender_profile?.display_name ?? t("c3.recommendationWall.member")}
                 </div>
                 <div className="text-[10px] text-muted-foreground">{rec.recommender_profile?.company_name ?? ""}</div>
               </div>
@@ -98,6 +100,7 @@ export function RecommendationWall({ userId }: { userId: string }) {
 }
 
 export function WriteRecommendation({ userId, userName }: { userId: string; userName: string }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [skill, setSkill] = useState("");
@@ -117,10 +120,10 @@ export function WriteRecommendation({ userId, userName }: { userId: string; user
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recommendations", userId] });
-      toast.success("Recommandation envoyée !");
+      toast.success(t("c3.recommendationWall.sentSuccess"));
       setSkill(""); setMessage(""); setShow(false);
     },
-    onError: () => toast.error("Erreur"),
+    onError: () => toast.error(t("c3.recommendationWall.error")),
   });
 
   if (!user || user.id === userId) return null;
@@ -128,30 +131,30 @@ export function WriteRecommendation({ userId, userName }: { userId: string; user
   if (!show) {
     return (
       <button onClick={() => setShow(true)} className="bg-secondary text-foreground rounded-xl px-4 py-2.5 font-heading text-xs font-bold flex items-center gap-2 hover:bg-secondary/80 transition-colors">
-        <Star className="w-3.5 h-3.5" /> Recommander
+        <Star className="w-3.5 h-3.5" /> {t("c3.recommendationWall.recommend")}
       </button>
     );
   }
 
   return (
-    <GHCard title={`Recommander ${userName}`} className="md:col-span-2 mt-3">
+    <GHCard title={t("c3.recommendationWall.recommendUser", { name: userName })} className="md:col-span-2 mt-3">
       <div className="space-y-3">
         <div>
-          <label className="text-xs font-bold text-foreground/70 mb-1 block">Compétence</label>
-          <input value={skill} onChange={e => setSkill(e.target.value)} placeholder="Ex: Leadership, Marketing, Développement..."
+          <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("c3.recommendationWall.skillLabel")}</label>
+          <input value={skill} onChange={e => setSkill(e.target.value)} placeholder={t("c3.recommendationWall.skillPlaceholder")}
             className="w-full bg-secondary/50 border border-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary/40" />
         </div>
         <div>
-          <label className="text-xs font-bold text-foreground/70 mb-1 block">Message (optionnel)</label>
-          <textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Décrivez votre expérience avec cette personne..."
+          <label className="text-xs font-bold text-foreground/70 mb-1 block">{t("c3.recommendationWall.messageLabel")}</label>
+          <textarea value={message} onChange={e => setMessage(e.target.value)} placeholder={t("c3.recommendationWall.messagePlaceholder")}
             className="w-full bg-secondary/50 border border-border rounded-xl p-3 text-sm resize-none min-h-[80px] focus:outline-none focus:border-primary/40" />
         </div>
         <div className="flex gap-2">
           <button onClick={() => createRecommendation.mutate()} disabled={!skill.trim()}
             className="bg-primary text-primary-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold disabled:opacity-50 flex items-center gap-2 hover:bg-primary-hover transition-all">
-            <Send className="w-3.5 h-3.5" /> Envoyer
+            <Send className="w-3.5 h-3.5" /> {t("c3.recommendationWall.send")}
           </button>
-          <button onClick={() => setShow(false)} className="bg-secondary text-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">Annuler</button>
+          <button onClick={() => setShow(false)} className="bg-secondary text-foreground rounded-xl px-5 py-2.5 font-heading text-xs font-bold">{t("c3.recommendationWall.cancel")}</button>
         </div>
       </div>
     </GHCard>

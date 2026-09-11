@@ -4,58 +4,60 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 // ─── Role-specific hero configs ──────────────────────────────
 const roleHeroConfig: Record<string, { badge: string; title: (name: string) => JSX.Element; subtitle: string }> = {
   startup: {
-    badge: "Growth Command Center",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> accélérez votre croissance</span> 🚀</>,
-    subtitle: "Suivez vos KPIs, connectez-vous et développez votre startup.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.startup.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.startup.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.startup.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.startup.subtitle"); },
   },
   mentor: {
-    badge: "Espace Mentor",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> guidez la prochaine génération</span> 🎯</>,
-    subtitle: "Gérez vos mentorés, sessions et partagez votre expertise.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.mentor.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.mentor.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.mentor.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.mentor.subtitle"); },
   },
   investor: {
-    badge: "Investor Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> découvrez les opportunités</span> 💎</>,
-    subtitle: "Suivez votre deal flow, vos investissements et le pipeline.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.investor.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.investor.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.investor.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.investor.subtitle"); },
   },
   expert: {
-    badge: "Expert Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> partagez votre savoir</span> 🧠</>,
-    subtitle: "Proposez vos services, formations et accompagnements.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.expert.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.expert.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.expert.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.expert.subtitle"); },
   },
   freelance: {
-    badge: "Freelance Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> développez votre activité</span> ⚡</>,
-    subtitle: "Gérez vos missions, clients et visibilité sur le marketplace.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.freelance.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.freelance.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.freelance.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.freelance.subtitle"); },
   },
   incubateur: {
-    badge: "Incubateur Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> pilotez vos cohortes</span> 🏗️</>,
-    subtitle: "Suivez vos startups incubées, événements et ressources.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.incubateur.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.incubateur.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.incubateur.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.incubateur.subtitle"); },
   },
   etudiant: {
-    badge: "Campus Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> préparez votre avenir</span> 🎓</>,
-    subtitle: "Apprenez, réseautez et lancez votre premier projet.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.etudiant.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.etudiant.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.etudiant.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.etudiant.subtitle"); },
   },
   aspirationnel: {
-    badge: "Explorer Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> explorez l'entrepreneuriat</span> ✨</>,
-    subtitle: "Découvrez les opportunités, inspirez-vous et passez à l'action.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.aspirationnel.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.aspirationnel.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.aspirationnel.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.aspirationnel.subtitle"); },
   },
   professionnel: {
-    badge: "Pro Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> élargissez votre réseau</span> 🤝</>,
-    subtitle: "Connectez-vous, trouvez des partenaires et des opportunités.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.professionnel.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.professionnel.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.professionnel.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.professionnel.subtitle"); },
   },
   corporate: {
-    badge: "Corporate Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> innovez avec les startups</span> 🏢</>,
-    subtitle: "Identifiez des startups partenaires et pilotez l'open innovation.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.corporate.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.corporate.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.corporate.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.corporate.subtitle"); },
   },
 };
 
@@ -64,6 +66,8 @@ interface RoleMetricsProps { role: string; }
 
 export function RoleMetrics({ role }: RoleMetricsProps) {
   const { user } = useAuth();
+  const { t } = useTranslation();
+
 
   const { data: stats, isLoading } = useQuery({
     queryKey: ["role-metrics", role, user?.id],
@@ -112,64 +116,64 @@ export function RoleMetrics({ role }: RoleMetricsProps) {
 
   const metricsMap: Record<string, { icon: string; value: string; label: string; badge: string; badgeType: "up" | "down" | "neutral" }[]> = {
     startup: [
-      { icon: "👥", value: String(s.connections), label: "Connexions", badge: "Réseau", badgeType: "up" },
-      { icon: "📅", value: String(s.learnerSessions), label: "Sessions coaching", badge: "Reçues", badgeType: "up" },
-      { icon: "💬", value: String(s.posts), label: "Publications", badge: "Actif", badgeType: "neutral" },
-      { icon: "🚀", value: String(s.activeRounds), label: "Levées actives", badge: "Fundraising", badgeType: s.activeRounds > 0 ? "up" : "neutral" },
+      { icon: "👥", value: String(s.connections), label: t("c3.roleDashboard.metrics.startup.0.label"), badge: t("c3.roleDashboard.metrics.startup.0.badge"), badgeType: "up" },
+      { icon: "📅", value: String(s.learnerSessions), label: t("c3.roleDashboard.metrics.startup.1.label"), badge: t("c3.roleDashboard.metrics.startup.1.badge"), badgeType: "up" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.startup.2.label"), badge: t("c3.roleDashboard.metrics.startup.2.badge"), badgeType: "neutral" },
+      { icon: "🚀", value: String(s.activeRounds), label: t("c3.roleDashboard.metrics.startup.3.label"), badge: t("c3.roleDashboard.metrics.startup.3.badge"), badgeType: s.activeRounds > 0 ? "up" : "neutral" },
     ],
     mentor: [
-      { icon: "🎯", value: String(s.coachSessions), label: "Sessions données", badge: "Coach", badgeType: "up" },
-      { icon: "👥", value: String(s.connections), label: "Mentorés", badge: "Réseau", badgeType: "up" },
-      { icon: "⭐", value: s.coachRating ?? "—", label: "Note moyenne", badge: "/5", badgeType: s.coachRating ? "up" : "neutral" },
-      { icon: "💬", value: String(s.posts), label: "Conseils partagés", badge: "Contenu", badgeType: "neutral" },
+      { icon: "🎯", value: String(s.coachSessions), label: t("c3.roleDashboard.metrics.mentor.0.label"), badge: t("c3.roleDashboard.metrics.mentor.0.badge"), badgeType: "up" },
+      { icon: "👥", value: String(s.connections), label: t("c3.roleDashboard.metrics.mentor.1.label"), badge: t("c3.roleDashboard.metrics.mentor.1.badge"), badgeType: "up" },
+      { icon: "⭐", value: s.coachRating ?? "—", label: t("c3.roleDashboard.metrics.mentor.2.label"), badge: t("c3.roleDashboard.metrics.mentor.2.badge"), badgeType: s.coachRating ? "up" : "neutral" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.mentor.3.label"), badge: t("c3.roleDashboard.metrics.mentor.3.badge"), badgeType: "neutral" },
     ],
     investor: [
-      { icon: "💎", value: String(s.dealRooms), label: "Deal Rooms", badge: "Pipeline", badgeType: s.dealRooms > 0 ? "up" : "neutral" },
-      { icon: "👥", value: String(s.connections), label: "Startups suivies", badge: "Réseau", badgeType: "up" },
-      { icon: "📅", value: String(s.events), label: "Événements", badge: "Agenda", badgeType: "neutral" },
-      { icon: "💬", value: String(s.posts), label: "Publications", badge: "Actif", badgeType: "neutral" },
+      { icon: "💎", value: String(s.dealRooms), label: t("c3.roleDashboard.metrics.investor.0.label"), badge: t("c3.roleDashboard.metrics.investor.0.badge"), badgeType: s.dealRooms > 0 ? "up" : "neutral" },
+      { icon: "👥", value: String(s.connections), label: t("c3.roleDashboard.metrics.investor.1.label"), badge: t("c3.roleDashboard.metrics.investor.1.badge"), badgeType: "up" },
+      { icon: "📅", value: String(s.events), label: t("c3.roleDashboard.metrics.investor.2.label"), badge: t("c3.roleDashboard.metrics.investor.2.badge"), badgeType: "neutral" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.investor.3.label"), badge: t("c3.roleDashboard.metrics.investor.3.badge"), badgeType: "neutral" },
     ],
     expert: [
-      { icon: "🧠", value: String(s.coachSessions), label: "Consultations", badge: "Expert", badgeType: "up" },
-      { icon: "🛒", value: String(s.services), label: "Services actifs", badge: "Marketplace", badgeType: s.services > 0 ? "up" : "neutral" },
-      { icon: "⭐", value: s.coachRating ?? "—", label: "Satisfaction", badge: "/5", badgeType: s.coachRating ? "up" : "neutral" },
-      { icon: "💬", value: String(s.posts), label: "Articles", badge: "Expertise", badgeType: "neutral" },
+      { icon: "🧠", value: String(s.coachSessions), label: t("c3.roleDashboard.metrics.expert.0.label"), badge: t("c3.roleDashboard.metrics.expert.0.badge"), badgeType: "up" },
+      { icon: "🛒", value: String(s.services), label: t("c3.roleDashboard.metrics.expert.1.label"), badge: t("c3.roleDashboard.metrics.expert.1.badge"), badgeType: s.services > 0 ? "up" : "neutral" },
+      { icon: "⭐", value: s.coachRating ?? "—", label: t("c3.roleDashboard.metrics.expert.2.label"), badge: t("c3.roleDashboard.metrics.expert.2.badge"), badgeType: s.coachRating ? "up" : "neutral" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.expert.3.label"), badge: t("c3.roleDashboard.metrics.expert.3.badge"), badgeType: "neutral" },
     ],
     freelance: [
-      { icon: "💼", value: String(s.services), label: "Offres actives", badge: "Marketplace", badgeType: s.services > 0 ? "up" : "neutral" },
-      { icon: "👥", value: String(s.connections), label: "Contacts", badge: "Réseau", badgeType: "up" },
-      { icon: "⭐", value: s.coachRating ?? "—", label: "Note clients", badge: "Réputation", badgeType: s.coachRating ? "up" : "neutral" },
-      { icon: "💬", value: String(s.posts), label: "Publications", badge: "Visibilité", badgeType: "neutral" },
+      { icon: "💼", value: String(s.services), label: t("c3.roleDashboard.metrics.freelance.0.label"), badge: t("c3.roleDashboard.metrics.freelance.0.badge"), badgeType: s.services > 0 ? "up" : "neutral" },
+      { icon: "👥", value: String(s.connections), label: t("c3.roleDashboard.metrics.freelance.1.label"), badge: t("c3.roleDashboard.metrics.freelance.1.badge"), badgeType: "up" },
+      { icon: "⭐", value: s.coachRating ?? "—", label: t("c3.roleDashboard.metrics.freelance.2.label"), badge: t("c3.roleDashboard.metrics.freelance.2.badge"), badgeType: s.coachRating ? "up" : "neutral" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.freelance.3.label"), badge: t("c3.roleDashboard.metrics.freelance.3.badge"), badgeType: "neutral" },
     ],
     incubateur: [
-      { icon: "🏗️", value: String(s.connections), label: "Startups suivies", badge: "Cohorte", badgeType: "up" },
-      { icon: "📅", value: String(s.events), label: "Événements créés", badge: "Agenda", badgeType: "neutral" },
-      { icon: "🎯", value: String(s.coachSessions), label: "Sessions mentorat", badge: "Impact", badgeType: "up" },
-      { icon: "💬", value: String(s.posts), label: "Publications", badge: "Communauté", badgeType: "neutral" },
+      { icon: "🏗️", value: String(s.connections), label: t("c3.roleDashboard.metrics.incubateur.0.label"), badge: t("c3.roleDashboard.metrics.incubateur.0.badge"), badgeType: "up" },
+      { icon: "📅", value: String(s.events), label: t("c3.roleDashboard.metrics.incubateur.1.label"), badge: t("c3.roleDashboard.metrics.incubateur.1.badge"), badgeType: "neutral" },
+      { icon: "🎯", value: String(s.coachSessions), label: t("c3.roleDashboard.metrics.incubateur.2.label"), badge: t("c3.roleDashboard.metrics.incubateur.2.badge"), badgeType: "up" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.incubateur.3.label"), badge: t("c3.roleDashboard.metrics.incubateur.3.badge"), badgeType: "neutral" },
     ],
     etudiant: [
-      { icon: "📚", value: String(s.learnerSessions), label: "Sessions suivies", badge: "Apprentissage", badgeType: "up" },
-      { icon: "👥", value: String(s.connections), label: "Mentors contactés", badge: "Réseau", badgeType: "up" },
-      { icon: "🎯", value: String(s.objectivesCompleted), label: "Objectifs atteints", badge: "Progrès", badgeType: s.objectivesCompleted > 0 ? "up" : "neutral" },
-      { icon: "💬", value: String(s.posts), label: "Participations", badge: "Communauté", badgeType: "neutral" },
+      { icon: "📚", value: String(s.learnerSessions), label: t("c3.roleDashboard.metrics.etudiant.0.label"), badge: t("c3.roleDashboard.metrics.etudiant.0.badge"), badgeType: "up" },
+      { icon: "👥", value: String(s.connections), label: t("c3.roleDashboard.metrics.etudiant.1.label"), badge: t("c3.roleDashboard.metrics.etudiant.1.badge"), badgeType: "up" },
+      { icon: "🎯", value: String(s.objectivesCompleted), label: t("c3.roleDashboard.metrics.etudiant.2.label"), badge: t("c3.roleDashboard.metrics.etudiant.2.badge"), badgeType: s.objectivesCompleted > 0 ? "up" : "neutral" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.etudiant.3.label"), badge: t("c3.roleDashboard.metrics.etudiant.3.badge"), badgeType: "neutral" },
     ],
     aspirationnel: [
-      { icon: "✨", value: String(s.connections), label: "Rencontres", badge: "Réseau", badgeType: "up" },
-      { icon: "📅", value: String(s.events), label: "Events inscrits", badge: "Agenda", badgeType: s.events > 0 ? "up" : "neutral" },
-      { icon: "📚", value: String(s.learnerSessions), label: "Sessions", badge: "Découverte", badgeType: "neutral" },
-      { icon: "💬", value: String(s.posts), label: "Interactions", badge: "Engagement", badgeType: "neutral" },
+      { icon: "✨", value: String(s.connections), label: t("c3.roleDashboard.metrics.aspirationnel.0.label"), badge: t("c3.roleDashboard.metrics.aspirationnel.0.badge"), badgeType: "up" },
+      { icon: "📅", value: String(s.events), label: t("c3.roleDashboard.metrics.aspirationnel.1.label"), badge: t("c3.roleDashboard.metrics.aspirationnel.1.badge"), badgeType: s.events > 0 ? "up" : "neutral" },
+      { icon: "📚", value: String(s.learnerSessions), label: t("c3.roleDashboard.metrics.aspirationnel.2.label"), badge: t("c3.roleDashboard.metrics.aspirationnel.2.badge"), badgeType: "neutral" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.aspirationnel.3.label"), badge: t("c3.roleDashboard.metrics.aspirationnel.3.badge"), badgeType: "neutral" },
     ],
     professionnel: [
-      { icon: "🤝", value: String(s.connections), label: "Connexions pro", badge: "Réseau", badgeType: "up" },
-      { icon: "📅", value: String(s.events), label: "Événements", badge: "Agenda", badgeType: "up" },
-      { icon: "💬", value: String(s.posts), label: "Publications", badge: "Actif", badgeType: "neutral" },
-      { icon: "🎯", value: String(s.objectivesCompleted), label: "Objectifs atteints", badge: "Progrès", badgeType: s.objectivesCompleted > 0 ? "up" : "neutral" },
+      { icon: "🤝", value: String(s.connections), label: t("c3.roleDashboard.metrics.professionnel.0.label"), badge: t("c3.roleDashboard.metrics.professionnel.0.badge"), badgeType: "up" },
+      { icon: "📅", value: String(s.events), label: t("c3.roleDashboard.metrics.professionnel.1.label"), badge: t("c3.roleDashboard.metrics.professionnel.1.badge"), badgeType: "up" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.professionnel.2.label"), badge: t("c3.roleDashboard.metrics.professionnel.2.badge"), badgeType: "neutral" },
+      { icon: "🎯", value: String(s.objectivesCompleted), label: t("c3.roleDashboard.metrics.professionnel.3.label"), badge: t("c3.roleDashboard.metrics.professionnel.3.badge"), badgeType: s.objectivesCompleted > 0 ? "up" : "neutral" },
     ],
     corporate: [
-      { icon: "🏢", value: String(s.dealRooms), label: "Deal Rooms", badge: "Pipeline", badgeType: s.dealRooms > 0 ? "up" : "neutral" },
-      { icon: "👥", value: String(s.connections), label: "Partenariats", badge: "Réseau", badgeType: "up" },
-      { icon: "📅", value: String(s.events), label: "Événements", badge: "Agenda", badgeType: "neutral" },
-      { icon: "💬", value: String(s.posts), label: "Publications", badge: "Innovation", badgeType: "neutral" },
+      { icon: "🏢", value: String(s.dealRooms), label: t("c3.roleDashboard.metrics.corporate.0.label"), badge: t("c3.roleDashboard.metrics.corporate.0.badge"), badgeType: s.dealRooms > 0 ? "up" : "neutral" },
+      { icon: "👥", value: String(s.connections), label: t("c3.roleDashboard.metrics.corporate.1.label"), badge: t("c3.roleDashboard.metrics.corporate.1.badge"), badgeType: "up" },
+      { icon: "📅", value: String(s.events), label: t("c3.roleDashboard.metrics.corporate.2.label"), badge: t("c3.roleDashboard.metrics.corporate.2.badge"), badgeType: "neutral" },
+      { icon: "💬", value: String(s.posts), label: t("c3.roleDashboard.metrics.corporate.3.label"), badge: t("c3.roleDashboard.metrics.corporate.3.badge"), badgeType: "neutral" },
     ],
   };
 
@@ -187,67 +191,69 @@ export function RoleMetrics({ role }: RoleMetricsProps) {
 // ─── Role-specific quick actions ──────────────────────────────
 export function RoleQuickActions({ role }: { role: string }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const a = (key: string) => t(`c3.roleDashboard.actions.${key}`);
 
   const actionsMap: Record<string, { emoji: string; label: string; path: string; variant: "primary" | "secondary" }[]> = {
     startup: [
-      { emoji: "📊", label: "Pitch Deck", path: "/pitchdeck", variant: "primary" },
-      { emoji: "💰", label: "Levée de fonds", path: "/fundraising", variant: "secondary" },
-      { emoji: "✍️", label: "Coaching", path: "/coaching", variant: "secondary" },
-      { emoji: "🎯", label: "Objectifs", path: "/progression", variant: "secondary" },
+      { emoji: "📊", label: a("pitchDeck"), path: "/pitchdeck", variant: "primary" },
+      { emoji: "💰", label: a("fundraising"), path: "/fundraising", variant: "secondary" },
+      { emoji: "✍️", label: a("coaching"), path: "/coaching", variant: "secondary" },
+      { emoji: "🎯", label: a("objectives"), path: "/progression", variant: "secondary" },
     ],
     mentor: [
-      { emoji: "📅", label: "Mes sessions", path: "/coaching", variant: "primary" },
-      { emoji: "👥", label: "Mes mentorés", path: "/mentor-dashboard", variant: "secondary" },
-      { emoji: "💬", label: "Publier un conseil", path: "/feed", variant: "secondary" },
-      { emoji: "📊", label: "Mes avis", path: "/mentor-dashboard", variant: "secondary" },
+      { emoji: "📅", label: a("mySessions"), path: "/coaching", variant: "primary" },
+      { emoji: "👥", label: a("myMentees"), path: "/mentor-dashboard", variant: "secondary" },
+      { emoji: "💬", label: a("publishTip"), path: "/feed", variant: "secondary" },
+      { emoji: "📊", label: a("myReviews"), path: "/mentor-dashboard", variant: "secondary" },
     ],
     investor: [
-      { emoji: "💎", label: "Deal Flow", path: "/deal-flow", variant: "primary" },
-      { emoji: "🔒", label: "Deal Room", path: "/deal-room", variant: "secondary" },
-      { emoji: "👥", label: "Startups", path: "/networking", variant: "secondary" },
-      { emoji: "📊", label: "Pitch Decks", path: "/pitchdeck", variant: "secondary" },
+      { emoji: "💎", label: a("dealFlow"), path: "/deal-flow", variant: "primary" },
+      { emoji: "🔒", label: a("dealRoom"), path: "/deal-room", variant: "secondary" },
+      { emoji: "👥", label: a("startups"), path: "/networking", variant: "secondary" },
+      { emoji: "📊", label: a("pitchDecks"), path: "/pitchdeck", variant: "secondary" },
     ],
     expert: [
-      { emoji: "🛒", label: "Mes services", path: "/marketplace", variant: "primary" },
-      { emoji: "✍️", label: "Consultations", path: "/coaching", variant: "secondary" },
-      { emoji: "📝", label: "Publier", path: "/feed", variant: "secondary" },
-      { emoji: "📊", label: "Analytics", path: "/analytics", variant: "secondary" },
+      { emoji: "🛒", label: a("myServices"), path: "/marketplace", variant: "primary" },
+      { emoji: "✍️", label: a("consultations"), path: "/coaching", variant: "secondary" },
+      { emoji: "📝", label: a("publish"), path: "/feed", variant: "secondary" },
+      { emoji: "📊", label: a("analytics"), path: "/analytics", variant: "secondary" },
     ],
     freelance: [
-      { emoji: "📊", label: "Mon pipeline", path: "/pipeline", variant: "primary" },
-      { emoji: "🛒", label: "Mes offres", path: "/marketplace", variant: "secondary" },
-      { emoji: "👥", label: "Réseau", path: "/networking", variant: "secondary" },
-      { emoji: "📣", label: "Leads", path: "/marketing", variant: "secondary" },
+      { emoji: "📊", label: a("myPipeline"), path: "/pipeline", variant: "primary" },
+      { emoji: "🛒", label: a("myOffers"), path: "/marketplace", variant: "secondary" },
+      { emoji: "👥", label: a("network"), path: "/networking", variant: "secondary" },
+      { emoji: "📣", label: a("leads"), path: "/marketing", variant: "secondary" },
     ],
     incubateur: [
-      { emoji: "🏗️", label: "Mes cohortes", path: "/cohorts", variant: "primary" },
-      { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
-      { emoji: "📊", label: "Analytics", path: "/analytics", variant: "secondary" },
-      { emoji: "✍️", label: "Coaching", path: "/coaching", variant: "secondary" },
+      { emoji: "🏗️", label: a("myCohorts"), path: "/cohorts", variant: "primary" },
+      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
+      { emoji: "📊", label: a("analytics"), path: "/analytics", variant: "secondary" },
+      { emoji: "✍️", label: a("coaching"), path: "/coaching", variant: "secondary" },
     ],
     etudiant: [
-      { emoji: "🎓", label: "Trouver un mentor", path: "/coaching", variant: "primary" },
-      { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
-      { emoji: "👥", label: "Networking", path: "/networking", variant: "secondary" },
-      { emoji: "🎯", label: "Objectifs", path: "/progression", variant: "secondary" },
+      { emoji: "🎓", label: a("findMentor"), path: "/coaching", variant: "primary" },
+      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
+      { emoji: "👥", label: a("networking"), path: "/networking", variant: "secondary" },
+      { emoji: "🎯", label: a("objectives"), path: "/progression", variant: "secondary" },
     ],
     aspirationnel: [
-      { emoji: "✨", label: "Explorer", path: "/networking", variant: "primary" },
-      { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
-      { emoji: "📚", label: "Fil d'inspiration", path: "/feed", variant: "secondary" },
-      { emoji: "🎓", label: "Coaching", path: "/coaching", variant: "secondary" },
+      { emoji: "✨", label: a("explore"), path: "/networking", variant: "primary" },
+      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
+      { emoji: "📚", label: a("inspirationFeed"), path: "/feed", variant: "secondary" },
+      { emoji: "🎓", label: a("coaching"), path: "/coaching", variant: "secondary" },
     ],
     professionnel: [
-      { emoji: "🤝", label: "Networking", path: "/networking", variant: "primary" },
-      { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
-      { emoji: "💬", label: "Messages", path: "/messaging", variant: "secondary" },
-      { emoji: "🎯", label: "Objectifs", path: "/progression", variant: "secondary" },
+      { emoji: "🤝", label: a("networking"), path: "/networking", variant: "primary" },
+      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
+      { emoji: "💬", label: a("messages"), path: "/messaging", variant: "secondary" },
+      { emoji: "🎯", label: a("objectives"), path: "/progression", variant: "secondary" },
     ],
     corporate: [
-      { emoji: "🔍", label: "Scouter startups", path: "/networking", variant: "primary" },
-      { emoji: "🔒", label: "Deal Room", path: "/deal-room", variant: "secondary" },
-      { emoji: "📅", label: "Événements", path: "/events", variant: "secondary" },
-      { emoji: "📊", label: "Analytics", path: "/analytics", variant: "secondary" },
+      { emoji: "🔍", label: a("scoutStartups"), path: "/networking", variant: "primary" },
+      { emoji: "🔒", label: a("dealRoom"), path: "/deal-room", variant: "secondary" },
+      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
+      { emoji: "📊", label: a("analytics"), path: "/analytics", variant: "secondary" },
     ],
   };
 

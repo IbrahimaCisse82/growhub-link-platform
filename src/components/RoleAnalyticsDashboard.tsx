@@ -10,6 +10,7 @@ import {
   Star, Zap, Award, BarChart3, Lightbulb, Rocket
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface RoleKPI {
   icon: typeof TrendingUp;
@@ -102,6 +103,7 @@ function useRoleAnalytics() {
 }
 
 function BenchmarkBar({ benchmark }: { benchmark: RoleBenchmark }) {
+  const { t } = useTranslation();
   const maxVal = Math.max(benchmark.userValue, benchmark.avgValue, 1);
   const userPct = (benchmark.userValue / maxVal) * 100;
   const avgPct = (benchmark.avgValue / maxVal) * 100;
@@ -113,7 +115,7 @@ function BenchmarkBar({ benchmark }: { benchmark: RoleBenchmark }) {
         <span className="text-xs font-medium">{benchmark.label}</span>
         <span className={cn("text-xs font-bold", isAbove ? "text-primary" : "text-muted-foreground")}>
           {benchmark.userValue}{benchmark.unit ?? ""}
-          <span className="text-muted-foreground font-normal"> vs {benchmark.avgValue}{benchmark.unit ?? ""} moy.</span>
+          <span className="text-muted-foreground font-normal"> {t("c3.roleAnalyticsDashboard.vsAvgLabel", { value: `${benchmark.avgValue}${benchmark.unit ?? ""}` })}</span>
         </span>
       </div>
       <div className="h-2 bg-secondary rounded-full overflow-hidden relative">
@@ -125,6 +127,7 @@ function BenchmarkBar({ benchmark }: { benchmark: RoleBenchmark }) {
 }
 
 export default function RoleAnalyticsDashboard() {
+  const { t } = useTranslation();
   const { profile } = useAuth();
   const { data: stats, isLoading } = useDashboardStats();
   const { data: ssi } = useSSI();
@@ -134,55 +137,55 @@ export default function RoleAnalyticsDashboard() {
 
   const roleKPIs: Record<string, RoleKPI[]> = {
     startup: [
-      { icon: Users, label: "Réseau", value: stats?.connections ?? 0, description: "Connexions actives", color: "text-primary" },
-      { icon: DollarSign, label: "Levée", value: fundraisingData.data?.totalRaised ? `${(fundraisingData.data.totalRaised / 1000).toFixed(0)}k€` : "0€", description: "Montant levé", color: "text-ghgold" },
-      { icon: Target, label: "Objectifs", value: `${stats?.objectivePct ?? 0}%`, description: "Taux de complétion", color: "text-ghblue" },
-      { icon: Zap, label: "SSI", value: ssi?.totalScore ?? 0, description: "Social Selling Index", color: "text-ghpurple" },
+      { icon: Users, label: t("c3.roleAnalyticsDashboard.kpis.startup.0.label"), value: stats?.connections ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.startup.0.description"), color: "text-primary" },
+      { icon: DollarSign, label: t("c3.roleAnalyticsDashboard.kpis.startup.1.label"), value: fundraisingData.data?.totalRaised ? `${(fundraisingData.data.totalRaised / 1000).toFixed(0)}k€` : "0€", description: t("c3.roleAnalyticsDashboard.kpis.startup.1.description"), color: "text-ghgold" },
+      { icon: Target, label: t("c3.roleAnalyticsDashboard.kpis.startup.2.label"), value: `${stats?.objectivePct ?? 0}%`, description: t("c3.roleAnalyticsDashboard.kpis.startup.2.description"), color: "text-ghblue" },
+      { icon: Zap, label: t("c3.roleAnalyticsDashboard.kpis.startup.3.label"), value: ssi?.totalScore ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.startup.3.description"), color: "text-ghpurple" },
     ],
     mentor: [
-      { icon: BookOpen, label: "Sessions", value: coachingData.data?.completed ?? 0, description: "Sessions réalisées", color: "text-primary" },
-      { icon: Star, label: "Note", value: coachingData.data?.avgRating ?? "—", description: "Note moyenne", color: "text-ghgold" },
-      { icon: Users, label: "Mentorés", value: stats?.connections ?? 0, description: "Connexions", color: "text-ghblue" },
-      { icon: Award, label: "Badges", value: stats?.totalBadges ?? 0, description: "Obtenus", color: "text-ghorange" },
+      { icon: BookOpen, label: t("c3.roleAnalyticsDashboard.kpis.mentor.0.label"), value: coachingData.data?.completed ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.mentor.0.description"), color: "text-primary" },
+      { icon: Star, label: t("c3.roleAnalyticsDashboard.kpis.mentor.1.label"), value: coachingData.data?.avgRating ?? "—", description: t("c3.roleAnalyticsDashboard.kpis.mentor.1.description"), color: "text-ghgold" },
+      { icon: Users, label: t("c3.roleAnalyticsDashboard.kpis.mentor.2.label"), value: stats?.connections ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.mentor.2.description"), color: "text-ghblue" },
+      { icon: Award, label: t("c3.roleAnalyticsDashboard.kpis.mentor.3.label"), value: stats?.totalBadges ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.mentor.3.description"), color: "text-ghorange" },
     ],
     investor: [
-      { icon: DollarSign, label: "Deal rooms", value: dealRoomsData.data?.activeCount ?? 0, description: "Rooms actives", color: "text-ghgold" },
-      { icon: Briefcase, label: "Portfolio", value: stats?.connections ?? 0, description: "Startups suivies", color: "text-primary" },
-      { icon: Target, label: "Pipeline", value: fundraisingData.data?.activeRounds ?? 0, description: "Rounds actifs", color: "text-ghblue" },
-      { icon: TrendingUp, label: "Événements", value: stats?.totalEvents ?? 0, description: "Participations", color: "text-ghpurple" },
+      { icon: DollarSign, label: t("c3.roleAnalyticsDashboard.kpis.investor.0.label"), value: dealRoomsData.data?.activeCount ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.investor.0.description"), color: "text-ghgold" },
+      { icon: Briefcase, label: t("c3.roleAnalyticsDashboard.kpis.investor.1.label"), value: stats?.connections ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.investor.1.description"), color: "text-primary" },
+      { icon: Target, label: t("c3.roleAnalyticsDashboard.kpis.investor.2.label"), value: fundraisingData.data?.activeRounds ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.investor.2.description"), color: "text-ghblue" },
+      { icon: TrendingUp, label: t("c3.roleAnalyticsDashboard.kpis.investor.3.label"), value: stats?.totalEvents ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.investor.3.description"), color: "text-ghpurple" },
     ],
     expert: [
-      { icon: Lightbulb, label: "Services", value: servicesData.data?.active ?? 0, description: "Sur la marketplace", color: "text-ghgold" },
-      { icon: BookOpen, label: "Sessions", value: coachingData.data?.total ?? 0, description: "Consulting", color: "text-primary" },
-      { icon: Star, label: "Réputation", value: ssi?.totalScore ?? 0, description: "Score SSI", color: "text-ghpurple" },
-      { icon: Users, label: "Réseau", value: stats?.connections ?? 0, description: "Connexions", color: "text-ghblue" },
+      { icon: Lightbulb, label: t("c3.roleAnalyticsDashboard.kpis.expert.0.label"), value: servicesData.data?.active ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.expert.0.description"), color: "text-ghgold" },
+      { icon: BookOpen, label: t("c3.roleAnalyticsDashboard.kpis.expert.1.label"), value: coachingData.data?.total ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.expert.1.description"), color: "text-primary" },
+      { icon: Star, label: t("c3.roleAnalyticsDashboard.kpis.expert.2.label"), value: ssi?.totalScore ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.expert.2.description"), color: "text-ghpurple" },
+      { icon: Users, label: t("c3.roleAnalyticsDashboard.kpis.expert.3.label"), value: stats?.connections ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.expert.3.description"), color: "text-ghblue" },
     ],
     freelance: [
-      { icon: Briefcase, label: "Missions", value: bookingsData.data?.inProgress ?? 0, description: "En cours", color: "text-primary" },
-      { icon: Star, label: "Note", value: coachingData.data?.avgRating ?? "0", description: "Clients", color: "text-ghgold" },
-      { icon: Users, label: "Réseau", value: stats?.connections ?? 0, description: "Connexions", color: "text-ghblue" },
-      { icon: Rocket, label: "Visibilité", value: ssi?.details?.profileViews ?? 0, description: "Vues profil", color: "text-ghpurple" },
+      { icon: Briefcase, label: t("c3.roleAnalyticsDashboard.kpis.freelance.0.label"), value: bookingsData.data?.inProgress ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.freelance.0.description"), color: "text-primary" },
+      { icon: Star, label: t("c3.roleAnalyticsDashboard.kpis.freelance.1.label"), value: coachingData.data?.avgRating ?? "0", description: t("c3.roleAnalyticsDashboard.kpis.freelance.1.description"), color: "text-ghgold" },
+      { icon: Users, label: t("c3.roleAnalyticsDashboard.kpis.freelance.2.label"), value: stats?.connections ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.freelance.2.description"), color: "text-ghblue" },
+      { icon: Rocket, label: t("c3.roleAnalyticsDashboard.kpis.freelance.3.label"), value: ssi?.details?.profileViews ?? 0, description: t("c3.roleAnalyticsDashboard.kpis.freelance.3.description"), color: "text-ghpurple" },
     ],
   };
 
   const roleBenchmarks: Record<string, RoleBenchmark[]> = {
     startup: [
-      { label: "Connexions", userValue: stats?.connections ?? 0, avgValue: 25 },
-      { label: "Score SSI", userValue: ssi?.totalScore ?? 0, avgValue: 45 },
-      { label: "Posts publiés", userValue: stats?.totalPosts ?? 0, avgValue: 8 },
-      { label: "Objectifs (%)", userValue: stats?.objectivePct ?? 0, avgValue: 60, unit: "%" },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.startup.0"), userValue: stats?.connections ?? 0, avgValue: 25 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.startup.1"), userValue: ssi?.totalScore ?? 0, avgValue: 45 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.startup.2"), userValue: stats?.totalPosts ?? 0, avgValue: 8 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.startup.3"), userValue: stats?.objectivePct ?? 0, avgValue: 60, unit: "%" },
     ],
     mentor: [
-      { label: "Sessions données", userValue: coachingData.data?.completed ?? 0, avgValue: 12 },
-      { label: "Score SSI", userValue: ssi?.totalScore ?? 0, avgValue: 55 },
-      { label: "Connexions", userValue: stats?.connections ?? 0, avgValue: 40 },
-      { label: "Badges", userValue: stats?.totalBadges ?? 0, avgValue: 5 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.mentor.0"), userValue: coachingData.data?.completed ?? 0, avgValue: 12 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.mentor.1"), userValue: ssi?.totalScore ?? 0, avgValue: 55 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.mentor.2"), userValue: stats?.connections ?? 0, avgValue: 40 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.mentor.3"), userValue: stats?.totalBadges ?? 0, avgValue: 5 },
     ],
     investor: [
-      { label: "Connexions", userValue: stats?.connections ?? 0, avgValue: 50 },
-      { label: "Événements", userValue: stats?.totalEvents ?? 0, avgValue: 10 },
-      { label: "Score SSI", userValue: ssi?.totalScore ?? 0, avgValue: 50 },
-      { label: "Posts", userValue: stats?.totalPosts ?? 0, avgValue: 5 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.investor.0"), userValue: stats?.connections ?? 0, avgValue: 50 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.investor.1"), userValue: stats?.totalEvents ?? 0, avgValue: 10 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.investor.2"), userValue: ssi?.totalScore ?? 0, avgValue: 50 },
+      { label: t("c3.roleAnalyticsDashboard.benchmarks.investor.3"), userValue: stats?.totalPosts ?? 0, avgValue: 5 },
     ],
   };
 
@@ -190,9 +193,9 @@ export default function RoleAnalyticsDashboard() {
   const benchmarks = roleBenchmarks[role] ?? roleBenchmarks.startup;
 
   const roleLabels: Record<string, string> = {
-    startup: "🚀 Startup", mentor: "🎓 Mentor", investor: "💰 Investisseur",
-    expert: "🧠 Expert", freelance: "💼 Freelance", incubator: "🏢 Incubateur",
-    student: "🎓 Étudiant", corporate: "🏛️ Corporate",
+    startup: t("c3.roleAnalyticsDashboard.roles.startup"), mentor: t("c3.roleAnalyticsDashboard.roles.mentor"), investor: t("c3.roleAnalyticsDashboard.roles.investor"),
+    expert: t("c3.roleAnalyticsDashboard.roles.expert"), freelance: t("c3.roleAnalyticsDashboard.roles.freelance"), incubator: t("c3.roleAnalyticsDashboard.roles.incubator"),
+    student: t("c3.roleAnalyticsDashboard.roles.student"), corporate: t("c3.roleAnalyticsDashboard.roles.corporate"),
   };
 
   if (isLoading) return <Skeleton className="h-64 rounded-2xl" />;
@@ -203,9 +206,9 @@ export default function RoleAnalyticsDashboard() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-primary" />
-            <h3 className="font-heading text-sm font-bold">KPIs — {roleLabels[role] ?? role}</h3>
+            <h3 className="font-heading text-sm font-bold">{t("c3.roleAnalyticsDashboard.kpisTitle", { role: roleLabels[role] ?? role })}</h3>
           </div>
-          <Tag variant="green">{profile?.display_name ?? "Vous"}</Tag>
+          <Tag variant="green">{profile?.display_name ?? t("c3.roleAnalyticsDashboard.you")}</Tag>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {kpis.map(kpi => (
@@ -218,7 +221,7 @@ export default function RoleAnalyticsDashboard() {
         </div>
       </GHCard>
 
-      <GHCard title="Benchmarking" headerRight={<Tag variant="blue">vs Moyenne plateforme</Tag>}>
+      <GHCard title={t("c3.roleAnalyticsDashboard.benchmarking")} headerRight={<Tag variant="blue">{t("c3.roleAnalyticsDashboard.vsAverage")}</Tag>}>
         <div className="space-y-1">
           {benchmarks.map(b => (
             <BenchmarkBar key={b.label} benchmark={b} />
