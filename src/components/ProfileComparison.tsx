@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfiles, useConnections } from "@/hooks/useGrowHub";
 import { GHCard, Tag } from "@/components/ui-custom";
@@ -41,6 +42,7 @@ function MetricRow({ label, icon: Icon, values, highlight }: { label: string; ic
 }
 
 export default function ProfileComparison() {
+  const { t } = useTranslation();
   const { user, profile: myProfile } = useAuth();
   const { data: profiles } = useProfiles();
   const { data: connections } = useConnections();
@@ -72,14 +74,14 @@ export default function ProfileComparison() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <GitCompare className="w-4 h-4 text-primary" />
-          <h3 className="font-heading text-sm font-bold">Comparer les profils</h3>
+          <h3 className="font-heading text-sm font-bold">{t("c3.profileComparison.title")}</h3>
         </div>
         {selectedProfiles.length < 2 && (
           <button
             onClick={() => setShowSelector(!showSelector)}
             className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 rounded-lg px-3 py-1.5 hover:bg-primary/20 transition-colors"
           >
-            + Ajouter un profil
+            {t("c3.profileComparison.addProfile")}
           </button>
         )}
       </div>
@@ -91,14 +93,14 @@ export default function ProfileComparison() {
             <input
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Rechercher une connexion..."
+              placeholder={t("c3.profileComparison.searchPlaceholder")}
               className="bg-transparent outline-none text-xs w-full"
               autoFocus
             />
           </div>
           <div className="max-h-40 overflow-y-auto space-y-1">
             {availableProfiles.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-2">Aucune connexion trouvée</p>
+              <p className="text-xs text-muted-foreground text-center py-2">{t("c3.profileComparison.noConnectionFound")}</p>
             ) : (
               availableProfiles.slice(0, 8).map(p => (
                 <button
@@ -140,13 +142,13 @@ export default function ProfileComparison() {
                     </div>
                   )}
                 </div>
-                <div className="text-xs font-bold mt-1 truncate">{i === 0 ? "Vous" : p.display_name}</div>
+                <div className="text-xs font-bold mt-1 truncate">{i === 0 ? t("c3.profileComparison.you") : p.display_name}</div>
                 {i > 0 && (
                   <button
                     onClick={() => setSelectedProfiles(prev => prev.filter(id => id !== p.user_id))}
                     className="text-[10px] text-muted-foreground hover:text-destructive mt-0.5"
                   >
-                    <X className="w-3 h-3 inline" /> Retirer
+                    <X className="w-3 h-3 inline" /> {t("c3.profileComparison.remove")}
                   </button>
                 )}
               </div>
@@ -154,18 +156,18 @@ export default function ProfileComparison() {
           </div>
 
           {/* Metrics */}
-          <MetricRow label="Score réseau" icon={TrendingUp} values={compareProfiles.map(p => p.network_score)} highlight="max" />
-          <MetricRow label="Vues profil" icon={Users} values={compareProfiles.map(p => p.profile_views)} highlight="max" />
-          <MetricRow label="Compétences" icon={Star} values={compareProfiles.map(p => p.skills?.length ?? 0)} highlight="max" />
-          <MetricRow label="Secteur" icon={Briefcase} values={compareProfiles.map(p => p.sector)} />
-          <MetricRow label="Stade" icon={Target} values={compareProfiles.map(p => p.company_stage)} />
-          <MetricRow label="Ville" icon={Users} values={compareProfiles.map(p => p.city)} />
+          <MetricRow label={t("c3.profileComparison.networkScore")} icon={TrendingUp} values={compareProfiles.map(p => p.network_score)} highlight="max" />
+          <MetricRow label={t("c3.profileComparison.profileViews")} icon={Users} values={compareProfiles.map(p => p.profile_views)} highlight="max" />
+          <MetricRow label={t("c3.profileComparison.skills")} icon={Star} values={compareProfiles.map(p => p.skills?.length ?? 0)} highlight="max" />
+          <MetricRow label={t("c3.profileComparison.sector")} icon={Briefcase} values={compareProfiles.map(p => p.sector)} />
+          <MetricRow label={t("c3.profileComparison.stage")} icon={Target} values={compareProfiles.map(p => p.company_stage)} />
+          <MetricRow label={t("c3.profileComparison.city")} icon={Users} values={compareProfiles.map(p => p.city)} />
 
           {/* Skills overlap */}
           {compareProfiles.length === 2 && (
             <div className="mt-4 p-3 bg-secondary/30 rounded-xl">
               <p className="text-xs font-bold mb-2">
-                Compétences communes : {commonSkills(compareProfiles[0].skills, compareProfiles[1].skills)}
+                {t("c3.profileComparison.commonSkills", { count: commonSkills(compareProfiles[0].skills, compareProfiles[1].skills) })}
               </p>
               <div className="flex flex-wrap gap-1">
                 {(compareProfiles[0].skills ?? []).filter(s => compareProfiles[1].skills?.includes(s)).map(s => (
@@ -177,7 +179,7 @@ export default function ProfileComparison() {
         </div>
       ) : (
         <p className="text-xs text-muted-foreground text-center py-4">
-          Ajoutez un profil de votre réseau pour commencer la comparaison
+          {t("c3.profileComparison.emptyState")}
         </p>
       )}
     </GHCard>

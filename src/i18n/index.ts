@@ -15,14 +15,22 @@ import frProfile from "./locales/fr.profile";
 import enProfile from "./locales/en.profile";
 import frUi from "./locales/fr.ui";
 import enUi from "./locales/en.ui";
+import frC1 from "./locales/fr.c1";
+import enC1 from "./locales/en.c1";
+import frC2 from "./locales/fr.c2";
+import enC2 from "./locales/en.c2";
+import frC3 from "./locales/fr.c3";
+import enC3 from "./locales/en.c3";
+import frC4 from "./locales/fr.c4";
+import enC4 from "./locales/en.c4";
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
-      fr: { translation: { ...fr, ...frDeals, ...frCoach, ...frPublic, ...frNet, ...frProfile, ...frUi } },
-      en: { translation: { ...en, ...enDeals, ...enCoach, ...enPublic, ...enNet, ...enProfile, ...enUi } },
+      fr: { translation: { ...fr, ...frDeals, ...frCoach, ...frPublic, ...frNet, ...frProfile, ...frUi, ...frC1, ...frC2, ...frC3, ...frC4 } },
+      en: { translation: { ...en, ...enDeals, ...enCoach, ...enPublic, ...enNet, ...enProfile, ...enUi, ...enC1, ...enC2, ...enC3, ...enC4 } },
     },
     fallbackLng: "fr",
     supportedLngs: ["fr", "en"],

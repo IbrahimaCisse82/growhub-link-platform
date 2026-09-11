@@ -4,58 +4,60 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 // ─── Role-specific hero configs ──────────────────────────────
 const roleHeroConfig: Record<string, { badge: string; title: (name: string) => JSX.Element; subtitle: string }> = {
   startup: {
-    badge: "Growth Command Center",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> accélérez votre croissance</span> 🚀</>,
-    subtitle: "Suivez vos KPIs, connectez-vous et développez votre startup.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.startup.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.startup.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.startup.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.startup.subtitle"); },
   },
   mentor: {
-    badge: "Espace Mentor",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> guidez la prochaine génération</span> 🎯</>,
-    subtitle: "Gérez vos mentorés, sessions et partagez votre expertise.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.mentor.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.mentor.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.mentor.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.mentor.subtitle"); },
   },
   investor: {
-    badge: "Investor Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> découvrez les opportunités</span> 💎</>,
-    subtitle: "Suivez votre deal flow, vos investissements et le pipeline.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.investor.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.investor.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.investor.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.investor.subtitle"); },
   },
   expert: {
-    badge: "Expert Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> partagez votre savoir</span> 🧠</>,
-    subtitle: "Proposez vos services, formations et accompagnements.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.expert.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.expert.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.expert.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.expert.subtitle"); },
   },
   freelance: {
-    badge: "Freelance Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> développez votre activité</span> ⚡</>,
-    subtitle: "Gérez vos missions, clients et visibilité sur le marketplace.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.freelance.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.freelance.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.freelance.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.freelance.subtitle"); },
   },
   incubateur: {
-    badge: "Incubateur Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> pilotez vos cohortes</span> 🏗️</>,
-    subtitle: "Suivez vos startups incubées, événements et ressources.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.incubateur.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.incubateur.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.incubateur.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.incubateur.subtitle"); },
   },
   etudiant: {
-    badge: "Campus Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> préparez votre avenir</span> 🎓</>,
-    subtitle: "Apprenez, réseautez et lancez votre premier projet.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.etudiant.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.etudiant.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.etudiant.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.etudiant.subtitle"); },
   },
   aspirationnel: {
-    badge: "Explorer Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> explorez l'entrepreneuriat</span> ✨</>,
-    subtitle: "Découvrez les opportunités, inspirez-vous et passez à l'action.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.aspirationnel.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.aspirationnel.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.aspirationnel.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.aspirationnel.subtitle"); },
   },
   professionnel: {
-    badge: "Pro Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> élargissez votre réseau</span> 🤝</>,
-    subtitle: "Connectez-vous, trouvez des partenaires et des opportunités.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.professionnel.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.professionnel.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.professionnel.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.professionnel.subtitle"); },
   },
   corporate: {
-    badge: "Corporate Hub",
-    title: (name) => <>Bonjour {name},<br className="hidden md:block" /><span className="text-primary"> innovez avec les startups</span> 🏢</>,
-    subtitle: "Identifiez des startups partenaires et pilotez l'open innovation.",
+    get badge() { return i18n.t("c3.roleDashboard.hero.corporate.badge"); },
+    title: (name) => <>{i18n.t("c3.roleDashboard.greeting", { name })}<br className="hidden md:block" /><span className="text-primary"> {i18n.t("c3.roleDashboard.hero.corporate.titleHighlight")}</span> {i18n.t("c3.roleDashboard.hero.corporate.emoji")}</>,
+    get subtitle() { return i18n.t("c3.roleDashboard.hero.corporate.subtitle"); },
   },
 };
 
