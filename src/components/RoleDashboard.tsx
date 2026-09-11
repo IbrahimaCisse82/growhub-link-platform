@@ -66,6 +66,8 @@ interface RoleMetricsProps { role: string; }
 
 export function RoleMetrics({ role }: RoleMetricsProps) {
   const { user } = useAuth();
+  const { t } = useTranslation();
+
 
   const { data: stats, isLoading } = useQuery({
     queryKey: ["role-metrics", role, user?.id],
