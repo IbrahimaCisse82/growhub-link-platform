@@ -192,72 +192,75 @@ export function RoleMetrics({ role }: RoleMetricsProps) {
 export function RoleQuickActions({ role }: { role: string }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const a = (key: string) => t(`c3.roleDashboard.actions.${key}`);
 
-  const actionsMap: Record<string, { emoji: string; label: string; path: string; variant: "primary" | "secondary" }[]> = {
+  const actionsMap: Record<string, { emoji: string; path: string; variant: "primary" | "secondary" }[]> = {
     startup: [
-      { emoji: "📊", label: a("pitchDeck"), path: "/pitchdeck", variant: "primary" },
-      { emoji: "💰", label: a("fundraising"), path: "/fundraising", variant: "secondary" },
-      { emoji: "✍️", label: a("coaching"), path: "/coaching", variant: "secondary" },
-      { emoji: "🎯", label: a("objectives"), path: "/progression", variant: "secondary" },
+      { emoji: "\u{1F4CA}", path: "/pitchdeck", variant: "primary" },
+      { emoji: "\u{1F4B0}", path: "/fundraising", variant: "secondary" },
+      { emoji: "\u270D\uFE0F", path: "/coaching", variant: "secondary" },
+      { emoji: "\u{1F3AF}", path: "/progression", variant: "secondary" },
     ],
     mentor: [
-      { emoji: "📅", label: a("mySessions"), path: "/coaching", variant: "primary" },
-      { emoji: "👥", label: a("myMentees"), path: "/mentor-dashboard", variant: "secondary" },
-      { emoji: "💬", label: a("publishTip"), path: "/feed", variant: "secondary" },
-      { emoji: "📊", label: a("myReviews"), path: "/mentor-dashboard", variant: "secondary" },
+      { emoji: "\u{1F4C5}", path: "/coaching", variant: "primary" },
+      { emoji: "\u{1F465}", path: "/mentor-dashboard", variant: "secondary" },
+      { emoji: "\u{1F4AC}", path: "/feed", variant: "secondary" },
+      { emoji: "\u{1F4CA}", path: "/mentor-dashboard", variant: "secondary" },
     ],
     investor: [
-      { emoji: "💎", label: a("dealFlow"), path: "/deal-flow", variant: "primary" },
-      { emoji: "🔒", label: a("dealRoom"), path: "/deal-room", variant: "secondary" },
-      { emoji: "👥", label: a("startups"), path: "/networking", variant: "secondary" },
-      { emoji: "📊", label: a("pitchDecks"), path: "/pitchdeck", variant: "secondary" },
+      { emoji: "\u{1F48E}", path: "/deal-flow", variant: "primary" },
+      { emoji: "\u{1F512}", path: "/deal-room", variant: "secondary" },
+      { emoji: "\u{1F465}", path: "/networking", variant: "secondary" },
+      { emoji: "\u{1F4CA}", path: "/pitchdeck", variant: "secondary" },
     ],
     expert: [
-      { emoji: "🛒", label: a("myServices"), path: "/marketplace", variant: "primary" },
-      { emoji: "✍️", label: a("consultations"), path: "/coaching", variant: "secondary" },
-      { emoji: "📝", label: a("publish"), path: "/feed", variant: "secondary" },
-      { emoji: "📊", label: a("analytics"), path: "/analytics", variant: "secondary" },
+      { emoji: "\u{1F6D2}", path: "/marketplace", variant: "primary" },
+      { emoji: "\u270D\uFE0F", path: "/coaching", variant: "secondary" },
+      { emoji: "\u{1F4DD}", path: "/feed", variant: "secondary" },
+      { emoji: "\u{1F4CA}", path: "/analytics", variant: "secondary" },
     ],
     freelance: [
-      { emoji: "📊", label: a("myPipeline"), path: "/pipeline", variant: "primary" },
-      { emoji: "🛒", label: a("myOffers"), path: "/marketplace", variant: "secondary" },
-      { emoji: "👥", label: a("network"), path: "/networking", variant: "secondary" },
-      { emoji: "📣", label: a("leads"), path: "/marketing", variant: "secondary" },
+      { emoji: "\u{1F4CA}", path: "/pipeline", variant: "primary" },
+      { emoji: "\u{1F6D2}", path: "/marketplace", variant: "secondary" },
+      { emoji: "\u{1F465}", path: "/networking", variant: "secondary" },
+      { emoji: "\u{1F4E3}", path: "/marketing", variant: "secondary" },
     ],
     incubateur: [
-      { emoji: "🏗️", label: a("myCohorts"), path: "/cohorts", variant: "primary" },
-      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
-      { emoji: "📊", label: a("analytics"), path: "/analytics", variant: "secondary" },
-      { emoji: "✍️", label: a("coaching"), path: "/coaching", variant: "secondary" },
+      { emoji: "\u{1F3D7}\uFE0F", path: "/cohorts", variant: "primary" },
+      { emoji: "\u{1F4C5}", path: "/events", variant: "secondary" },
+      { emoji: "\u{1F4CA}", path: "/analytics", variant: "secondary" },
+      { emoji: "\u270D\uFE0F", path: "/coaching", variant: "secondary" },
     ],
     etudiant: [
-      { emoji: "🎓", label: a("findMentor"), path: "/coaching", variant: "primary" },
-      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
-      { emoji: "👥", label: a("networking"), path: "/networking", variant: "secondary" },
-      { emoji: "🎯", label: a("objectives"), path: "/progression", variant: "secondary" },
+      { emoji: "\u{1F393}", path: "/coaching", variant: "primary" },
+      { emoji: "\u{1F4C5}", path: "/events", variant: "secondary" },
+      { emoji: "\u{1F465}", path: "/networking", variant: "secondary" },
+      { emoji: "\u{1F3AF}", path: "/progression", variant: "secondary" },
     ],
     aspirationnel: [
-      { emoji: "✨", label: a("explore"), path: "/networking", variant: "primary" },
-      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
-      { emoji: "📚", label: a("inspirationFeed"), path: "/feed", variant: "secondary" },
-      { emoji: "🎓", label: a("coaching"), path: "/coaching", variant: "secondary" },
+      { emoji: "\u2728", path: "/networking", variant: "primary" },
+      { emoji: "\u{1F4C5}", path: "/events", variant: "secondary" },
+      { emoji: "\u{1F4DA}", path: "/feed", variant: "secondary" },
+      { emoji: "\u{1F393}", path: "/coaching", variant: "secondary" },
     ],
     professionnel: [
-      { emoji: "🤝", label: a("networking"), path: "/networking", variant: "primary" },
-      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
-      { emoji: "💬", label: a("messages"), path: "/messaging", variant: "secondary" },
-      { emoji: "🎯", label: a("objectives"), path: "/progression", variant: "secondary" },
+      { emoji: "\u{1F91D}", path: "/networking", variant: "primary" },
+      { emoji: "\u{1F4C5}", path: "/events", variant: "secondary" },
+      { emoji: "\u{1F4AC}", path: "/messaging", variant: "secondary" },
+      { emoji: "\u{1F3AF}", path: "/progression", variant: "secondary" },
     ],
     corporate: [
-      { emoji: "🔍", label: a("scoutStartups"), path: "/networking", variant: "primary" },
-      { emoji: "🔒", label: a("dealRoom"), path: "/deal-room", variant: "secondary" },
-      { emoji: "📅", label: a("events"), path: "/events", variant: "secondary" },
-      { emoji: "📊", label: a("analytics"), path: "/analytics", variant: "secondary" },
+      { emoji: "\u{1F50D}", path: "/networking", variant: "primary" },
+      { emoji: "\u{1F512}", path: "/deal-room", variant: "secondary" },
+      { emoji: "\u{1F4C5}", path: "/events", variant: "secondary" },
+      { emoji: "\u{1F4CA}", path: "/analytics", variant: "secondary" },
     ],
   };
 
-  const actions = actionsMap[role] ?? actionsMap.startup;
+  const roleKey = actionsMap[role] ? role : "startup";
+  const actions = actionsMap[roleKey].map((item, i) => ({
+    ...item,
+    label: String(t(`c3.roleDashboard.actions.${roleKey}.${i}.label`)),
+  }));
 
   return (
     <div className="flex gap-1.5 md:gap-2.5 flex-wrap">
@@ -281,101 +284,29 @@ export function RoleQuickActions({ role }: { role: string }) {
 // ─── Role-specific tips/guidance widget ──────────────────────────────
 export function RoleGuidance({ role }: { role: string }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  const tipsMap: Record<string, { icon: string; title: string; items: { text: string; path: string }[] }> = {
-    startup: {
-      icon: "🚀", title: "Prochaines étapes pour votre startup",
-      items: [
-        { text: "Complétez votre pitch deck", path: "/pitchdeck" },
-        { text: "Connectez-vous avec 5 mentors", path: "/networking" },
-        { text: "Publiez votre premier post", path: "/feed" },
-        { text: "Inscrivez-vous à un événement", path: "/events" },
-      ],
-    },
-    mentor: {
-      icon: "🎯", title: "Maximisez votre impact de mentor",
-      items: [
-        { text: "Complétez votre profil coach", path: "/coaching" },
-        { text: "Définissez vos créneaux de disponibilité", path: "/coaching" },
-        { text: "Répondez aux demandes de session", path: "/coaching" },
-        { text: "Partagez votre expertise via le fil d'actu", path: "/feed" },
-      ],
-    },
-    investor: {
-      icon: "💎", title: "Optimisez votre deal flow",
-      items: [
-        { text: "Créez votre Deal Room", path: "/deal-room" },
-        { text: "Filtrez les startups par secteur", path: "/networking" },
-        { text: "Participez aux Demo Days", path: "/events" },
-        { text: "Connectez-vous avec d'autres investisseurs", path: "/networking" },
-      ],
-    },
-    expert: {
-      icon: "🧠", title: "Développez votre expertise",
-      items: [
-        { text: "Créez vos offres sur le marketplace", path: "/marketplace" },
-        { text: "Publiez des articles d'expertise", path: "/feed" },
-        { text: "Proposez des workshops", path: "/events" },
-        { text: "Collectez des avis clients", path: "/coaching" },
-      ],
-    },
-    freelance: {
-      icon: "⚡", title: "Boostez votre activité freelance",
-      items: [
-        { text: "Créez vos offres sur le marketplace", path: "/marketplace" },
-        { text: "Complétez votre portfolio", path: "/profile" },
-        { text: "Réseautez dans les cercles pro", path: "/circles" },
-        { text: "Gérez vos leads et prospects", path: "/marketing" },
-      ],
-    },
-    incubateur: {
-      icon: "🏗️", title: "Pilotez vos cohortes",
-      items: [
-        { text: "Créez un cercle pour votre cohorte", path: "/circles" },
-        { text: "Organisez des événements de mentorat", path: "/events" },
-        { text: "Suivez les progrès des startups", path: "/analytics" },
-        { text: "Connectez startups et investisseurs", path: "/networking" },
-      ],
-    },
-    etudiant: {
-      icon: "🎓", title: "Lancez-vous dans l'aventure",
-      items: [
-        { text: "Trouvez un mentor dans votre secteur", path: "/coaching" },
-        { text: "Participez aux événements networking", path: "/events" },
-        { text: "Rejoignez un cercle thématique", path: "/circles" },
-        { text: "Fixez vos premiers objectifs", path: "/progression" },
-      ],
-    },
-    aspirationnel: {
-      icon: "✨", title: "Découvrez l'écosystème",
-      items: [
-        { text: "Explorez les profils inspirants", path: "/networking" },
-        { text: "Assistez à un webinar ou meetup", path: "/events" },
-        { text: "Lisez le fil d'inspiration", path: "/feed" },
-        { text: "Identifiez votre secteur d'intérêt", path: "/profile" },
-      ],
-    },
-    professionnel: {
-      icon: "🤝", title: "Élargissez vos horizons",
-      items: [
-        { text: "Connectez-vous avec des entrepreneurs", path: "/networking" },
-        { text: "Participez aux événements pro", path: "/events" },
-        { text: "Proposez vos compétences", path: "/marketplace" },
-        { text: "Définissez vos objectifs de networking", path: "/progression" },
-      ],
-    },
-    corporate: {
-      icon: "🏢", title: "Innovez avec les startups",
-      items: [
-        { text: "Identifiez des startups partenaires", path: "/networking" },
-        { text: "Créez votre page entreprise", path: "/company" },
-        { text: "Utilisez le Deal Room", path: "/deal-room" },
-        { text: "Participez aux Demo Days", path: "/events" },
-      ],
-    },
+  const tipsMap: Record<string, { icon: string; paths: string[] }> = {
+    startup: { icon: "\u{1F680}", paths: ["/pitchdeck", "/networking", "/feed", "/events"] },
+    mentor: { icon: "\u{1F3AF}", paths: ["/coaching", "/coaching", "/coaching", "/feed"] },
+    investor: { icon: "\u{1F48E}", paths: ["/deal-room", "/networking", "/events", "/networking"] },
+    expert: { icon: "\u{1F9E0}", paths: ["/marketplace", "/feed", "/events", "/coaching"] },
+    freelance: { icon: "\u26A1", paths: ["/marketplace", "/profile", "/circles", "/marketing"] },
+    incubateur: { icon: "\u{1F3D7}\uFE0F", paths: ["/circles", "/events", "/analytics", "/networking"] },
+    etudiant: { icon: "\u{1F393}", paths: ["/coaching", "/events", "/circles", "/progression"] },
+    aspirationnel: { icon: "\u2728", paths: ["/networking", "/events", "/feed", "/profile"] },
+    professionnel: { icon: "\u{1F91D}", paths: ["/networking", "/events", "/marketplace", "/progression"] },
+    corporate: { icon: "\u{1F3E2}", paths: ["/networking", "/company", "/deal-room", "/events"] },
   };
 
-  const tips = tipsMap[role] ?? tipsMap.startup;
+  const guidanceKey = tipsMap[role] ? role : "startup";
+  const entry = tipsMap[guidanceKey];
+  const labels = t(`c3.roleDashboard.guidance.${guidanceKey}.items`, { returnObjects: true }) as unknown as string[];
+  const tips = {
+    icon: entry.icon,
+    title: String(t(`c3.roleDashboard.guidance.${guidanceKey}.title`)),
+    items: entry.paths.map((path, i) => ({ path, text: Array.isArray(labels) ? labels[i] : "" })),
+  };
 
   return (
     <GHCard title={`${tips.icon} ${tips.title}`} className="mb-[18px]">
