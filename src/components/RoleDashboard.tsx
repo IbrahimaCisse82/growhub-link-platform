@@ -284,101 +284,29 @@ export function RoleQuickActions({ role }: { role: string }) {
 // ─── Role-specific tips/guidance widget ──────────────────────────────
 export function RoleGuidance({ role }: { role: string }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  const tipsMap: Record<string, { icon: string; title: string; items: { text: string; path: string }[] }> = {
-    startup: {
-      icon: "🚀", title: "Prochaines étapes pour votre startup",
-      items: [
-        { text: "Complétez votre pitch deck", path: "/pitchdeck" },
-        { text: "Connectez-vous avec 5 mentors", path: "/networking" },
-        { text: "Publiez votre premier post", path: "/feed" },
-        { text: "Inscrivez-vous à un événement", path: "/events" },
-      ],
-    },
-    mentor: {
-      icon: "🎯", title: "Maximisez votre impact de mentor",
-      items: [
-        { text: "Complétez votre profil coach", path: "/coaching" },
-        { text: "Définissez vos créneaux de disponibilité", path: "/coaching" },
-        { text: "Répondez aux demandes de session", path: "/coaching" },
-        { text: "Partagez votre expertise via le fil d'actu", path: "/feed" },
-      ],
-    },
-    investor: {
-      icon: "💎", title: "Optimisez votre deal flow",
-      items: [
-        { text: "Créez votre Deal Room", path: "/deal-room" },
-        { text: "Filtrez les startups par secteur", path: "/networking" },
-        { text: "Participez aux Demo Days", path: "/events" },
-        { text: "Connectez-vous avec d'autres investisseurs", path: "/networking" },
-      ],
-    },
-    expert: {
-      icon: "🧠", title: "Développez votre expertise",
-      items: [
-        { text: "Créez vos offres sur le marketplace", path: "/marketplace" },
-        { text: "Publiez des articles d'expertise", path: "/feed" },
-        { text: "Proposez des workshops", path: "/events" },
-        { text: "Collectez des avis clients", path: "/coaching" },
-      ],
-    },
-    freelance: {
-      icon: "⚡", title: "Boostez votre activité freelance",
-      items: [
-        { text: "Créez vos offres sur le marketplace", path: "/marketplace" },
-        { text: "Complétez votre portfolio", path: "/profile" },
-        { text: "Réseautez dans les cercles pro", path: "/circles" },
-        { text: "Gérez vos leads et prospects", path: "/marketing" },
-      ],
-    },
-    incubateur: {
-      icon: "🏗️", title: "Pilotez vos cohortes",
-      items: [
-        { text: "Créez un cercle pour votre cohorte", path: "/circles" },
-        { text: "Organisez des événements de mentorat", path: "/events" },
-        { text: "Suivez les progrès des startups", path: "/analytics" },
-        { text: "Connectez startups et investisseurs", path: "/networking" },
-      ],
-    },
-    etudiant: {
-      icon: "🎓", title: "Lancez-vous dans l'aventure",
-      items: [
-        { text: "Trouvez un mentor dans votre secteur", path: "/coaching" },
-        { text: "Participez aux événements networking", path: "/events" },
-        { text: "Rejoignez un cercle thématique", path: "/circles" },
-        { text: "Fixez vos premiers objectifs", path: "/progression" },
-      ],
-    },
-    aspirationnel: {
-      icon: "✨", title: "Découvrez l'écosystème",
-      items: [
-        { text: "Explorez les profils inspirants", path: "/networking" },
-        { text: "Assistez à un webinar ou meetup", path: "/events" },
-        { text: "Lisez le fil d'inspiration", path: "/feed" },
-        { text: "Identifiez votre secteur d'intérêt", path: "/profile" },
-      ],
-    },
-    professionnel: {
-      icon: "🤝", title: "Élargissez vos horizons",
-      items: [
-        { text: "Connectez-vous avec des entrepreneurs", path: "/networking" },
-        { text: "Participez aux événements pro", path: "/events" },
-        { text: "Proposez vos compétences", path: "/marketplace" },
-        { text: "Définissez vos objectifs de networking", path: "/progression" },
-      ],
-    },
-    corporate: {
-      icon: "🏢", title: "Innovez avec les startups",
-      items: [
-        { text: "Identifiez des startups partenaires", path: "/networking" },
-        { text: "Créez votre page entreprise", path: "/company" },
-        { text: "Utilisez le Deal Room", path: "/deal-room" },
-        { text: "Participez aux Demo Days", path: "/events" },
-      ],
-    },
+  const tipsMap: Record<string, { icon: string; paths: string[] }> = {
+    startup: { icon: "\u{1F680}", paths: ["/pitchdeck", "/networking", "/feed", "/events"] },
+    mentor: { icon: "\u{1F3AF}", paths: ["/coaching", "/coaching", "/coaching", "/feed"] },
+    investor: { icon: "\u{1F48E}", paths: ["/deal-room", "/networking", "/events", "/networking"] },
+    expert: { icon: "\u{1F9E0}", paths: ["/marketplace", "/feed", "/events", "/coaching"] },
+    freelance: { icon: "\u26A1", paths: ["/marketplace", "/profile", "/circles", "/marketing"] },
+    incubateur: { icon: "\u{1F3D7}\uFE0F", paths: ["/circles", "/events", "/analytics", "/networking"] },
+    etudiant: { icon: "\u{1F393}", paths: ["/coaching", "/events", "/circles", "/progression"] },
+    aspirationnel: { icon: "\u2728", paths: ["/networking", "/events", "/feed", "/profile"] },
+    professionnel: { icon: "\u{1F91D}", paths: ["/networking", "/events", "/marketplace", "/progression"] },
+    corporate: { icon: "\u{1F3E2}", paths: ["/networking", "/company", "/deal-room", "/events"] },
   };
 
-  const tips = tipsMap[role] ?? tipsMap.startup;
+  const guidanceKey = tipsMap[role] ? role : "startup";
+  const entry = tipsMap[guidanceKey];
+  const labels = t(`c3.roleDashboard.guidance.${guidanceKey}.items`, { returnObjects: true }) as unknown as string[];
+  const tips = {
+    icon: entry.icon,
+    title: String(t(`c3.roleDashboard.guidance.${guidanceKey}.title`)),
+    items: entry.paths.map((path, i) => ({ path, text: Array.isArray(labels) ? labels[i] : "" })),
+  };
 
   return (
     <GHCard title={`${tips.icon} ${tips.title}`} className="mb-[18px]">
