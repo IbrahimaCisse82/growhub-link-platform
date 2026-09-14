@@ -100,5 +100,8 @@ export function getHelpConfig(key: string): { title: string; items: { question: 
 }
 
 export const helpConfigs = new Proxy({} as Record<string, { title: string; items: { question: string; answer: string }[] }>, {
-  get: (_target, prop: string) => getHelpConfig(prop),
+  get: (target, prop) => {
+    if (typeof prop !== "string") return Reflect.get(target, prop);
+    return getHelpConfig(prop);
+  },
 });
