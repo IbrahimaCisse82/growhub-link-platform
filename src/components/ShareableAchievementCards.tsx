@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ interface Achievement {
 
 export default function ShareableAchievementCards() {
   const { user, profile } = useAuth();
+  const { t } = useTranslation();
 
   const { data: achievements, isLoading } = useQuery({
     queryKey: ["shareable-achievements", user?.id],
@@ -48,67 +50,67 @@ export default function ShareableAchievementCards() {
       if (connections > 0) cards.push({
         id: "connections",
         type: "network",
-        title: "Réseau professionnel",
-        subtitle: `${name} sur GrowHubLink`,
-        value: `${connections} connexions`,
+        title: t("c4.achievements.network.title"),
+        subtitle: t("c4.achievements.network.subtitle", { name }),
+        value: t("c4.achievements.network.value", { count: connections }),
         icon: <Users className="w-6 h-6" />,
         gradient: "from-primary to-primary/60",
-        shareText: `🌐 ${connections} connexions professionnelles sur GrowHubLink ! Mon réseau est ma force. #Networking #GrowHub`,
+        shareText: t("c4.achievements.network.shareText", { count: connections }),
       });
 
       if (posts > 0) cards.push({
         id: "content",
         type: "content",
-        title: "Créateur de contenu",
-        subtitle: `${totalLikes} likes récoltés`,
-        value: `${posts} publications`,
+        title: t("c4.achievements.content.title"),
+        subtitle: t("c4.achievements.content.subtitle", { likes: totalLikes }),
+        value: t("c4.achievements.content.value", { count: posts }),
         icon: <MessageSquare className="w-6 h-6" />,
         gradient: "from-ghblue to-ghblue/60",
-        shareText: `📝 ${posts} posts et ${totalLikes} likes sur GrowHubLink ! Le partage de connaissances, c'est la clé. #ContentCreator #GrowHub`,
+        shareText: t("c4.achievements.content.shareText", { posts, likes: totalLikes }),
       });
 
       if (events > 0) cards.push({
         id: "events",
         type: "engagement",
-        title: "Participant actif",
-        subtitle: "Événements & networking",
-        value: `${events} événements`,
+        title: t("c4.achievements.engagement.title"),
+        subtitle: t("c4.achievements.engagement.subtitle"),
+        value: t("c4.achievements.engagement.value", { count: events }),
         icon: <Calendar className="w-6 h-6" />,
         gradient: "from-ghorange to-ghorange/60",
-        shareText: `📅 ${events} événements sur GrowHubLink ! Toujours en mouvement, toujours en réseau. #Events #GrowHub`,
+        shareText: t("c4.achievements.engagement.shareText", { count: events }),
       });
 
       if (badges > 0) cards.push({
         id: "badges",
         type: "achievement",
-        title: "Collectionneur",
-        subtitle: "Badges d'accomplissement",
-        value: `${badges} badges`,
+        title: t("c4.achievements.achievement.title"),
+        subtitle: t("c4.achievements.achievement.subtitle"),
+        value: t("c4.achievements.achievement.value", { count: badges }),
         icon: <Award className="w-6 h-6" />,
         gradient: "from-ghgold to-ghgold/60",
-        shareText: `🏆 ${badges} badges débloqués sur GrowHubLink ! Chaque badge raconte une histoire. #Achievement #GrowHub`,
+        shareText: t("c4.achievements.achievement.shareText", { count: badges }),
       });
 
       if (coaching > 0) cards.push({
         id: "coaching",
         type: "growth",
-        title: "Apprenant engagé",
-        subtitle: "Sessions de coaching",
-        value: `${coaching} sessions`,
+        title: t("c4.achievements.growth.title"),
+        subtitle: t("c4.achievements.growth.subtitle"),
+        value: t("c4.achievements.growth.value", { count: coaching }),
         icon: <TrendingUp className="w-6 h-6" />,
         gradient: "from-ghpurple to-ghpurple/60",
-        shareText: `🎓 ${coaching} sessions de coaching sur GrowHubLink ! L'investissement en soi est le meilleur ROI. #Coaching #GrowHub`,
+        shareText: t("c4.achievements.growth.shareText", { count: coaching }),
       });
 
       if (endorsements > 0) cards.push({
         id: "endorsements",
         type: "trust",
-        title: "Professionnel reconnu",
-        subtitle: "Recommandations reçues",
-        value: `${endorsements} endorsements`,
+        title: t("c4.achievements.trust.title"),
+        subtitle: t("c4.achievements.trust.subtitle"),
+        value: t("c4.achievements.trust.value", { count: endorsements }),
         icon: <Trophy className="w-6 h-6" />,
         gradient: "from-ghteal to-ghteal/60",
-        shareText: `⭐ ${endorsements} recommandations sur GrowHubLink ! La confiance se construit ensemble. #Endorsements #GrowHub`,
+        shareText: t("c4.achievements.trust.shareText", { count: endorsements }),
       });
 
       return cards;
@@ -129,7 +131,7 @@ export default function ShareableAchievementCards() {
 
   const copyShareText = (text: string) => {
     navigator.clipboard.writeText(text + "\nhttps://growhublink.com");
-    toast.success("Texte copié !");
+    toast.success(t("c4.achievements.copySuccess"));
   };
 
   if (isLoading || !achievements?.length) return null;
@@ -138,8 +140,8 @@ export default function ShareableAchievementCards() {
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-1">
         <Share2 className="w-5 h-5 text-primary" />
-        <h3 className="font-heading text-base font-bold">Vos Achievements partageables</h3>
-        <Tag variant="green">Nouveau</Tag>
+        <h3 className="font-heading text-base font-bold">{t("c4.achievements.heading")}</h3>
+        <Tag variant="green">{t("c4.achievements.badgeNew")}</Tag>
       </div>
       <p className="text-xs text-muted-foreground mb-3">
         Partagez vos succès sur les réseaux sociaux et attirez de nouvelles connexions.
@@ -172,18 +174,18 @@ export default function ShareableAchievementCards() {
                   onClick={() => shareToLinkedIn(a.shareText)}
                   className="flex-1 bg-[#0077B5]/10 text-[#0077B5] rounded-lg py-2 text-[10px] font-bold flex items-center justify-center gap-1 hover:bg-[#0077B5]/20 transition-colors"
                 >
-                  <ExternalLink className="w-3 h-3" /> LinkedIn
+                  <ExternalLink className="w-3 h-3" /> {t("c4.achievements.linkedin")}
                 </button>
                 <button
                   onClick={() => shareToX(a.shareText)}
                   className="flex-1 bg-foreground/5 text-foreground rounded-lg py-2 text-[10px] font-bold flex items-center justify-center gap-1 hover:bg-foreground/10 transition-colors"
                 >
-                  <ExternalLink className="w-3 h-3" /> X
+                  <ExternalLink className="w-3 h-3" /> {t("c4.achievements.x")}
                 </button>
                 <button
                   onClick={() => copyShareText(a.shareText)}
                   className="bg-secondary rounded-lg p-2 text-muted-foreground hover:text-foreground transition-colors"
-                  title="Copier le texte"
+                  title={t("c4.achievements.copyTooltip")}
                 >
                   <Copy className="w-3.5 h-3.5" />
                 </button>

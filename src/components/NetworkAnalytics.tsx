@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ interface NetworkROI {
 }
 
 export default function NetworkAnalytics() {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
 
   const { data: roi, isLoading } = useQuery({
@@ -69,7 +71,7 @@ export default function NetworkAnalytics() {
       // Connections by month
       const byMonth: Record<string, number> = {};
       accepted.forEach(c => {
-        const m = new Date(c.created_at).toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
+        const m = new Date(c.created_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { month: "short", year: "2-digit" });
         byMonth[m] = (byMonth[m] ?? 0) + 1;
       });
       const connectionsByMonth = Object.entries(byMonth).map(([month, count]) => ({ month, count }));
@@ -108,10 +110,34 @@ export default function NetworkAnalytics() {
   if (!roi) return null;
 
   const roiMetrics = [
-    { icon: Users, label: "Connexions actives", value: `${roi.activeConnections}/${roi.totalConnections}`, sub: `${roi.avgResponseRate}% taux d'engagement`, color: "text-primary" },
-    { icon: Handshake, label: "Introductions", value: roi.warmIntrosGiven + roi.warmIntrosReceived, sub: `${roi.warmIntrosGiven} données · ${roi.warmIntrosReceived} reçues`, color: "text-ghorange" },
-    { icon: Target, label: "Collaborations", value: roi.collaborationsStarted, sub: "projets démarrés", color: "text-ghpurple" },
-    { icon: MessageSquare, label: "Messages", value: roi.messagesExchanged, sub: "échangés au total", color: "text-ghblue" },
+    { 
+      icon: Users, 
+      label: t("c3.networkAnalytics.activeConnections"), 
+      value: `${roi.activeConnections}/${roi.totalConnections}`, 
+      sub: t("c3.networkAnalytics.engagementRate", { pct: roi.avgResponseRate }), 
+      color: "text-primary" 
+    },
+    { 
+      icon: Handshake, 
+      label: t("c3.networkAnalytics.introductions"), 
+      value: roi.warmIntrosGiven + roi.warmIntrosReceived, 
+      sub: t("c3.networkAnalytics.introsSub", { given: roi.warmIntrosGiven, received: roi.warmIntrosReceived }), 
+      color: "text-ghorange" 
+    },
+    { 
+      icon: Target, 
+      label: t("c3.networkAnalytics.collaborations"), 
+      value: roi.collaborationsStarted, 
+      sub: t("c3.networkAnalytics.collaborationsSub"), 
+      color: "text-ghpurple" 
+    },
+    { 
+      icon: MessageSquare, 
+      label: t("c3.networkAnalytics.messages"), 
+      value: roi.messagesExchanged, 
+      sub: t("c3.networkAnalytics.messagesSub"), 
+      color: "text-ghblue" 
+    },
   ];
 
   return (
@@ -130,9 +156,9 @@ export default function NetworkAnalytics() {
 
       {/* Distribution */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <GHCard title="Réseau par secteur" headerRight={<Tag variant="blue">Distribution</Tag>}>
+        <GHCard title={t("c3.networkAnalytics.networkBySector")} headerRight={<Tag variant="blue">{t("c3.networkAnalytics.distribution")}</Tag>}>
           {roi.topSectors.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-4">Pas assez de données</p>
+            <p className="text-xs text-muted-foreground text-center py-4">{t("c3.networkAnalytics.notEnoughData")}</p>
           ) : (
             <div className="space-y-2.5">
               {roi.topSectors.map(s => {
@@ -153,9 +179,9 @@ export default function NetworkAnalytics() {
           )}
         </GHCard>
 
-        <GHCard title="Réseau par ville" headerRight={<Tag variant="teal">Géographie</Tag>}>
+        <GHCard title={t("c3.networkAnalytics.networkByCity")} headerRight={<Tag variant="teal">{t("c3.networkAnalytics.geography")}</Tag>}>
           {roi.topCities.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-4">Pas assez de données</p>
+            <p className="text-xs text-muted-foreground text-center py-4">{t("c3.networkAnalytics.notEnoughData")}</p>
           ) : (
             <div className="space-y-2.5">
               {roi.topCities.map(c => {

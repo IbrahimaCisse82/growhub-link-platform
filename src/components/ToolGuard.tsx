@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useActivatedTools, ALL_TOOLS, ROLE_RECOMMENDED_TOOLS } from "@/hooks/useActivatedTools";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +12,7 @@ interface ToolGuardProps {
 }
 
 export default function ToolGuard({ toolKey, children }: ToolGuardProps) {
+  const { t } = useTranslation();
   const { isActivated, isLoading, activateTool, trackToolOpen } = useActivatedTools();
   const { role } = useUserRole();
   const navigate = useNavigate();
@@ -40,15 +42,15 @@ export default function ToolGuard({ toolKey, children }: ToolGuardProps) {
           {tool?.icon ?? "🧩"}
         </div>
         <h2 className="font-heading text-lg font-bold mb-2">
-          {tool?.label ?? "Outil"} non activé
+          {t("c1.toolGuard.notActivated", { label: tool?.label ?? t("c1.toolGuard.defaultToolLabel") })}
         </h2>
         {isRecommended && (
           <div className="inline-flex items-center gap-1 px-2 py-0.5 mb-3 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded text-[10px] font-bold">
-            <Sparkles className="w-3 h-3" /> Recommandé pour votre profil
+            <Sparkles className="w-3 h-3" /> {t("c1.toolGuard.recommended")}
           </div>
         )}
         <p className="text-sm text-muted-foreground mb-6">
-          {tool?.description ?? "Activez cet outil depuis le Marketplace pour y accéder."}
+          {tool?.description ?? t("c1.toolGuard.defaultDescription")}
         </p>
         <div className="flex items-center justify-center gap-3">
           <button
@@ -56,13 +58,13 @@ export default function ToolGuard({ toolKey, children }: ToolGuardProps) {
             disabled={activateTool.isPending}
             className="h-10 px-5 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center gap-2 hover:bg-primary-hover transition-colors disabled:opacity-60"
           >
-            <Zap className="w-3.5 h-3.5" /> Activer maintenant
+            <Zap className="w-3.5 h-3.5" /> {t("c1.toolGuard.activate")}
           </button>
           <button
             onClick={() => navigate("/marketplace")}
             className="h-10 px-5 rounded-xl border border-border text-foreground/60 text-xs font-bold flex items-center gap-2 hover:border-primary/30 transition-colors"
           >
-            <Puzzle className="w-3.5 h-3.5" /> Voir le Marketplace
+            <Puzzle className="w-3.5 h-3.5" /> {t("c1.toolGuard.viewMarketplace")}
           </button>
         </div>
       </GHCard>

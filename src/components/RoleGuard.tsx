@@ -1,5 +1,6 @@
 import { useUserRole } from "@/hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { Shield } from "lucide-react";
 import { GHCard } from "@/components/ui-custom";
@@ -11,6 +12,7 @@ interface RoleGuardProps {
 }
 
 export default function RoleGuard({ allowedRoles, children, fallbackMessage }: RoleGuardProps) {
+  const { t } = useTranslation();
   const { role, isLoading } = useUserRole();
 
   if (isLoading) {
@@ -25,12 +27,12 @@ export default function RoleGuard({ allowedRoles, children, fallbackMessage }: R
     return (
       <GHCard className="text-center py-16 max-w-md mx-auto mt-10">
         <Shield className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-        <h2 className="font-heading text-lg font-bold mb-2">Accès restreint</h2>
+        <h2 className="font-heading text-lg font-bold mb-2">{t("c1.roleGuard.restrictedTitle")}</h2>
         <p className="text-sm text-muted-foreground mb-4">
-          {fallbackMessage || `Cette fonctionnalité est réservée aux profils ${allowedRoles.join(", ")}.`}
+          {fallbackMessage || t("c1.roleGuard.restrictedDescription", { roles: allowedRoles.join(", ") })}
         </p>
         <p className="text-xs text-muted-foreground">
-          Votre profil actuel : <span className="font-bold text-primary capitalize">{role}</span>
+          {t("c1.roleGuard.currentProfile")} <span className="font-bold text-primary capitalize">{role}</span>
         </p>
       </GHCard>
     );

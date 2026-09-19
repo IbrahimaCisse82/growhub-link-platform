@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +20,7 @@ interface DigestData {
 
 export default function WeeklyDigest() {
   const { user, profile } = useAuth();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const { data: digest, isLoading } = useQuery({
@@ -54,17 +56,17 @@ export default function WeeklyDigest() {
         const conn = topMatchRes.data[0] as any;
         const otherId = conn.requester_id === user!.id ? conn.receiver_id : conn.requester_id;
         topMatch = {
-          display_name: conn.profiles?.display_name ?? "Connexion",
+          display_name: conn.profiles?.display_name ?? t("c4.weeklyDigest.defaultConnectionName"),
           user_id: otherId,
           match_score: conn.match_score ?? 0,
         };
       }
 
       // Generate highlight
-      let weekHighlight = "Semaine calme — c'est le moment de poster et d'élargir votre réseau !";
-      if (newConnections >= 5) weekHighlight = `🔥 Semaine explosive ! ${newConnections} nouvelles connexions, votre réseau s'emballe !`;
-      else if (newConnections >= 2) weekHighlight = `Bonne semaine ! ${newConnections} nouvelles connexions et des opportunités en vue.`;
-      else if (totalLikes > 10) weekHighlight = `Vos posts cartonnent ! ${totalLikes} likes cette semaine.`;
+      let weekHighlight = t("c4.weeklyDigest.calmWeek");
+      if (newConnections >= 5) weekHighlight = t("c4.weeklyDigest.explosiveWeek", { count: newConnections });
+      else if (newConnections >= 2) weekHighlight = t("c4.weeklyDigest.goodWeek", { count: newConnections });
+      else if (totalLikes > 10) weekHighlight = t("c4.weeklyDigest.postsCarton", { count: totalLikes });
 
       return {
         newConnections,
@@ -83,18 +85,18 @@ export default function WeeklyDigest() {
   if (!digest) return null;
 
   const stats = [
-    { icon: Users, label: "Nouvelles connexions", value: digest.newConnections, color: "text-primary" },
-    { icon: Eye, label: "Vues profil", value: digest.profileViews, color: "text-ghpurple" },
-    { icon: MessageSquare, label: "Messages reçus", value: digest.newMessages, color: "text-ghblue" },
-    { icon: TrendingUp, label: "Likes reçus", value: digest.postEngagement.totalLikes, color: "text-ghorange" },
+    { icon: Users, label: t("c4.weeklyDigest.stats.newConnections"), value: digest.newConnections, color: "text-primary" },
+    { icon: Eye, label: t("c4.weeklyDigest.stats.profileViews"), value: digest.profileViews, color: "text-ghpurple" },
+    { icon: MessageSquare, label: t("c4.weeklyDigest.stats.newMessages"), value: digest.newMessages, color: "text-ghblue" },
+    { icon: TrendingUp, label: t("c4.weeklyDigest.stats.likesReceived"), value: digest.postEngagement.totalLikes, color: "text-ghorange" },
   ];
 
   return (
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
         <Mail className="w-5 h-5 text-primary" />
-        <h2 className="font-heading text-base font-bold">Digest Hebdo</h2>
-        <Tag variant="green">Cette semaine</Tag>
+        <h2 className="font-heading text-base font-bold">{t("c4.weeklyDigest.title")}</h2>
+        <Tag variant="green">{t("c4.weeklyDigest.thisWeek")}</Tag>
       </div>
 
       {/* Highlight */}
@@ -102,7 +104,7 @@ export default function WeeklyDigest() {
         <div className="flex items-start gap-3">
           <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
           <div>
-            <div className="font-heading text-sm font-bold mb-1">Résumé de la semaine</div>
+            <div className="font-heading text-sm font-bold mb-1">{t("c4.weeklyDigest.summaryTitle")}</div>
             <p className="text-xs text-foreground/70">{digest.weekHighlight}</p>
           </div>
         </div>
@@ -124,13 +126,13 @@ export default function WeeklyDigest() {
         <div className="bg-card border border-border rounded-xl p-3 mb-3">
           <div className="flex items-center gap-1.5 mb-2">
             <Calendar className="w-3.5 h-3.5 text-ghblue" />
-            <span className="text-xs font-bold">Événements à venir</span>
+            <span className="text-xs font-bold">{t("c4.weeklyDigest.upcomingEvents")}</span>
           </div>
           {digest.upcomingEvents.map((e, i) => (
             <div key={i} className="flex items-center justify-between py-1.5 border-t border-border first:border-0">
               <span className="text-xs text-foreground/80">{e.title}</span>
               <span className="text-[10px] text-muted-foreground">
-                {new Date(e.starts_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                {new Date(e.starts_at).toLocaleDateString(i18n.language, { day: "numeric", month: "short" })}
               </span>
             </div>
           ))}
@@ -141,11 +143,11 @@ export default function WeeklyDigest() {
       <div className="flex gap-2">
         <button onClick={() => navigate("/analytics")}
           className="flex-1 bg-secondary text-foreground rounded-xl py-2 md:py-2.5 font-heading text-[10px] md:text-xs font-bold flex items-center justify-center gap-1 md:gap-1.5 hover:bg-secondary/80 transition-all">
-          <TrendingUp className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0" /> Analytics
+          <TrendingUp className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0"  /> {t("c4.weeklyDigest.analytics")}
         </button>
         <button onClick={() => navigate("/networking")}
           className="flex-1 bg-primary text-primary-foreground rounded-xl py-2 md:py-2.5 font-heading text-[10px] md:text-xs font-bold flex items-center justify-center gap-1 md:gap-1.5 hover:bg-primary-hover transition-all">
-          <Users className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0" /> <span className="hidden md:inline">Développer mon</span> Réseau
+          <Users className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0" /> <span className="hidden md:inline">{t("c4.weeklyDigest.developNetworkShort")}</span> {t("c4.weeklyDigest.network")}
         </button>
       </div>
     </div>
