@@ -75,7 +75,7 @@ export default {
       topMembers: "Top members",
       points: "pts",
     },
-    weeklyDigest: {
+        weeklyDigest: {
       title: "Weekly Digest",
       thisWeek: "This week",
       summaryTitle: "Week summary",
@@ -95,12 +95,6 @@ export default {
       network: "Network",
       defaultConnectionName: "Connection",
     },
-      upcomingEvents: "Upcoming events",
-      analytics: "Analytics",
-      developNetworkShort: "Grow my",
-      network: "Network",
-      defaultConnectionName: "Connection",
-
     milestone: {
       connections: {
         label: "{{count}} connections reached!",

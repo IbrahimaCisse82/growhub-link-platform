@@ -75,7 +75,7 @@ export default {
       topMembers: "Top membres",
       points: "pts",
     },
-    weeklyDigest: {
+        weeklyDigest: {
       title: "Digest Hebdo",
       thisWeek: "Cette semaine",
       summaryTitle: "Résumé de la semaine",
@@ -95,12 +95,6 @@ export default {
       network: "Réseau",
       defaultConnectionName: "Connexion",
     },
-      upcomingEvents: "Événements à venir",
-      analytics: "Analytics",
-      developNetworkShort: "Développer mon",
-      network: "Réseau",
-      defaultConnectionName: "Connexion",
-
     milestone: {
       connections: {
         label: "{{count}} connexions atteintes !",
