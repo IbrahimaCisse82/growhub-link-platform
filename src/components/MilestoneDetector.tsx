@@ -17,46 +17,49 @@ interface DetectedMilestone {
   shareText: string;
 }
 
-const MILESTONE_THRESHOLDS: { type: string; thresholds: number[]; label: (v: number) => string; desc: (v: number) => string; icon: React.ReactNode; shareLabel: (v: number) => string }[] = [
-  {
-    type: "connections", thresholds: [5, 10, 25, 50, 100, 250, 500],
-    label: (v) => `${v} connexions atteintes !`,
-    desc: (v) => `Votre réseau vient de franchir le cap des ${v} connexions. Chaque lien est une opportunité.`,
-    icon: <Users className="w-5 h-5 text-primary" />,
-    shareLabel: (v) => `🎉 Je viens d'atteindre ${v} connexions sur GrowHubLink ! Mon réseau grandit et les opportunités aussi. #Networking #GrowHub`,
-  },
-  {
-    type: "posts", thresholds: [1, 5, 10, 25, 50, 100],
-    label: (v) => v === 1 ? "Premier post publié !" : `${v} publications !`,
-    desc: (v) => v === 1 ? "Vous venez de publier votre tout premier post. Bienvenue dans la communauté !" : `Vous avez publié ${v} posts. Votre voix compte dans l'écosystème.`,
-    icon: <MessageSquare className="w-5 h-5 text-ghblue" />,
-    shareLabel: (v) => v === 1 ? "📝 Je viens de publier mon premier post sur GrowHubLink ! #Startup #GrowHub" : `📝 ${v} posts publiés sur GrowHubLink ! Partager, c'est grandir ensemble. #GrowHub`,
-  },
-  {
-    type: "events", thresholds: [1, 5, 10, 25],
-    label: (v) => v === 1 ? "Premier événement !" : `${v} événements suivis !`,
-    desc: (v) => `Vous avez participé à ${v} événement${v > 1 ? "s" : ""}. Le networking en action !`,
-    icon: <Calendar className="w-5 h-5 text-ghorange" />,
-    shareLabel: (v) => `📅 ${v} événement${v > 1 ? "s" : ""} sur GrowHubLink ! Toujours en mouvement. #Events #GrowHub`,
-  },
-  {
-    type: "badges", thresholds: [1, 3, 5, 10],
-    label: (v) => v === 1 ? "Premier badge débloqué !" : `${v} badges collectés !`,
-    desc: (v) => `Vous avez obtenu ${v} badge${v > 1 ? "s" : ""}. La preuve de votre engagement.`,
-    icon: <Award className="w-5 h-5 text-ghgold" />,
-    shareLabel: (v) => `🏆 ${v} badge${v > 1 ? "s" : ""} débloqué${v > 1 ? "s" : ""} sur GrowHubLink ! #Achievement #GrowHub`,
-  },
-  {
-    type: "coaching", thresholds: [1, 5, 10, 25],
-    label: (v) => v === 1 ? "Première session de coaching !" : `${v} sessions de coaching !`,
-    desc: (v) => `${v} session${v > 1 ? "s" : ""} de coaching complétée${v > 1 ? "s" : ""}. L'apprentissage continu paie toujours.`,
-    icon: <TrendingUp className="w-5 h-5 text-ghpurple" />,
-    shareLabel: (v) => `🎓 ${v} session${v > 1 ? "s" : ""} de coaching sur GrowHubLink ! Investir en soi, c'est la clé. #Coaching #GrowHub`,
-  },
-];
+
 
 export default function MilestoneDetector() {
   const { user } = useAuth();
+  const { t } = useTranslation();
+
+  const MILESTONE_THRESHOLDS = [
+  {
+    type: "connections", thresholds: [5, 10, 25, 50, 100, 250, 500],
+    label: (v) => t("c4.milestone.connections.label", { count: v }),
+    desc: (v) => t("c4.milestone.connections.desc", { count: v }),
+    icon: <Users className="w-5 h-5 text-primary" />,
+    shareLabel: (v) => t("c4.milestone.connections.share", { count: v }),
+  },
+  {
+    type: "posts", thresholds: [1, 5, 10, 25, 50, 100],
+    label: (v) => v === 1 ? t("c4.milestone.posts.labelFirst") : t("c4.milestone.posts.label", { count: v }),
+    desc: (v) => v === 1 ? t("c4.milestone.posts.descFirst") : t("c4.milestone.posts.desc", { count: v }),
+    icon: <MessageSquare className="w-5 h-5 text-ghblue" />,
+    shareLabel: (v) => v === 1 ? t("c4.milestone.posts.shareFirst") : t("c4.milestone.posts.share", { count: v }),
+  },
+  {
+    type: "events", thresholds: [1, 5, 10, 25],
+    label: (v) => v === 1 ? t("c4.milestone.events.labelFirst") : t("c4.milestone.events.label", { count: v }),
+    desc: (v) => t("c4.milestone.events.desc", { count: v, plural: v > 1 ? "s" : "" }),
+    icon: <Calendar className="w-5 h-5 text-ghorange" />,
+    shareLabel: (v) => t("c4.milestone.events.share", { count: v, plural: v > 1 ? "s" : "" }),
+  },
+  {
+    type: "badges", thresholds: [1, 3, 5, 10],
+    label: (v) => v === 1 ? t("c4.milestone.badges.labelFirst") : t("c4.milestone.badges.label", { count: v }),
+    desc: (v) => t("c4.milestone.badges.desc", { count: v, plural: v > 1 ? "s" : "" }),
+    icon: <Award className="w-5 h-5 text-ghgold" />,
+    shareLabel: (v) => t("c4.milestone.badges.share", { count: v, plural: v > 1 ? "s" : "" }),
+  },
+  {
+    type: "coaching", thresholds: [1, 5, 10, 25],
+    label: (v) => v === 1 ? t("c4.milestone.coaching.labelFirst") : t("c4.milestone.coaching.label", { count: v }),
+    desc: (v) => t("c4.milestone.coaching.desc", { count: v, plural: v > 1 ? "s" : "" }),
+    icon: <TrendingUp className="w-5 h-5 text-ghpurple" />,
+    shareLabel: (v) => t("c4.milestone.coaching.share", { count: v, plural: v > 1 ? "s" : "" }),
+  },
+];
   const queryClient = useQueryClient();
   const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -132,7 +135,7 @@ export default function MilestoneDetector() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["posts-infinite"] });
-      toast.success("Milestone partagé dans le feed !");
+      toast.success(t("c4.milestone.shareSuccess"));
     },
   });
 
@@ -155,7 +158,7 @@ export default function MilestoneDetector() {
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
         <Trophy className="w-5 h-5 text-ghgold" />
-        <h2 className="font-heading text-base font-bold">Nouveaux Milestones 🎉</h2>
+        <h2 className="font-heading text-base font-bold">{t("c4.milestone.newMilestones")}</h2>
       </div>
       <div className="space-y-3">
         <AnimatePresence>
@@ -182,11 +185,11 @@ export default function MilestoneDetector() {
                   <div className="flex gap-2 flex-wrap">
                     <button onClick={() => handleShare(m)}
                       className="bg-primary text-primary-foreground rounded-xl px-4 py-2 font-heading text-[11px] font-bold flex items-center gap-1.5 hover:bg-primary-hover transition-all">
-                      <Sparkles className="w-3 h-3" /> Partager dans le feed
+                      <Sparkles className="w-3 h-3" /> {t("c4.milestone.shareInFeed")}
                     </button>
                     <button onClick={() => handleShareExternal(m)}
                       className="bg-secondary text-foreground rounded-xl px-4 py-2 font-heading text-[11px] font-bold flex items-center gap-1.5 hover:bg-secondary/80 transition-all">
-                      <Share2 className="w-3 h-3" /> LinkedIn
+                      <Share2 className="w-3 h-3" /> {t("c4.milestone.linkedin")}
                     </button>
                   </div>
                 </div>
