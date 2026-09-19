@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { GHCard } from "@/components/ui-custom";
 import { useSSI } from "@/hooks/useSSI";
