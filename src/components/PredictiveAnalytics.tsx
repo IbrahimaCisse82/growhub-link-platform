@@ -15,62 +15,63 @@ interface Prediction {
   icon: string;
 }
 
-function predictSSI(ssi: any): { predictions: Prediction[]; overallPredicted: number; recommendations: string[] } {
-  if (!ssi) return { predictions: [], overallPredicted: 0, recommendations: [] };
-
-  const predictions: Prediction[] = [
-    {
-      label: "Force du profil",
-      current: ssi.profileStrength,
-      predicted: Math.min(25, ssi.profileStrength + (ssi.profileStrength < 20 ? 5 : 2)),
-      max: 25,
-      tip: ssi.profileStrength < 15 ? "Complétez photo, bio et 3+ compétences" : "Ajoutez LinkedIn et website",
-      icon: "👤",
-    },
-    {
-      label: "Qualité réseau",
-      current: ssi.networkQuality,
-      predicted: Math.min(25, ssi.networkQuality + (ssi.networkQuality < 15 ? 4 : 2)),
-      max: 25,
-      tip: ssi.networkQuality < 15 ? "Visez 5 nouvelles connexions ciblées/semaine" : "Demandez des endorsements",
-      icon: "🤝",
-    },
-    {
-      label: "Engagement",
-      current: ssi.engagement,
-      predicted: Math.min(25, ssi.engagement + (ssi.engagement < 15 ? 5 : 3)),
-      max: 25,
-      tip: ssi.engagement < 15 ? "Publiez 2 posts et commentez 10 publications" : "Participez à un événement",
-      icon: "💬",
-    },
-    {
-      label: "Visibilité",
-      current: ssi.visibility,
-      predicted: Math.min(25, ssi.visibility + (ssi.visibility < 15 ? 4 : 2)),
-      max: 25,
-      tip: ssi.visibility < 15 ? "Réservez une session de coaching" : "Partagez vos milestones",
-      icon: "👁️",
-    },
-  ];
-
-  const overallPredicted = predictions.reduce((sum, p) => sum + p.predicted, 0);
-
-  const recommendations: string[] = [];
-  if (ssi.profileStrength < 15) recommendations.push("🎯 Priorité #1 : Complétez votre profil à 100% — c'est le levier le plus rapide");
-  if (ssi.engagement < 10) recommendations.push("✍️ Publiez votre premier post cette semaine — même un simple partage d'expérience");
-  if (ssi.networkQuality < 10) recommendations.push("🤝 Envoyez 5 demandes de connexion avec messages personnalisés");
-  if (ssi.details?.eventsAttended === 0) recommendations.push("📅 Inscrivez-vous à un événement pour gagner en visibilité");
-  if (ssi.details?.coachingSessions === 0) recommendations.push("🎓 Réservez une session de coaching pour accélérer votre progression");
-  if (recommendations.length === 0) recommendations.push("🌟 Vous êtes sur une excellente trajectoire ! Maintenez votre activité régulière.");
-
-  return { predictions, overallPredicted, recommendations };
-}
-
 export default function PredictiveAnalytics() {
+  const { t } = useTranslation();
   const { data: ssi } = useSSI();
   const { profile } = useAuth();
 
   if (!ssi) return null;
+
+  function predictSSI(ssi: any): { predictions: Prediction[]; overallPredicted: number; recommendations: string[] } {
+    if (!ssi) return { predictions: [], overallPredicted: 0, recommendations: [] };
+
+    const predictions: Prediction[] = [
+      {
+        label: t("c3.predictiveAnalytics.dims.profileStrength"),
+        current: ssi.profileStrength,
+        predicted: Math.min(25, ssi.profileStrength + (ssi.profileStrength < 20 ? 5 : 2)),
+        max: 25,
+        tip: ssi.profileStrength < 15 ? t("c3.predictiveAnalytics.tips.profileLow") : t("c3.predictiveAnalytics.tips.profileHigh"),
+        icon: "👤",
+      },
+      {
+        label: t("c3.predictiveAnalytics.dims.networkQuality"),
+        current: ssi.networkQuality,
+        predicted: Math.min(25, ssi.networkQuality + (ssi.networkQuality < 15 ? 4 : 2)),
+        max: 25,
+        tip: ssi.networkQuality < 15 ? t("c3.predictiveAnalytics.tips.networkLow") : t("c3.predictiveAnalytics.tips.networkHigh"),
+        icon: "🤝",
+      },
+      {
+        label: t("c3.predictiveAnalytics.dims.engagement"),
+        current: ssi.engagement,
+        predicted: Math.min(25, ssi.engagement + (ssi.engagement < 15 ? 5 : 3)),
+        max: 25,
+        tip: ssi.engagement < 15 ? t("c3.predictiveAnalytics.tips.engagementLow") : t("c3.predictiveAnalytics.tips.engagementHigh"),
+        icon: "💬",
+      },
+      {
+        label: t("c3.predictiveAnalytics.dims.visibility"),
+        current: ssi.visibility,
+        predicted: Math.min(25, ssi.visibility + (ssi.visibility < 15 ? 4 : 2)),
+        max: 25,
+        tip: ssi.visibility < 15 ? t("c3.predictiveAnalytics.tips.visibilityLow") : t("c3.predictiveAnalytics.tips.visibilityHigh"),
+        icon: "👁️",
+      },
+    ];
+
+    const overallPredicted = predictions.reduce((sum, p) => sum + p.predicted, 0);
+
+    const recommendations: string[] = [];
+    if (ssi.profileStrength < 15) recommendations.push(t("c3.predictiveAnalytics.recommendations.completeProfile"));
+    if (ssi.engagement < 10) recommendations.push(t("c3.predictiveAnalytics.recommendations.firstPost"));
+    if (ssi.networkQuality < 10) recommendations.push(t("c3.predictiveAnalytics.recommendations.connectionRequests"));
+    if (ssi.details?.eventsAttended === 0) recommendations.push(t("c3.predictiveAnalytics.recommendations.joinEvent"));
+    if (ssi.details?.coachingSessions === 0) recommendations.push(t("c3.predictiveAnalytics.recommendations.bookCoaching"));
+    if (recommendations.length === 0) recommendations.push(t("c3.predictiveAnalytics.recommendations.onTrack"));
+
+    return { predictions, overallPredicted, recommendations };
+  }
 
   const { predictions, overallPredicted, recommendations } = predictSSI(ssi);
   const gain = overallPredicted - ssi.totalScore;
@@ -84,24 +85,24 @@ export default function PredictiveAnalytics() {
             <Brain className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-heading text-sm font-bold">Prédiction IA de votre SSI</h3>
-            <p className="text-[10px] text-muted-foreground">Basée sur vos tendances et actions recommandées</p>
+            <h3 className="font-heading text-sm font-bold">{t("c3.predictiveAnalytics.title")}</h3>
+            <p className="text-[10px] text-muted-foreground">{t("c3.predictiveAnalytics.subtitle")}</p>
           </div>
         </div>
 
         <div className="flex items-center justify-center gap-6 py-4">
           <div className="text-center">
             <div className="text-3xl font-heading font-extrabold">{ssi.totalScore}</div>
-            <div className="text-[10px] text-muted-foreground">Actuel</div>
+            <div className="text-[10px] text-muted-foreground">{t("c3.predictiveAnalytics.current")}</div>
           </div>
           <ArrowRight className="w-6 h-6 text-primary animate-pulse" />
           <div className="text-center">
             <div className="text-3xl font-heading font-extrabold text-primary">{overallPredicted}</div>
-            <div className="text-[10px] text-muted-foreground">Prédiction 7j</div>
+            <div className="text-[10px] text-muted-foreground">{t("c3.predictiveAnalytics.prediction7d")}</div>
           </div>
           <div className={`px-2.5 py-1 rounded-full text-xs font-bold ${gain > 0 ? "bg-green-500/10 text-green-600" : "bg-muted text-muted-foreground"}`}>
             {gain > 0 ? <TrendingUp className="w-3 h-3 inline mr-1" /> : <TrendingDown className="w-3 h-3 inline mr-1" />}
-            {gain > 0 ? "+" : ""}{gain} pts
+            {gain > 0 ? "+" : ""}{gain} {t("c3.predictiveAnalytics.pts")}
           </div>
         </div>
       </GHCard>
@@ -125,7 +126,7 @@ export default function PredictiveAnalytics() {
 
       {/* Recommendations */}
       <GHCard>
-        <h3 className="font-heading text-sm font-bold mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> Plan d'action recommandé</h3>
+        <h3 className="font-heading text-sm font-bold mb-3 flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> {t("c3.predictiveAnalytics.actionPlan")}</h3>
         <div className="space-y-2">
           {recommendations.map((rec, i) => (
             <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="flex items-start gap-2 bg-secondary/50 rounded-xl p-3">

@@ -147,7 +147,7 @@ export default function WeeklyDigest() {
         </button>
         <button onClick={() => navigate("/networking")}
           className="flex-1 bg-primary text-primary-foreground rounded-xl py-2 md:py-2.5 font-heading text-[10px] md:text-xs font-bold flex items-center justify-center gap-1 md:gap-1.5 hover:bg-primary-hover transition-all">
-          <Users className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0" /> <span className="hidden md:inline">{t("c4.weeklyDigest.developNetworkShort")}</span> Réseau
+          <Users className="w-3 h-3 md:w-3.5 md:h-3.5 flex-shrink-0" /> <span className="hidden md:inline">{t("c4.weeklyDigest.developNetworkShort")}</span> {t("c4.weeklyDigest.network")}
         </button>
       </div>
     </div>

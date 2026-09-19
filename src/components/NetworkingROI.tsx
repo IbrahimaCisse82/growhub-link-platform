@@ -14,16 +14,6 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
 import { cn } from "@/lib/utils";
 
-const funnelConfig: ChartConfig = {
-  value: { label: "Total", color: "hsl(var(--primary))" },
-};
-
-const roiConfig: ChartConfig = {
-  connections: { label: "Connexions", color: "hsl(var(--primary))" },
-  intros: { label: "Intros", color: "hsl(var(--blue))" },
-  collabs: { label: "Collabs", color: "hsl(var(--orange))" },
-};
-
 interface ROIData {
   totalConnections: number;
   acceptedRate: number;
@@ -39,7 +29,18 @@ interface ROIData {
 }
 
 export default function NetworkingROI() {
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
+
+  const funnelConfig: ChartConfig = {
+    value: { label: t("c3.networkingROI.chart.total"), color: "hsl(var(--primary))" },
+  };
+
+  const roiConfig: ChartConfig = {
+    connections: { label: t("c3.networkingROI.chart.connections"), color: "hsl(var(--primary))" },
+    intros: { label: t("c3.networkingROI.chart.intros"), color: "hsl(var(--blue))" },
+    collabs: { label: t("c3.networkingROI.chart.collabs"), color: "hsl(var(--orange))" },
+  };
 
   const { data: roi, isLoading } = useQuery({
     queryKey: ["networking-roi", user?.id],
@@ -76,10 +77,10 @@ export default function NetworkingROI() {
 
       // Funnel
       const funnel = [
-        { stage: "Demandes envoyées", value: totalConnections, color: "hsl(var(--primary))" },
-        { stage: "Connexions acceptées", value: accepted.length, color: "hsl(var(--blue))" },
-        { stage: "Intros chaleureuses", value: warmIntrosSent, color: "hsl(var(--orange))" },
-        { stage: "Collaborations", value: collabs.length, color: "hsl(var(--purple))" },
+        { stage: t("c3.networkingROI.funnel.requestsSent"), value: totalConnections, color: "hsl(var(--primary))" },
+        { stage: t("c3.networkingROI.funnel.connectionsAccepted"), value: accepted.length, color: "hsl(var(--blue))" },
+        { stage: t("c3.networkingROI.funnel.warmIntros"), value: warmIntrosSent, color: "hsl(var(--orange))" },
+        { stage: t("c3.networkingROI.funnel.collaborations"), value: collabs.length, color: "hsl(var(--purple))" },
       ];
 
       // Monthly activity (last 6 months)
@@ -87,19 +88,19 @@ export default function NetworkingROI() {
       const now = new Date();
       for (let i = 5; i >= 0; i--) {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const key = d.toLocaleDateString("fr-FR", { month: "short" });
+        const key = d.toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { month: "short" });
         months[key] = { connections: 0, intros: 0, collabs: 0 };
       }
       accepted.forEach(c => {
-        const key = new Date(c.created_at).toLocaleDateString("fr-FR", { month: "short" });
+        const key = new Date(c.created_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { month: "short" });
         if (months[key]) months[key].connections++;
       });
       warm.forEach(w => {
-        const key = new Date(w.created_at).toLocaleDateString("fr-FR", { month: "short" });
+        const key = new Date(w.created_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { month: "short" });
         if (months[key]) months[key].intros++;
       });
       collabs.forEach(c => {
-        const key = new Date(c.created_at).toLocaleDateString("fr-FR", { month: "short" });
+        const key = new Date(c.created_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { month: "short" });
         if (months[key]) months[key].collabs++;
       });
 
@@ -138,40 +139,40 @@ export default function NetworkingROI() {
               <span className="text-[9px] text-muted-foreground">/100</span>
             </div>
           </div>
-          <div className="text-xs font-bold text-muted-foreground">ROI Score</div>
+          <div className="text-xs font-bold text-muted-foreground">{t("c3.networkingROI.roiScore")}</div>
         </GHCard>
 
         <GHCard>
           <div className="flex items-center gap-2 mb-3">
             <Users className="w-4 h-4 text-primary" />
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Connexions</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("c3.networkingROI.connections")}</span>
           </div>
-          <StatRow label="Total demandes" value={String(roi.totalConnections)} />
-          <StatRow label="Taux d'acceptation" value={`${roi.acceptedRate}%`} valueColor={roi.acceptedRate > 50 ? "text-primary" : "text-ghorange"} />
+          <StatRow label={t("c3.networkingROI.totalRequests")} value={String(roi.totalConnections)} />
+          <StatRow label={t("c3.networkingROI.acceptanceRate")} value={`${roi.acceptedRate}%`} valueColor={roi.acceptedRate > 50 ? "text-primary" : "text-ghorange"} />
         </GHCard>
 
         <GHCard>
           <div className="flex items-center gap-2 mb-3">
             <Handshake className="w-4 h-4 text-ghblue" />
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Intros</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("c3.networkingROI.intros")}</span>
           </div>
-          <StatRow label="Intros envoyées" value={String(roi.warmIntrosSent)} />
-          <StatRow label="Taux conversion" value={`${roi.introConversionRate}%`} valueColor={roi.introConversionRate > 40 ? "text-primary" : "text-ghorange"} />
+          <StatRow label={t("c3.networkingROI.introsSent")} value={String(roi.warmIntrosSent)} />
+          <StatRow label={t("c3.networkingROI.conversionRate")} value={`${roi.introConversionRate}%`} valueColor={roi.introConversionRate > 40 ? "text-primary" : "text-ghorange"} />
         </GHCard>
 
         <GHCard>
           <div className="flex items-center gap-2 mb-3">
             <Zap className="w-4 h-4 text-ghorange" />
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Résultats</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{t("c3.networkingROI.results")}</span>
           </div>
-          <StatRow label="Collaborations" value={String(roi.collaborationsStarted)} />
-          <StatRow label="Messages échangés" value={String(roi.messagesExchanged)} />
+          <StatRow label={t("c3.networkingROI.collaborations")} value={String(roi.collaborationsStarted)} />
+          <StatRow label={t("c3.networkingROI.messagesExchanged")} value={String(roi.messagesExchanged)} />
         </GHCard>
       </div>
 
       {/* Funnel + Monthly Activity */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <GHCard title="Funnel de conversion" headerRight={<Tag variant="green">Entonnoir</Tag>}>
+        <GHCard title={t("c3.networkingROI.conversionFunnel")} headerRight={<Tag variant="green">{t("c3.networkingROI.funnelTag")}</Tag>}>
           <div className="space-y-3">
             {roi.funnel.map((stage, i) => {
               const maxVal = Math.max(...roi.funnel.map(f => f.value), 1);
@@ -199,16 +200,16 @@ export default function NetworkingROI() {
           </div>
         </GHCard>
 
-        <GHCard title="Activité mensuelle" headerRight={<Tag variant="blue">6 mois</Tag>}>
+        <GHCard title={t("c3.networkingROI.monthlyActivity")} headerRight={<Tag variant="blue">{t("c3.networkingROI.sixMonths")}</Tag>}>
           <ChartContainer config={roiConfig} className="h-52 w-full">
             <BarChart data={roi.monthlyActivity} accessibilityLayer>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="month" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="connections" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Connexions" />
-              <Bar dataKey="intros" fill="hsl(var(--blue))" radius={[4, 4, 0, 0]} name="Intros" />
-              <Bar dataKey="collabs" fill="hsl(var(--orange))" radius={[4, 4, 0, 0]} name="Collabs" />
+              <Bar dataKey="connections" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name={t("c3.networkingROI.chart.connections")} />
+              <Bar dataKey="intros" fill="hsl(var(--blue))" radius={[4, 4, 0, 0]} name={t("c3.networkingROI.chart.intros")} />
+              <Bar dataKey="collabs" fill="hsl(var(--orange))" radius={[4, 4, 0, 0]} name={t("c3.networkingROI.chart.collabs")} />
             </BarChart>
           </ChartContainer>
         </GHCard>

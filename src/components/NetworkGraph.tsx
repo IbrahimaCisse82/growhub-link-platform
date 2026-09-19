@@ -26,6 +26,7 @@ interface GraphEdge {
 }
 
 export default function NetworkGraph() {
+  const { t } = useTranslation();
   const { user, profile } = useAuth();
   const { data: connections } = useConnections();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -206,11 +207,11 @@ export default function NetworkGraph() {
   if (!user || directIds.length === 0) return null;
 
   return (
-    <GHCard title="Graphe réseau" headerRight={
+    <GHCard title={t("c3.networkGraph.title")} headerRight={
       <div className="flex gap-3 text-[10px] text-muted-foreground">
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary" /> Vous</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary/70" /> 1er degré</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-muted-foreground/30" /> 2ème degré</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary" /> {t("c3.networkGraph.you")}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary/70" /> {t("c3.networkGraph.firstDegree")}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-muted-foreground/30" /> {t("c3.networkGraph.secondDegree")}</span>
       </div>
     }>
       {isLoading ? (

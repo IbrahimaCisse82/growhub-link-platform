@@ -93,7 +93,14 @@ export default {
       analytics: "Analytics",
       developNetworkShort: "Développer mon",
       network: "Réseau",
+      defaultConnectionName: "Connexion",
     },
+      upcomingEvents: "Événements à venir",
+      analytics: "Analytics",
+      developNetworkShort: "Développer mon",
+      network: "Réseau",
+      defaultConnectionName: "Connexion",
+
     milestone: {
       connections: {
         label: "{{count}} connexions atteintes !",
