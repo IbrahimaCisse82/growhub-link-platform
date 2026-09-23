@@ -36,7 +36,7 @@ i18n
     supportedLngs: ["fr", "en"],
     interpolation: { escapeValue: false },
     detection: {
-      order: ["localStorage", "navigator"],
+      order: ["localStorage"],
       caches: ["localStorage"],
       lookupLocalStorage: "ghl_lang",
     },
