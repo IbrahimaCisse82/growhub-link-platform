@@ -13,3 +13,6 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => {},
   }),
 });
+
+import i18n from "@/i18n";
+void i18n.changeLanguage("fr");
