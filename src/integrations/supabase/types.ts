@@ -3236,6 +3236,10 @@ export type Database = {
         Args: { _room: string; _user: string }
         Returns: boolean
       }
+      is_deal_room_owner: {
+        Args: { _room: string; _user: string }
+        Returns: boolean
+      }
       is_public_circle: { Args: { _circle: string }; Returns: boolean }
       progress_challenges: {
         Args: { _delta?: number; _types: string[]; _user_id: string }
