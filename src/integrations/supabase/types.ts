@@ -3228,10 +3228,15 @@ export type Database = {
         Returns: undefined
       }
       is_blocked: { Args: { _a: string; _b: string }; Returns: boolean }
+      is_circle_member: {
+        Args: { _circle: string; _user: string }
+        Returns: boolean
+      }
       is_deal_room_member: {
         Args: { _room: string; _user: string }
         Returns: boolean
       }
+      is_public_circle: { Args: { _circle: string }; Returns: boolean }
       progress_challenges: {
         Args: { _delta?: number; _types: string[]; _user_id: string }
         Returns: undefined
