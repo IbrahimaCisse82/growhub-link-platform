@@ -121,45 +121,18 @@ export default function AuthPage() {
           <p className="text-muted-foreground text-sm">{t("auth.tagline")}</p>
         </div>
 
-        {/* Demo Profiles */}
+        {/* Demo login disabled for security (public endpoint reset accounts and returned passwords) */}
+        {false && (
         <Card className="border-primary/20">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary" aria-hidden="true" />
-              <CardTitle className="font-heading text-sm">{t("auth.demoAccounts")}</CardTitle>
-            </div>
-            <CardDescription className="text-xs">
-              {t("auth.demoHint")}
-            </CardDescription>
-          </CardHeader>
           <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-5">
             {DEMO_PROFILES.map((demo) => (
-              <button
-                key={demo.role}
-                type="button"
-                aria-label={demo.label}
-                onClick={() => handleDemoLogin(demo.role)}
-                disabled={!!demoLoading}
-                className={`relative flex flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all hover:scale-[1.03] active:scale-[0.97] disabled:opacity-50 ${demo.color}`}
-              >
-                {demoLoading === demo.role ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <demo.icon className="w-5 h-5" />
-                )}
-                <span className="text-[11px] font-bold">{demo.label}</span>
-                <span className="text-[9px] opacity-70 leading-tight">{demo.desc}</span>
+              <button key={demo.role} type="button" onClick={() => handleDemoLogin(demo.role)} disabled={!!demoLoading}>
+                {demo.label}
               </button>
             ))}
           </CardContent>
         </Card>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">{t("auth.or")}</span>
-          </div>
-        </div>
+        )}
 
         <Card>
           <CardHeader className="pb-4">
