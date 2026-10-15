@@ -15,6 +15,13 @@
       "when": 1792028851277,
       "tag": "0001_counters_via_triggers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792028955911,
+      "tag": "0002_scope_check_functions_to_caller",
+      "breakpoints": true
     }
   ]
 }
