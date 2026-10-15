@@ -71,11 +71,9 @@ export function useToggleReaction() {
 
       if (existing) {
         await supabase.from("post_reactions").delete().eq("id", existing.id);
-        await supabase.rpc("decrement_post_likes", { post_id: postId });
         return { removed: true };
       } else {
         await supabase.from("post_reactions").insert({ post_id: postId, user_id: user!.id, emoji: emoji || "👍" });
-        await supabase.rpc("increment_post_likes", { post_id: postId });
         return { removed: false };
       }
     },
@@ -166,7 +164,6 @@ export function useAddComment() {
         parent_id: parentId ?? null,
       });
       if (error) throw error;
-      await supabase.rpc("increment_post_comments", { post_id: postId });
     },
     onMutate: async ({ postId, content, parentId }) => {
       await queryClient.cancelQueries({ queryKey: ["comments", postId] });
