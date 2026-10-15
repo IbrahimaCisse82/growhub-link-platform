@@ -8,6 +8,13 @@
       "when": 1791143213873,
       "tag": "0000_harden_security_definer_functions",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792028851277,
+      "tag": "0001_counters_via_triggers",
+      "breakpoints": true
     }
   ]
 }
