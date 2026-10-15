@@ -1,82 +1,62 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Get all users with profiles
-    const { data: profiles } = await supabase
-      .from("profiles")
-      .select("user_id, display_name")
-      .limit(500);
+    // Admin-only: validate caller JWT and role
+    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+    if (!token) return json({ error: "Non autorisé" }, 401);
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !userData?.user) return json({ error: "Non autorisé" }, 401);
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userData.user.id, _role: "admin" });
+    if (!isAdmin) return json({ error: "Accès réservé aux administrateurs" }, 403);
 
-    if (!profiles || profiles.length === 0) {
-      return new Response(JSON.stringify({ message: "No users to notify" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const { data: profiles } = await supabase.from("profiles").select("user_id").limit(500);
+    if (!profiles?.length) return json({ message: "No users to notify" });
 
     const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     let notified = 0;
 
     for (const profile of profiles) {
-      // Get weekly stats
       const [newConns, newPosts, newSessions] = await Promise.all([
-        supabase.from("connections")
-          .select("id", { count: "exact", head: true })
+        supabase.from("connections").select("id", { count: "exact", head: true })
           .or(`requester_id.eq.${profile.user_id},receiver_id.eq.${profile.user_id}`)
-          .eq("status", "accepted")
-          .gte("updated_at", oneWeekAgo),
-        supabase.from("posts")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", oneWeekAgo),
-        supabase.from("coaching_sessions")
-          .select("id", { count: "exact", head: true })
-          .eq("learner_id", profile.user_id)
-          .gte("created_at", oneWeekAgo),
+          .eq("status", "accepted").gte("updated_at", oneWeekAgo),
+        // Only the user's own posts, not the whole platform
+        supabase.from("posts").select("id", { count: "exact", head: true })
+          .eq("author_id", profile.user_id).gte("created_at", oneWeekAgo),
+        supabase.from("coaching_sessions").select("id", { count: "exact", head: true })
+          .eq("learner_id", profile.user_id).gte("created_at", oneWeekAgo),
       ]);
 
-      const connCount = newConns.count ?? 0;
-      const postCount = newPosts.count ?? 0;
-      const sessionCount = newSessions.count ?? 0;
+      const c = newConns.count ?? 0, p = newPosts.count ?? 0, s = newSessions.count ?? 0;
+      if (c + p + s === 0) continue;
+      const parts: string[] = [];
+      if (c) parts.push(`${c} nouvelle(s) connexion(s)`);
+      if (p) parts.push(`${p} publication(s)`);
+      if (s) parts.push(`${s} session(s) de coaching`);
 
-      // Only send if there's activity
-      if (connCount > 0 || postCount > 0 || sessionCount > 0) {
-        const parts = [];
-        if (connCount > 0) parts.push(`${connCount} nouvelle(s) connexion(s)`);
-        if (postCount > 0) parts.push(`${postCount} publication(s) dans le feed`);
-        if (sessionCount > 0) parts.push(`${sessionCount} session(s) de coaching`);
-
-        await supabase.from("notifications").insert({
-          user_id: profile.user_id,
-          type: "system",
-          title: "📊 Votre résumé hebdomadaire",
-          message: `Cette semaine : ${parts.join(", ")}. Continuez à développer votre réseau !`,
-          reference_type: "weekly_digest",
-        });
-        notified++;
-      }
+      await supabase.from("notifications").insert({
+        user_id: profile.user_id,
+        type: "system",
+        title: "📊 Votre résumé hebdomadaire",
+        message: `Cette semaine : ${parts.join(", ")}. Continuez à développer votre réseau !`,
+        reference_type: "weekly_digest",
+      });
+      notified++;
     }
 
-    return new Response(JSON.stringify({ message: `Digest sent to ${notified} users` }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json({ message: `Digest sent to ${notified} users` });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json({ error: (error as Error).message }, 500);
   }
 });
