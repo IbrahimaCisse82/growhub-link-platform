@@ -22,6 +22,13 @@
       "when": 1792028955911,
       "tag": "0002_scope_check_functions_to_caller",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793234798335,
+      "tag": "0003_restrict_anon_table_access",
+      "breakpoints": true
     }
   ]
 }
